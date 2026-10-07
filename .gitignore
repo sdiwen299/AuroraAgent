@@ -24,8 +24,10 @@ __pycache__/
 config.json
 
 # Frontend
+/node_modules/
 web/node_modules/
 web/dist/
+web/.vite/
 web/tsconfig.tsbuildinfo
 web/*.tsbuildinfo
 
