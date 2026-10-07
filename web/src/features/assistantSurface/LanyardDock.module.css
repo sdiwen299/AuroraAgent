@@ -1,0 +1,138 @@
+.dock {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.dock > * {
+  pointer-events: auto;
+}
+
+.trigger {
+  position: relative;
+  width: 200px;
+  height: 460px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+  overflow: visible;
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--op-accent, #f0c521);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
+
+.card {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.card :global(.lanyard-wrapper) {
+  width: 100%;
+  height: 100%;
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #52c41a;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+.badge[data-status='error'] {
+  background: #ff4d4f;
+}
+
+/* 退出入口收回卡片框内右下角，不再挂在画布右侧外面。 */
+.hide {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: block;
+}
+
+.confirm {
+  position: absolute;
+  right: 8px;
+  bottom: 40px;
+  z-index: 1001;
+  width: 132px;
+  padding: 9px 10px 10px;
+  border: 1px solid var(--op-border-strong, #cfc1a0);
+  border-radius: 12px;
+  background: var(--op-surface, #fffdf6);
+  box-shadow: var(--op-shadow-lg);
+  color: var(--op-ink, #0e0803);
+  text-align: center;
+}
+
+.confirmText {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.confirmActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.confirmYes,
+.confirmNo {
+  height: 26px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.confirmYes {
+  border: 1px solid var(--op-primary, #20340f);
+  background: var(--op-primary, #20340f);
+  color: var(--op-on-primary, #ffffff);
+}
+
+.confirmYes:hover {
+  background: var(--op-primary-strong, #16260a);
+}
+
+.confirmNo {
+  border: 1px solid var(--op-border-strong, #cfc1a0);
+  background: var(--surface-sunken, #f3ebd6);
+  color: var(--op-muted-strong, #474a41);
+}
+
+.confirmNo:hover {
+  background: var(--op-accent, #f0c521);
+  color: var(--op-ink, #0e0803);
+}
+
+.confirmYes:focus-visible,
+.confirmNo:focus-visible {
+  outline: none;
+  box-shadow: var(--op-focus-ring);
+}
+
+@media (max-width: 560px) {
+  .trigger {
+    width: 150px;
+    height: 340px;
+  }
+}

@@ -1,0 +1,150 @@
+.carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: contain;
+  outline: none;
+  color: var(--op-ink);
+  font-family: var(--op-font-sans);
+}
+
+.carousel[data-hover='open'] {
+  cursor: zoom-in;
+}
+
+.carousel[data-hover='close'] {
+  cursor: zoom-out;
+}
+
+.carousel[data-dragging] {
+  cursor: grabbing;
+}
+
+.carousel:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--op-primary);
+}
+
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + var(--flex-carousel-half, 25%) * var(--flex-carousel-lift, 1) + 26px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0 16px;
+  pointer-events: none;
+  text-align: center;
+  animation: reveal 900ms ease both;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100%;
+  font-family: var(--op-font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+  color: var(--op-ink);
+  animation: title-in 520ms var(--op-ease);
+}
+
+.subtitle {
+  font-family: var(--op-font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  opacity: 0.62;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.5;
+  transition: opacity 400ms ease;
+}
+
+.count[data-hidden] {
+  opacity: 0;
+}
+
+.digits {
+  display: inline-flex;
+}
+
+.digit {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+  transition: transform 600ms var(--op-ease);
+}
+
+.reel span {
+  height: 1em;
+}
+
+.slash {
+  opacity: 0.6;
+}
+
+.live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes title-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caption,
+  .title {
+    animation: none;
+  }
+
+  .reel {
+    transition: none;
+  }
+}

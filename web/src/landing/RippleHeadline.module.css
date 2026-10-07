@@ -1,0 +1,39 @@
+.wrap {
+  position: relative;
+}
+
+.text {
+  transition: opacity 140ms ease-out;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms ease-out;
+}
+
+.wrapReady:hover .text {
+  opacity: 0;
+}
+
+.wrapReady:hover .canvas {
+  opacity: 1;
+}
+
+.wrapReady.wrapActive .text {
+  opacity: 0;
+}
+
+.wrapReady.wrapActive .canvas {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .text,
+  .canvas {
+    transition: none;
+  }
+}

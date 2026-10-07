@@ -1,0 +1,252 @@
+.sidebar {
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 216px;
+  height: 100dvh;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 16px 12px;
+  color: var(--op-ink);
+  background: var(--op-surface);
+  /* 登录页导航条同款虚描边 */
+  border-right: 1.5px dashed var(--op-border-strong);
+  transition: width 0.22s var(--op-ease), padding 0.22s var(--op-ease);
+}
+
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 20px;
+}
+
+.collapseButton {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  margin-left: auto;
+  place-items: center;
+  color: var(--op-muted);
+  font-size: 15px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  transition: color 0.2s var(--op-ease), background 0.2s var(--op-ease), border-color 0.2s var(--op-ease);
+}
+
+.collapseButton:hover {
+  color: var(--op-ink);
+  background: var(--surface-hover);
+  border-color: var(--op-border);
+}
+
+.collapseButton:focus-visible {
+  outline: 2px solid var(--op-primary);
+  outline-offset: 2px;
+  box-shadow: var(--op-focus-ring);
+}
+
+.brandMark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--op-primary);
+  background: var(--op-accent);
+  font-family: var(--op-font-display);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+}
+
+.brandName {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--op-ink);
+  font-family: var(--op-font-display);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.groupLabel {
+  margin: 0 8px 4px;
+  color: var(--op-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+}
+
+.navItem,
+.utilityButton {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 11px;
+  color: var(--op-muted);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  transition: background 0.2s var(--op-ease), border-color 0.2s var(--op-ease), color 0.2s var(--op-ease);
+}
+
+.navItem:hover,
+.utilityButton:hover {
+  color: var(--op-ink);
+  background: var(--surface-hover);
+}
+
+.navItem:focus-visible,
+.utilityButton:focus-visible {
+  outline: 2px solid var(--op-primary);
+  outline-offset: 2px;
+  box-shadow: var(--op-focus-ring);
+}
+
+.active {
+  color: var(--op-primary-strong);
+  font-weight: 700;
+  background: var(--surface-selected);
+  border-color: color-mix(in srgb, var(--op-primary) 16%, var(--op-border));
+  box-shadow: none;
+}
+
+/* 选中态左侧橄榄色标记条，呼应登录页的荧光笔标记 */
+.navItem.active::before,
+.utilityButton.active::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 9px;
+  bottom: 9px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--op-accent);
+}
+
+.icon {
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.utility {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.utilityButton {
+  font-size: 13px;
+}
+
+.utilityButton svg {
+  flex: 0 0 16px;
+}
+
+.collapsed {
+  width: 72px;
+  padding-inline: 10px;
+}
+
+.collapsed .brand {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.collapsed .brandName,
+.collapsed .groupLabel,
+.collapsed .label {
+  display: none;
+}
+
+.collapsed .collapseButton {
+  position: absolute;
+  top: 4px;
+  right: -2px;
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+}
+
+.collapsed .group,
+.collapsed .utility {
+  align-items: center;
+}
+
+.collapsed .navItem,
+.collapsed .utilityButton {
+  justify-content: center;
+  min-height: 42px;
+  padding-inline: 0;
+}
+
+.collapsed .icon {
+  flex-basis: auto;
+  font-size: 17px;
+}
+
+.collapsed .navItem.active::before,
+.collapsed .utilityButton.active::before {
+  left: 0;
+}
+
+.collapsed :global(.ant-badge) {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+@media (max-width: 880px) {
+  .sidebar {
+    width: 184px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .collapseButton,
+  .navItem,
+  .utilityButton {
+    transition: none;
+  }
+}
