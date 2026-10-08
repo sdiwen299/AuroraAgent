@@ -24,7 +24,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
-from offerpilot.knowledge.brief import (
+from auroraagent.knowledge.brief import (
     ISSUE_CITATION_MISSING,
     ISSUE_CITATION_OWNERSHIP,
     ISSUE_COVERAGE_MISSING,
@@ -212,8 +212,8 @@ def test_validation_issue_carries_block_path_decision_reason_evidence_ids() -> N
 
 
 def _qualified_config() -> Any:
-    from offerpilot.config import AIProviderProfile, Config
-    from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
+    from auroraagent.config import AIProviderProfile, Config
+    from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
 
     provider = AIProviderProfile(
         id="default",
@@ -601,7 +601,7 @@ def test_rebuild_failure_preserves_old_brief_and_attaches_report_to_new_attempt(
     tmp_path: Path,
 ) -> None:
     """重建失败时旧 current Brief 继续可见；失败候选 + 完整 report 归属新 Attempt。"""
-    from offerpilot.knowledge.service import KnowledgeIngestService
+    from auroraagent.knowledge.service import KnowledgeIngestService
 
     repository, session_factory, source_id, snapshot_id = ingest_and_extract(
         tmp_path, MIXED_FAILURE_CONTENT.encode("utf-8"), config=_qualified_config()
@@ -769,7 +769,7 @@ def _find_other_source_evidence_id(
     """找一条不属于 ``exclude_source_id`` 的文本 Evidence id（用于 ownership 测试）。"""
     # repository 没有跨 source list；用直接 SQL 查询。
     session_factory = repository._session_factory  # type: ignore[attr-defined]
-    from offerpilot.models import KnowledgeEvidence
+    from auroraagent.models import KnowledgeEvidence
 
     with session_factory() as session:
         rows = (

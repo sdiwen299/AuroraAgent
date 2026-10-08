@@ -2,14 +2,14 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.context_sources.models import ContextContributorSettings
-from offerpilot.context_sources.contracts import ContextPolicies, ContributorPolicy
-from offerpilot.context_sources.loader import load_optional_sources
-from offerpilot.confirmed_memory.repository import ConfirmedMemoryRepository, MemoryMutation
-from offerpilot.context_projector.loader import ContextSourceLoader
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
+from auroraagent.context_sources.models import ContextContributorSettings
+from auroraagent.context_sources.contracts import ContextPolicies, ContributorPolicy
+from auroraagent.context_sources.loader import load_optional_sources
+from auroraagent.confirmed_memory.repository import ConfirmedMemoryRepository, MemoryMutation
+from auroraagent.context_projector.loader import ContextSourceLoader
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
 
 
 @pytest.fixture
@@ -77,7 +77,7 @@ def test_large_item_is_omitted_atomically_by_own_budget(context):
 
 
 def test_temporary_optional_read_failure_omits_all_data_but_integrity_failure_propagates():
-    from offerpilot.context_projector.loader import SourceTemporarilyUnavailable
+    from auroraagent.context_projector.loader import SourceTemporarilyUnavailable
 
     class FailedLoader:
         def __init__(self, error):
@@ -97,7 +97,7 @@ def test_temporary_optional_read_failure_omits_all_data_but_integrity_failure_pr
 
 def test_sqlite_busy_is_temporary_but_missing_table_is_not(context):
     import sqlite3
-    from offerpilot.context_projector.loader import SourceTemporarilyUnavailable
+    from auroraagent.context_projector.loader import SourceTemporarilyUnavailable
 
     _, loader, _ = context
     with sqlite3.connect(loader._pool.database, isolation_level=None) as writer:

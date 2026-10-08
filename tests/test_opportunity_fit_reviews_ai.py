@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from offerpilot.ai.opportunity_fit_reviews import (
+from auroraagent.ai.opportunity_fit_reviews import (
     OpportunityFitModelError,
     generate_deep_review,
     generate_triage,
@@ -15,7 +15,7 @@ from offerpilot.ai.opportunity_fit_reviews import (
     validate_triage_v2,
     validate_triage,
 )
-from offerpilot.ai.types import Assistant
+from auroraagent.ai.types import Assistant
 
 
 def snapshot() -> dict[str, object]:

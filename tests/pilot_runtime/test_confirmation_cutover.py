@@ -10,27 +10,27 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, select, update
 
-import offerpilot.pilot_runtime.continuation as continuation_module
-import offerpilot.pilot_runtime.service as service_module
-import offerpilot.ai.write_operations as write_operations_module
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.types import Assistant, Message, ToolCall
-from offerpilot.ai.write_operations import WriteOperationCoordinator
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import ChatMessage, WriteOperation
-from offerpilot.pilot_runtime.composition import (
+import auroraagent.pilot_runtime.continuation as continuation_module
+import auroraagent.pilot_runtime.service as service_module
+import auroraagent.ai.write_operations as write_operations_module
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.types import Assistant, Message, ToolCall
+from auroraagent.ai.write_operations import WriteOperationCoordinator
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import ChatMessage, WriteOperation
+from auroraagent.pilot_runtime.composition import (
     _ContinuationModelResolver,
     _PolicyCatalogResolver,
     _SourceAdapter,
 )
-from offerpilot.pilot_runtime.contracts import ConfirmationRequest
-from offerpilot.pilot_runtime.service import (
+from auroraagent.pilot_runtime.contracts import ConfirmationRequest
+from auroraagent.pilot_runtime.service import (
     PilotRuntime,
     ResolvedModel,
     _ContinuationActivationRequest,
 )
-from offerpilot.repositories.chat import (
+from auroraagent.repositories.chat import (
     ChatRepository,
     ConversationScopeMutationSnapshot,
 )
@@ -442,7 +442,7 @@ def test_receipt_builder_failure_recovers_committed_write_without_provider(
     monkeypatch.setattr(service_module, "edited_confirmation_receipt", exploding_receipt)
     monkeypatch.setattr(continuation_module, "edited_confirmation_receipt", exploding_receipt)
     monkeypatch.setattr(write_operations_module, "edited_confirmation_receipt", exploding_receipt)
-    from offerpilot.ai.confirmation_receipt import edited_confirmation_receipt as original_receipt
+    from auroraagent.ai.confirmation_receipt import edited_confirmation_receipt as original_receipt
 
     app = create_app(data_dir=tmp_path, chat_model=model)
     with TestClient(
@@ -535,7 +535,7 @@ def test_new_turn_after_edited_confirmation_still_calls_provider(tmp_path):
 
 
 def test_receipt_builder_degrades_when_a_changed_field_is_missing():
-    from offerpilot.ai.confirmation_receipt import edited_confirmation_receipt
+    from auroraagent.ai.confirmation_receipt import edited_confirmation_receipt
 
     receipt = edited_confirmation_receipt(
         result_json=json.dumps({"status": "offer"}),
@@ -587,8 +587,8 @@ def test_confirmation_field_comparison_keeps_tool_value_semantics(
 
 
 def test_edited_confirmation_does_not_need_post_terminal_projection(tmp_path, monkeypatch):
-    from offerpilot.context_projector.contracts import ProjectionError
-    from offerpilot.context_projector.projector import ModelSurfaceProjector
+    from auroraagent.context_projector.contracts import ProjectionError
+    from auroraagent.context_projector.projector import ModelSurfaceProjector
 
     projection_calls: list[object] = []
 

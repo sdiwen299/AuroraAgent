@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.write_operations import (
     OperationFailed,
     WriteOperationCoordinator,
     WriteOperationRepository,
@@ -13,9 +13,9 @@ from offerpilot.ai.write_operations import (
     operation_request_fingerprint,
     load_or_create_ledger_key,
 )
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation, WriteOperation
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation, WriteOperation
+from auroraagent.repositories.chat import ChatRepository
 from tests.tool_authority.test_pending_claim import create_primary_with_typed_route
 
 

@@ -3,7 +3,7 @@ param()
 $ErrorActionPreference = "Stop"
 
 $Repo = Split-Path -Parent $PSScriptRoot
-$TempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("offerpilot-install-gate-" + [System.Guid]::NewGuid().ToString("N"))
+$TempRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("auroraagent-install-gate-" + [System.Guid]::NewGuid().ToString("N"))
 $ToolDir = Join-Path $TempRoot "uv-tools"
 $BinDir = Join-Path $TempRoot "bin"
 

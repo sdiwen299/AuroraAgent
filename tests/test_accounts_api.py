@@ -2,8 +2,8 @@ import sqlite3
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.config import load_config
+from auroraagent.api import create_app
+from auroraagent.config import load_config
 
 
 def _client(tmp_path) -> TestClient:
@@ -38,7 +38,7 @@ def test_first_run_registration_opens_the_gate(tmp_path):
 
     # 一旦存在账号，未携带会话令牌的 API 请求就被拒。
     assert client.get("/api/applications").status_code == 401
-    assert client.get("/api/applications", headers={"X-OfferPilot-Token": payload["token"]}).status_code == 200
+    assert client.get("/api/applications", headers={"X-AuroraAgent-Token": payload["token"]}).status_code == 200
 
 
 def test_registration_rejects_invalid_input(tmp_path):
@@ -61,7 +61,7 @@ def test_registration_rejects_duplicate_email(tmp_path):
     # 已有账号后注册需要先登录，因此用会话令牌复现「邮箱已占用」这一分支。
     duplicate = client.post(
         "/api/auth/register",
-        headers={"X-OfferPilot-Token": token},
+        headers={"X-AuroraAgent-Token": token},
         json={"email": "zhe@example.com", "password": "anothersecret"},
     )
 
@@ -86,13 +86,13 @@ def test_login_issues_and_logout_revokes_session(tmp_path):
     token = logged_in.json()["token"]
     assert logged_in.json()["account"]["email"] == "zhe@example.com"
 
-    status = client.get("/api/auth/status", headers={"X-OfferPilot-Token": token}).json()
+    status = client.get("/api/auth/status", headers={"X-AuroraAgent-Token": token}).json()
     assert status["authenticated"] is True
     assert status["account"] == {"email": "zhe@example.com", "display_name": "筱哲"}
 
-    assert client.post("/api/auth/logout", headers={"X-OfferPilot-Token": token}).json() == {"ok": True}
-    assert client.get("/api/applications", headers={"X-OfferPilot-Token": token}).status_code == 401
-    after_logout = client.get("/api/auth/status", headers={"X-OfferPilot-Token": token}).json()
+    assert client.post("/api/auth/logout", headers={"X-AuroraAgent-Token": token}).json() == {"ok": True}
+    assert client.get("/api/applications", headers={"X-AuroraAgent-Token": token}).status_code == 401
+    after_logout = client.get("/api/auth/status", headers={"X-AuroraAgent-Token": token}).json()
     assert after_logout["authenticated"] is False
     assert after_logout["account"] is None
 
@@ -107,7 +107,7 @@ def test_registration_stays_closed_once_an_account_exists(tmp_path):
 
     allowed = client.post(
         "/api/auth/register",
-        headers={"X-OfferPilot-Token": token},
+        headers={"X-AuroraAgent-Token": token},
         json={"email": "other@example.com", "password": "anothersecret"},
     )
     assert allowed.status_code == 201
@@ -131,7 +131,7 @@ def test_saving_ai_settings_keeps_the_account_gate_closed(tmp_path):
     """保存 AI 设置只能改 Provider 字段，不能顺带把账号门禁关掉。"""
     client = _client(tmp_path)
     token = _register(client).json()["token"]
-    headers = {"X-OfferPilot-Token": token}
+    headers = {"X-AuroraAgent-Token": token}
 
     saved = client.put(
         "/api/settings",

@@ -234,6 +234,6 @@ describe('ApplicationOutcomeDrawer', () => {
     expect(state.createSnapshot).toHaveBeenCalledTimes(2);
     expect(state.createSnapshot.mock.calls[1][1]).toEqual(state.createSnapshot.mock.calls[0][1]);
     expect([...document.body.querySelectorAll('button')].some((button) => button.textContent?.includes('使用原尝试重试'))).toBe(false);
-    expect(sessionStorage.getItem('offerpilot:application-outcome:7:snapshot')).toBeNull();
+    expect(sessionStorage.getItem('auroraagent:application-outcome:7:snapshot')).toBeNull();
   });
 });

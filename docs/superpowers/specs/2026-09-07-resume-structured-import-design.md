@@ -2,7 +2,7 @@
 
 状态：已获用户批准，按本方案实施并验证。
 
-工作空间：`D:/Users/yuqi.chen/offerpilot/.worktrees/fix-20260907-resume-structured-import`
+工作空间：`D:/Users/yuqi.chen/auroraagent/.worktrees/fix-20260907-resume-structured-import`
 
 分支：`fix/20260907-resume-structured-import`
 

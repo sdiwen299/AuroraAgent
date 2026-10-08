@@ -82,34 +82,34 @@ describe('ContextAttachmentRail', () => {
     });
   });
 
-  it('accepts only valid OfferPilot attachment drops', () => {
+  it('accepts only valid AuroraAgent attachment drops', () => {
     const onNativeDrop = vi.fn();
     const view = render(<ContextAttachmentRail attachments={[]} onRemove={vi.fn()} onNativeDrop={onNativeDrop} />);
     const rail = view.querySelector('[data-testid="context-attachment-rail"]')!;
 
-    const protectedDrag = nativeDragOver(rail, 'application/x-offerpilot-context-attachment', '');
+    const protectedDrag = nativeDragOver(rail, 'application/x-auroraagent-context-attachment', '');
     expect(protectedDrag.defaultPrevented).toBe(true);
     expect(rail.className).toContain('contextAttachmentRailDragging');
 
     const malformedDrag = nativeDragOver(
       rail,
-      'application/x-offerpilot-context-attachment',
+      'application/x-auroraagent-context-attachment',
       '{oops',
     );
     expect(malformedDrag.defaultPrevented).toBe(false);
     expect(rail.className).not.toContain('contextAttachmentRailDragging');
 
-    const malformed = nativeDrop(rail, 'application/x-offerpilot-context-attachment', '{oops');
+    const malformed = nativeDrop(rail, 'application/x-auroraagent-context-attachment', '{oops');
     expect(malformed.defaultPrevented).toBe(false);
     expect(onNativeDrop).not.toHaveBeenCalled();
     expect(rail.className).not.toContain('contextAttachmentRailDragging');
 
-    const secondProtectedDrag = nativeDragOver(rail, 'application/x-offerpilot-context-attachment', '');
+    const secondProtectedDrag = nativeDragOver(rail, 'application/x-auroraagent-context-attachment', '');
     expect(secondProtectedDrag.defaultPrevented).toBe(true);
 
     const valid = nativeDrop(
       rail,
-      'application/x-offerpilot-context-attachment',
+      'application/x-auroraagent-context-attachment',
       JSON.stringify({ kind: 'offer', id: '7', label: 'Acme offer' }),
     );
     expect(valid.defaultPrevented).toBe(true);
@@ -118,7 +118,7 @@ describe('ContextAttachmentRail', () => {
     const unrelated = nativeDrop(rail, 'text/plain', JSON.stringify({ kind: 'offer', id: '7', label: 'Acme offer' }));
     const incomplete = nativeDrop(
       rail,
-      'application/x-offerpilot-context-attachment',
+      'application/x-auroraagent-context-attachment',
       JSON.stringify({ kind: 'offer', id: '', label: 'Acme offer' }),
     );
     expect(unrelated.defaultPrevented).toBe(false);

@@ -9,12 +9,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
 from typer.testing import CliRunner
 
-from offerpilot.ai.types import Assistant
-from offerpilot.cli import app
-from offerpilot.api import create_app
-from offerpilot.ai.opportunity_fit_reviews import build_source_snapshot
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.ai.types import Assistant
+from auroraagent.cli import app
+from auroraagent.api import create_app
+from auroraagent.ai.opportunity_fit_reviews import build_source_snapshot
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     ApplicationMaterialKit,
@@ -31,8 +31,8 @@ from offerpilot.models import (
     Resume,
     Wakeup,
 )
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
-from offerpilot.smoke import (
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.smoke import (
     SmokeStep,
     SmokeReport,
     _assert_real_ai_smoke_data_clean,
@@ -137,7 +137,7 @@ def test_core_smoke_runs_spa_api_and_hitl_loop(tmp_path):
 
 
 def test_cli_smoke_prints_checked_steps(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path / "data"))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path / "data"))
     runner = CliRunner()
 
     result = runner.invoke(app, ["smoke", "--static-dir", str(_static_dir(tmp_path))])
@@ -148,9 +148,9 @@ def test_cli_smoke_prints_checked_steps(monkeypatch, tmp_path):
 
 
 def test_cli_mock_interview_verify_has_isolated_real_ai_entry(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path / "data"))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path / "data"))
     monkeypatch.setattr(
-        "offerpilot.cli.run_mock_interview_real_ai_smoke",
+        "auroraagent.cli.run_mock_interview_real_ai_smoke",
         lambda data_dir, static_dir=None: SmokeReport(
             ok=True, steps=[SmokeStep("http_mock_interview", "complete")]
         ),
@@ -274,7 +274,7 @@ def test_real_ai_mock_interview_smoke_fails_after_three_unverifiable_restarts(tm
 def test_real_ai_mock_interview_smoke_reads_only_safe_failure_categories(tmp_path):
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
-    (log_dir / "offerpilot.log").write_text(
+    (log_dir / "auroraagent.log").write_text(
         'WARNING mock_interview_contract_failure '
         '{"attempt_id":77,"stage":"feedback","failure_category":"unknown_evidence_ref","failure_categories":'
         '["unknown_evidence_ref","excerpt_mismatch"],"provider_request_id":'
@@ -352,7 +352,7 @@ def test_real_ai_interview_preparation_smoke_retries_pending_results_with_same_r
                 ),
             )
 
-    monkeypatch.setattr("offerpilot.smoke.time.sleep", lambda _: None)
+    monkeypatch.setattr("auroraagent.smoke.time.sleep", lambda _: None)
     client = Client()
     steps: list[SmokeStep] = []
     _run_real_ai_interview_preparation_smoke(client, steps, 7, [])
@@ -738,7 +738,7 @@ def test_real_ai_material_proposal_smoke_allows_empty_changes_and_hides_snapshot
 
 
 def test_material_proposal_smoke_persists_redacted_response_diagnostic(tmp_path, monkeypatch):
-    monkeypatch.setenv("OFFERPILOT_FULL_VERIFY_REPORT_DIR", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_FULL_VERIFY_REPORT_DIR", str(tmp_path))
     body = {
         "id": 8,
         "application_id": 7,
@@ -816,7 +816,7 @@ def test_save_application_jd_version_uses_current_version_cas():
 
 
 def test_real_ai_http_smoke_isolates_config_and_removes_temporary_data(monkeypatch, tmp_path):
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     source_data = tmp_path / "user-data"
     source_data.mkdir()
@@ -840,7 +840,7 @@ def test_real_ai_http_smoke_isolates_config_and_removes_temporary_data(monkeypat
 
 
 def test_local_http_smoke_isolates_user_data(monkeypatch, tmp_path):
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     source_data = tmp_path / "user-data"
     source_data.mkdir()
@@ -871,7 +871,7 @@ def test_real_ai_smoke_does_not_cleanup_database_after_server_shutdown_failure(
 ):
     from contextlib import contextmanager
 
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     events: list[str] = []
     fake_app = SimpleNamespace(state=SimpleNamespace())
@@ -932,7 +932,7 @@ def test_smoke_database_disposal_waits_before_engine_disposal(monkeypatch, tmp_p
 
 
 def test_running_server_waits_for_shutdown_before_database_disposal(monkeypatch):
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     events: list[str] = []
 
@@ -983,7 +983,7 @@ def test_running_server_waits_for_shutdown_before_database_disposal(monkeypatch)
 
 
 def test_stop_smoke_server_bounds_wait_and_preserves_live_database(monkeypatch):
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     joins: list[float | None] = []
     disposed: list[bool] = []
@@ -1598,7 +1598,7 @@ def test_real_ai_browser_domain_baseline_covers_opportunity_fit_v2(tmp_path):
 def test_real_ai_browser_harness_isolated_and_uses_base_url():
     harness = Path(__file__).parents[1] / "scripts" / "pilot-real-ai-browser-harness.ps1"
     source = harness.read_text(encoding="utf-8")
-    assert "OFFERPILOT_DATA" in source
+    assert "AURORA_AGENT_DATA" in source
     assert "Copy-Item" in source
     assert "Get-NetTCPConnection" in source
     assert "Get-TreeIds" in source
@@ -1795,7 +1795,7 @@ def test_cli_verify_local_runs_http_smoke(monkeypatch, tmp_path):
         for path in data_dir.rglob("*")
         if path.is_file()
     }
-    monkeypatch.setenv("OFFERPILOT_DATA", str(data_dir))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(data_dir))
     runner = CliRunner()
 
     result = runner.invoke(app, ["verify", "--profile", "local", "--static-dir", str(_static_dir(tmp_path))])

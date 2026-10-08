@@ -10,16 +10,16 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.contracts import materialize_provider_payloads
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.contracts import materialize_provider_payloads
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     EditableFieldMetadataV1,
     ToolPresentationBindingV1,
     WriteOperationMetadataV1,
 )
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_specs.legacy import build_static_adapter_catalog
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_specs.legacy import build_static_adapter_catalog
 
 
 FIXTURE = Path(__file__).parents[1] / "fixtures" / "tool_authority" / "authority_manifest_current.json"
@@ -94,7 +94,7 @@ def test_authority_manifest_is_canonical_read_only_and_not_duplicated() -> None:
         raw
         == json.dumps(_manifest(), ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
     )
-    source = Path(__file__).parents[2] / "src" / "offerpilot" / "ai" / "tool_specs" / "catalog.py"
+    source = Path(__file__).parents[2] / "src" / "auroraagent" / "ai" / "tool_specs" / "catalog.py"
     assert "_EXPECTED_MATRIX" not in source.read_text(encoding="utf-8")
 
 

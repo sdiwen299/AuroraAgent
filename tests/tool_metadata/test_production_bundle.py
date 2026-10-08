@@ -12,40 +12,40 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import text
 
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog, compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.contracts import TransientToolRuntimeValue
-from offerpilot.ai.tool_runtime.legacy import LegacyRouteSourceV1
-from offerpilot.ai.tool_runtime.legacy_proof import (
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog, compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.contracts import TransientToolRuntimeValue
+from auroraagent.ai.tool_runtime.legacy import LegacyRouteSourceV1
+from auroraagent.ai.tool_runtime.legacy_proof import (
     LegacyApprovedConfirmationInput,
     LegacyConfirmationLookupIdentity,
 )
-from offerpilot.ai.tool_runtime.metadata import OperationRouteIdentityV1, ToolMetadataBundleV1
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_runtime.metadata import OperationRouteIdentityV1, ToolMetadataBundleV1
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.write_operations import (
     WriteOperationCoordinator,
     WriteOperationError,
     WriteOperationRepository,
     ledger_fingerprint,
     load_or_create_ledger_key,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
+from auroraagent.pilot_runtime.continuation import (
     ConfirmationCoordinator,
     ConfirmationDependencies,
 )
-from offerpilot.pilot_runtime.legacy_route import build_legacy_pending_identity_verifier_port
-from offerpilot.pilot_runtime.deterministic import (
+from auroraagent.pilot_runtime.legacy_route import build_legacy_pending_identity_verifier_port
+from auroraagent.pilot_runtime.deterministic import (
     DeterministicDependencies,
     DeterministicPilotAdapter,
 )
-from offerpilot.pilot_runtime.service import RuntimeDependencies
-from offerpilot.product_actions.catalog import (
+from auroraagent.pilot_runtime.service import RuntimeDependencies
+from auroraagent.product_actions.catalog import (
     ProductActionCatalogV1,
     ProductActionCompensationCatalogV1,
 )
-from offerpilot.product_actions.contracts import (
+from auroraagent.product_actions.contracts import (
     PRODUCT_ACTION_COMPENSATION_NAMES,
     PRODUCT_ACTION_NAMES,
     ProductActionProofRegistryV1,
@@ -53,7 +53,7 @@ from offerpilot.product_actions.contracts import (
 
 
 ROOT = Path(__file__).parents[2]
-PRODUCTION_ROOT = ROOT / "src" / "offerpilot"
+PRODUCTION_ROOT = ROOT / "src" / "auroraagent"
 ORDERED_LEGACY_NAMES = (
     "save_application_jd_version",
     "create_application_submission_snapshot",
@@ -68,7 +68,7 @@ ROUTE_SOURCES = (
 
 
 def _composition_module() -> Any:
-    return importlib.import_module("offerpilot.pilot_runtime.composition")
+    return importlib.import_module("auroraagent.pilot_runtime.composition")
 
 
 def _production_factory() -> Callable[..., Any]:
@@ -84,7 +84,7 @@ def _production_factory() -> Callable[..., Any]:
 
 
 def _pending_verifier() -> Any:
-    route_module = importlib.import_module("offerpilot.pilot_runtime.legacy_route")
+    route_module = importlib.import_module("auroraagent.pilot_runtime.legacy_route")
     builder = getattr(route_module, "build_legacy_pending_identity_verifier_port", None)
     assert callable(builder), "Task 8 must expose the Legacy verifier Port builder"
     return builder(
@@ -469,7 +469,7 @@ def test_production_composition_has_no_unavailable_or_synthetic_legacy_verifier(
 def test_production_legacy_verifier_backend_reads_locks_and_claims_real_rows(
     tmp_path: Path,
 ) -> None:
-    from offerpilot.ai.agent_contracts import PendingAction
+    from auroraagent.ai.agent_contracts import PendingAction
     from tests.tool_metadata.test_pending_routes import issued_legacy_pending_route
 
     sessions = init_database(tmp_path / "legacy-verifier.sqlite3")
@@ -787,4 +787,4 @@ def test_production_component_factory_has_one_application_composition_caller() -
                 ):
                     callers.append((path.relative_to(ROOT).as_posix(), node.name))
 
-    assert callers == [("src/offerpilot/pilot_runtime/composition.py", "build_pilot_runtime")]
+    assert callers == [("src/auroraagent/pilot_runtime/composition.py", "build_pilot_runtime")]

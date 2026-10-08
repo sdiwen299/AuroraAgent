@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.config import Config, load_config, save_config
+from auroraagent.api import create_app
+from auroraagent.config import Config, load_config, save_config
 
 
 def test_auth_enabled_requires_bearer_token_for_api_routes(tmp_path):
@@ -19,11 +19,11 @@ def test_auth_enabled_requires_bearer_token_for_api_routes(tmp_path):
     assert authorized.status_code == 200
 
 
-def test_auth_enabled_accepts_offerpilot_token_header(tmp_path):
+def test_auth_enabled_accepts_auroraagent_token_header(tmp_path):
     save_config(tmp_path, Config(auth_enabled=True, auth_token="secret-token"))
     client = TestClient(create_app(data_dir=tmp_path))
 
-    response = client.get("/api/applications", headers={"X-OfferPilot-Token": "secret-token"})
+    response = client.get("/api/applications", headers={"X-AuroraAgent-Token": "secret-token"})
 
     assert response.status_code == 200
 

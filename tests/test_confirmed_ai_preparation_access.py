@@ -8,12 +8,12 @@ from sqlalchemy import select
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant, ToolCall
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Application, WriteOperation, InterviewPreparationProposal
-from offerpilot.ai.write_operations import build_terminal_payload
-from offerpilot.repositories.application_preparation_access import can_prepare_application
+from auroraagent.ai.types import Assistant, ToolCall
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Application, WriteOperation, InterviewPreparationProposal
+from auroraagent.ai.write_operations import build_terminal_payload
+from auroraagent.repositories.application_preparation_access import can_prepare_application
 from tests.test_interview_preparation_api import FakeModel, _payload
 
 

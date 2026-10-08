@@ -12,12 +12,12 @@ from typing import Any, cast
 import pytest
 from sqlalchemy import CheckConstraint
 
-from offerpilot.ai.tool_runtime import metadata as metadata_module
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.models import WriteOperation
-from offerpilot.product_actions.contracts import (
+from auroraagent.ai.tool_runtime import metadata as metadata_module
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.models import WriteOperation
+from auroraagent.product_actions.contracts import (
     PRODUCT_ACTION_COMPENSATION_NAMES,
     PRODUCT_ACTION_NAMES,
 )
@@ -392,7 +392,7 @@ class _LegacyIssuerProbe:
 
 def test_operation_port_projection_equals_published_sqlite_allow_set() -> None:
     port_type = _required_attr(metadata_module, "ToolOperationMetadataPort")
-    compensation_module = importlib.import_module("offerpilot.pilot_runtime.compensation")
+    compensation_module = importlib.import_module("auroraagent.pilot_runtime.compensation")
     prepare_components = _required_attr(
         compensation_module,
         "prepare_compensation_handler_components",
@@ -430,10 +430,10 @@ def test_operation_port_projection_equals_published_sqlite_allow_set() -> None:
 
 
 def test_completed_production_bundle_operation_port_equals_published_allow_set() -> None:
-    composition = importlib.import_module("offerpilot.pilot_runtime.composition")
+    composition = importlib.import_module("auroraagent.pilot_runtime.composition")
     factory = getattr(composition, "build_production_tool_metadata_components", None)
     assert callable(factory), "Task 9 must expose the production metadata component factory"
-    legacy_route = importlib.import_module("offerpilot.pilot_runtime.legacy_route")
+    legacy_route = importlib.import_module("auroraagent.pilot_runtime.legacy_route")
     verifier_builder = getattr(
         legacy_route,
         "build_legacy_pending_identity_verifier_port",
@@ -475,8 +475,8 @@ def test_completed_production_bundle_operation_port_equals_published_allow_set()
 def test_coordinator_and_repository_do_not_parse_published_check_sql() -> None:
     project_root = Path(__file__).resolve().parents[2]
     owners = (
-        project_root / "src" / "offerpilot" / "ai" / "write_operations.py",
-        project_root / "src" / "offerpilot" / "repositories" / "chat.py",
+        project_root / "src" / "auroraagent" / "ai" / "write_operations.py",
+        project_root / "src" / "auroraagent" / "repositories" / "chat.py",
     )
     forbidden_text = {
         MANIFEST_CONSTRAINT.casefold(),

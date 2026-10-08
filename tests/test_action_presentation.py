@@ -7,11 +7,11 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import event, text
 
-from offerpilot.ai.types import Assistant, ToolCall
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Application, Conversation, WriteOperation
-from offerpilot.review_readiness.candidates import project_readiness_candidates
+from auroraagent.ai.types import Assistant, ToolCall
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Application, Conversation, WriteOperation
+from auroraagent.review_readiness.candidates import project_readiness_candidates
 
 from tests.review_readiness_support import seed_review_candidate
 

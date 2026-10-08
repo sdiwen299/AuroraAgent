@@ -8,15 +8,15 @@ from types import SimpleNamespace
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.ai.resume_structured_import import generate_structured_fields
-from offerpilot.api import create_app
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.db import init_database
-from offerpilot.repositories.resumes import ResumesRepository
-from offerpilot.repositories.resumes import ResumeCreate
-from offerpilot.resume_structured_import import (
+from auroraagent.ai.types import Assistant
+from auroraagent.ai.resume_structured_import import generate_structured_fields
+from auroraagent.api import create_app
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.db import init_database
+from auroraagent.repositories.resumes import ResumesRepository
+from auroraagent.repositories.resumes import ResumeCreate
+from auroraagent.resume_structured_import import (
     ResumeStructureError,
     apply_structured_fields,
     raw_text_sha256,
@@ -32,7 +32,7 @@ RAW = """陈晨
 教育经历 复旦大学 软件工程 2018-09 2022-06
 工作经历 星云科技 后端工程师 2022-07 至今
 负责 Python API 开发
-项目经历 OfferPilot 项目负责人
+项目经历 AuroraAgent 项目负责人
 技能 Python FastAPI
 """
 
@@ -89,8 +89,8 @@ def _fields() -> list[dict[str, str]]:
         },
         {
             "path": "projects.0.name",
-            "value": "OfferPilot",
-            "evidence": "项目经历 OfferPilot 项目负责人",
+            "value": "AuroraAgent",
+            "evidence": "项目经历 AuroraAgent 项目负责人",
         },
         {"path": "skills.0", "value": "Python", "evidence": "技能 Python FastAPI"},
     ]
@@ -552,7 +552,7 @@ def test_invalid_persisted_content_is_rejected_without_provider_or_overwrite(tmp
     resume = _upload_resume(client)
     factory = init_database(tmp_path / "data.db")
     with factory() as session:
-        from offerpilot.models import Resume
+        from auroraagent.models import Resume
 
         row = session.get(Resume, resume["id"])
         assert row is not None
@@ -565,7 +565,7 @@ def test_invalid_persisted_content_is_rejected_without_provider_or_overwrite(tmp
     assert response.json()["error_code"] == "resume_structure_invalid_source"
     assert model.calls == 0
     with factory() as session:
-        from offerpilot.models import Resume
+        from auroraagent.models import Resume
 
         row = session.get(Resume, resume["id"])
         assert row is not None
@@ -598,7 +598,7 @@ def test_known_persisted_section_shape_is_rejected_without_provider(
 
 
 def test_complete_json_strict_mode_rejects_duplicate_keys() -> None:
-    from offerpilot.ai.workflows import complete_json
+    from auroraagent.ai.workflows import complete_json
 
     model = ReplyModel('{"fields":[],"fields":[]}')
     with pytest.raises(RuntimeError):

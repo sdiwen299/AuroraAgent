@@ -8,16 +8,16 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai import confirmation as confirmation_runtime
-from offerpilot.ai import write_operations as write_runtime
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.write_operations import pending_action_identity
-from offerpilot.ai.tool_runtime.legacy import LegacyRouteSourceV1
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai import confirmation as confirmation_runtime
+from auroraagent.ai import write_operations as write_runtime
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.write_operations import pending_action_identity
+from auroraagent.ai.tool_runtime.legacy import LegacyRouteSourceV1
+from auroraagent.ai.tool_runtime.metadata import (
     CommittedPrimaryOperationIdentityV1,
     OperationRouteIdentityV1,
 )
-from offerpilot.repositories import chat as chat_runtime
+from auroraagent.repositories import chat as chat_runtime
 
 
 def _api(name: str) -> Any:

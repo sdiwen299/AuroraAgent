@@ -54,7 +54,7 @@ export function createOfferNegotiationProposal(
   entrypoint: 'ui' | 'pilot' = 'ui',
 ): Promise<OfferNegotiationResponse> {
   return offerNegotiationRequest(() => aiHttp.post<OfferNegotiationResponse>(
-    `/offers/${offerId}/negotiation/proposals`, input, { headers: { 'X-OfferPilot-Entrypoint': entrypoint } },
+    `/offers/${offerId}/negotiation/proposals`, input, { headers: { 'X-AuroraAgent-Entrypoint': entrypoint } },
   ));
 }
 
@@ -86,7 +86,7 @@ export function confirmOfferNegotiationProposal(
 ): Promise<OfferNegotiationBrief> {
   return offerNegotiationRequest(() => http.post<OfferNegotiationBrief>(
     `/offer-negotiation/proposals/${proposalId}/confirm`, input,
-    { headers: { 'X-OfferPilot-Entrypoint': entrypoint } },
+    { headers: { 'X-AuroraAgent-Entrypoint': entrypoint } },
   ));
 }
 

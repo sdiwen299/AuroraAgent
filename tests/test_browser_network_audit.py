@@ -316,7 +316,7 @@ def test_browser_network_audit_records_allowlisted_story_actions(tmp_path):
         assert records[-1]["kind"] == "browser_story_interactions"
         assert records[-1]["steps"] == list(expected_steps)
         assert len(fake.injected_sources) == 1
-        assert "window.__offerpilotStoryAuditSteps" in fake.injected_sources[0]
+        assert "window.__auroraagentStoryAuditSteps" in fake.injected_sources[0]
         assert "[data-story-audit]" in fake.injected_sources[0]
     finally:
         fake.close()

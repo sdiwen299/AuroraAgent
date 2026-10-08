@@ -5,17 +5,17 @@ from typing import Any, Callable, NoReturn
 
 import pytest
 
-import offerpilot.ai.agent_loop as agent_loop_module
-import offerpilot.ai.tool_runtime.pipeline as pipeline_module
-import offerpilot.context_projector.selector as selector_module
-from offerpilot.ai.agent_contracts import (
+import auroraagent.ai.agent_loop as agent_loop_module
+import auroraagent.ai.tool_runtime.pipeline as pipeline_module
+import auroraagent.context_projector.selector as selector_module
+from auroraagent.ai.agent_contracts import (
     AgentAssistantDelta,
     AgentToolCall,
     AgentToolResult,
     ChatRunCancelled,
     PendingAction,
 )
-from offerpilot.ai.agent_loop import (
+from auroraagent.ai.agent_loop import (
     ApprovedContinuationSegment,
     AgentLoopInvocation,
     AgentLoopRunner,
@@ -26,15 +26,15 @@ from offerpilot.ai.agent_loop import (
     _pending_action_revision,
     _provider_arguments_digest,
 )
-from offerpilot.ai.tool_authority import AuthorityFactory, AuthorityPhaseError, TrustedContextScope
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_authority import AuthorityFactory, AuthorityPhaseError, TrustedContextScope
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import (
     ToolOperationMetadataPort,
     ToolPresentationBindingV1,
 )
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.contracts import (
     PreparedToolCall,
     ToolExecutionRecord,
     ToolFailure,
@@ -42,25 +42,25 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     ToolCatalog,
     compile_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.types import Assistant, Message, ToolCall
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.config import AIProviderProfile
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.context_projector.gateway import (
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.types import Assistant, Message, ToolCall
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.config import AIProviderProfile
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.context_projector.gateway import (
     AgentProviderGatewaySession,
     FrozenProviderExecutionChain,
     SingleCandidateAgentTransport,
 )
-from offerpilot.context_projector.projector import ModelSurfaceProjector
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.ai.write_operations import (
+from auroraagent.context_projector.projector import ModelSurfaceProjector
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.ai.write_operations import (
     PendingPersistenceRoutePort,
     TypedPendingRouteHandle,
 )
@@ -1392,7 +1392,7 @@ def test_mixed_known_and_unknown_surface_tool_calls_fail_closed_before_events_or
         )[0],
     )
 
-    from offerpilot.context_projector.contracts import ProjectionError
+    from auroraagent.context_projector.contracts import ProjectionError
 
     with pytest.raises(ProjectionError, match="unknown_tool"):
         AgentLoopRunner().run(invocation_value)

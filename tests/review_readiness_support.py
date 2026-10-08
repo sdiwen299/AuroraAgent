@@ -5,14 +5,14 @@ from typing import Any
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.ai.interview_review_proposals import build_interview_review_snapshot
-from offerpilot.models import (
+from auroraagent.ai.interview_review_proposals import build_interview_review_snapshot
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     InterviewNote,
     InterviewReviewProposal,
 )
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 
 def seed_review_candidate(

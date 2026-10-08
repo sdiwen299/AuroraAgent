@@ -7,18 +7,18 @@ from collections.abc import Callable
 import pytest
 from sqlalchemy import text
 
-from offerpilot.ai.types import Assistant
-from offerpilot.db import init_database
-from offerpilot.models import Application, ApplicationEvent, InterviewNote, InterviewReviewProposal
-from offerpilot.repositories.interview_review_proposals import (
+from auroraagent.ai.types import Assistant
+from auroraagent.db import init_database
+from auroraagent.models import Application, ApplicationEvent, InterviewNote, InterviewReviewProposal
+from auroraagent.repositories.interview_review_proposals import (
     InterviewReviewConflictError,
     InterviewReviewEventRequired,
     InterviewReviewNotFound,
     InterviewReviewProposalsRepository,
 )
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.json_contract import canonical_json
-from offerpilot.repositories.notes import NoteUpdate, NotesRepository
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.json_contract import canonical_json
+from auroraagent.repositories.notes import NoteUpdate, NotesRepository
 
 
 def _payload() -> dict[str, object]:

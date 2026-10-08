@@ -9,16 +9,16 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_runtime import legacy as legacy_runtime
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.ai.tool_runtime import legacy as legacy_runtime
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
 
 
 ROOT = Path(__file__).parents[2]
-PRODUCTION_ROOT = ROOT / "src" / "offerpilot"
+PRODUCTION_ROOT = ROOT / "src" / "auroraagent"
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
 ORDERED_ADAPTERS = (
     "save_application_jd_version",
@@ -29,7 +29,7 @@ ORDERED_ADAPTERS = (
 
 def _proof_module() -> Any:
     try:
-        return importlib.import_module("offerpilot.ai.tool_runtime.legacy_proof")
+        return importlib.import_module("auroraagent.ai.tool_runtime.legacy_proof")
     except ModuleNotFoundError:
         pytest.fail("Task 8 must provide the Legacy proof component module", pytrace=False)
 
@@ -42,7 +42,7 @@ def _symbol(name: str) -> Any:
 
 def _route_module() -> Any:
     try:
-        return importlib.import_module("offerpilot.pilot_runtime.legacy_route")
+        return importlib.import_module("auroraagent.pilot_runtime.legacy_route")
     except ModuleNotFoundError:
         pytest.fail("Task 8 must provide the Legacy verifier module", pytrace=False)
 
@@ -199,7 +199,7 @@ def test_confirmation_factory_has_only_final_composition_caller() -> None:
                 consumers.append((path.relative_to(ROOT).as_posix(), node.name))
     assert consumers == [
         (
-            "src/offerpilot/pilot_runtime/composition.py",
+            "src/auroraagent/pilot_runtime/composition.py",
             "build_production_tool_metadata_components",
         )
     ]

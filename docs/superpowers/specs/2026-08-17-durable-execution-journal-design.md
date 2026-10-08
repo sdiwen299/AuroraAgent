@@ -10,12 +10,12 @@
 
 ## 1. 背景与问题
 
-OfferPilot 已具备 Conversation、ChatMessage、Pending Action、Proposal Attempt、幂等键、lease、CAS、fencing、SSE 与脱敏 Harness，但这些结构分别服务于聊天展示、业务一致性、恢复和验收，尚不能回答一条 Agent 请求完整经历了什么。
+AuroraAgent 已具备 Conversation、ChatMessage、Pending Action、Proposal Attempt、幂等键、lease、CAS、fencing、SSE 与脱敏 Harness，但这些结构分别服务于聊天展示、业务一致性、恢复和验收，尚不能回答一条 Agent 请求完整经历了什么。
 
 当前因果信息分散在以下位置：
 
-- `src/offerpilot/api.py` 的普通聊天、流式聊天与确认路由；
-- `src/offerpilot/ai/agent.py` 的模型循环、工具调用和人工确认；
+- `src/auroraagent/api.py` 的普通聊天、流式聊天与确认路由；
+- `src/auroraagent/ai/agent.py` 的模型循环、工具调用和人工确认；
 - Conversation 与 ChatMessage 中混合保存的对话、工具调用和工具结果；
 - 进程内的 SSE 状态；
 - 各业务 Attempt、恢复策略和脱敏 Harness 诊断。
@@ -69,7 +69,7 @@ OfferPilot 已具备 Conversation、ChatMessage、Pending Action、Proposal Atte
 
 ### 3.2 不采用：完整事件溯源
 
-以 Event Store 作为 Conversation、工具写入和确认状态的唯一事实源，理论上能回放全部状态，但会同时改变持久化、恢复、迁移和删除语义，范围过大。OfferPilot 当前不需要该复杂度。
+以 Event Store 作为 Conversation、工具写入和确认状态的唯一事实源，理论上能回放全部状态，但会同时改变持久化、恢复、迁移和删除语义，范围过大。AuroraAgent 当前不需要该复杂度。
 
 ### 3.3 不采用：仅扩展日志与 Trace JSONL
 
@@ -304,7 +304,7 @@ confirmation-resume:{segment_id}
 model-input:{segment_id}:{model_call_id}
 ```
 
-每次调用 Agent 层 `model.complete` 或 `stream_complete` 前，都必须先生成一个 `model_input` Snapshot，再由 `model.requested` 引用其 ID。这里的“逻辑输入”严格指 OfferPilot Agent 层传给 Provider client 的规范化 messages + tools 对象，不承诺等于 Provider 最终网络字节。
+每次调用 Agent 层 `model.complete` 或 `stream_complete` 前，都必须先生成一个 `model_input` Snapshot，再由 `model.requested` 引用其 ID。这里的“逻辑输入”严格指 AuroraAgent Agent 层传给 Provider client 的规范化 messages + tools 对象，不承诺等于 Provider 最终网络字节。
 
 `manifest_schema_version=1` 使用有界集合摘要，不枚举完整长对话或完整资源集：
 
@@ -342,7 +342,7 @@ model-input:{segment_id}:{model_call_id}
 ```text
 HMAC-SHA256(
     journal_hmac_secret,
-    "offerpilot-agent-input-v1\0" || canonical_input_utf8
+    "auroraagent-agent-input-v1\0" || canonical_input_utf8
 )
 ```
 
@@ -426,7 +426,7 @@ mark_degraded(...)
 生产默认启用内部开关：
 
 ```text
-OFFERPILOT_AGENT_JOURNAL_ENABLED=true
+AURORA_AGENT_AGENT_JOURNAL_ENABLED=true
 ```
 
 关闭时使用 `NullRunRecorder`。不增加设置页或公开 API。开启与关闭的 HTTP、SSE、Provider、工具、ChatMessage 和业务写入必须一致，唯一区别是三张 Journal 表是否产生记录。
@@ -831,18 +831,18 @@ seq 连续只证明已持久化事件没有数字缺口，不能证明所有现�
 预计允许修改或新增：
 
 ```text
-src/offerpilot/models.py
-src/offerpilot/db.py
-src/offerpilot/repositories/agent_runs.py
+src/auroraagent/models.py
+src/auroraagent/db.py
+src/auroraagent/repositories/agent_runs.py
 
-src/offerpilot/agent_runtime/__init__.py
-src/offerpilot/agent_runtime/events.py
-src/offerpilot/agent_runtime/journal.py
-src/offerpilot/agent_runtime/keyring.py
-src/offerpilot/agent_runtime/trace.py
+src/auroraagent/agent_runtime/__init__.py
+src/auroraagent/agent_runtime/events.py
+src/auroraagent/agent_runtime/journal.py
+src/auroraagent/agent_runtime/keyring.py
+src/auroraagent/agent_runtime/trace.py
 
-src/offerpilot/api.py
-src/offerpilot/ai/agent.py
+src/auroraagent/api.py
+src/auroraagent/ai/agent.py
 
 tests/test_agent_run_migrations.py
 tests/test_agent_runs_repository.py
@@ -863,7 +863,7 @@ docs/reports/2026-08-17-durable-execution-journal-release-verification.md
 
 ```text
 web/**
-src/offerpilot/ai/tools.py
+src/auroraagent/ai/tools.py
 现有业务 Repository
 现有 Proposal / Attempt / lease / CAS 实现
 SSE 公开事件格式

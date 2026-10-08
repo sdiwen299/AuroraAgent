@@ -11,11 +11,11 @@ RUN npm run build
 # ---- Stage 2: install the Python backend + CLI ----
 FROM python:3.12-slim AS runtime
 ENV PYTHONUNBUFFERED=1 \
-    OFFERPILOT_DATA=/data
+    AURORA_AGENT_DATA=/data
 
-RUN adduser --disabled-password --gecos "" --home /app offerpilot \
+RUN adduser --disabled-password --gecos "" --home /app auroraagent \
     && mkdir -p /data \
-    && chown -R offerpilot:offerpilot /data /app \
+    && chown -R auroraagent:auroraagent /data /app \
     && python -m pip install --no-cache-dir uv
 
 WORKDIR /app
@@ -26,7 +26,7 @@ RUN uv sync --frozen --no-dev \
 
 COPY --from=web /web/dist /app/web/dist
 
-USER offerpilot
+USER auroraagent
 EXPOSE 8080
 VOLUME ["/data"]
 ENTRYPOINT ["oc"]

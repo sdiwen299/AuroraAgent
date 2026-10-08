@@ -433,7 +433,7 @@ POST /api/applications/{application_id}/interview-preparation-proposals
 
 ### 10.5 隔离 real-AI 浏览器闭环
 
-使用一个连续、隔离的验收 harness：复制现有 `config.json` 到临时 `OFFERPILOT_DATA`，使用确认空闲且启动后验证归属于 harness 进程树的临时端口，启动服务后只在该目录创建合成 Application、一个 interview 事件、至少一份 Resume、一个非空 JD 和至少两条已确认 Knowledge Evidence。禁止使用用户实际数据库。
+使用一个连续、隔离的验收 harness：复制现有 `config.json` 到临时 `AURORA_AGENT_DATA`，使用确认空闲且启动后验证归属于 harness 进程树的临时端口，启动服务后只在该目录创建合成 Application、一个 interview 事件、至少一份 Resume、一个非空 JD 和至少两条已确认 Knowledge Evidence。禁止使用用户实际数据库。
 
 浏览器从 `$baseUrl` 进入投递详情，定位合成投递和面试事件，进入“面试准备建议”：
 

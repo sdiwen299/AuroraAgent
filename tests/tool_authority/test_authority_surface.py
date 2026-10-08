@@ -4,41 +4,41 @@ from dataclasses import replace
 from types import SimpleNamespace
 import pytest
 
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.tool_authority.composition import execution_scope
-from offerpilot.ai.tool_authority.contracts import TrustedContextScope
-from offerpilot.ai.tool_authority.policy import (
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.tool_authority.composition import execution_scope
+from auroraagent.ai.tool_authority.contracts import TrustedContextScope
+from auroraagent.ai.tool_authority.policy import (
     AGENT_TYPED_V1_PROFILE,
     CAPABILITY_POLICY_VERSION,
     DEPENDENCY_POLICY_VERSION,
 )
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.context_projector.authority_surface import (
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.context_projector.authority_surface import (
     AuthoritySurfaceView,
     intersect_authority_surface,
 )
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.context_projector.binding import ModelCallSurfaceBinding
-from offerpilot.context_projector.contracts import (
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.context_projector.binding import ModelCallSurfaceBinding
+from auroraagent.context_projector.contracts import (
     FrozenMessage,
     FrozenModelSurface,
     RuntimeSurfaceAudit,
 )
-from offerpilot.context_projector.gateway import (
+from auroraagent.context_projector.gateway import (
     AgentProviderGatewaySession,
     FrozenProviderExecutionChain,
     SingleCandidateAgentTransport,
 )
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.ai.types import Assistant
-from offerpilot.context_projector.selector import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.ai.types import Assistant
+from auroraagent.context_projector.selector import (
     ToolSelectionResult,
     ToolSelectionSignals,
     select_tools,
 )
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
 
 
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
@@ -370,7 +370,7 @@ def test_configured_client_requires_identity_before_provider_adapter(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     calls: list[dict[str, object]] = []
-    monkeypatch.setattr("offerpilot.ai.client.completion", lambda **payload: calls.append(payload))
+    monkeypatch.setattr("auroraagent.ai.client.completion", lambda **payload: calls.append(payload))
     client = ConfiguredAIClient(Config(api_key="secret"))
     with pytest.raises(TypeError):
         client.complete_agent_surface(_surface(object()))

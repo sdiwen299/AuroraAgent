@@ -16,7 +16,7 @@ Knowledge 模块经过 KI / KBR / KV1 多轮迭代，schema 和数据格式经�
 2. **破坏性 + 一次性 + 不可恢复**：
 
    - 清空 Knowledge 域所有表（Source / Snapshot / Evidence / FTS / Job / Brief / Trace 等）
-   - 删除 `$OFFERPILOT_DATA/knowledge/` 下所有不可变文件
+   - 删除 `$AURORA_AGENT_DATA/knowledge/` 下所有不可变文件
    - 不保留审计快照、不保留 quarantine 待清理记录、不可回滚
 
 3. **明确不做运行时审计快照**：`reset.py` 显式声明不做审计快照，`db.py` 启动恢复已删除旧 quarantine / manifest 协议。审计快照在 `d0e4ded` 后是真删，不是关闭。
@@ -48,5 +48,5 @@ Knowledge 模块经过 KI / KBR / KV1 多轮迭代，schema 和数据格式经�
 
 - ADR-0001 SQLite SSOT（reset 清空 Knowledge 域表）
 - ADR-0002 V1 发布范围（reset 是 V1 运维入口）
-- `src/offerpilot/knowledge/reset.py`（reset 实现）
-- `src/offerpilot/cli.py`（`oc knowledge reset` CLI）
+- `src/auroraagent/knowledge/reset.py`（reset 实现）
+- `src/auroraagent/cli.py`（`oc knowledge reset` CLI）

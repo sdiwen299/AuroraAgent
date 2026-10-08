@@ -14,7 +14,7 @@
 
 | File | Responsibility |
 | --- | --- |
-| `src/offerpilot/api.py` | Ask Pilot for the stable Markdown response tail without changing Chat API payloads. |
+| `src/auroraagent/api.py` | Ask Pilot for the stable Markdown response tail without changing Chat API payloads. |
 | `tests/test_chat_api.py` | Lock the system-prompt contract and pending-write regression behavior. |
 | `web/src/components/ChatPanel/model.ts` | Parse the Markdown tail and attach presentation/title data while rebuilding persisted turns. |
 | `web/src/components/ChatPanel/model.test.ts` | Unit-test parsing, action limits, fallback, and persistence reconstruction. |
@@ -149,7 +149,7 @@ git commit -m "feat: AI parse structured Pilot replies"
 ### Task 2: Request the stable response tail from Pilot
 
 **Files:**
-- Modify: `src/offerpilot/api.py:1488-1497`
+- Modify: `src/auroraagent/api.py:1488-1497`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] **Step 1: Write a failing system-prompt contract regression**
@@ -198,7 +198,7 @@ Expected: all chat API tests pass, including existing pending-write confirmation
 - [ ] **Step 5: Commit the prompt contract**
 
 ```bash
-git add src/offerpilot/api.py tests/test_chat_api.py
+git add src/auroraagent/api.py tests/test_chat_api.py
 git commit -m "feat: AI request structured Pilot replies"
 ```
 

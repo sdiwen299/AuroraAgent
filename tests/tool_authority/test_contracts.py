@@ -9,7 +9,7 @@ from typing import Any
 import pytest
 from sqlalchemy.orm import Session
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     ApprovedWriteExecuteCallIdentity,
     ApprovedWritePrepareCallIdentity,
     ApplicationScopeConstraint,
@@ -33,14 +33,14 @@ from offerpilot.ai.tool_authority import (
     require_authority_spec,
     execution_scope,
 )
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ProviderToolContract,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     read_metadata,
@@ -248,7 +248,7 @@ def test_authority_types_are_separate_and_segment_is_tool_execution_authority() 
 
 def test_contracts_star_import_does_not_expose_private_opaque_minting() -> None:
     namespace: dict[str, object] = {}
-    exec("from offerpilot.ai.tool_authority.contracts import *", namespace)
+    exec("from auroraagent.ai.tool_authority.contracts import *", namespace)
     assert "_new_opaque_handle" not in namespace
 
 

@@ -12,17 +12,17 @@
 
 ## 0. Fixed baseline and exact file boundary
 
-The implementation baseline is the commit that last changes this plan. After committing the plan, persist it in `%TEMP%\offerpilot-voice-coaching-history-baseline.txt`; every later PowerShell process must read the same SHA and validate it with `git cat-file -e`.
+The implementation baseline is the commit that last changes this plan. After committing the plan, persist it in `%TEMP%\auroraagent-voice-coaching-history-baseline.txt`; every later PowerShell process must read the same SHA and validate it with `git cat-file -e`.
 
 Allowed files:
 
 ```text
-src/offerpilot/db.py
-src/offerpilot/models.py
-src/offerpilot/schemas.py
-src/offerpilot/api.py
-src/offerpilot/repositories/voice_coaching.py
-src/offerpilot/repositories/mock_interviews.py
+src/auroraagent/db.py
+src/auroraagent/models.py
+src/auroraagent/schemas.py
+src/auroraagent/api.py
+src/auroraagent/repositories/voice_coaching.py
+src/auroraagent/repositories/mock_interviews.py
 tests/test_voice_coaching_migrations.py
 tests/test_voice_coaching_repository.py
 tests/test_voice_coaching_api.py
@@ -51,14 +51,14 @@ docs/superpowers/plans/2026-08-14-voice-coaching-history.md
 docs/reports/2026-08-14-voice-coaching-history-browser-acceptance.md
 ```
 
-Every pre-commit scope check must combine committed, staged, unstaged, and untracked paths and fail if any path is outside this set. `README.md`, `src/offerpilot/ai/**`, existing Provider code, Knowledge, Story, Adaptive Practice, application state, and unrelated tests are forbidden.
+Every pre-commit scope check must combine committed, staged, unstaged, and untracked paths and fail if any path is outside this set. `README.md`, `src/auroraagent/ai/**`, existing Provider code, Knowledge, Story, Adaptive Practice, application state, and unrelated tests are forbidden.
 
 ## 1. Add migration and immutable model
 
 **Files:**
 
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
 - Create: `tests/test_voice_coaching_migrations.py`
 
 - [ ] **Step 1: Write failing migration tests**
@@ -92,8 +92,8 @@ Add `VoiceCoachingSnapshot` with the exact fields and constraints from the desig
 
 ```powershell
 uv run pytest tests/test_voice_coaching_migrations.py -q
-uv run ruff check src/offerpilot/models.py src/offerpilot/db.py tests/test_voice_coaching_migrations.py
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_voice_coaching_migrations.py
+uv run ruff check src/auroraagent/models.py src/auroraagent/db.py tests/test_voice_coaching_migrations.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_voice_coaching_migrations.py
 git commit -m "feat: AI add voice coaching snapshot schema"
 ```
 
@@ -101,7 +101,7 @@ git commit -m "feat: AI add voice coaching snapshot schema"
 
 **Files:**
 
-- Create: `src/offerpilot/repositories/voice_coaching.py`
+- Create: `src/auroraagent/repositories/voice_coaching.py`
 - Create: `tests/test_voice_coaching_repository.py`
 
 - [ ] **Step 1: Write repository RED tests**
@@ -123,7 +123,7 @@ Build real Application/Event/Attempt/Turn rows and cover:
 uv run pytest tests/test_voice_coaching_repository.py -q
 ```
 
-Expected: import failure for `offerpilot.repositories.voice_coaching`.
+Expected: import failure for `auroraagent.repositories.voice_coaching`.
 
 - [ ] **Step 3: Implement focused repository**
 
@@ -173,8 +173,8 @@ Use `BEGIN IMMEDIATE`, canonical JSON and SHA-256 helpers. Convert every input t
 
 ```powershell
 uv run pytest tests/test_voice_coaching_repository.py -q
-uv run ruff check src/offerpilot/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
-git add src/offerpilot/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
+uv run ruff check src/auroraagent/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
+git add src/auroraagent/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
 git commit -m "feat: AI persist confirmed voice coaching snapshots"
 ```
 
@@ -182,7 +182,7 @@ git commit -m "feat: AI persist confirmed voice coaching snapshots"
 
 **Files:**
 
-- Modify: `src/offerpilot/repositories/voice_coaching.py`
+- Modify: `src/auroraagent/repositories/voice_coaching.py`
 - Modify: `tests/test_voice_coaching_repository.py`
 
 - [ ] **Step 1: Write trend RED tests**
@@ -210,7 +210,7 @@ Add pure helpers for median, filler rate, direction deltas and recommendation se
 
 ```powershell
 uv run pytest tests/test_voice_coaching_repository.py -q
-git add src/offerpilot/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
+git add src/auroraagent/repositories/voice_coaching.py tests/test_voice_coaching_repository.py
 git commit -m "feat: AI derive deterministic voice coaching trends"
 ```
 
@@ -218,8 +218,8 @@ git commit -m "feat: AI derive deterministic voice coaching trends"
 
 **Files:**
 
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/test_voice_coaching_api.py`
 
 - [ ] **Step 1: Write API RED tests**
@@ -249,9 +249,9 @@ API diagnostics may log IDs, field counts, request fingerprint and code only.
 
 ```powershell
 uv run pytest tests/test_voice_coaching_api.py tests/test_voice_coaching_repository.py tests/test_voice_coaching_migrations.py -q
-uv run ruff check src/offerpilot tests/test_voice_coaching_*.py
+uv run ruff check src/auroraagent tests/test_voice_coaching_*.py
 uv run mypy src
-git add src/offerpilot/schemas.py src/offerpilot/api.py tests/test_voice_coaching_api.py
+git add src/auroraagent/schemas.py src/auroraagent/api.py tests/test_voice_coaching_api.py
 git commit -m "feat: AI expose voice coaching history API"
 ```
 

@@ -18,13 +18,13 @@
 
 **Task 11 third scope stop:** Independent implementation review found that `pilot_runtime/service.py` still owned the baseline special success summaries for `create_application`, `add_note`, and `create_application_event`. Deleting that name switch while preserving the HTTP/SSE text contract requires those three already-compiled exact presentation bindings to own the corresponding projector behavior; the defining domain Spec modules were frozen in Task 4 but omitted from Task 11. Task 11 now revisits exactly `tool_specs/applications.py`, `tool_specs/notes.py`, and `tool_specs/application_events.py` for this presentation-only cutover. This is not a new classification, Provider, schema, business, seal, or Golden change: the exact typed result remains the sole projector input and the service consumes only the sealed binding projection.
 
-**Task 11 fourth scope stop:** The integrated Legacy approval RED tests proved that the Ledger fingerprint and executor must consume the same exact proof-prepared effective arguments, while the caller may no longer supply `input_fingerprint`. The sealed `PreparedLegacyCall` lifecycle and its owning `LegacyPreparationRegistry` are defined in `ai/tool_runtime/legacy_proof.py`; implementing a read-only `LegacyPreparedInputPort` anywhere else would require exporting registry internals, retaining a caller-computed fingerprint, or adding a forwarding compatibility façade. That direct production owner was omitted from the frozen Task 11 list even though `test_legacy_confirmation_proof.py` and `test_approval_transaction.py` already exercise the required identity/revocation behavior. Task 11 now revisits exactly `src/offerpilot/ai/tool_runtime/legacy_proof.py`, includes it in Ruff/Mypy verification, and keeps the prepared Port unpublished outside the exact production confirmation-route components. This is a scope-only correction: it does not change the approved design, fixed identities, 25/3/4 boundary, Provider/Legacy seals, Golden assets, public API, schema, migration, or business behavior.
+**Task 11 fourth scope stop:** The integrated Legacy approval RED tests proved that the Ledger fingerprint and executor must consume the same exact proof-prepared effective arguments, while the caller may no longer supply `input_fingerprint`. The sealed `PreparedLegacyCall` lifecycle and its owning `LegacyPreparationRegistry` are defined in `ai/tool_runtime/legacy_proof.py`; implementing a read-only `LegacyPreparedInputPort` anywhere else would require exporting registry internals, retaining a caller-computed fingerprint, or adding a forwarding compatibility façade. That direct production owner was omitted from the frozen Task 11 list even though `test_legacy_confirmation_proof.py` and `test_approval_transaction.py` already exercise the required identity/revocation behavior. Task 11 now revisits exactly `src/auroraagent/ai/tool_runtime/legacy_proof.py`, includes it in Ruff/Mypy verification, and keeps the prepared Port unpublished outside the exact production confirmation-route components. This is a scope-only correction: it does not change the approved design, fixed identities, 25/3/4 boundary, Provider/Legacy seals, Golden assets, public API, schema, migration, or business behavior.
 
 **Task 11 fifth scope stop:** The required directory-wide Agent Loop GREEN matrix exposed six direct `AgentLoopRunner` Typed-Pending tests in `tests/agent_loop/test_runner.py` that still constructed a Segment invocation without binding the exact Operation/Pending persistence Ports. Production now correctly fails closed before releasing such an unbound Pending, so retaining those fixtures would make the required GREEN command impossible unless product code restored a forbidden raw-Pending fallback. Product work stopped without weakening that boundary. Task 11 now revisits exactly this existing Task 4 test consumer and migrates its shared invocation fixture to a test-owned exact Operation/Pending Port graph and persistence consumer. No production optional branch, fallback, public contract, fixed identity, 25/3/4 boundary, Provider/Legacy seal, Golden asset, schema, migration, or business behavior changes as a result of this scope-only correction.
 
 **Task 12 scope stop:** Product work stopped before any Task 12 production edit when independent scope review proved that the baseline-only classification scan did not include `LEGACY_DETERMINISTIC_NAMES`, so it omitted both the defining `ai/tool_runtime/legacy.py` module and the public `pilot_runtime/__init__.py` re-export. The same baseline-only scan necessarily could not discover twelve Task 4-11 tests introduced after the fixed baseline that still consume the global Typed Catalog; two of them are selected directly by the required Task 12 GREEN command, while the remainder are selected by Task 13's full metadata matrix. Removing the global Catalog without migrating these exact consumers would require a forbidden test-only production façade or leave collection failures. The reviewed Task 12 scope now includes those fourteen exact production/test paths, supplements the immutable baseline scan explicitly, and runs every frozen Task 12 test consumer before the deletion commit. This scope-only correction does not change the approved design, fixed identities, 25/3/4 boundary, protocol seals, Golden assets, public API, schema, migration, or business behavior.
 
-**Task 12 second scope stop:** Product work stopped again before editing an out-of-gate production file when independent implementation review strengthened the required reflective-classification AST gate and exposed four surviving `_attribute(..., "operation"|"adapter_kind")` decisions in `pilot_runtime/continuation.py`. The fixed-baseline name scan cannot discover helper-mediated reflection, and this already-reviewed Task 11 owner was therefore absent from the frozen Task 12 list even though the Task 12 gate scans the complete production tree. Weakening the gate or retaining those decisions would violate the mechanical-deletion requirement; changing the file without a reviewed gate would violate the immutable scope. Task 12 now revisits exactly `src/offerpilot/pilot_runtime/continuation.py` to replace those four reflective classifications with exact bounded Ledger/route fields and remove the remaining preheader compatibility shape. The strengthened gate also adds explicit negative probes for helper-mediated reflection, generic Provider dict registries, Legacy proof Repository capture/query, generic initial-route receivers, aliased Golden writers, and name switches inside `tool_specs`. This scope-only correction does not change the approved design, fixed identities, 25/3/4 boundary, Provider/Legacy seals, Golden assets, public API, schema, migration, or business behavior.
+**Task 12 second scope stop:** Product work stopped again before editing an out-of-gate production file when independent implementation review strengthened the required reflective-classification AST gate and exposed four surviving `_attribute(..., "operation"|"adapter_kind")` decisions in `pilot_runtime/continuation.py`. The fixed-baseline name scan cannot discover helper-mediated reflection, and this already-reviewed Task 11 owner was therefore absent from the frozen Task 12 list even though the Task 12 gate scans the complete production tree. Weakening the gate or retaining those decisions would violate the mechanical-deletion requirement; changing the file without a reviewed gate would violate the immutable scope. Task 12 now revisits exactly `src/auroraagent/pilot_runtime/continuation.py` to replace those four reflective classifications with exact bounded Ledger/route fields and remove the remaining preheader compatibility shape. The strengthened gate also adds explicit negative probes for helper-mediated reflection, generic Provider dict registries, Legacy proof Repository capture/query, generic initial-route receivers, aliased Golden writers, and name switches inside `tool_specs`. This scope-only correction does not change the approved design, fixed identities, 25/3/4 boundary, Provider/Legacy seals, Golden assets, public API, schema, migration, or business behavior.
 
 ---
 
@@ -33,7 +33,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260825-tool-metadata-convergence
+D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260825-tool-metadata-convergence
 ```
 
 Fixed identities:
@@ -51,11 +51,11 @@ Do not modify the root workspace, push, merge, rebase, or create another impleme
 Before product edits, create these immutable gate files:
 
 ```text
-%TEMP%\offerpilot-tool-metadata-convergence-gate\baseline.txt
-%TEMP%\offerpilot-tool-metadata-convergence-gate\implementation-start.txt
-%TEMP%\offerpilot-tool-metadata-convergence-gate\allowlist.txt
-%TEMP%\offerpilot-tool-metadata-convergence-gate\task-01.txt ... task-13.txt
-%TEMP%\offerpilot-tool-metadata-convergence-gate.locator.json
+%TEMP%\auroraagent-tool-metadata-convergence-gate\baseline.txt
+%TEMP%\auroraagent-tool-metadata-convergence-gate\implementation-start.txt
+%TEMP%\auroraagent-tool-metadata-convergence-gate\allowlist.txt
+%TEMP%\auroraagent-tool-metadata-convergence-gate\task-01.txt ... task-13.txt
+%TEMP%\auroraagent-tool-metadata-convergence-gate.locator.json
 ```
 
 Rules:
@@ -82,15 +82,15 @@ The baseline-only `$toolSpecConstructorSet` is intentionally supplemented in Tas
 ```text
 tests/agent_loop/helpers.py
 tests/agent_loop/test_runner.py
-src/offerpilot/ai/tool_authority/contracts.py
+src/auroraagent/ai/tool_authority/contracts.py
 tests/tool_authority/test_approval_transaction.py
 tests/tool_authority/test_read_uow.py
 tests/tool_authority/test_replay_topology.py
 tests/tool_metadata/factories.py
-src/offerpilot/ai/client.py
-src/offerpilot/context_projector/gateway.py
-src/offerpilot/context_projector/projector.py
-src/offerpilot/context_projector/selector.py
+src/auroraagent/ai/client.py
+src/auroraagent/context_projector/gateway.py
+src/auroraagent/context_projector/projector.py
+src/auroraagent/context_projector/selector.py
 tests/tool_pipeline/test_application_events.py
 tests/tool_pipeline/test_applications.py
 tests/tool_pipeline/test_jd_analyses.py
@@ -102,9 +102,9 @@ tests/tool_pipeline/test_resumes.py
 Task 12 uses this explicitly reviewed fifteen-path closure: the revised baseline scan captures the two production Legacy definition/re-export paths, the helper-mediated reflective decisions require the explicit Continuation owner, and the remaining twelve test supplements cannot be discovered from the fixed commit because Tasks 4-11 introduced them later. Sorting and de-duplication make the closure mechanical when the scan and supplements overlap:
 
 ```text
-src/offerpilot/ai/tool_runtime/legacy.py
-src/offerpilot/pilot_runtime/__init__.py
-src/offerpilot/pilot_runtime/continuation.py
+src/auroraagent/ai/tool_runtime/legacy.py
+src/auroraagent/pilot_runtime/__init__.py
+src/auroraagent/pilot_runtime/continuation.py
 tests/test_agent_run_journal.py
 tests/tool_metadata/test_compensation_registry.py
 tests/tool_metadata/test_compiler.py
@@ -128,7 +128,7 @@ After such a reviewed scope stop, the regenerated `task-13.txt` already owns thi
 Every commit uses its task file, never a directory-level `git add`:
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-NN.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-NN.txt" | Where-Object { $_ })
 git add -- $taskPaths
 $staged = @(git diff --cached --name-only)
 $outsideTask = @($staged | Where-Object { $taskPaths -notcontains $_ })
@@ -278,7 +278,7 @@ Expected: failure because the five assets do not yet exist.
 - [ ] **Step 3: Capture from an explicit detached baseline checkout**
 
 ```powershell
-$capture = Join-Path $env:TEMP 'offerpilot-tool-metadata-baseline-capture'
+$capture = Join-Path $env:TEMP 'auroraagent-tool-metadata-baseline-capture'
 git worktree add --detach $capture 0c10e05e256eb757d5f89a8b009dcea193f2fc78
 ```
 
@@ -297,7 +297,7 @@ Expected: exact 25 Typed, 3 Legacy, 4 Compensation, 4 required Undo, all discove
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-01.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-01.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 1 staged scope violation' }
 git commit -m "test: AI 固化工具元数据基线资产"
@@ -307,18 +307,18 @@ git commit -m "test: AI 固化工具元数据基线资产"
 
 **Files:**
 
-- Create: `src/offerpilot/ai/tool_runtime/policy_types.py`
-- Create: `src/offerpilot/ai/tool_runtime/metadata.py`
-- Modify: `src/offerpilot/ai/tool_runtime/context.py`
-- Modify: `src/offerpilot/ai/tool_runtime/__init__.py`
-- Modify: `src/offerpilot/ai/tool_authority/contracts.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/offers.py`
-- Modify: `src/offerpilot/ai/tool_specs/resumes.py`
-- Modify: `src/offerpilot/ai/tool_specs/jd_analyses.py`
+- Create: `src/auroraagent/ai/tool_runtime/policy_types.py`
+- Create: `src/auroraagent/ai/tool_runtime/metadata.py`
+- Modify: `src/auroraagent/ai/tool_runtime/context.py`
+- Modify: `src/auroraagent/ai/tool_runtime/__init__.py`
+- Modify: `src/auroraagent/ai/tool_authority/contracts.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/offers.py`
+- Modify: `src/auroraagent/ai/tool_specs/resumes.py`
+- Modify: `src/auroraagent/ai/tool_specs/jd_analyses.py`
 - Modify: the exact frozen Task 2 `$capabilityImportSet` resolved from the fixed baseline in §0
 - Create: `tests/tool_metadata/test_contracts.py`
 - Create: `tests/tool_metadata/test_canonical.py`
@@ -343,8 +343,8 @@ Add closed `ToolDomain`, `ProviderVisibility`, `LegacyBoundaryVisibility`, `Oper
 
 ```powershell
 uv run pytest tests/tool_metadata/test_contracts.py tests/tool_metadata/test_canonical.py tests/tool_pipeline/test_context.py tests/tool_authority/test_contracts.py tests/tool_authority/test_matrix.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_authority tests/tool_metadata
-uv run mypy src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_authority
+uv run ruff check src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_authority tests/tool_metadata
+uv run mypy src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_authority
 ```
 
 Expected: `policy_types.py` imports no Repository, ORM, Authority Composition, Pilot Runtime, or test module; no import from `tool_runtime.context.ToolCapability` remains.
@@ -352,7 +352,7 @@ Expected: `policy_types.py` imports no Repository, ORM, Authority Composition, P
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-02.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-02.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 2 staged scope violation' }
 git commit -m "feat: AI 建立工具元数据基础契约"
@@ -362,8 +362,8 @@ git commit -m "feat: AI 建立工具元数据基础契约"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/metadata.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/metadata.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
 - Create: `tests/tool_metadata/factories.py`
 - Create: `tests/tool_metadata/test_metadata_validation.py`
 - Create: `tests/tool_metadata/test_runtime_bindings.py`
@@ -420,14 +420,14 @@ This task must not change the existing production `ToolSpec` constructor or dele
 
 ```powershell
 uv run pytest tests/tool_metadata/test_metadata_validation.py tests/tool_metadata/test_runtime_bindings.py tests/tool_metadata/test_contracts.py tests/tool_metadata/test_canonical.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime tests/tool_metadata
-uv run mypy src/offerpilot/ai/tool_runtime
+uv run ruff check src/auroraagent/ai/tool_runtime tests/tool_metadata
+uv run mypy src/auroraagent/ai/tool_runtime
 ```
 
 - [ ] **Step 6: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-03.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-03.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 3 staged scope violation' }
 git commit -m "feat: AI 完善工具元数据与运行时绑定"
@@ -437,35 +437,35 @@ git commit -m "feat: AI 完善工具元数据与运行时绑定"
 
 **Files:**
 
-- Create: `src/offerpilot/ai/tool_runtime/protocol_seals.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Modify: `src/offerpilot/ai/tool_runtime/catalog.py`
-- Modify: `src/offerpilot/ai/tool_runtime/context.py`
-- Modify: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Modify: `src/offerpilot/ai/tool_runtime/journal.py`
-- Modify: `src/offerpilot/ai/tool_runtime/transport.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/offers.py`
-- Modify: `src/offerpilot/ai/tool_specs/resumes.py`
-- Modify: `src/offerpilot/ai/tool_specs/jd_analyses.py`
-- Modify: `src/offerpilot/ai/tool_specs/catalog.py`
-- Modify: `src/offerpilot/ai/tool_specs/__init__.py`
-- Modify: `src/offerpilot/ai/tool_authority/contracts.py`
-- Modify: `src/offerpilot/ai/tool_authority/composition.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
-- Modify: `src/offerpilot/ai/client.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/ai/confirmation.py`
-- Modify: `src/offerpilot/context_projector/authority_surface.py`
-- Modify: `src/offerpilot/context_projector/gateway.py`
-- Modify: `src/offerpilot/context_projector/projector.py`
-- Modify: `src/offerpilot/context_projector/selector.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/ai/tool_runtime/protocol_seals.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/catalog.py`
+- Modify: `src/auroraagent/ai/tool_runtime/context.py`
+- Modify: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Modify: `src/auroraagent/ai/tool_runtime/journal.py`
+- Modify: `src/auroraagent/ai/tool_runtime/transport.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/offers.py`
+- Modify: `src/auroraagent/ai/tool_specs/resumes.py`
+- Modify: `src/auroraagent/ai/tool_specs/jd_analyses.py`
+- Modify: `src/auroraagent/ai/tool_specs/catalog.py`
+- Modify: `src/auroraagent/ai/tool_specs/__init__.py`
+- Modify: `src/auroraagent/ai/tool_authority/contracts.py`
+- Modify: `src/auroraagent/ai/tool_authority/composition.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
+- Modify: `src/auroraagent/ai/client.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/ai/confirmation.py`
+- Modify: `src/auroraagent/context_projector/authority_surface.py`
+- Modify: `src/auroraagent/context_projector/gateway.py`
+- Modify: `src/auroraagent/context_projector/projector.py`
+- Modify: `src/auroraagent/context_projector/selector.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/tool_metadata/test_manifest.py`
 - Create: `tests/tool_metadata/test_compiler.py`
 - Create: `tests/tool_metadata/test_protocol_seals.py`
@@ -504,7 +504,7 @@ Presentation tests must prove that replacement bindings are constructed as compl
 
 `test_compiler.py` must additionally spy on the production `build_model_tool_catalog()` integration: it passes the complete ordered 25 Provider payloads to `verify_provider_boundary()` before returning, and an injected seal failure prevents a Catalog from being returned or published. It must prove that `ProviderToolContract.payload`/`parameters` never materialize mutable nested JSON, that every plain-JSON result comes from the single `materialize_provider_payloads()` operation and is detached from both the contract and other results, and that Catalog registry/order/validator/manifest replacement fails closed. Direct verifier tests alone are insufficient.
 
-Add an AST/source gate over `src/offerpilot` and the affected tests. Provider query nodes use a distinct recursively immutable internal type that the generic `materialize_json()` rejects; only the private decoder called by the one implementation of `materialize_provider_payloads()` can turn those nodes into ordinary JSON. The gate permits that one decoder call and the `ToolCatalog` delegating method, rejects access/import/alias of the private Provider decoder or snapshots anywhere else, and performs assignment-aware provenance tracking from every `.payload`/`.parameters` expression (including `tool.payload`, `spec.contract.payload`, comprehensions, and local aliases). A Provider-derived value may be inspected read-only or passed to the approved materializer, but may not reach `dict()`/`copy()`/`deepcopy()`/generic `materialize_json()`/JSON round-trip/custom mutable-tree construction. It also rejects copy-on-query compatibility mappings and public per-contract `materialize_payload()`/`materialize_parameters()`. Controlled validator cloning from an already precompiled schema remains allowed and is not a Provider-envelope materializer. The gate proves that the AI client and all Context Projector serialization paths call the approved materializer.
+Add an AST/source gate over `src/auroraagent` and the affected tests. Provider query nodes use a distinct recursively immutable internal type that the generic `materialize_json()` rejects; only the private decoder called by the one implementation of `materialize_provider_payloads()` can turn those nodes into ordinary JSON. The gate permits that one decoder call and the `ToolCatalog` delegating method, rejects access/import/alias of the private Provider decoder or snapshots anywhere else, and performs assignment-aware provenance tracking from every `.payload`/`.parameters` expression (including `tool.payload`, `spec.contract.payload`, comprehensions, and local aliases). A Provider-derived value may be inspected read-only or passed to the approved materializer, but may not reach `dict()`/`copy()`/`deepcopy()`/generic `materialize_json()`/JSON round-trip/custom mutable-tree construction. It also rejects copy-on-query compatibility mappings and public per-contract `materialize_payload()`/`materialize_parameters()`. Controlled validator cloning from an already precompiled schema remains allowed and is not a Provider-envelope materializer. The gate proves that the AI client and all Context Projector serialization paths call the approved materializer.
 
 Mutation tests must cross the actual downstream boundaries, not stop at a direct field assertion. A same-content Provider component replacement must fail before the AI Provider adapter can return an envelope, and Catalog order/registry/validator/authority-manifest/integrity-cache replacement must fail through Provider materialization and Pipeline prepare/execute probes with Repository/executor counters remaining zero. A replaced Manifest projection must fail before `to_dict()` returns it.
 
@@ -530,14 +530,14 @@ Run `rg -n 'MODEL_TOOL_NAMES|MODEL_TOOL_CATALOG|ToolSpec\(|\.(kind|required_capa
 
 `tests/agent_loop/helpers.py` and `tests/agent_loop/test_runner.py` must use complete freshly sealed Presentation bindings with module-level named callbacks and test probes as specified in Step 1. Their repeated inclusion is intentional: Task 4 handles only final ToolSpec/Presentation replacement, Task 9 handles Bundle/Selector composition, Task 10 handles Segment route handles, Task 11 binds exact Operation/Pending persistence Ports in the direct Typed-Pending runner fixtures, and Task 12 handles mechanical deletion gates. The Task 11 revisit adds `test_runner.py` only to `task-11.txt`; the path already belongs to the frozen global union through Task 4, so the unique `allowlist.txt`/`task-13.txt` set does not change. `tests/tool_authority/test_replay_topology.py` migrates only its Typed Presentation field access in Task 4; its Legacy proof/replay route migration remains in Task 11. Do not retain `MODEL_TOOL_NAMES` merely for tests, and do not auto-update a Golden.
 
-`tests/tool_authority/test_approval_transaction.py` and `tests/tool_authority/test_read_uow.py` must replace copied production metadata with complete test-local metadata whose `dependencies=()` before constructing their intentional one-tool Catalogs; generic Catalog dependency closure remains fail-closed and production dependencies remain unchanged. In `src/offerpilot/ai/tool_authority/contracts.py`, validate each supplied capability through the closed `ToolCapability` enum directly; do not iterate/materialize the entire enum, create an automatic grant set, or add another capability-name collection.
+`tests/tool_authority/test_approval_transaction.py` and `tests/tool_authority/test_read_uow.py` must replace copied production metadata with complete test-local metadata whose `dependencies=()` before constructing their intentional one-tool Catalogs; generic Catalog dependency closure remains fail-closed and production dependencies remain unchanged. In `src/auroraagent/ai/tool_authority/contracts.py`, validate each supplied capability through the closed `ToolCapability` enum directly; do not iterate/materialize the entire enum, create an automatic grant set, or add another capability-name collection.
 
 - [ ] **Step 5: Verify GREEN**
 
 ```powershell
 uv run pytest tests/tool_metadata tests/agent_loop tests/tool_pipeline tests/tool_authority tests/pilot_runtime/test_confirmation.py tests/pilot_runtime/test_confirmation_cutover.py tests/test_ai_client.py tests/test_litellm_client.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/test_chat_api.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py -q
-uv run ruff check src/offerpilot/ai src/offerpilot/api.py src/offerpilot/context_projector/authority_surface.py src/offerpilot/context_projector/gateway.py src/offerpilot/context_projector/projector.py src/offerpilot/context_projector/selector.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/continuation.py tests/tool_metadata tests/agent_loop tests/tool_pipeline tests/tool_authority tests/pilot_runtime/test_confirmation.py tests/pilot_runtime/test_confirmation_cutover.py tests/test_ai_client.py tests/test_litellm_client.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/test_chat_api.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py
-uv run mypy src/offerpilot/ai src/offerpilot/api.py src/offerpilot/context_projector/authority_surface.py src/offerpilot/context_projector/gateway.py src/offerpilot/context_projector/projector.py src/offerpilot/context_projector/selector.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/continuation.py
+uv run ruff check src/auroraagent/ai src/auroraagent/api.py src/auroraagent/context_projector/authority_surface.py src/auroraagent/context_projector/gateway.py src/auroraagent/context_projector/projector.py src/auroraagent/context_projector/selector.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/continuation.py tests/tool_metadata tests/agent_loop tests/tool_pipeline tests/tool_authority tests/pilot_runtime/test_confirmation.py tests/pilot_runtime/test_confirmation_cutover.py tests/test_ai_client.py tests/test_litellm_client.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/test_chat_api.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py
+uv run mypy src/auroraagent/ai src/auroraagent/api.py src/auroraagent/context_projector/authority_surface.py src/auroraagent/context_projector/gateway.py src/auroraagent/context_projector/projector.py src/auroraagent/context_projector/selector.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/continuation.py
 ```
 
 Expected: production Catalog imports and all direct `ToolSpec` consumers collect and pass with no compatibility property; Provider/Authority/Journal projections remain byte/canonical equivalent.
@@ -545,7 +545,7 @@ Expected: production Catalog imports and all direct `ToolSpec` consumers collect
 - [ ] **Step 6: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-04.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-04.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 4 staged scope violation' }
 git commit -m "refactor: AI 原子迁移二十五个工具契约"
@@ -555,8 +555,8 @@ git commit -m "refactor: AI 原子迁移二十五个工具契约"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/metadata.py`
-- Modify: `src/offerpilot/ai/tool_runtime/catalog.py`
+- Modify: `src/auroraagent/ai/tool_runtime/metadata.py`
+- Modify: `src/auroraagent/ai/tool_runtime/catalog.py`
 - Create: `tests/tool_metadata/test_bundle.py`
 - Create: `tests/tool_metadata/test_segment_lease.py`
 
@@ -580,14 +580,14 @@ Do not change `build_pilot_runtime()` or compose a production Bundle in this tas
 
 ```powershell
 uv run pytest tests/tool_metadata/test_bundle.py tests/tool_metadata/test_segment_lease.py tests/tool_metadata/test_manifest.py tests/tool_metadata/test_compiler.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime tests/tool_metadata
-uv run mypy src/offerpilot/ai/tool_runtime
+uv run ruff check src/auroraagent/ai/tool_runtime tests/tool_metadata
+uv run mypy src/auroraagent/ai/tool_runtime
 ```
 
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-05.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-05.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 5 staged scope violation' }
 git commit -m "feat: AI 建立工具元数据 Bundle 与 Segment 租约"
@@ -597,10 +597,10 @@ git commit -m "feat: AI 建立工具元数据 Bundle 与 Segment 租约"
 
 **Files:**
 
-- Create: `src/offerpilot/pilot_runtime/primary_undo.py`
-- Create: `src/offerpilot/pilot_runtime/compensation.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/ai/tool_runtime/metadata.py`
+- Create: `src/auroraagent/pilot_runtime/primary_undo.py`
+- Create: `src/auroraagent/pilot_runtime/compensation.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/ai/tool_runtime/metadata.py`
 - Create: `tests/tool_metadata/test_operation_port.py`
 - Create: `tests/tool_metadata/test_compensation_registry.py`
 - Create: `tests/tool_metadata/test_primary_undo.py`
@@ -640,14 +640,14 @@ This task exposes final Ports and tests them, but does not yet require every Pen
 
 ```powershell
 uv run pytest tests/tool_metadata/test_operation_port.py tests/tool_metadata/test_compensation_registry.py tests/tool_metadata/test_primary_undo.py tests/tool_metadata/test_published_operation_checks.py tests/test_schema_compatibility.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py -q
-uv run ruff check src/offerpilot/pilot_runtime/primary_undo.py src/offerpilot/pilot_runtime/compensation.py src/offerpilot/ai/write_operations.py tests/tool_metadata
-uv run mypy src/offerpilot/pilot_runtime/primary_undo.py src/offerpilot/pilot_runtime/compensation.py src/offerpilot/ai/write_operations.py
+uv run ruff check src/auroraagent/pilot_runtime/primary_undo.py src/auroraagent/pilot_runtime/compensation.py src/auroraagent/ai/write_operations.py tests/tool_metadata
+uv run mypy src/auroraagent/pilot_runtime/primary_undo.py src/auroraagent/pilot_runtime/compensation.py src/auroraagent/ai/write_operations.py
 ```
 
 - [ ] **Step 6: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-06.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-06.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 6 staged scope violation' }
 git commit -m "refactor: AI 收口写入与补偿元数据"
@@ -657,9 +657,9 @@ git commit -m "refactor: AI 收口写入与补偿元数据"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/legacy.py`
-- Modify: `src/offerpilot/ai/tool_specs/legacy.py`
-- Modify: `src/offerpilot/pilot_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy.py`
+- Modify: `src/auroraagent/ai/tool_specs/legacy.py`
+- Modify: `src/auroraagent/pilot_runtime/contracts.py`
 - Create: `tests/tool_metadata/test_legacy_initial_route.py`
 - Modify: `tests/tool_pipeline/test_legacy.py`
 - Modify: `tests/pilot_runtime/test_deterministic.py`
@@ -700,14 +700,14 @@ uv run pytest tests/tool_metadata/test_legacy_initial_route.py tests/tool_pipeli
 
 ```powershell
 uv run pytest tests/tool_metadata/test_legacy_initial_route.py tests/tool_pipeline/test_legacy.py tests/pilot_runtime/test_deterministic.py tests/test_chat_api.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/pilot_runtime/contracts.py tests/tool_metadata tests/tool_pipeline/test_legacy.py
-uv run mypy src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/pilot_runtime/contracts.py
+uv run ruff check src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/pilot_runtime/contracts.py tests/tool_metadata tests/tool_pipeline/test_legacy.py
+uv run mypy src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/pilot_runtime/contracts.py
 ```
 
 - [ ] **Step 6: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-07.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-07.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 7 staged scope violation' }
 git commit -m "refactor: AI 收口 Legacy 初始路由能力"
@@ -717,9 +717,9 @@ git commit -m "refactor: AI 收口 Legacy 初始路由能力"
 
 **Files:**
 
-- Create: `src/offerpilot/ai/tool_runtime/legacy_proof.py`
-- Create: `src/offerpilot/pilot_runtime/legacy_route.py`
-- Modify: `src/offerpilot/ai/tool_runtime/legacy.py`
+- Create: `src/auroraagent/ai/tool_runtime/legacy_proof.py`
+- Create: `src/auroraagent/pilot_runtime/legacy_route.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy.py`
 - Create: `tests/tool_metadata/test_legacy_confirmation_proof.py`
 - Create: `tests/tool_metadata/test_legacy_registry_composition.py`
 - Modify: `tests/pilot_runtime/test_confirmation.py`
@@ -758,7 +758,7 @@ Expected approve/modify order: prepare -> locked mutable recheck -> claim -> pro
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-08.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-08.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 8 staged scope violation' }
 git commit -m "refactor: AI 收口 Legacy 确认恢复证明"
@@ -768,20 +768,20 @@ git commit -m "refactor: AI 收口 Legacy 确认恢复证明"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/legacy.py`
-- Modify: `src/offerpilot/ai/tool_runtime/legacy_proof.py`
-- Modify: `src/offerpilot/ai/tool_specs/legacy.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/pilot_runtime/deterministic.py`
-- Modify: `src/offerpilot/pilot_runtime/legacy_route.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
-- Modify: `src/offerpilot/agent_runtime/journal.py`
-- Modify: `src/offerpilot/context_projector/selector.py`
-- Modify: `src/offerpilot/context_projector/authority_surface.py`
-- Modify: `src/offerpilot/context_projector/manifest.py`
-- Modify: `src/offerpilot/context_projector/projector.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy_proof.py`
+- Modify: `src/auroraagent/ai/tool_specs/legacy.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/deterministic.py`
+- Modify: `src/auroraagent/pilot_runtime/legacy_route.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
+- Modify: `src/auroraagent/agent_runtime/journal.py`
+- Modify: `src/auroraagent/context_projector/selector.py`
+- Modify: `src/auroraagent/context_projector/authority_surface.py`
+- Modify: `src/auroraagent/context_projector/manifest.py`
+- Modify: `src/auroraagent/context_projector/projector.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/tool_metadata/test_production_bundle.py`
 - Create: `tests/tool_metadata/test_selector_views.py`
 - Modify: `tests/tool_metadata/test_published_operation_checks.py`
@@ -848,15 +848,15 @@ Fallback within one `model_call_id` reuses the same frozen Provider surface. An 
 
 ```powershell
 uv run pytest tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_selector_views.py tests/tool_metadata/test_published_operation_checks.py tests/tool_metadata/test_operation_port.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_confirmation_proof.py tests/tool_metadata/test_legacy_registry_composition.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/pilot_runtime/test_deterministic.py tests/pilot_runtime/test_start_turn.py tests/pilot_runtime/test_stream_preparation.py tests/pilot_runtime/test_confirmation.py tests/agent_loop tests/tool_authority/test_baseline_golden.py tests/tool_authority/test_authority_surface.py tests/tool_authority/test_dependency_policy.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_chat_api.py tests/tool_pipeline/test_catalog.py tests/tool_pipeline/test_golden_assets.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_runtime/legacy_proof.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/deterministic.py src/offerpilot/pilot_runtime/legacy_route.py src/offerpilot/ai/agent_loop.py src/offerpilot/agent_runtime/journal.py src/offerpilot/context_projector/selector.py src/offerpilot/context_projector/authority_surface.py src/offerpilot/context_projector/manifest.py src/offerpilot/context_projector/projector.py src/offerpilot/api.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_selector_views.py tests/tool_metadata/test_published_operation_checks.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_registry_composition.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/pilot_runtime/test_deterministic.py tests/pilot_runtime/test_start_turn.py tests/pilot_runtime/test_stream_preparation.py tests/pilot_runtime/test_confirmation.py tests/agent_loop/test_runner.py tests/agent_loop/test_contracts.py tests/tool_authority/test_baseline_golden.py tests/tool_authority/test_authority_surface.py tests/tool_authority/test_dependency_policy.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_chat_api.py
-uv run ruff format --check src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_runtime/legacy_proof.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/deterministic.py src/offerpilot/pilot_runtime/legacy_route.py src/offerpilot/ai/agent_loop.py src/offerpilot/agent_runtime/journal.py src/offerpilot/context_projector/selector.py src/offerpilot/context_projector/authority_surface.py src/offerpilot/context_projector/manifest.py src/offerpilot/context_projector/projector.py src/offerpilot/api.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_selector_views.py tests/tool_metadata/test_published_operation_checks.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_registry_composition.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/pilot_runtime/test_deterministic.py tests/pilot_runtime/test_start_turn.py tests/pilot_runtime/test_stream_preparation.py tests/pilot_runtime/test_confirmation.py tests/agent_loop/test_runner.py tests/agent_loop/test_contracts.py tests/tool_authority/test_baseline_golden.py tests/tool_authority/test_authority_surface.py tests/tool_authority/test_dependency_policy.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_chat_api.py
-uv run mypy src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_runtime/legacy_proof.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/deterministic.py src/offerpilot/pilot_runtime/legacy_route.py src/offerpilot/ai/agent_loop.py src/offerpilot/agent_runtime/journal.py src/offerpilot/context_projector/selector.py src/offerpilot/context_projector/authority_surface.py src/offerpilot/context_projector/manifest.py src/offerpilot/context_projector/projector.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_runtime/legacy_proof.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/deterministic.py src/auroraagent/pilot_runtime/legacy_route.py src/auroraagent/ai/agent_loop.py src/auroraagent/agent_runtime/journal.py src/auroraagent/context_projector/selector.py src/auroraagent/context_projector/authority_surface.py src/auroraagent/context_projector/manifest.py src/auroraagent/context_projector/projector.py src/auroraagent/api.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_selector_views.py tests/tool_metadata/test_published_operation_checks.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_registry_composition.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/pilot_runtime/test_deterministic.py tests/pilot_runtime/test_start_turn.py tests/pilot_runtime/test_stream_preparation.py tests/pilot_runtime/test_confirmation.py tests/agent_loop/test_runner.py tests/agent_loop/test_contracts.py tests/tool_authority/test_baseline_golden.py tests/tool_authority/test_authority_surface.py tests/tool_authority/test_dependency_policy.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_chat_api.py
+uv run ruff format --check src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_runtime/legacy_proof.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/deterministic.py src/auroraagent/pilot_runtime/legacy_route.py src/auroraagent/ai/agent_loop.py src/auroraagent/agent_runtime/journal.py src/auroraagent/context_projector/selector.py src/auroraagent/context_projector/authority_surface.py src/auroraagent/context_projector/manifest.py src/auroraagent/context_projector/projector.py src/auroraagent/api.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_selector_views.py tests/tool_metadata/test_published_operation_checks.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_registry_composition.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/pilot_runtime/test_deterministic.py tests/pilot_runtime/test_start_turn.py tests/pilot_runtime/test_stream_preparation.py tests/pilot_runtime/test_confirmation.py tests/agent_loop/test_runner.py tests/agent_loop/test_contracts.py tests/tool_authority/test_baseline_golden.py tests/tool_authority/test_authority_surface.py tests/tool_authority/test_dependency_policy.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_chat_api.py
+uv run mypy src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_runtime/legacy_proof.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/deterministic.py src/auroraagent/pilot_runtime/legacy_route.py src/auroraagent/ai/agent_loop.py src/auroraagent/agent_runtime/journal.py src/auroraagent/context_projector/selector.py src/auroraagent/context_projector/authority_surface.py src/auroraagent/context_projector/manifest.py src/auroraagent/context_projector/projector.py src/auroraagent/api.py
 ```
 
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-09.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-09.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 9 staged scope violation' }
 git commit -m "refactor: AI 统一工具发现与 Provider 视图"
@@ -866,17 +866,17 @@ git commit -m "refactor: AI 统一工具发现与 Provider 视图"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_authority/contracts.py`
-- Modify: `src/offerpilot/ai/tool_authority/composition.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Modify: `src/offerpilot/ai/tool_runtime/catalog.py`
-- Modify: `src/offerpilot/ai/tool_runtime/metadata.py`
-- Modify: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Modify: `src/offerpilot/ai/tool_runtime/journal.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Modify: `src/auroraagent/ai/tool_authority/contracts.py`
+- Modify: `src/auroraagent/ai/tool_authority/composition.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/catalog.py`
+- Modify: `src/auroraagent/ai/tool_runtime/metadata.py`
+- Modify: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Modify: `src/auroraagent/ai/tool_runtime/journal.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Modify: `tests/tool_metadata/test_segment_lease.py`
 - Create: `tests/tool_metadata/test_authority_views.py`
 - Create: `tests/tool_metadata/test_pipeline_handles.py`
@@ -958,16 +958,16 @@ Authority consumes only `ToolAuthorityMetadataView`. Pipeline accepts exact Segm
 
 ```powershell
 uv run pytest tests/tool_metadata tests/tool_authority tests/tool_pipeline tests/agent_loop tests/pilot_runtime tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py tests/test_chat_api.py tests/test_agent_run_journal.py tests/test_journal_active_work_budget_gate.py tests/test_pilot_runtime_extraction_gate.py -q
-$taskPythonPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-10.txt" | Where-Object { $_ -like '*.py' })
+$taskPythonPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-10.txt" | Where-Object { $_ -like '*.py' })
 uv run ruff check -- $taskPythonPaths
 uv run ruff format --check -- $taskPythonPaths
-uv run mypy src/offerpilot/ai/tool_authority/contracts.py src/offerpilot/ai/tool_authority/composition.py src/offerpilot/ai/tool_runtime/contracts.py src/offerpilot/ai/tool_runtime/catalog.py src/offerpilot/ai/tool_runtime/metadata.py src/offerpilot/ai/tool_runtime/pipeline.py src/offerpilot/ai/tool_runtime/journal.py src/offerpilot/ai/agent_loop.py src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/pilot_runtime/service.py
+uv run mypy src/auroraagent/ai/tool_authority/contracts.py src/auroraagent/ai/tool_authority/composition.py src/auroraagent/ai/tool_runtime/contracts.py src/auroraagent/ai/tool_runtime/catalog.py src/auroraagent/ai/tool_runtime/metadata.py src/auroraagent/ai/tool_runtime/pipeline.py src/auroraagent/ai/tool_runtime/journal.py src/auroraagent/ai/agent_loop.py src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/pilot_runtime/service.py
 ```
 
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-10.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-10.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 10 staged scope violation' }
 git commit -m "refactor: AI 统一工具授权与执行句柄"
@@ -977,24 +977,24 @@ git commit -m "refactor: AI 统一工具授权与执行句柄"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/legacy.py`
-- Modify: `src/offerpilot/ai/tool_runtime/legacy_proof.py`
-- Modify: `src/offerpilot/ai/tool_specs/legacy.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/confirmation.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/repositories/chat.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/pilot_runtime/persistence.py`
-- Modify: `src/offerpilot/pilot_runtime/deterministic.py`
-- Modify: `src/offerpilot/pilot_runtime/legacy_route.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
-- Modify: `src/offerpilot/chat_transport.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy_proof.py`
+- Modify: `src/auroraagent/ai/tool_specs/legacy.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/confirmation.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/repositories/chat.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/pilot_runtime/persistence.py`
+- Modify: `src/auroraagent/pilot_runtime/deterministic.py`
+- Modify: `src/auroraagent/pilot_runtime/legacy_route.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
+- Modify: `src/auroraagent/chat_transport.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/tool_metadata/test_presentation_bindings.py`
 - Modify: `tests/tool_metadata/test_legacy_confirmation_proof.py`
 - Modify: `tests/tool_metadata/test_production_bundle.py`
@@ -1075,10 +1075,10 @@ Terminal replay, delivery recovery, and fallback initialize neither Provider, Pr
 
 ```powershell
 uv run pytest tests/tool_metadata/test_presentation_bindings.py tests/tool_metadata/test_pending_routes.py tests/tool_metadata/test_runtime_cutover.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_operation_port.py tests/tool_metadata/test_legacy_initial_route.py tests/tool_metadata/test_legacy_confirmation_proof.py tests/tool_metadata/test_legacy_registry_composition.py tests/agent_loop tests/pilot_runtime tests/tool_pipeline/test_legacy.py tests/tool_pipeline/test_applications.py tests/tool_pipeline/test_notes.py tests/tool_pipeline/test_application_events.py tests/tool_authority/test_legacy_replay_preconversation.py tests/tool_authority/test_approval_authority_resolver.py tests/tool_authority/test_approval_transaction.py tests/tool_authority/test_ledger_preheader.py tests/tool_authority/test_pending_claim.py tests/tool_authority/test_pending_claim_reissue.py tests/tool_authority/test_reject_privacy.py tests/tool_authority/test_replay_topology.py tests/tool_authority/test_task13_production_approval.py tests/tool_authority/test_pending_replay_decoder.py tests/test_chat_repository.py tests/test_chat_api.py tests/test_pilot_runtime_extraction_gate.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py -q
-$taskPythonPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-11.txt" | Where-Object { $_ -like '*.py' })
+$taskPythonPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-11.txt" | Where-Object { $_ -like '*.py' })
 uv run ruff check -- $taskPythonPaths
 uv run ruff format --check -- $taskPythonPaths
-uv run mypy src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_runtime/legacy_proof.py src/offerpilot/ai/tool_specs/legacy.py src/offerpilot/ai/tool_specs/applications.py src/offerpilot/ai/tool_specs/notes.py src/offerpilot/ai/tool_specs/application_events.py src/offerpilot/ai/confirmation.py src/offerpilot/ai/write_operations.py src/offerpilot/repositories/chat.py src/offerpilot/pilot_runtime/service.py src/offerpilot/pilot_runtime/continuation.py src/offerpilot/pilot_runtime/persistence.py src/offerpilot/pilot_runtime/deterministic.py src/offerpilot/pilot_runtime/legacy_route.py src/offerpilot/pilot_runtime/composition.py src/offerpilot/ai/agent_loop.py src/offerpilot/chat_transport.py src/offerpilot/api.py
+uv run mypy src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_runtime/legacy_proof.py src/auroraagent/ai/tool_specs/legacy.py src/auroraagent/ai/tool_specs/applications.py src/auroraagent/ai/tool_specs/notes.py src/auroraagent/ai/tool_specs/application_events.py src/auroraagent/ai/confirmation.py src/auroraagent/ai/write_operations.py src/auroraagent/repositories/chat.py src/auroraagent/pilot_runtime/service.py src/auroraagent/pilot_runtime/continuation.py src/auroraagent/pilot_runtime/persistence.py src/auroraagent/pilot_runtime/deterministic.py src/auroraagent/pilot_runtime/legacy_route.py src/auroraagent/pilot_runtime/composition.py src/auroraagent/ai/agent_loop.py src/auroraagent/chat_transport.py src/auroraagent/api.py
 ```
 
 Expected: Provider/tool call counts, HTTP/SSE order, HITL, Journal events, Ledger state, Undo, and business writes remain externally equivalent.
@@ -1086,7 +1086,7 @@ Expected: Provider/tool call counts, HTTP/SSE order, HITL, Journal events, Ledge
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-11.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-11.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 11 staged scope violation' }
 git commit -m "refactor: AI 完成工具元数据生产切换"
@@ -1096,20 +1096,20 @@ git commit -m "refactor: AI 完成工具元数据生产切换"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tool_runtime/__init__.py`
-- Modify: `src/offerpilot/ai/tool_runtime/context.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Modify: `src/offerpilot/ai/tool_runtime/legacy.py`
-- Modify: `src/offerpilot/ai/tool_specs/common.py`
-- Modify: `src/offerpilot/ai/tool_specs/catalog.py`
-- Modify: `src/offerpilot/ai/tool_specs/__init__.py`
-- Modify: `src/offerpilot/context_projector/selector.py`
-- Modify: `src/offerpilot/context_projector/manifest.py`
-- Modify: `src/offerpilot/context_projector/projector.py`
-- Modify: `src/offerpilot/pilot_runtime/__init__.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/ai/tool_runtime/__init__.py`
+- Modify: `src/auroraagent/ai/tool_runtime/context.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/legacy.py`
+- Modify: `src/auroraagent/ai/tool_specs/common.py`
+- Modify: `src/auroraagent/ai/tool_specs/catalog.py`
+- Modify: `src/auroraagent/ai/tool_specs/__init__.py`
+- Modify: `src/auroraagent/context_projector/selector.py`
+- Modify: `src/auroraagent/context_projector/manifest.py`
+- Modify: `src/auroraagent/context_projector/projector.py`
+- Modify: `src/auroraagent/pilot_runtime/__init__.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/agent_loop/test_deletion_gates.py`
 - Modify: `tests/test_agent_run_journal.py`
 - Modify: `tests/tool_pipeline/test_source_gates.py`
@@ -1200,10 +1200,10 @@ Delete production definitions and update all callers to injected Bundle views/Po
 
 ```powershell
 uv run pytest tests/tool_metadata tests/agent_loop tests/tool_pipeline tests/tool_authority tests/pilot_runtime tests/test_agent_run_journal.py tests/test_chat_api.py tests/test_context_projector.py tests/test_context_projector_source_gates.py tests/test_knowledge_sources_api.py tests/test_mock_legacy_removed.py tests/test_pilot_runtime_extraction_gate.py tests/test_write_operations.py tests/test_write_operation_acceptance_matrix.py -q
-$task12PythonPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-12.txt" | Where-Object { $_.EndsWith('.py') })
+$task12PythonPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-12.txt" | Where-Object { $_.EndsWith('.py') })
 uv run ruff check @task12PythonPaths
 uv run ruff format --check @task12PythonPaths
-uv run mypy src/offerpilot
+uv run mypy src/auroraagent
 ```
 
 Expected: no transient Bundle/view/lease/proof/handle appears in ChatMessage, Pending, Ledger payload, Journal, checkpoint, Prompt, HTTP/SSE, log, repr, pickle, or generic serialization.
@@ -1211,7 +1211,7 @@ Expected: no transient Bundle/view/lease/proof/handle appears in ChatMessage, Pe
 - [ ] **Step 5: Commit**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-12.txt" | Where-Object { $_ })
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-12.txt" | Where-Object { $_ })
 git add -- $taskPaths
 if (@(git diff --cached --name-only | Where-Object { $taskPaths -notcontains $_ }).Count -ne 0) { throw 'Task 12 staged scope violation' }
 git commit -m "test: AI 固化工具元数据旧路径删除门禁"
@@ -1291,8 +1291,8 @@ Use `superpowers:requesting-code-review` or an equivalent fresh subagent. Review
 - [ ] **Step 6: Verify immutable scope and write the report**
 
 ```powershell
-$gateRoot = Join-Path $env:TEMP 'offerpilot-tool-metadata-convergence-gate'
-$locatorPath = Join-Path $env:TEMP 'offerpilot-tool-metadata-convergence-gate.locator.json'
+$gateRoot = Join-Path $env:TEMP 'auroraagent-tool-metadata-convergence-gate'
+$locatorPath = Join-Path $env:TEMP 'auroraagent-tool-metadata-convergence-gate.locator.json'
 $locator = Get-Content -LiteralPath $locatorPath -Raw | ConvertFrom-Json
 $baselinePath = Join-Path $gateRoot 'baseline.txt'
 $startPath = Join-Path $gateRoot 'implementation-start.txt'
@@ -1335,8 +1335,8 @@ The report records fixed baseline/final commit, implementation-start commit, int
 - [ ] **Step 7: Commit evidence**
 
 ```powershell
-$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\offerpilot-tool-metadata-convergence-gate\task-13.txt" | Where-Object { $_ })
-$gateRoot = Join-Path $env:TEMP 'offerpilot-tool-metadata-convergence-gate'
+$taskPaths = @(Get-Content -LiteralPath "$env:TEMP\auroraagent-tool-metadata-convergence-gate\task-13.txt" | Where-Object { $_ })
+$gateRoot = Join-Path $env:TEMP 'auroraagent-tool-metadata-convergence-gate'
 $allowlist = @(Get-Content -LiteralPath (Join-Path $gateRoot 'allowlist.txt') | Where-Object { $_ } | Sort-Object -Unique)
 $taskGatePaths = @(1..13 | ForEach-Object { Join-Path $gateRoot ("task-{0:D2}.txt" -f $_) })
 $missingTaskGates = @($taskGatePaths | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) })

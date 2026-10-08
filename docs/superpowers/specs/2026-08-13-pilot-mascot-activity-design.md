@@ -21,9 +21,9 @@
 
 继续使用现有 `pixi-live2d-display` 运行时，不直接引入 `hacxy/l2d-widget`。
 
-调研结论：`l2d-widget` 适合向普通网页快速注入独立挂件，提供一键创建、多模型切换、提示气泡、打字口型、隐藏和销毁能力，并采用 MIT 许可证；但其 Widget 公共控制面主要是 `switchModel / sleep / destroy`，缩放是模型初始化参数，也不负责 OfferPilot 的对话请求生命周期。
+调研结论：`l2d-widget` 适合向普通网页快速注入独立挂件，提供一键创建、多模型切换、提示气泡、打字口型、隐藏和销毁能力，并采用 MIT 许可证；但其 Widget 公共控制面主要是 `switchModel / sleep / destroy`，缩放是模型初始化参数，也不负责 AuroraAgent 的对话请求生命周期。
 
-OfferPilot 已经具备 React 生命周期、StrictMode 串行挂载、失败资源清理、`prefers-reduced-motion`、键盘菜单、本地隐藏偏好和 AppShell/Pilot 联动。整体替换会重复或削弱这些已验证边界，且不能解决后台回答提醒。因此仅借鉴以下交互：
+AuroraAgent 已经具备 React 生命周期、StrictMode 串行挂载、失败资源清理、`prefers-reduced-motion`、键盘菜单、本地隐藏偏好和 AppShell/Pilot 联动。整体替换会重复或削弱这些已验证边界，且不能解决后台回答提醒。因此仅借鉴以下交互：
 
 - 状态气泡与角色动作同步；
 - 菜单式角色控制；

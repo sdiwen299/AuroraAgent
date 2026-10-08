@@ -2,13 +2,13 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def test_calendar_preserves_naive_utc_like_event_detail(tmp_path, monkeypatch):
     from types import SimpleNamespace
 
-    from offerpilot.repositories.application_events import ApplicationEventsRepository
+    from auroraagent.repositories.application_events import ApplicationEventsRepository
 
     class StoredUtc(datetime):
         def astimezone(self, tz=None):

@@ -1389,7 +1389,7 @@ const FlexCarousel = ({
       style={rootStyle}
       role="region"
       aria-roledescription="carousel"
-      aria-label="OfferPilot 主题插画轮播"
+      aria-label="曙光主题插画轮播"
       tabIndex={0}
     >
       {captions && current && revealed && (

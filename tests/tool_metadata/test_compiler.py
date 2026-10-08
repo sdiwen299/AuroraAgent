@@ -14,27 +14,27 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai import client as ai_client
-from offerpilot.ai.client import ConfiguredAIClient, ProviderCallError
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai import client as ai_client
+from auroraagent.ai.client import ConfiguredAIClient, ProviderCallError
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_runtime.catalog import (
     ToolCatalog,
     compile_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.contracts import ToolSpec, ToolSuccess
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.contracts import ToolSpec, ToolSuccess
+from auroraagent.ai.tool_runtime.metadata import (
     ToolMetadataBundleV1,
     WriteOperationMetadataV1,
     freeze_json,
     materialize_json,
 )
-from offerpilot.ai.tool_runtime.pipeline import prepare_call
-from offerpilot.ai.tool_runtime.policy_types import UndoPolicy
-from offerpilot.ai.tool_runtime.transport import project_transport_event
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.config import Config
+from auroraagent.ai.tool_runtime.pipeline import prepare_call
+from auroraagent.ai.tool_runtime.policy_types import UndoPolicy
+from auroraagent.ai.tool_runtime.transport import project_transport_event
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.config import Config
 
 from .factories import (
     compose_synthetic_bundle,
@@ -55,7 +55,7 @@ REQUIRED_UNDO = {
 }
 
 ROOT = Path(__file__).parents[2]
-PRODUCTION_ROOT = ROOT / "src" / "offerpilot"
+PRODUCTION_ROOT = ROOT / "src" / "auroraagent"
 TEST_ROOT = ROOT / "tests"
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
 
@@ -435,8 +435,8 @@ def _provider_baseline_payloads() -> list[dict[str, Any]]:
 
 
 def _patch_provider_verifier(monkeypatch: pytest.MonkeyPatch, verifier: Any) -> Any:
-    catalog_module = importlib.import_module("offerpilot.ai.tool_specs.catalog")
-    protocol_module = importlib.import_module("offerpilot.ai.tool_runtime.protocol_seals")
+    catalog_module = importlib.import_module("auroraagent.ai.tool_specs.catalog")
+    protocol_module = importlib.import_module("auroraagent.ai.tool_runtime.protocol_seals")
     monkeypatch.setattr(protocol_module, "verify_provider_boundary", verifier)
     monkeypatch.setattr(catalog_module, "verify_provider_boundary", verifier, raising=False)
     return catalog_module
@@ -457,10 +457,10 @@ def test_compiler_exposes_exact_ordered_26_typed_specs() -> None:
 def test_production_catalog_verifies_complete_ordered_provider_boundary_before_returning(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    protocol_module = importlib.import_module("offerpilot.ai.tool_runtime.protocol_seals")
+    protocol_module = importlib.import_module("auroraagent.ai.tool_runtime.protocol_seals")
     original_verifier = protocol_module.verify_provider_boundary
     captured: list[tuple[dict[str, Any], ...]] = []
-    catalog_module = importlib.import_module("offerpilot.ai.tool_specs.catalog")
+    catalog_module = importlib.import_module("auroraagent.ai.tool_specs.catalog")
     published_before = tuple(
         value for value in vars(catalog_module).values() if type(value) is ToolCatalog
     )
@@ -484,7 +484,7 @@ def test_production_catalog_verifies_complete_ordered_provider_boundary_before_r
 def test_production_catalog_does_not_publish_after_provider_seal_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    catalog_module = importlib.import_module("offerpilot.ai.tool_specs.catalog")
+    catalog_module = importlib.import_module("auroraagent.ai.tool_specs.catalog")
     published_before = tuple(
         value for value in vars(catalog_module).values() if type(value) is ToolCatalog
     )
@@ -630,7 +630,7 @@ def test_provider_queries_are_distinct_recursively_immutable_nodes() -> None:
 
 
 def test_sole_provider_materializer_is_fresh_detached_and_catalog_delegates() -> None:
-    contracts_module = importlib.import_module("offerpilot.ai.tool_runtime.contracts")
+    contracts_module = importlib.import_module("auroraagent.ai.tool_runtime.contracts")
     operation = getattr(contracts_module, "materialize_provider_payloads", None)
     assert callable(operation), "the sole Provider materializer must be a module operation"
 
@@ -931,7 +931,7 @@ def test_provider_materialization_source_gate_tracks_aliases_and_single_operatio
 def test_catalog_precompiles_schema_once_and_returns_detached_validators(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    catalog_module = importlib.import_module("offerpilot.ai.tool_runtime.catalog")
+    catalog_module = importlib.import_module("auroraagent.ai.tool_runtime.catalog")
     original_compile = catalog_module.compile_tool_schema
     compiled: list[dict[str, Any]] = []
 

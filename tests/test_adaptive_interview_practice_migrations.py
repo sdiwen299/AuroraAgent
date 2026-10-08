@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def test_adaptive_practice_schema_is_created_and_idempotent(tmp_path) -> None:

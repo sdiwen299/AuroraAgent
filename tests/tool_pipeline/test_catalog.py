@@ -10,10 +10,10 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai import client as ai_client
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai import client as ai_client
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
+from auroraagent.ai.tool_runtime.contracts import (
     BindingContract,
     BindingAudit,
     PreparedToolCall,
@@ -23,14 +23,14 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     ToolMetadataBundleV1,
 )
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_specs.legacy import build_static_adapter_catalog
-from offerpilot.ai.types import Message
-from offerpilot.config import Config
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_specs.legacy import build_static_adapter_catalog
+from auroraagent.ai.types import Message
+from auroraagent.config import Config
 
 from golden import canonical_json, load_golden
 from tests.tool_metadata.factories import (
@@ -137,7 +137,7 @@ def test_catalog_rejects_invalid_schema_during_construction() -> None:
 
 def test_runtime_catalog_has_no_reverse_dependency_on_tool_specs() -> None:
     source_path = (
-        Path(__file__).parents[2] / "src" / "offerpilot" / "ai" / "tool_runtime" / "catalog.py"
+        Path(__file__).parents[2] / "src" / "auroraagent" / "ai" / "tool_runtime" / "catalog.py"
     )
     tree = ast.parse(source_path.read_text(encoding="utf-8"))
     imported_modules = {

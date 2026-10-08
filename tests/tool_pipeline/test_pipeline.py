@@ -7,14 +7,14 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     AuthorityFactory,
     AuthorityPhaseError,
     TrustedContextScope,
 )
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.contracts import (
     BindingContract,
     ProviderToolContract,
     ReadyToExecute,
@@ -24,22 +24,22 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     ResolverImplementationBinding,
     ToolBindingMetadataV1,
     ToolMetadataBundleV1,
 )
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
-from offerpilot.ai.types import ToolCall
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
+from auroraagent.ai.types import ToolCall
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     presentation_binding,
@@ -727,8 +727,8 @@ def test_resolver_exception_maps_safely_and_base_exception_propagates(tmp_path: 
 def test_read_execution_scope_denial_is_started_failure_with_compatibility_shape(
     tmp_path: Any,
 ) -> None:
-    from offerpilot.ai.tool_runtime.rendering import render_compatibility
-    from offerpilot.repositories.session_binding import ScopeAccessDenied
+    from auroraagent.ai.tool_runtime.rendering import render_compatibility
+    from auroraagent.repositories.session_binding import ScopeAccessDenied
 
     def deny(*_args: Any) -> Any:
         raise ScopeAccessDenied("private target state")

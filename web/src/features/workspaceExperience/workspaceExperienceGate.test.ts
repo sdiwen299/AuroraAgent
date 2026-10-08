@@ -15,7 +15,7 @@ describe('desktop workspace external gate', () => {
       allowlistSha256: string;
     };
     expect(manifest.baseline).toBe('2f6e895e02b86f33052a2e507e9b0404bb82f4b5');
-    expect(manifest.worktreeLocator).toBe('D:\\Users\\yuqi.chen\\offerpilot\\.worktrees\\refactor-20260821-assistant-surface-shell');
+    expect(manifest.worktreeLocator).toBe('D:\\Users\\yuqi.chen\\auroraagent\\.worktrees\\refactor-20260821-assistant-surface-shell');
     expect(manifest.allowlist).toEqual(['web/**', 'docs/superpowers/specs/**', 'docs/superpowers/plans/**', 'docs/reports/**']);
     expect(manifest.allowlistSha256).toMatch(/^[a-f0-9]{64}$/);
   });

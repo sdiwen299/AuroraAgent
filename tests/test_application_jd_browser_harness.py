@@ -14,8 +14,8 @@ import pytest
 ROOT = Path(__file__).parents[1]
 HARNESS = ROOT / "scripts" / "application-jd-real-ai-browser-harness.ps1"
 AUDIT = ROOT / "scripts" / "browser-network-audit.py"
-ALLOWLIST_FILE_ENV = "OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE"
-BASELINE_FILE_ENV = "OFFERPILOT_APPLICATION_JD_BASELINE_FILE"
+ALLOWLIST_FILE_ENV = "AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE"
+BASELINE_FILE_ENV = "AURORA_AGENT_APPLICATION_JD_BASELINE_FILE"
 
 
 def _changed_paths_since(root: Path, baseline: str) -> set[str]:
@@ -146,8 +146,8 @@ def test_application_jd_harness_detects_new_database_snapshot_tables() -> None:
 
 def test_application_jd_harness_persists_redacted_stage_input_diagnostics() -> None:
     script = HARNESS.read_text(encoding="utf-8")
-    assert "OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE" in script
-    assert "OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE" in script
+    assert "AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE" in script
+    assert "AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE" in script
     assert "application_jd_stage_diagnostic.py" in script
     assert "--provider-start-index" in script
     assert "--operation-start-index" in script

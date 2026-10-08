@@ -5,7 +5,7 @@ from types import MappingProxyType
 
 import pytest
 
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     canonical_json_bytes,
     canonical_sha256,
     freeze_json,

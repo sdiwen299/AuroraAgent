@@ -1,9 +1,9 @@
 from sqlalchemy import inspect, text
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
+from auroraagent.repositories.chat import ChatRepository
 
 
 def test_confirmation_claim_column_and_migration_are_durable(tmp_path) -> None:

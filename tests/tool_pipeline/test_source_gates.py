@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[2]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 AI = SRC / "ai"
 
 BANNED_SYMBOLS = {
@@ -16,7 +16,7 @@ BANNED_SYMBOLS = {
     "jd_tool_registry",
     "note_tool_registry",
     "offer_tool_registry",
-    "offerpilot_tool_registry",
+    "auroraagent_tool_registry",
     "resume_tool_registry",
     "_execute_tool",
     "_model_visible_tools",
@@ -121,13 +121,13 @@ def test_agent_tests_use_typed_tool_factory_not_legacy_dict_protocol() -> None:
 def test_runtime_dependency_direction_and_legacy_dispatch_are_closed() -> None:
     for path in (AI / "tool_runtime").rglob("*.py"):
         assert not any(
-            module.startswith("offerpilot.ai.tool_specs")
+            module.startswith("auroraagent.ai.tool_specs")
             for module in _imported_modules(_tree(path))
         ), path
     for path in (AI / "agent_loop.py", AI / "agent_contracts.py", AI / "confirmation.py"):
         agent_imports = _imported_modules(_tree(path))
-        assert "offerpilot.ai.tool_runtime.legacy" not in agent_imports
-        assert "offerpilot.ai.tool_specs.legacy" not in agent_imports
+        assert "auroraagent.ai.tool_runtime.legacy" not in agent_imports
+        assert "auroraagent.ai.tool_specs.legacy" not in agent_imports
 
 
 def test_compatibility_string_inspection_is_confined_to_renderer() -> None:

@@ -6,9 +6,9 @@ import pytest
 from fastapi.testclient import TestClient
 from conftest import wait_for_extraction
 
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.api import create_app
-from offerpilot.db import init_database
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.api import create_app
+from auroraagent.db import init_database
 
 
 @pytest.fixture
@@ -169,7 +169,7 @@ def test_knowledge_reset_preserves_non_knowledge_data(tmp_path):
         conn.execute(
             "CREATE TABLE applications (id INTEGER PRIMARY KEY, company_name TEXT NOT NULL)"
         )
-        conn.execute("INSERT INTO applications (company_name) VALUES ('OfferPilot')")
+        conn.execute("INSERT INTO applications (company_name) VALUES ('AuroraAgent')")
         conn.execute("CREATE TABLE knowledge_documents (id INTEGER PRIMARY KEY)")
         conn.execute("CREATE TABLE knowledge_wiki_pages (id INTEGER PRIMARY KEY)")
 
@@ -184,7 +184,7 @@ def test_knowledge_reset_preserves_non_knowledge_data(tmp_path):
             ).fetchall()
         }
 
-    assert rows == [("OfferPilot",)]
+    assert rows == [("AuroraAgent",)]
     assert "knowledge_documents" not in tables
     assert "knowledge_wiki_pages" not in tables
     # knowledge_sources 是 KI-02 新表的表名，与旧 knowledge_sources 同名但不属于 legacy

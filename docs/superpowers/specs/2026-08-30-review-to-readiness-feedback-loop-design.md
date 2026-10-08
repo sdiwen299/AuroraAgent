@@ -3,7 +3,7 @@
 > 状态：已复审通过
 > 固定 baseline：c5a020cbedd8ff64f6188f51c10d8f4daa7c7dff
 > 设计分支：feat/20260830-review-readiness-feedback-loop
-> Worktree：D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260830-review-readiness-feedback-loop
+> Worktree：D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260830-review-readiness-feedback-loop
 > 本文只定义设计；书面复审通过前不编写实施计划，不修改生产代码。
 
 ## 1. 背景与问题定义
@@ -1857,7 +1857,7 @@ Golden 使用合成 canary。扫描日志、Snapshot、Event、WriteOperation tr
 推荐新增：
 
 ~~~text
-src/offerpilot/product_actions/
+src/auroraagent/product_actions/
   contracts.py
   catalog.py
   issuer.py
@@ -1865,7 +1865,7 @@ src/offerpilot/product_actions/
   coordinator.py
   compensation.py
 
-src/offerpilot/review_readiness/
+src/auroraagent/review_readiness/
   contracts.py
   candidates.py
   repository.py

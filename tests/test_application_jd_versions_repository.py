@@ -8,15 +8,15 @@ import pytest
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 
-from offerpilot.db import init_database
-from offerpilot.repositories.application_jd_versions import (
+from auroraagent.db import init_database
+from auroraagent.repositories.application_jd_versions import (
     ApplicationJDService,
     JDVersionConflictError,
     JDVersionValidationError,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
-from offerpilot.repositories.resumes import ResumeCreate, ResumeMatchCreate, ResumesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
+from auroraagent.repositories.resumes import ResumeCreate, ResumeMatchCreate, ResumesRepository
 
 
 def _service(tmp_path):

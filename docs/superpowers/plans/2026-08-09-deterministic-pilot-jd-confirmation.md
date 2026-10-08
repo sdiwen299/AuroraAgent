@@ -12,11 +12,11 @@ docs/superpowers/specs/2026-08-09-deterministic-pilot-jd-confirmation-design.md
 
 ## Architecture
 
-- 新增 src/offerpilot/ai/deterministic_actions.py：纯解析、严格命令识别、取消识别、状态决策和安全参数构造；不读 Repository、不调用 Provider、不写数据库。
-- 修改 src/offerpilot/api.py：/api/chat 与 /api/chat/stream 在 Agent 前路由；确定性路径不加载 Chat Provider、不生成标题；普通消息继续原 Agent。
-- 修改 src/offerpilot/ai/tools.py 与 src/offerpilot/ai/agent.py：Registry 保留完整 JD 工具，仅在给模型的工具列表过滤 model_visible=False。
+- 新增 src/auroraagent/ai/deterministic_actions.py：纯解析、严格命令识别、取消识别、状态决策和安全参数构造；不读 Repository、不调用 Provider、不写数据库。
+- 修改 src/auroraagent/api.py：/api/chat 与 /api/chat/stream 在 Agent 前路由；确定性路径不加载 Chat Provider、不生成标题；普通消息继续原 Agent。
+- 修改 src/auroraagent/ai/tools.py 与 src/auroraagent/ai/agent.py：Registry 保留完整 JD 工具，仅在给模型的工具列表过滤 model_visible=False。
 - 修改两个 confirm endpoint：pending 工具为 save_application_jd_version 时使用共享确定性确认处理器；其他工具继续 Agent resume。
-- 仅在确有需要时修改 src/offerpilot/repositories/chat.py，补充原子 CAS/替换，不增加迁移。
+- 仅在确有需要时修改 src/auroraagent/repositories/chat.py，补充原子 CAS/替换，不增加迁移。
 - 前端从 ApplicationDetail 进入已有 Chat API 的 public pilot_action；ProposalCard 展示 JD 专用确认信息，不直接调用 JD 保存 service。
 
 ## Tech Stack
@@ -48,11 +48,11 @@ Python/FastAPI/SQLAlchemy/pytest/Ruff/mypy；React/TypeScript/Ant Design/Vitest/
 ```text
 docs/superpowers/specs/2026-08-09-deterministic-pilot-jd-confirmation-design.md
 docs/superpowers/plans/2026-08-09-deterministic-pilot-jd-confirmation.md
-src/offerpilot/ai/deterministic_actions.py
-src/offerpilot/ai/agent.py
-src/offerpilot/ai/tools.py
-src/offerpilot/api.py
-src/offerpilot/repositories/chat.py
+src/auroraagent/ai/deterministic_actions.py
+src/auroraagent/ai/agent.py
+src/auroraagent/ai/tools.py
+src/auroraagent/api.py
+src/auroraagent/repositories/chat.py
 tests/test_deterministic_pilot_actions.py
 tests/test_ai_agent.py
 tests/test_ai_tools.py
@@ -75,24 +75,24 @@ tests/test_application_jd_stage_diagnostic.py
 docs/reports/2026-08-05-application-jd-versions-release-verification.md
 ```
 
-若确需 src/offerpilot/schemas.py 或其他现有类型文件，先停止、补充准确路径和理由，再继续；不得用目录通配符。禁止修改 Application JD 模型/迁移、Opportunity Fit、材料、面试、模拟面试、Provider 配置/fallback/证据校验、其他 Pilot 写工具或无关布局。
+若确需 src/auroraagent/schemas.py 或其他现有类型文件，先停止、补充准确路径和理由，再继续；不得用目录通配符。禁止修改 Application JD 模型/迁移、Opportunity Fit、材料、面试、模拟面试、Provider 配置/fallback/证据校验、其他 Pilot 写工具或无关布局。
 
-实施开始时执行一次 bootstrap PowerShell，创建固定 locator 文件持久化 gate 根目录、baseline 文件、allowlist 文件、worktree 根路径和 baseline SHA。`$approvedPaths` 必须由上方 allowlist 代码块的逐行字面量构成；同一数组既写入 `allowlist.txt`，也用于 committed、staged、unstaged、untracked 四类路径校验，不得通过 glob 或目录扫描扩展范围。locator 使用固定路径 `$env:TEMP\offerpilot-deterministic-pilot-jd-gate.locator.json`，不得依赖跨独立 PowerShell 调用传递的环境变量：
+实施开始时执行一次 bootstrap PowerShell，创建固定 locator 文件持久化 gate 根目录、baseline 文件、allowlist 文件、worktree 根路径和 baseline SHA。`$approvedPaths` 必须由上方 allowlist 代码块的逐行字面量构成；同一数组既写入 `allowlist.txt`，也用于 committed、staged、unstaged、untracked 四类路径校验，不得通过 glob 或目录扫描扩展范围。locator 使用固定路径 `$env:TEMP\auroraagent-deterministic-pilot-jd-gate.locator.json`，不得依赖跨独立 PowerShell 调用传递的环境变量：
 
 ```powershell
-$locatorPath = Join-Path $env:TEMP "offerpilot-deterministic-pilot-jd-gate.locator.json"
+$locatorPath = Join-Path $env:TEMP "auroraagent-deterministic-pilot-jd-gate.locator.json"
 if (Test-Path -LiteralPath $locatorPath) { throw "stale gate locator exists: $locatorPath" }
-$gateRoot = Join-Path $env:TEMP ("offerpilot-deterministic-pilot-gate-" + [guid]::NewGuid().ToString("N"))
+$gateRoot = Join-Path $env:TEMP ("auroraagent-deterministic-pilot-gate-" + [guid]::NewGuid().ToString("N"))
 $baselineFile = Join-Path $gateRoot "baseline.sha"
 $allowlistFile = Join-Path $gateRoot "allowlist.txt"
 $approvedPaths = @(
   "docs/superpowers/specs/2026-08-09-deterministic-pilot-jd-confirmation-design.md"
   "docs/superpowers/plans/2026-08-09-deterministic-pilot-jd-confirmation.md"
-  "src/offerpilot/ai/deterministic_actions.py"
-  "src/offerpilot/ai/agent.py"
-  "src/offerpilot/ai/tools.py"
-  "src/offerpilot/api.py"
-  "src/offerpilot/repositories/chat.py"
+  "src/auroraagent/ai/deterministic_actions.py"
+  "src/auroraagent/ai/agent.py"
+  "src/auroraagent/ai/tools.py"
+  "src/auroraagent/api.py"
+  "src/auroraagent/repositories/chat.py"
   "tests/test_deterministic_pilot_actions.py"
   "tests/test_ai_agent.py"
   "tests/test_ai_tools.py"
@@ -145,14 +145,14 @@ finally {
 }
 ```
 
-实现、提交、测试和浏览器验收分别运行在独立 PowerShell 调用时，每次先读取该 locator，验证 worktree 根路径一致、baseline 文件原文仍严格等于 locator 中的 baseline SHA、allowlist SHA-256 未变，并运行 `git cat-file -t $baseline` 确认该 SHA 仍可解析为 commit；不得要求 baseline 等于当前 HEAD。随后由本次调用临时设置 OFFERPILOT_APPLICATION_JD_BASELINE_FILE 和 OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE，供其子进程继承。locator、gateRoot 和 baseline 在最终报告提交后的复核完成前不得删除；失败保留脱敏诊断供恢复，成功清理时必须同时删除 locator/gateRoot 并用 Test-Path 验证不存在。
+实现、提交、测试和浏览器验收分别运行在独立 PowerShell 调用时，每次先读取该 locator，验证 worktree 根路径一致、baseline 文件原文仍严格等于 locator 中的 baseline SHA、allowlist SHA-256 未变，并运行 `git cat-file -t $baseline` 确认该 SHA 仍可解析为 commit；不得要求 baseline 等于当前 HEAD。随后由本次调用临时设置 AURORA_AGENT_APPLICATION_JD_BASELINE_FILE 和 AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE，供其子进程继承。locator、gateRoot 和 baseline 在最终报告提交后的复核完成前不得删除；失败保留脱敏诊断供恢复，成功清理时必须同时删除 locator/gateRoot 并用 Test-Path 验证不存在。
 
 每个独立调用加载状态的固定骨架如下；环境变量只在本次调用内设置，不能作为跨调用状态：
 
 ```powershell
-$locatorPath = Join-Path $env:TEMP "offerpilot-deterministic-pilot-jd-gate.locator.json"
-$oldBaselineEnv = $env:OFFERPILOT_APPLICATION_JD_BASELINE_FILE
-$oldAllowlistEnv = $env:OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE
+$locatorPath = Join-Path $env:TEMP "auroraagent-deterministic-pilot-jd-gate.locator.json"
+$oldBaselineEnv = $env:AURORA_AGENT_APPLICATION_JD_BASELINE_FILE
+$oldAllowlistEnv = $env:AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE
 try {
   $locator = Get-Content -Raw -LiteralPath $locatorPath | ConvertFrom-Json
   $gateRoot = $locator.gate_root
@@ -163,13 +163,13 @@ try {
   if ($baseline -cne $locator.baseline_sha) { throw "baseline file changed" }
   if ((Get-FileHash -Algorithm SHA256 -LiteralPath $allowlistFile).Hash.ToLowerInvariant() -cne $locator.allowlist_sha256) { throw "allowlist file changed" }
   if ((git cat-file -t $baseline).Trim() -cne "commit") { throw "baseline commit cannot be resolved" }
-  $env:OFFERPILOT_APPLICATION_JD_BASELINE_FILE = $baselineFile
-  $env:OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE = $allowlistFile
+  $env:AURORA_AGENT_APPLICATION_JD_BASELINE_FILE = $baselineFile
+  $env:AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE = $allowlistFile
   # 在此执行本次实现、测试或门禁调用
 }
 finally {
-  $env:OFFERPILOT_APPLICATION_JD_BASELINE_FILE = $oldBaselineEnv
-  $env:OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE = $oldAllowlistEnv
+  $env:AURORA_AGENT_APPLICATION_JD_BASELINE_FILE = $oldBaselineEnv
+  $env:AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE = $oldAllowlistEnv
 }
 ```
 
@@ -195,7 +195,7 @@ git ls-files --others --exclude-standard
 
 ## 1. 纯逻辑 Red/Green
 
-文件：tests/test_deterministic_pilot_actions.py（新增），src/offerpilot/ai/deterministic_actions.py（随后新增）。
+文件：tests/test_deterministic_pilot_actions.py（新增），src/auroraagent/ai/deterministic_actions.py（随后新增）。
 
 - [ ] 先写失败测试：action 运行时校验（合法、缺失、空值、未知、额外服务端字段、非对象）、严格命令正例、正文冒号/换行、CJK/emoji/换行/前后空白原样保留。
 - [ ] 写负向参数化测试：否定、疑问、查看/总结/分析、引用、无分隔附加文本；断言 normal_agent。
@@ -210,7 +210,7 @@ git ls-files --others --exclude-standard
 
 - [ ] 写失败测试：完整 Registry 仍含 save_application_jd_version，Schema、always_confirm、validator、describe、handler、source_kind=pilot 不变，并标记 model_visible=False。
 - [ ] 写失败测试：捕获模型 tools，确认只排除 save_application_jd_version，读工具和其他写工具不变；内部 Registry handler 仍可验证/执行。
-- [ ] 先运行定向测试确认缺少过滤逻辑；再改 src/offerpilot/ai/tools.py 和 src/offerpilot/ai/agent.py 的工具列表构造；运行 uv run pytest tests/test_ai_tools.py tests/test_ai_agent.py -q。
+- [ ] 先运行定向测试确认缺少过滤逻辑；再改 src/auroraagent/ai/tools.py 和 src/auroraagent/ai/agent.py 的工具列表构造；运行 uv run pytest tests/test_ai_tools.py tests/test_ai_agent.py -q。
 
 ## 3. Repository 原子操作
 
@@ -219,7 +219,7 @@ git ls-files --others --exclude-standard
 - [ ] 写失败测试：确定性 pending/clarification 复用现有字段；归档不能写；pending、助手消息和固定终态消息按事务提交。
 - [ ] 写失败测试：冲突后仅在原 tool_call_id + tool_name + args 仍匹配时原子替换新 token/key/expected version；CAS 失败保留原卡。
 - [ ] 写失败测试：同 token 并发最多一个成功；结果未知不清卡；清卡后重复确认只能回读/返回 stale，不能新增版本。
-- [ ] 先运行 uv run pytest tests/test_chat_repository.py -q 确认 Red，再只修改 src/offerpilot/repositories/chat.py 中必要的 CAS 方法；运行 uv run pytest tests/test_chat_repository.py tests/test_chat_api.py -q。
+- [ ] 先运行 uv run pytest tests/test_chat_repository.py -q 确认 Red，再只修改 src/auroraagent/repositories/chat.py 中必要的 CAS 方法；运行 uv run pytest tests/test_chat_repository.py tests/test_chat_api.py -q。
 
 ## 4. Chat Router
 
@@ -230,7 +230,7 @@ git ls-files --others --exclude-standard
 - [ ] 写失败测试：无 JD 只生成一次固定追问并保存 clarification；下一条消息整体作为 JD；取消清除；快捷入口不覆盖 collecting。
 - [ ] 写失败测试：已有同卡返回原卡，其他 pending 不覆盖；归档/删除/错误 Application 固定失败；非法 action 422 且会话、消息、Provider 均不变；普通旧请求仍走 Agent。
 - [ ] 先运行 uv run pytest tests/test_chat_api.py -q 确认 Red。
-- [ ] 修改 src/offerpilot/api.py，在加载 _chat_model、标题任务、run_turn 前执行共享 Router；两个 endpoint 共享同一 deterministic response builder，普通路径不改。
+- [ ] 修改 src/auroraagent/api.py，在加载 _chat_model、标题任务、run_turn 前执行共享 Router；两个 endpoint 共享同一 deterministic response builder，普通路径不改。
 - [ ] 运行 uv run pytest tests/test_chat_api.py -q，再运行 uv run pytest tests/test_chat_api.py tests/test_deterministic_pilot_actions.py -q。
 
 ## 5. 确定性确认与冲突
@@ -244,7 +244,7 @@ git ls-files --others --exclude-standard
 - [ ] 在该写后 CAS 失败场景中分别断言：原 pending 仍存在时批准成功清除匹配的旧 last_write_undo，拒绝不调用 JD handler 且保留旧 undo；pending 已替换时新 pending 完整保留，只有原 pending 字段匹配时才允许清理；两条路径均不产生第二个 Provider/版本写入。
 - [ ] 测确认后历史回读、跨领域写入为 0、source URL 不外联。
 - [ ] 增加升级兼容回归：手工种入升级前模型生成的 JD pending action、等待原文 pending clarification；在 Agent checkpoint 缺失、无 AI 配置时分别确认、拒绝和恢复。首次确认必须恰好创建 1 个版本，拒绝必须创建 0 个版本；首次确认已提交后的响应恢复/重放必须新增 0 个版本（总数仍为 1），并复用同一 token/key。
-- [ ] 先确认现有端点在模型前加载 Provider 的测试失败，再在 src/offerpilot/api.py 增加共享 deterministic JD confirmation helper；先 token/锁/CAS/编辑验证，再调用完整 Registry validator/handler；流式只包 SSE。
+- [ ] 先确认现有端点在模型前加载 Provider 的测试失败，再在 src/auroraagent/api.py 增加共享 deterministic JD confirmation helper；先 token/锁/CAS/编辑验证，再调用完整 Registry validator/handler；流式只包 SSE。
 - [ ] 只对 pending.tool_name == save_application_jd_version 走 helper，其他工具保持 Agent resume；运行 uv run pytest tests/test_chat_api.py tests/test_chat_repository.py tests/test_ai_tools.py -q。
 
 ## 6. 前端动作与确认卡

@@ -19,7 +19,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = REPO_ROOT / "contracts" / "recovery-policy.v1.json"
-PYTHON_OUTPUT = REPO_ROOT / "src" / "offerpilot" / "reliability" / "recovery_policy_generated.py"
+PYTHON_OUTPUT = REPO_ROOT / "src" / "auroraagent" / "reliability" / "recovery_policy_generated.py"
 TS_OUTPUT = REPO_ROOT / "web" / "src" / "lib" / "recoveryPolicy" / "generatedRecoveryPolicy.ts"
 
 ERROR_FIELDS = (

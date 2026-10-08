@@ -1116,7 +1116,7 @@ def test_story_browser_harness_starts_audited_chromium_before_honoring_completio
     completion_signal.touch()
     session_state = tmp_path / "story-browser-session.json"
     environment = dict(os.environ)
-    environment["OFFERPILOT_DATA"] = str(source_data)
+    environment["AURORA_AGENT_DATA"] = str(source_data)
 
     result = _run_harness(
         "-CompletionSignalPath", str(completion_signal), "-SessionStatePath", str(session_state), env=environment,
@@ -1160,8 +1160,8 @@ def _run_faulted_chromium_startup(
     session_state = tmp_path / "story-browser-session.json"
     cleanup_audit = tmp_path / "cleanup-audit.json"
     environment = dict(os.environ)
-    environment["OFFERPILOT_DATA"] = str(source_data)
-    before = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    environment["AURORA_AGENT_DATA"] = str(source_data)
+    before = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
 
     started = time.monotonic()
     result = _run_harness(
@@ -1210,7 +1210,7 @@ def test_story_browser_harness_retries_an_exited_chromium_with_a_new_port_and_pr
     assert int(state["cdp_url"].rsplit(":", 1)[1]) != attempts[0][2]
     assert state["browser_profile"] != attempts[0][3]
     assert not Path(state["temp_data_path"]).exists()
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before
 
 
@@ -1235,7 +1235,7 @@ def test_story_browser_harness_aggregates_three_exited_chromium_attempts(tmp_pat
     assert not session_state.exists()
     cleanup = json.loads(cleanup_audit.read_text(encoding="utf-8"))
     assert all(record["exited"] is True for record in cleanup["processes"])
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before
 
 
@@ -1263,7 +1263,7 @@ def test_story_browser_harness_retries_after_a_fixed_chromium_cdp_deadline(tmp_p
     assert int(state["cdp_url"].rsplit(":", 1)[1]) != attempts[0][2]
     assert state["browser_profile"] != attempts[0][3]
     assert not Path(state["temp_data_path"]).exists()
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before
 
 
@@ -1292,7 +1292,7 @@ def test_story_browser_harness_rejects_a_cdp_response_that_arrives_after_the_dea
     assert int(state["cdp_url"].rsplit(":", 1)[1]) != attempts[0][2]
     assert state["browser_profile"] != attempts[0][3]
     assert not Path(state["temp_data_path"]).exists()
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before
 
 
@@ -1320,7 +1320,7 @@ def test_story_browser_harness_fails_closed_when_failed_chromium_cleanup_is_unce
     assert not session_state.exists()
     cleanup = json.loads(cleanup_audit.read_text(encoding="utf-8"))
     assert all(record["exited"] is True for record in cleanup["processes"])
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before
 
 
@@ -1350,9 +1350,9 @@ def test_story_browser_harness_cleans_all_local_resources_when_auditor_startup_f
         ),
         encoding="utf-8",
     )
-    before = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    before = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     environment = dict(os.environ)
-    environment["OFFERPILOT_DATA"] = str(source_data)
+    environment["AURORA_AGENT_DATA"] = str(source_data)
     cleanup_audit = tmp_path / "cleanup-audit.json"
 
     result = _run_harness(
@@ -1372,5 +1372,5 @@ def test_story_browser_harness_cleans_all_local_resources_when_auditor_startup_f
         "provider proxy",
     }
     assert all(record["exited"] is True for record in cleanup["processes"])
-    after = {path.name for path in Path(os.environ["TEMP"]).glob("offerpilot-interview-story-*")}
+    after = {path.name for path in Path(os.environ["TEMP"]).glob("auroraagent-interview-story-*")}
     assert after == before

@@ -7,7 +7,7 @@
 - 固定 baseline：`93fb0063118761f2c76e71e4209000feee0f755b`
 - Code-review HEAD：`76f17dd`（`fix: AI 统一投递主操作与来源阻断`）
 - Branch：`refactor/20260829-core-task-surface-convergence`
-- Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260829-core-task-surface-convergence`
+- Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260829-core-task-surface-convergence`
 - 实现范围限定为 Application Task Surface、Interview Event Surface、Materials & Resume Surface，以及对应的受控 Interview read contract。
 - 未新增 Agent Tool、Provider 路径、SSE transport、后台队列、Application/Resume 持久绑定或 Review-to-Readiness 自动反馈。
 
@@ -77,7 +77,7 @@
 | `uv run oc smoke --static-dir web/dist` | health、SPA、Application/Event card、Pending/HITL smoke 全通过 |
 | `uv run oc verify --profile local --static-dir web/dist` | 全部 local HTTP/HITL/cleanup steps 通过 |
 | `uv run oc verify --profile real-ai --static-dir web/dist` | 全部真实 Provider/HITL/cleanup steps 通过 |
-| `uv run pytest` | 5010 passed / 4 skipped / 1 external-scope failure，4299 warnings，13684.08s（3:48:04）；失败为 release orchestrator 未提供 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` |
+| `uv run pytest` | 5010 passed / 4 skipped / 1 external-scope failure，4299 warnings，13684.08s（3:48:04）；失败为 release orchestrator 未提供 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` |
 | Application-JD harness（排除外部 scope node） | 22 passed / 1 deselected |
 | `git diff --check` | 通过 |
 
@@ -114,9 +114,9 @@
 
 ## 外部门禁与剩余风险
 
-- 裸 `uv run pytest` 中的 `test_application_jd_implementation_scope_is_machine_checked` 依赖 release orchestrator 提供 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` 与 `OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE`；本次 bare run 在缺少 baseline 时按设计失败。没有以当前 HEAD 自生成 baseline/allowlist 来绕过历史范围门禁；其余结果为 5010 passed / 4 skipped，Application-JD harness 排除该外部 scope node 后为 22 passed / 1 deselected。
+- 裸 `uv run pytest` 中的 `test_application_jd_implementation_scope_is_machine_checked` 依赖 release orchestrator 提供 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` 与 `AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE`；本次 bare run 在缺少 baseline 时按设计失败。没有以当前 HEAD 自生成 baseline/allowlist 来绕过历史范围门禁；其余结果为 5010 passed / 4 skipped，Application-JD harness 排除该外部 scope node 后为 22 passed / 1 deselected。
 - 上述浏览器 Provider UI 深链没有在无凭据隔离数据中实际发起；真实 Provider API、HITL、cleanup 已由 controlled `real-ai` profile 成功验证。
-- 浏览器合成数据保留在 `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-core-task-surface-b6eb1bcc3bb44d998e253aab73f7d59a`；宿主策略阻止了递归清理，因此没有绕过策略强删。该目录不含 Provider credential 或用户生产数据，可由用户稍后手动删除。
+- 浏览器合成数据保留在 `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-core-task-surface-b6eb1bcc3bb44d998e253aab73f7d59a`；宿主策略阻止了递归清理，因此没有绕过策略强删。该目录不含 Provider credential 或用户生产数据，可由用户稍后手动删除。
 - 既有测试 warning 与 Vite chunk warning 保留为 P3 技术债；未发现本项目新增的开放规格或质量缺陷。
 - Review-to-Readiness 自动反馈链仍是独立后续项目；本期不会自动生成 Story/Memory/Knowledge、修改 Resume 或写 Event status。
 

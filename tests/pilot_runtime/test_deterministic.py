@@ -10,13 +10,13 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.tool_runtime import legacy as legacy_runtime
-from offerpilot.ai.tool_runtime.legacy import LegacyArgumentPreparationError
-from offerpilot.ai.tool_runtime.legacy_proof import (
+from auroraagent.ai.tool_runtime import legacy as legacy_runtime
+from auroraagent.ai.tool_runtime.legacy import LegacyArgumentPreparationError
+from auroraagent.ai.tool_runtime.legacy_proof import (
     LegacyApprovedConfirmationInput,
     LegacyConfirmationLookupIdentity,
 )
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.write_operations import (
     OperationCommitted,
     OperationFailed,
     OperationReplay,
@@ -27,7 +27,7 @@ from offerpilot.ai.write_operations import (
     ledger_fingerprint,
     pending_action_identity,
 )
-from offerpilot.pilot_runtime import (
+from auroraagent.pilot_runtime import (
     CompletedEvent,
     CompletionReason,
     ConfirmationRequiredEvent,
@@ -49,30 +49,30 @@ from offerpilot.pilot_runtime import (
     StreamExecutionMode,
     freeze_json_mapping,
 )
-from offerpilot.chat_transport import (
+from auroraagent.chat_transport import (
     PreparedStreamGuard,
     event_sse_payload,
     outcome_http_payload,
 )
-from offerpilot.pilot_runtime.deterministic import (
+from auroraagent.pilot_runtime.deterministic import (
     _confirmation_token,
     _invoke as deterministic_invoke,
 )
-from offerpilot.pilot_runtime import deterministic as deterministic_module
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
-from offerpilot.pilot_runtime.service import PilotRuntime, RuntimeDependencies, _invoke
-from offerpilot.pilot_runtime.composition import (
+from auroraagent.pilot_runtime import deterministic as deterministic_module
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
+from auroraagent.pilot_runtime.service import PilotRuntime, RuntimeDependencies, _invoke
+from auroraagent.pilot_runtime.composition import (
     _SqlAlchemyLegacyPendingIdentityBackend,
     build_production_tool_metadata_components,
 )
-from offerpilot.pilot_runtime.legacy_route import build_legacy_pending_identity_verifier_port
-from offerpilot.db import init_database
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.ai.write_operations import WriteOperationRepository, load_or_create_ledger_key
-from offerpilot.repositories.application_jd_versions import ApplicationJDService
-from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.pilot_runtime.legacy_route import build_legacy_pending_identity_verifier_port
+from auroraagent.db import init_database
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.ai.write_operations import WriteOperationRepository, load_or_create_ledger_key
+from auroraagent.repositories.application_jd_versions import ApplicationJDService
+from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 class _Conversation:
@@ -1731,12 +1731,12 @@ _TEST_LEGACY_DATABASES: list[TemporaryDirectory[str]] = []
 
 def _initial_route_components() -> object:
     database = TemporaryDirectory(
-        prefix="offerpilot-task11-deterministic-",
+        prefix="auroraagent-task11-deterministic-",
         ignore_cleanup_errors=True,
     )
     _TEST_LEGACY_DATABASES.append(database)
     root = Path(database.name)
-    sessions = init_database(root / "offerpilot.db")
+    sessions = init_database(root / "auroraagent.db")
     repository = WriteOperationRepository(
         sessions,
         load_or_create_ledger_key(root, sessions),

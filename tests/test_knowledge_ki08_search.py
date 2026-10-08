@@ -18,7 +18,7 @@ import pytest
 from fastapi.testclient import TestClient
 from conftest import wait_for_extraction
 
-from offerpilot.knowledge.search import parse_query  # noqa: F401  # 保留给后续测试扩展
+from auroraagent.knowledge.search import parse_query  # noqa: F401  # 保留给后续测试扩展
 
 
 # ---------------------------------------------------------------------------
@@ -388,7 +388,7 @@ def test_ki08_init_database_raises_when_fts5_unavailable(tmp_path, monkeypatch) 
     场景下抛 RuntimeError(含 ``fts_unavailable`` 标记)。init_database 调用链通过
     monkeypatch 验证。
     """
-    from offerpilot import db as db_module
+    from auroraagent import db as db_module
 
     def fake_ensure_knowledge_fts(_engine) -> None:
         raise RuntimeError(
@@ -403,7 +403,7 @@ def test_ki08_init_database_raises_when_fts5_unavailable(tmp_path, monkeypatch) 
 
 def test_ki08_init_database_raises_when_trigram_unavailable(tmp_path, monkeypatch) -> None:
     """Spec §15：trigram tokenizer 不可用时启动失败。"""
-    from offerpilot import db as db_module
+    from auroraagent import db as db_module
 
     def fake_ensure_knowledge_fts(_engine) -> None:
         raise RuntimeError("fts_unavailable: trigram tokenizer not available")
@@ -416,7 +416,7 @@ def test_ki08_init_database_raises_when_trigram_unavailable(tmp_path, monkeypatc
 
 def test_ki08_ensure_knowledge_fts_translates_operational_error(tmp_path) -> None:
     """Spec §13 错误码 fts_unavailable 的产生路径。"""
-    from offerpilot import db as db_module
+    from auroraagent import db as db_module
     from sqlalchemy.exc import OperationalError
 
     class _FakeConnection:

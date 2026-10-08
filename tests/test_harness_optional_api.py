@@ -2,9 +2,9 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Application, ApplicationEvent, Conversation, Resume
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Application, ApplicationEvent, Conversation, Resume
 
 
 def test_context_and_proactive_routes_registered_with_opt_in_defaults(tmp_path):

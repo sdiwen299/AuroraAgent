@@ -46,13 +46,13 @@ describe('pending submissions shared by tabs', () => {
     const first = crypto.randomUUID();
     const second = crypto.randomUUID();
     const legacy = JSON.stringify([{ requestId: first, conversationId: 7 }]);
-    localStorage.setItem('offerpilot.pending_starts.v1', legacy);
+    localStorage.setItem('auroraagent.pending_starts.v1', legacy);
     rememberPendingStart(second, 8);
     markPendingStartAccepted(first, 9, 'turn-1');
     expect(listPendingStarts()).toHaveLength(2);
     forgetConversationStarts(9);
     expect(listPendingStarts()).toEqual([{ requestId: second, conversationId: 8 }]);
-    expect(localStorage.getItem('offerpilot.pending_starts.v1')).toBe(legacy);
+    expect(localStorage.getItem('auroraagent.pending_starts.v1')).toBe(legacy);
     vi.resetModules();
     const reloaded = await import('./chatSubmission');
     expect(reloaded.listPendingStarts()).toEqual([{ requestId: second, conversationId: 8 }]);

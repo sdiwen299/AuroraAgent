@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from offerpilot.ai.offer_negotiation import (
+from auroraagent.ai.offer_negotiation import (
     OFFER_NEGOTIATION_FIELDS,
     OfferNegotiationModelError,
     build_offer_negotiation_snapshot,
@@ -12,11 +12,11 @@ from offerpilot.ai.offer_negotiation import (
     safe_empty_offer_negotiation_proposal,
     validate_offer_negotiation,
 )
-from offerpilot.ai.offer_negotiation_templates import (
+from auroraagent.ai.offer_negotiation_templates import (
     TEMPLATE_IDS,
     build_template_catalog,
 )
-from offerpilot.ai.types import Assistant
+from auroraagent.ai.types import Assistant
 
 
 class FakeModel:

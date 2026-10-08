@@ -6,7 +6,7 @@ from dataclasses import asdict, fields, replace
 
 import pytest
 
-from offerpilot.ai.agent_contracts import (
+from auroraagent.ai.agent_contracts import (
     AgentAssistantDelta,
     AgentDriver,
     AgentToolCall,
@@ -16,28 +16,28 @@ from offerpilot.ai.agent_contracts import (
     PendingActionValidationError,
     PendingAction,
 )
-from offerpilot.ai.agent_loop import _InjectedSurfaceAdapter
-from offerpilot.ai.agent_loop import (
+from auroraagent.ai.agent_loop import _InjectedSurfaceAdapter
+from auroraagent.ai.agent_loop import (
     AgentLoopInvocation,
     AgentLoopRunner,
     ApprovedWriteSeed,
     NewTurnSeed,
     build_segment_surface_gate,
 )
-from offerpilot.ai.types import Assistant
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.types import Assistant
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     ToolCatalog,
     compile_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.context_projector.binding import BoundProviderResponse, ModelCallSurfaceBinding
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.pilot_runtime.composition import _AgentDriver
-from offerpilot.pilot_runtime.errors import RuntimeCancelled
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.context_projector.binding import BoundProviderResponse, ModelCallSurfaceBinding
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.pilot_runtime.composition import _AgentDriver
+from auroraagent.pilot_runtime.errors import RuntimeCancelled
 
 from tests.agent_loop.helpers import ScriptedModel, runtime
 

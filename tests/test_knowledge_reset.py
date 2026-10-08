@@ -4,7 +4,7 @@
 
 最高测试 seam 是真实 CLI + 临时 data directory + 真实 SQLite Schema + 真实文件。
 不覆盖在线并发、写后撤销、私有 helper 白盒、quarantine/manifest/启动恢复协议。
-绝不触碰真实 ``$OFFERPILOT_DATA``。
+绝不触碰真实 ``$AURORA_AGENT_DATA``。
 """
 
 from __future__ import annotations
@@ -17,18 +17,18 @@ import pytest
 from fastapi.testclient import TestClient
 from typer.testing import CliRunner
 
-from offerpilot.api import create_app
-from offerpilot.config import AIProviderProfile, Config, save_config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW, BRIEF_SCHEMA_VERSION
-from offerpilot.knowledge.repository import KnowledgeRepository
-from offerpilot.knowledge.reset import (
+from auroraagent.api import create_app
+from auroraagent.config import AIProviderProfile, Config, save_config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW, BRIEF_SCHEMA_VERSION
+from auroraagent.knowledge.repository import KnowledgeRepository
+from auroraagent.knowledge.reset import (
     COMPLETION_MIGRATION_VERSION,
     KNOWLEDGE_RESET_TABLES,
     KnowledgeResetError,
     reset_knowledge_domain,
 )
-from offerpilot.models import Application, Conversation
+from auroraagent.models import Application, Conversation
 
 from _knowledge_seam import (
     RoleAwareModelClient,
@@ -40,7 +40,7 @@ from conftest import symlink_or_skip
 
 CONTENT = (
     "# 概述\n\n"
-    "OfferPilot 使用 SQLite 作为 Knowledge 单一事实源。\n\n"
+    "AuroraAgent 使用 SQLite 作为 Knowledge 单一事实源。\n\n"
     "## 第二段\n\n"
     "Evidence 是引用单位，Evidence 不重叠。\n"
 )
@@ -177,8 +177,8 @@ def _snapshot_data_dir(tmp_path: Path) -> tuple[dict[str, int], set[str], list[s
 
 
 def _run_cli(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, *args: str):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
-    from offerpilot.cli import app as cli_app
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
+    from auroraagent.cli import app as cli_app
 
     return CliRunner().invoke(cli_app, list(args))
 
@@ -232,7 +232,7 @@ def test_cli_reset_does_not_touch_files_outside_knowledge_dir(
 
     logs_dir = tmp_path / "logs"
     logs_dir.mkdir(parents=True, exist_ok=True)
-    log_file = logs_dir / "offerpilot.log"
+    log_file = logs_dir / "auroraagent.log"
     log_file.write_text("keep-me", encoding="utf-8")
     outside_marker = tmp_path / "outside-marker.txt"
     outside_marker.write_text("keep", encoding="utf-8")
@@ -348,8 +348,8 @@ def test_cli_does_not_invoke_session_factory_or_startup_recovery(
 
     calls = {"session_factory": 0, "init_database": 0}
 
-    import offerpilot.cli as cli_module
-    import offerpilot.db as db_module
+    import auroraagent.cli as cli_module
+    import auroraagent.db as db_module
 
     real_session_factory = db_module.session_factory_for_data_dir
     real_init = db_module.init_database
@@ -519,7 +519,7 @@ def test_reset_db_transaction_is_atomic(
     assert knowledge_dir.is_dir()
     before_files = sorted(p.name for p in knowledge_dir.rglob("*") if p.is_file())
 
-    from offerpilot.knowledge import reset as reset_module
+    from auroraagent.knowledge import reset as reset_module
 
     real_execute = reset_module._delete_from_table
     call_count = {"n": 0}
@@ -554,7 +554,7 @@ def test_reset_file_cleanup_failure_then_retry_converges(
     _seed_knowledge(tmp_path, config=config)
     non_knowledge_before = _seed_non_knowledge(tmp_path)
 
-    from offerpilot.knowledge import reset as reset_module
+    from auroraagent.knowledge import reset as reset_module
 
     def failing_clear(data_dir: Path) -> list[str]:
         # 模拟 DB 已提交后、文件只清理一部分：留下 knowledge/sources 残留。

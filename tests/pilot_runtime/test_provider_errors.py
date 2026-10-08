@@ -1,6 +1,6 @@
-from offerpilot.config import Config
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.pilot_runtime.composition import _provider_error_message
+from auroraagent.config import Config
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.pilot_runtime.composition import _provider_error_message
 
 
 def test_budget_projection_error_points_to_explicit_ai_budget_settings() -> None:

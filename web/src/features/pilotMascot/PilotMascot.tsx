@@ -193,7 +193,7 @@ export default function PilotMascot({
     ? notification.status === 'success' ? '查看 Pilot 已完成回答' : '查看 Pilot 回答错误'
     : placement === 'pilot-page'
       ? '聚焦 Pilot 输入框'
-      : panelOpen ? '收起 OfferPilot 领航员' : '打开 OfferPilot 领航员';
+      : panelOpen ? '收起曙光领航员' : '打开曙光领航员';
   const buttonLabel = loadFailed ? `${actionLabel}（Haru 暂时休息中）` : actionLabel;
 
   const frame = compact || panelOpen || placement === 'pilot-page' || (studioPlacement && viewport.height < 740)

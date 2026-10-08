@@ -131,17 +131,17 @@ it('clearing one receipt preserves another tab’s pending stop command', async 
   const otherKey = crypto.randomUUID();
   const otherTarget = { ...first, execution_generation: 2 };
   interrupt.mockImplementationOnce(async (target, commandId) => {
-    localStorage.setItem(`offerpilot.pending_interrupt.v2.${otherKey}`, JSON.stringify({ target: otherTarget, commandId: otherKey }));
+    localStorage.setItem(`auroraagent.pending_interrupt.v2.${otherKey}`, JSON.stringify({ target: otherTarget, commandId: otherKey }));
     return { command_id: commandId, turn_id: target.turn_id, execution_generation: target.execution_generation, status: 'stopped' };
   }).mockImplementationOnce(async (target, commandId) => ({
     command_id: commandId, turn_id: target.turn_id, execution_generation: target.execution_generation, status: 'already_ended',
   }));
   await render();
   await act(async () => { await controller.stop(); });
-  expect(localStorage.getItem(`offerpilot.pending_interrupt.v2.${otherKey}`)).not.toBeNull();
+  expect(localStorage.getItem(`auroraagent.pending_interrupt.v2.${otherKey}`)).not.toBeNull();
   await act(async () => { await controller.stop(); });
   expect(interrupt.mock.calls[1]).toEqual([otherTarget, otherKey]);
-  expect(localStorage.getItem(`offerpilot.pending_interrupt.v2.${otherKey}`)).toBeNull();
+  expect(localStorage.getItem(`auroraagent.pending_interrupt.v2.${otherKey}`)).toBeNull();
 });
 
 it('ends the exact local subscription when another page durably stops it', async () => {

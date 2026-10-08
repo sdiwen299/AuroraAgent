@@ -17,8 +17,8 @@ Status: not pushed, not merged
 
 - `uv run pytest tests/test_mock_interview_ai.py -q`: exit 0, 29 passed.
 - All Mock Interview test files (`tests/test_mock_interview*.py`): exit 0, 106 passed.
-- `uv run ruff check src/offerpilot/ai/mock_interview.py tests/test_mock_interview_ai.py`: exit 0.
-- `uv run mypy src/offerpilot/ai/mock_interview.py`: exit 0.
+- `uv run ruff check src/auroraagent/ai/mock_interview.py tests/test_mock_interview_ai.py`: exit 0.
+- `uv run mypy src/auroraagent/ai/mock_interview.py`: exit 0.
 - `uv run oc verify --profile real-ai --static-dir web/dist`: exit 0.
   - Interview feedback completed after two turns.
   - Other real-AI flows also completed, including Opportunity Fit, material proposal, interview preparation, interview review, and knowledge capture.

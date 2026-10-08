@@ -13,7 +13,7 @@
 
 ## 2. 当前实现与已确认根因
 
-当前实现位于 src/offerpilot/repositories/interview_preparation_proposals.py，面试准备生成记录使用 InterviewPreparationProposal。现有字段已经提供本设计所需的持久化基础：
+当前实现位于 src/auroraagent/repositories/interview_preparation_proposals.py，面试准备生成记录使用 InterviewPreparationProposal。现有字段已经提供本设计所需的持久化基础：
 
 - attempt_status
 - generation_revision

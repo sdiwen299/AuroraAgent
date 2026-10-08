@@ -84,4 +84,4 @@
 - [ ] 运行 `uv run pytest tests/test_chat_api.py -q`、`uv run ruff check .`、`uv run mypy src` 和 `uv run oc smoke --static-dir web/dist`。
 - [ ] 使用内置浏览器验证普通对话、流式展开、关闭后继续、停止、Pending 批准/拒绝、上下文切换、旧深链、fallback、宽屏、768-1179px 和 reduced motion。
 - [ ] 启动独立代码审查，修复全部 P0/P1/P2，再重跑受影响测试和完整 gate。
-- [ ] 执行 `git diff --check` 和禁止模式搜索，确认未修改 `src/offerpilot/**`、未引入 Journal 状态、`variant="haru"`、第二套 service 或 SSE parser。
+- [ ] 执行 `git diff --check` 和禁止模式搜索，确认未修改 `src/auroraagent/**`、未引入 Journal 状态、`variant="haru"`、第二套 service 或 SSE parser。

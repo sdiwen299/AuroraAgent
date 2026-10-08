@@ -5,9 +5,9 @@ from dataclasses import fields, replace
 from types import SimpleNamespace
 import pytest
 
-import offerpilot.ai.tool_authority.composition as authority_composition
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.tool_authority import (
+import auroraagent.ai.tool_authority.composition as authority_composition
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.tool_authority import (
     ApprovalExecutionAuthority,
     AuthorityFactory,
     AuthorityPhaseError,
@@ -15,23 +15,23 @@ from offerpilot.ai.tool_authority import (
     ExecutionClaim,
     TrustedContextScope,
 )
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ProviderToolContract,
     ToolFailure,
 )
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.types import ToolCall
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.types import ToolCall
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,

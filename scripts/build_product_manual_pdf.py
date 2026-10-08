@@ -17,7 +17,7 @@ from reportlab.platypus.tableofcontents import TableOfContents
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'docs/product-manual/产品说明书.md'
-OUTPUT = ROOT / 'output/pdf/OfferPilot-产品介绍与用户指南.pdf'
+OUTPUT = ROOT / 'output/pdf/AuroraAgent-产品介绍与用户指南.pdf'
 WIDTH, HEIGHT = 1080, 810
 MARGIN = 54
 BODY = WIDTH - 2 * MARGIN
@@ -54,7 +54,7 @@ def markup(text: str) -> str:
         if not target.startswith(('#', 'https://', 'http://')):
             path, _, anchor = target.partition('#')
             relative = (SOURCE.parent / html.unescape(path)).resolve().relative_to(ROOT)
-            target = 'https://github.com/offercontext/offerpilot/blob/main/' + quote(relative.as_posix())
+            target = 'https://github.com/sdiwen299/AuroraAgent/blob/main/' + quote(relative.as_posix())
             if anchor:
                 target += '#' + quote(html.unescape(anchor))
         return f'<a href="{target}" color="#6755dd">{label}</a>'
@@ -107,7 +107,7 @@ def decoration(canvas, doc):
     canvas.saveState()
     canvas.setFillColor(MUTED)
     canvas.setFont('Yahei', 9)
-    canvas.drawString(MARGIN, HEIGHT - 30, 'OfferPilot / 产品介绍与用户指南')
+    canvas.drawString(MARGIN, HEIGHT - 30, 'AuroraAgent / 产品介绍与用户指南')
     canvas.drawRightString(WIDTH - MARGIN, HEIGHT - 30, '本地部署 · 离线阅读版')
     canvas.setStrokeColor(colors.HexColor('#e1e4ee'))
     canvas.line(MARGIN, 44, WIDTH - MARGIN, 44)
@@ -121,11 +121,11 @@ def main():
     doc = ManualDoc(str(OUTPUT), pagesize=(WIDTH, HEIGHT),
                     leftMargin=MARGIN, rightMargin=MARGIN,
                     topMargin=58, bottomMargin=58,
-                    title='OfferPilot 产品介绍与用户指南',
-                    author='OfferPilot', subject='项目介绍、快速开始与完整求职场景操作指南',
+                    title='AuroraAgent 产品介绍与用户指南',
+                    author='AuroraAgent', subject='项目介绍、快速开始与完整求职场景操作指南',
                     pageCompression=1)
     cover = ParagraphStyle('cover', parent=STYLES['h2'], fontSize=46, leading=62)
-    story = [Spacer(1, 100), para('OFFERPILOT', 'h3'),
+    story = [Spacer(1, 100), para('AURORA_AGENT', 'h3'),
              Paragraph('产品介绍与用户指南', cover), Spacer(1, 20),
              para('整理求职进展，连接准备与复盘', 'h2'),
              para('从第一个岗位到 Offer 决策'), Spacer(1, 60),

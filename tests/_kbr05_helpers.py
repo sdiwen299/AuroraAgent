@@ -18,7 +18,7 @@ from typing import Any
 
 MIXED_FAILURE_CONTENT = (
     "# 章节 A\n\n"
-    "Evidence A 说明 OfferPilot 使用 SQLite 作为单一事实源。\n\n"
+    "Evidence A 说明 AuroraAgent 使用 SQLite 作为单一事实源。\n\n"
     "# 章节 B\n\n"
     "Evidence B 描述 Evidence 不重叠且可回读。\n\n"
     "# 章节 C\n\n"

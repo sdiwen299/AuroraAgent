@@ -5,12 +5,12 @@ import json
 
 import pytest
 
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.product_actions.catalog import (
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.product_actions.catalog import (
     ProductActionCatalogV1,
     ProductActionCompensationCatalogV1,
 )
-from offerpilot.product_actions.contracts import (
+from auroraagent.product_actions.contracts import (
     PRODUCT_ACTION_COMPENSATION_NAMES,
     PRODUCT_ACTION_NAMES,
     HistoricalStoryRouteProof,

@@ -16,9 +16,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
-from offerpilot.knowledge.service import KnowledgeIngestService
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
+from auroraagent.knowledge.service import KnowledgeIngestService
 
 from _knowledge_seam import (
     BriefRunOutcome,
@@ -32,7 +32,7 @@ from _knowledge_seam import (
 
 _CONTENT = (
     "# 概述\n\n"
-    "Source 描述 OfferPilot 与 SQLite 单一事实源决策。\n\n"
+    "Source 描述 AuroraAgent 与 SQLite 单一事实源决策。\n\n"
     "## 第二段\n\n"
     "Evidence 是引用单位，Evidence 不重叠。\n"
 )
@@ -130,8 +130,8 @@ def test_call_log_excludes_full_prompt_and_source(tmp_path: Path) -> None:
         model_client=client,
         source_id=source_id,
     )
-    full_prompt_marker = "你是 OfferPilot 的 Knowledge Brief"
-    source_marker = "Source 描述 OfferPilot 与 SQLite 单一事实源决策"
+    full_prompt_marker = "你是 AuroraAgent 的 Knowledge Brief"
+    source_marker = "Source 描述 AuroraAgent 与 SQLite 单一事实源决策"
     for record in client.call_log:
         digest = record.input_digest
         assert len(digest) <= 80

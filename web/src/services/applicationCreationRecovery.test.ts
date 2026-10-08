@@ -51,7 +51,7 @@ describe('bounded Application creation recovery storage', () => {
     expect(localStorage.length).toBe(0);
   });
   it('fails closed on a corrupted or mis-keyed persisted envelope without deleting it', () => {
-    const key = `offerpilot.application-create.${scope}.different-key-001`;
+    const key = `auroraagent.application-create.${scope}.different-key-001`;
     localStorage.setItem(key, JSON.stringify(record()));
     expect(() => loadPendingCreations(scope)).toThrow();
     expect(localStorage.getItem(key)).not.toBeNull();

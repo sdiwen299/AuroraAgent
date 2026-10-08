@@ -6,12 +6,12 @@
 - 日期：2026-08-23
 - 原始设计基线：`aaecf5dfa6ce913ecaf00b25a0e88bcf46096eeb`（历史实现起点）
 - 当前组合基线：`7c36957176445c5213a31b013251fbbce8d610db`；该基线必须是当前 `HEAD` 的祖先
-- 实施 worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260823-haru-surface-completion`
+- 实施 worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260823-haru-surface-completion`
 - 允许修改范围由 `assistantSurfaceGate.test.ts` 的 canonical allowlist 固定，当前组合 SHA-256 为 `b1698f9b89b23effcb6adc604c5d4457a26a36c6d2207b4bbe49c70cae290eb8`
 
 ## 1. 目标与边界
 
-OfferPilot 桌面端需要一个稳定的 Haru surface：Haru 作为常驻桌面陪伴入口，Chat drawer 作为可聚焦的对话窗口，Pilot workspace 作为完整任务页。三种 surface 共享一个 Provider 和一个 conversation controller；业务页面只提交上下文和打开意图，不拥有第二份请求、通知或生命周期状态。
+AuroraAgent 桌面端需要一个稳定的 Haru surface：Haru 作为常驻桌面陪伴入口，Chat drawer 作为可聚焦的对话窗口，Pilot workspace 作为完整任务页。三种 surface 共享一个 Provider 和一个 conversation controller；业务页面只提交上下文和打开意图，不拥有第二份请求、通知或生命周期状态。
 
 本次只完成前端 surface、设置中的 Haru/外观入口、AppShell 接线和相应测试文档。保留现有 Chat API、SSE 解析、HITL 确认和后端领域模型，不新增 API、数据库表、Agent runtime、Journal 或移动端产品依赖。
 

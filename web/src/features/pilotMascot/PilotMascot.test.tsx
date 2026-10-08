@@ -57,7 +57,7 @@ describe('PilotMascot', () => {
     const props = await renderMascot({ compact: true });
     expect(container.querySelector<HTMLElement>('aside')?.style.width).toBe('116px');
     expect(container.querySelector<HTMLElement>('aside')?.style.height).toBe('174px');
-    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="打开 OfferPilot 领航员"]')?.click());
+    act(() => container.querySelector<HTMLButtonElement>('button[aria-label="打开曙光领航员"]')?.click());
     expect(props.onTogglePilot).toHaveBeenCalledOnce();
   });
   it('keeps the idle prompt out of the way and gives the contextual mascot a full-body frame', async () => {
@@ -85,7 +85,7 @@ describe('PilotMascot', () => {
 
   it('toggles Pilot with an accessible button and exposes activity text', async () => {
     const props = await renderMascot({ activity: 'thinking' });
-    const button = container.querySelector<HTMLButtonElement>('button[aria-label="打开 OfferPilot 领航员"]');
+    const button = container.querySelector<HTMLButtonElement>('button[aria-label="打开曙光领航员"]');
     expect(button).not.toBeNull();
     expect(button?.getAttribute('aria-haspopup')).toBe('dialog');
     expect(container.textContent).toContain('正在思考');
@@ -198,7 +198,7 @@ describe('PilotMascot', () => {
   });
 
   it('reloads a reset position when the reset token changes', async () => {
-    localStorage.setItem('offerpilot:pilot-mascot-position', JSON.stringify({
+    localStorage.setItem('auroraagent:pilot-mascot-position', JSON.stringify({
       version: 1,
       normal: { xRatio: 0.2, yRatio: 0.35 },
       interview_studio: { xRatio: 0.72, yRatio: 0.46 },
@@ -206,7 +206,7 @@ describe('PilotMascot', () => {
     const props = await renderMascot({ positionResetToken: 1 });
     const viewportWidth = window.innerWidth || 1440;
     expect(container.querySelector<HTMLElement>('aside')?.style.left).toBe(`${0.2 * viewportWidth - 119}px`);
-    localStorage.setItem('offerpilot:pilot-mascot-position', JSON.stringify({
+    localStorage.setItem('auroraagent:pilot-mascot-position', JSON.stringify({
       version: 1,
       normal: { xRatio: 0.8, yRatio: 0.7 },
       interview_studio: { xRatio: 0.72, yRatio: 0.46 },

@@ -1,4 +1,4 @@
-export const HARU_PRESENTATION_KEY = 'offerpilot.haru.presentationMode';
+export const HARU_PRESENTATION_KEY = 'auroraagent.haru.presentationMode';
 export type HaruPresentationMode = 'compact' | 'character';
 export function readHaruPresentation(storage?: Pick<Storage, 'getItem'>): HaruPresentationMode {
   try { return (storage ?? window.localStorage).getItem(HARU_PRESENTATION_KEY) === 'character' ? 'character' : 'compact'; } catch { return 'compact'; }

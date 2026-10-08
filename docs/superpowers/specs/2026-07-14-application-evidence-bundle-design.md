@@ -6,9 +6,9 @@
 
 ## 1. 问题与决策
 
-OfferPilot 当前的 Application、Resume、JD analysis 和 Material Kit 都可以继续编辑。仅以 `status=applied` 或 Material Kit 的 `submitted` 标记，无法回答“用户当时确认投递了什么”，也无法让后续面试准备、结果归因或校准安全地引用历史材料。
+AuroraAgent 当前的 Application、Resume、JD analysis 和 Material Kit 都可以继续编辑。仅以 `status=applied` 或 Material Kit 的 `submitted` 标记，无法回答“用户当时确认投递了什么”，也无法让后续面试准备、结果归因或校准安全地引用历史材料。
 
-本设计新增独立、追加式的 **Application Evidence Bundle**（投递证据包）。它在用户明确执行“确认已投递”时，复制 OfferPilot 内部已有来源为不可变快照；它记录的是**用户确认的提交版本**，不是招聘平台回执，也不声称能证明招聘方实际打开过该材料。
+本设计新增独立、追加式的 **Application Evidence Bundle**（投递证据包）。它在用户明确执行“确认已投递”时，复制 AuroraAgent 内部已有来源为不可变快照；它记录的是**用户确认的提交版本**，不是招聘平台回执，也不声称能证明招聘方实际打开过该材料。
 
 核心不变量：
 
@@ -19,7 +19,7 @@ OfferPilot 当前的 Application、Resume、JD analysis 和 Material Kit 都可�
 ### 2.1 目标
 
 - 为同一 Application 保存零到多份、按时间排序的用户确认投递快照。
-- 只接受 OfferPilot 内部的 Resume、JD snapshot 和 Material Kit 作为第一代来源。
+- 只接受 AuroraAgent 内部的 Resume、JD snapshot 和 Material Kit 作为第一代来源。
 - 在确认前让用户核对来源，在确认时检测来源是否已变化。
 - 原子创建证据包、必要的状态推进和 `application_events` 时间线事件。
 - 提供可读历史与完整详情，但不提供 in-app 更新或删除能力。
@@ -51,7 +51,7 @@ OfferPilot 当前的 Application、Resume、JD analysis 和 Material Kit 都可�
 | `application_id` | 指向 Application；正常应用删除是软删除，证据包随其隐藏。物理隐私清除留给未来专门流程。 |
 | `sequence` | 同一 Application 从 `1` 开始递增；与 `application_id` 组成唯一约束。 |
 | `submitted_at` | 用户确认的实际投递时间，要求 RFC3339 时区时间；可为历史时间，不能为未来。 |
-| `confirmed_at` | OfferPilot 创建快照的服务器时间。 |
+| `confirmed_at` | AuroraAgent 创建快照的服务器时间。 |
 | `confirmation_kind` | 第一代固定为 `user_asserted`，显式区别于未来可能的 `platform_verified`。 |
 | `idempotency_key` | 前端为一次确认生成的 UUID；与 `application_id` 组成唯一约束。重复请求返回原记录。 |
 | `snapshot_json` | 规范化 JSON，保存下面定义的完整不可变快照。 |

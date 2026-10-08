@@ -1,8 +1,8 @@
 import type { ChatContextInput } from './chat';
 
-const STORAGE_KEY = 'offerpilot.pending_starts.v1';
-const RECORD_PREFIX = 'offerpilot.pending_starts.v2.';
-const EVENT_NAME = 'offerpilot-pending-starts';
+const STORAGE_KEY = 'auroraagent.pending_starts.v1';
+const RECORD_PREFIX = 'auroraagent.pending_starts.v2.';
+const EVENT_NAME = 'auroraagent-pending-starts';
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const fallback = new Map<string, PendingStart | null>();
 

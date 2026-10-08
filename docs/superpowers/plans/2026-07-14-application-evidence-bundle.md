@@ -14,12 +14,12 @@
 
 | File | Responsibility |
 | --- | --- |
-| `src/offerpilot/models.py` | ORM model, DB constraints, Application FK inventory. |
-| `src/offerpilot/db.py` | Record the idempotent local-schema migration. |
-| `src/offerpilot/application_status.py` | Share the first-status timestamp helper between existing updates and submission confirmation. |
-| `src/offerpilot/repositories/evidence_bundles.py` | Canonical JSON/hash construction, source validation, immutable read operations, atomic confirmation. |
-| `src/offerpilot/schemas.py` | API response models for preview, summaries and details. |
-| `src/offerpilot/api.py` | Nested preview/read/confirm endpoints and error mapping. |
+| `src/auroraagent/models.py` | ORM model, DB constraints, Application FK inventory. |
+| `src/auroraagent/db.py` | Record the idempotent local-schema migration. |
+| `src/auroraagent/application_status.py` | Share the first-status timestamp helper between existing updates and submission confirmation. |
+| `src/auroraagent/repositories/evidence_bundles.py` | Canonical JSON/hash construction, source validation, immutable read operations, atomic confirmation. |
+| `src/auroraagent/schemas.py` | API response models for preview, summaries and details. |
+| `src/auroraagent/api.py` | Nested preview/read/confirm endpoints and error mapping. |
 | `tests/test_evidence_bundles_repository.py` | Storage, immutability, lifecycle and transaction regression tests. |
 | `tests/test_evidence_bundles_api.py` | HTTP contract tests including conflict and idempotency behavior. |
 | `tests/test_conditional_delete_repositories.py` | Keep the direct Application-FK inventory exhaustive. |
@@ -155,11 +155,11 @@
 
 **Files:**
 
-- Create: `src/offerpilot/repositories/evidence_bundles.py`
-- Modify: `src/offerpilot/models.py:4-5, 436-448`
-- Modify: `src/offerpilot/db.py:20-61`
-- Modify: `src/offerpilot/application_status.py`
-- Modify: `src/offerpilot/repositories/applications.py:175-185`
+- Create: `src/auroraagent/repositories/evidence_bundles.py`
+- Modify: `src/auroraagent/models.py:4-5, 436-448`
+- Modify: `src/auroraagent/db.py:20-61`
+- Modify: `src/auroraagent/application_status.py`
+- Modify: `src/auroraagent/repositories/applications.py:175-185`
 - Modify: `tests/test_conditional_delete_repositories.py`
 - Test: `tests/test_evidence_bundles_repository.py`
 
@@ -212,7 +212,7 @@
 
 - [ ] **Step 3: Extract the reusable status timestamp helper.**
 
-  In `src/offerpilot/application_status.py`, import `datetime` and define a helper that keeps the first transition timestamp unchanged:
+  In `src/auroraagent/application_status.py`, import `datetime` and define a helper that keeps the first transition timestamp unchanged:
 
   ```python
   FIRST_STATUS_TIMESTAMP_ATTR = {
@@ -235,7 +235,7 @@
 
 - [ ] **Step 4: Implement canonical snapshot construction and the repository.**
 
-  Create `src/offerpilot/repositories/evidence_bundles.py`. Keep hashing, validation and persistence in this focused module; do not let the API or React app produce canonical hashes.
+  Create `src/auroraagent/repositories/evidence_bundles.py`. Keep hashing, validation and persistence in this focused module; do not let the API or React app produce canonical hashes.
 
   ```python
   import json
@@ -248,8 +248,8 @@
   from sqlalchemy.exc import IntegrityError
   from sqlalchemy.orm import Session, sessionmaker
 
-  from offerpilot.application_status import mark_first_status_timestamp
-  from offerpilot.models import (
+  from auroraagent.application_status import mark_first_status_timestamp
+  from auroraagent.models import (
       Application,
       ApplicationEvidenceBundle,
       ApplicationEvent,
@@ -355,7 +355,7 @@
 - [ ] **Step 6: Commit the persistence slice.**
 
   ```powershell
-  git add src/offerpilot/models.py src/offerpilot/db.py src/offerpilot/application_status.py src/offerpilot/repositories/applications.py src/offerpilot/repositories/evidence_bundles.py tests/test_evidence_bundles_repository.py tests/test_conditional_delete_repositories.py
+  git add src/auroraagent/models.py src/auroraagent/db.py src/auroraagent/application_status.py src/auroraagent/repositories/applications.py src/auroraagent/repositories/evidence_bundles.py tests/test_evidence_bundles_repository.py tests/test_conditional_delete_repositories.py
   git commit -m "feat: AI add application evidence persistence"
   ```
 
@@ -364,8 +364,8 @@
 **Files:**
 
 - Create: `tests/test_evidence_bundles_api.py`
-- Modify: `src/offerpilot/schemas.py:213-230`
-- Modify: `src/offerpilot/api.py:1-82, 162-180, 313-412, 4511-4655`
+- Modify: `src/auroraagent/schemas.py:213-230`
+- Modify: `src/auroraagent/api.py:1-82, 162-180, 313-412, 4511-4655`
 - Test: `tests/test_evidence_bundles_api.py`
 
 - [ ] **Step 1: Write failing endpoint-contract tests.**
@@ -557,7 +557,7 @@
 - [ ] **Step 6: Commit the HTTP slice.**
 
   ```powershell
-  git add src/offerpilot/schemas.py src/offerpilot/api.py tests/test_evidence_bundles_api.py
+  git add src/auroraagent/schemas.py src/auroraagent/api.py tests/test_evidence_bundles_api.py
   git commit -m "feat: AI expose evidence bundle API"
   ```
 
@@ -793,7 +793,7 @@
 
 - [ ] **Step 2: Perform focused manual browser acceptance.**
 
-  Use the in-app browser against a local app instance and verify: a ready material kit previews sources, confirmation produces one history entry, a source edit causes a conflict/re-preview path, a legacy `submitted` kit shows the warning, and no screen calls it platform-verified. Inspect the browser network log during preview and confirmation: requests must stay under OfferPilot's local `/api` origin; this feature must not call a model, upload a file, contact a recruitment platform, or introduce data egress（不新增数据出境）.
+  Use the in-app browser against a local app instance and verify: a ready material kit previews sources, confirmation produces one history entry, a source edit causes a conflict/re-preview path, a legacy `submitted` kit shows the warning, and no screen calls it platform-verified. Inspect the browser network log during preview and confirmation: requests must stay under AuroraAgent's local `/api` origin; this feature must not call a model, upload a file, contact a recruitment platform, or introduce data egress（不新增数据出境）.
 
 - [ ] **Step 3: Request an independent code review.**
 
@@ -802,7 +802,7 @@
 - [ ] **Step 4: Commit any review fixes separately.**
 
   ```powershell
-  git add src/offerpilot/models.py src/offerpilot/db.py src/offerpilot/application_status.py src/offerpilot/repositories/applications.py src/offerpilot/repositories/evidence_bundles.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_evidence_bundles_repository.py tests/test_evidence_bundles_api.py tests/test_conditional_delete_repositories.py web/src/types/evidenceBundle.ts web/src/services/evidenceBundles.ts web/src/services/evidenceBundles.test.ts web/src/types/materialKit.ts web/src/components/MaterialKitDrawer.tsx web/src/components/MaterialKitDrawer.module.css web/src/components/MaterialKitDrawer.evidenceBundles.test.tsx
+  git add src/auroraagent/models.py src/auroraagent/db.py src/auroraagent/application_status.py src/auroraagent/repositories/applications.py src/auroraagent/repositories/evidence_bundles.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_evidence_bundles_repository.py tests/test_evidence_bundles_api.py tests/test_conditional_delete_repositories.py web/src/types/evidenceBundle.ts web/src/services/evidenceBundles.ts web/src/services/evidenceBundles.test.ts web/src/types/materialKit.ts web/src/components/MaterialKitDrawer.tsx web/src/components/MaterialKitDrawer.module.css web/src/components/MaterialKitDrawer.evidenceBundles.test.tsx
   git commit -m "fix: AI address evidence bundle review"
   ```
 

@@ -14,17 +14,17 @@ The final pre-report scope assertion found `61` changed paths and zero paths out
 
 - `pyproject.toml`
 - `uv.lock`
-- `src/offerpilot/ai/agent.py`
-- `src/offerpilot/ai/client.py`
-- `src/offerpilot/ai/types.py`
-- `src/offerpilot/ai/tools.py`
-- `src/offerpilot/ai/tool_runtime/`
-- `src/offerpilot/ai/tool_specs/`
-- `src/offerpilot/api.py`
-- `src/offerpilot/db.py`
-- `src/offerpilot/models.py`
-- `src/offerpilot/repositories/chat.py`
-- `src/offerpilot/smoke.py`
+- `src/auroraagent/ai/agent.py`
+- `src/auroraagent/ai/client.py`
+- `src/auroraagent/ai/types.py`
+- `src/auroraagent/ai/tools.py`
+- `src/auroraagent/ai/tool_runtime/`
+- `src/auroraagent/ai/tool_specs/`
+- `src/auroraagent/api.py`
+- `src/auroraagent/db.py`
+- `src/auroraagent/models.py`
+- `src/auroraagent/repositories/chat.py`
+- `src/auroraagent/smoke.py`
 - `tests/tool_pipeline/`
 - `tests/fixtures/tool_pipeline/`
 - `tests/test_ai_tools.py`
@@ -51,7 +51,7 @@ Release acceptance is green for the approved Phase 2 boundary. No code was pushe
 - Added a persisted private confirmation claim with a bounded 15-minute lease, atomic single-winner stale-claim recovery, explicit empty-claim rejection, and idempotent upgrade from migration `0024` through the unreleased `0025` migration.
 - Kept transient `ToolExecutionRecord`, `ToolOutcome`, runtime context, Catalog, binding/capability audit, and exceptions out of LangGraph checkpoint state.
 - Preserved the exact multi-call rule in sync and stream: all-read calls execute in order; if any selected call is a write, only the original first call is processed.
-- Deleted `src/offerpilot/ai/tools.py`, the old registry factories, model-visible legacy handlers, implicit fallback, shadow execution, dual execution, and string-status parsing from production dispatch.
+- Deleted `src/auroraagent/ai/tools.py`, the old registry factories, model-visible legacy handlers, implicit fallback, shadow execution, dual execution, and string-status parsing from production dispatch.
 
 ## Exact 25/3 boundary
 
@@ -223,7 +223,7 @@ Internal APIs are deliberately breaking:
 - Provider builders accept only `ProviderToolContract` sequences;
 - Agent/API callers consume typed records and outcomes;
 - the 25 model-visible executors exist only behind ToolSpecs and the Pipeline;
-- old tests and imports targeting `offerpilot.ai.tools` were removed or migrated.
+- old tests and imports targeting `auroraagent.ai.tools` were removed or migrated.
 
 No intended breaking change exists in Provider-visible envelopes, tool name/order/description/Schema, user-visible result text, HTTP/SSE payloads, HITL/Pending Action behavior, CAS, call counts, or domain side effects.
 

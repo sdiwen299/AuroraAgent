@@ -14,7 +14,7 @@
 
 **Files:**
 - Modify: `tests/test_mock_interview_ai.py`
-- Modify: `src/offerpilot/ai/mock_interview.py`
+- Modify: `src/auroraagent/ai/mock_interview.py`
 
 - [ ] **Step 1: Write failing AI contract tests**
 
@@ -156,7 +156,7 @@ npm.cmd run build
 - [ ] **Step 3: Run static and real-AI checks**
 
 ```powershell
-uv run ruff check src/offerpilot/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py
+uv run ruff check src/auroraagent/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py
 uv run mypy src
 uv run oc verify-mock-interview --profile real-ai --static-dir web/dist
 git diff --check
@@ -166,12 +166,12 @@ Use one bounded real-Provider run only; do not retry repeatedly to manufacture a
 
 - [ ] **Step 4: Rebuild and restart the existing local deployment**
 
-Build `web/dist`, restart only the OfferPilot process listening on `127.0.0.1:65470`, and confirm the local page loads. Do not delete the user's existing Attempt or other data.
+Build `web/dist`, restart only the AuroraAgent process listening on `127.0.0.1:65470`, and confirm the local page loads. Do not delete the user's existing Attempt or other data.
 
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add src/offerpilot/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py web/src/features/interviewStudio/interviewStudioController.ts web/src/features/interviewStudio/interviewStudioController.test.ts web/src/features/interviewStudio/InterviewStudio.test.tsx
+git add src/auroraagent/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py web/src/features/interviewStudio/interviewStudioController.ts web/src/features/interviewStudio/interviewStudioController.test.ts web/src/features/interviewStudio/InterviewStudio.test.tsx
 git add -f docs/superpowers/specs/2026-08-16-mock-interview-follow-up-quality-design.md docs/superpowers/plans/2026-08-16-mock-interview-follow-up-quality.md
 git commit -m "fix: AI enforce mock interview follow-ups"
 ```

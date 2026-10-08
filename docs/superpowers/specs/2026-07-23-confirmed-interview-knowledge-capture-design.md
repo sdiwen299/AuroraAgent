@@ -396,7 +396,7 @@ Provider/网络/超时异常不重试，返回 502，保留 attempt key；前端
 真实验收使用连续的隔离 harness，而不是正式数据目录：
 
 1. 创建临时 `$tempData`，只复制现有 AI 配置中的非数据配置；不复制正式数据库、简历、复盘或知识目录。
-2. 选择并确认空闲端口，以 `OFFERPILOT_DATA=$tempData` 启动服务；启动后验证监听进程属于本次 harness 进程树，再打开浏览器，禁止仅凭健康检查误连旧服务。
+2. 选择并确认空闲端口，以 `AURORA_AGENT_DATA=$tempData` 启动服务；启动后验证监听进程属于本次 harness 进程树，再打开浏览器，禁止仅凭健康检查误连旧服务。
 3. 通过本地 API 创建合成 Application、Interview Event 和至少三条非空 InterviewNote，内容使用固定无敏感 marker；不调用 URL、招聘平台或外部数据源。
 4. 浏览器打开服务根地址，从投递详情进入面试复盘知识沉淀入口：
    - 第一组走默认直接保存，确认前断言数据库没有 `knowledge_sources`、`knowledge_evidence`、`knowledge_note_versions` 新行，确认后断言三类资产存在且引用链完整；

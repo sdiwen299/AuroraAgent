@@ -8,13 +8,13 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.models import PilotExecution, PilotTurnRecord
-from offerpilot.pilot_control import PilotControlRepository
-from offerpilot.pilot_runtime.turn_control import TurnControlRegistry
-from offerpilot.pilot_timeline import PilotTimelineRepository
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.models import PilotExecution, PilotTurnRecord
+from auroraagent.pilot_control import PilotControlRepository
+from auroraagent.pilot_runtime.turn_control import TurnControlRegistry
+from auroraagent.pilot_timeline import PilotTimelineRepository
 
 
 class _CountingModel:

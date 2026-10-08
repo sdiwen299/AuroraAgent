@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_authority.fingerprint import (
+from auroraagent.ai.tool_authority.fingerprint import (
     SCOPE_HMAC_DOMAIN,
     authorization_scope_fingerprint,
     canonical_json,

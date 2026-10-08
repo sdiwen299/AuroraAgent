@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_authority.policy import (
+from auroraagent.ai.tool_authority.policy import (
     AGENT_TYPED_V1_PROFILE,
     APPLICATION_COLLECTION_SCOPE_VERSION,
     BINDING_AGGREGATION_VERSION,

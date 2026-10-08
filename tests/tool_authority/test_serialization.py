@@ -9,20 +9,20 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     ApplicationScopeConstraint,
     AuthorityFactory,
     BindingTargetResolution,
     TrustedContextScope,
     execution_scope,
 )
-from offerpilot.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
 from tests.tool_metadata.factories import compose_synthetic_bundle, synthetic_tool_spec
 
 

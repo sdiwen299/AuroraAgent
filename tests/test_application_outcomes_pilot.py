@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 class NoProviderModel:

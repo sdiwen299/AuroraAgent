@@ -38,7 +38,7 @@ SQLite progress handler 只能在 SQLite VM 指令边界中断。单个阻塞 UD
 ### 全量本地门禁
 
 - `uv run pytest -q`：`2898 passed, 4 skipped, 1 failed, 4059 warnings`，用时 `1964.53s`。
-- 唯一失败为既有、与本改动无关的发布编排前置条件：`test_application_jd_implementation_scope_is_machine_checked` 缺少外部提供的 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE`（同时需要配套独立 allowlist）。本任务没有伪造该独立门禁输入。
+- 唯一失败为既有、与本改动无关的发布编排前置条件：`test_application_jd_implementation_scope_is_machine_checked` 缺少外部提供的 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE`（同时需要配套独立 allowlist）。本任务没有伪造该独立门禁输入。
 - `uv run ruff check .`：通过。
 - `uv run mypy src`：通过，119 个 source files 无问题。
 - 前端 `npm test -- --run`：166 个 test files、`1222 passed`。

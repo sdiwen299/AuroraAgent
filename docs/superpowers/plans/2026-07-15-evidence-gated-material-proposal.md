@@ -12,11 +12,11 @@
 
 ## Handoff context
 
-- Worktree: D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260715-evidence-gated-material-proposal
+- Worktree: D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260715-evidence-gated-material-proposal
 - Branch: feat/20260715-evidence-gated-material-proposal
 - Base: e9baa30 feat: AI merge application evidence bundle. Before coding, fetch and rebase onto current origin/main.
 - Product contract: docs/superpowers/specs/2026-07-15-evidence-gated-material-proposal-design.md
-- Existing patterns: src/offerpilot/repositories/evidence_bundles.py, src/offerpilot/repositories/resumes.py, src/offerpilot/repositories/material_kits.py, src/offerpilot/api.py, web/src/components/MaterialKitDrawer.tsx.
+- Existing patterns: src/auroraagent/repositories/evidence_bundles.py, src/auroraagent/repositories/resumes.py, src/auroraagent/repositories/material_kits.py, src/auroraagent/api.py, web/src/components/MaterialKitDrawer.tsx.
 
 Read AGENTS.md, docs/python-rewrite-contract.md, docs/p0-release-checklist.md, and the design before changing code. Do not add a Pilot write tool, external platform access, scraping, PDF processing, automatic acceptance, or a general version graph.
 
@@ -91,9 +91,9 @@ git commit -m "test: AI define material proposal contract"
 
 **Files:**
 
-- Modify: src/offerpilot/models.py
-- Modify: src/offerpilot/db.py
-- Modify: src/offerpilot/schemas.py
+- Modify: src/auroraagent/models.py
+- Modify: src/auroraagent/db.py
+- Modify: src/auroraagent/schemas.py
 - Modify: tests/test_material_revision_proposals_repository.py
 
 - [ ] **Step 1: Add MaterialRevisionProposal immediately after ApplicationEvidenceBundle.** It needs application_id, material_kit_id, source_resume_id, source_fingerprint_sha256, source_snapshot_json, proposal_json, proposal_sha256, status, accepted_change_ids_json, result_resume_id, timestamps, a (application_id, created_at) index, and unique result_resume_id. Use the foreign-key behavior defined in the design.
@@ -141,7 +141,7 @@ Expected: schema/persistence assertions pass without dropping a table.
 - [ ] **Step 5: Commit.**
 
 ~~~
-git add src/offerpilot/models.py src/offerpilot/db.py src/offerpilot/schemas.py tests/test_material_revision_proposals_repository.py
+git add src/auroraagent/models.py src/auroraagent/db.py src/auroraagent/schemas.py tests/test_material_revision_proposals_repository.py
 git commit -m "feat: AI add material revision proposal model"
 ~~~
 
@@ -149,9 +149,9 @@ git commit -m "feat: AI add material revision proposal model"
 
 **Files:**
 
-- Create: src/offerpilot/repositories/json_contract.py
-- Create: src/offerpilot/ai/material_proposals.py
-- Modify: src/offerpilot/repositories/evidence_bundles.py
+- Create: src/auroraagent/repositories/json_contract.py
+- Create: src/auroraagent/ai/material_proposals.py
+- Modify: src/auroraagent/repositories/evidence_bundles.py
 - Modify: tests/test_material_revision_proposals_ai.py
 - Modify: tests/test_evidence_bundles_repository.py
 
@@ -180,7 +180,7 @@ Expected: invalid citation/path cases fail safely; existing hashes remain stable
 - [ ] **Step 5: Commit.**
 
 ~~~
-git add src/offerpilot/repositories/json_contract.py src/offerpilot/ai/material_proposals.py src/offerpilot/repositories/evidence_bundles.py tests/test_material_revision_proposals_ai.py tests/test_evidence_bundles_repository.py
+git add src/auroraagent/repositories/json_contract.py src/auroraagent/ai/material_proposals.py src/auroraagent/repositories/evidence_bundles.py tests/test_material_revision_proposals_ai.py tests/test_evidence_bundles_repository.py
 git commit -m "feat: AI validate evidence-gated material changes"
 ~~~
 
@@ -188,7 +188,7 @@ git commit -m "feat: AI validate evidence-gated material changes"
 
 **Files:**
 
-- Create: src/offerpilot/repositories/material_revision_proposals.py
+- Create: src/auroraagent/repositories/material_revision_proposals.py
 - Modify: tests/test_material_revision_proposals_repository.py
 
 - [ ] **Step 1: Build a current source snapshot.** build_source_snapshot(session, application_id, user_assertions) loads visible Application, exactly one kit, visible linked Resume, non-empty jd_snapshot, and latest evidence bundle if any. It returns snapshot plus sha256_text(canonical_json(snapshot)).
@@ -230,7 +230,7 @@ Expected: partial selection, conflict, idempotency, rollback, rejection and soft
 - [ ] **Step 5: Commit.**
 
 ~~~
-git add src/offerpilot/repositories/material_revision_proposals.py tests/test_material_revision_proposals_repository.py
+git add src/auroraagent/repositories/material_revision_proposals.py tests/test_material_revision_proposals_repository.py
 git commit -m "feat: AI persist approved material revisions"
 ~~~
 
@@ -238,8 +238,8 @@ git commit -m "feat: AI persist approved material revisions"
 
 **Files:**
 
-- Modify: src/offerpilot/api.py
-- Modify: src/offerpilot/schemas.py
+- Modify: src/auroraagent/api.py
+- Modify: src/auroraagent/schemas.py
 - Modify: tests/test_material_revision_proposals_api.py
 
 - [ ] **Step 1: Construct the repository in create_app and reuse _chat_model(chat_model, resolved_data_dir) for generation.** This preserves fake-model tests and configured provider behavior.
@@ -266,7 +266,7 @@ Run: uv run pytest tests/test_material_revision_proposals_api.py tests/test_mate
 Expected: all route/status/no-write-on-error assertions pass.
 
 ~~~
-git add src/offerpilot/api.py src/offerpilot/schemas.py tests/test_material_revision_proposals_api.py
+git add src/auroraagent/api.py src/auroraagent/schemas.py tests/test_material_revision_proposals_api.py
 git commit -m "feat: AI expose material proposal review API"
 ~~~
 

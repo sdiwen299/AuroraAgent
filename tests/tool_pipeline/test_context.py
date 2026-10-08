@@ -7,16 +7,16 @@ from typing import Any, cast
 import pytest
 from sqlalchemy.orm import Session
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 
 
 def _authority_context(

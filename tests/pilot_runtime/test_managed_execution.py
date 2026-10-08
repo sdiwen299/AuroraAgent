@@ -5,12 +5,12 @@ import time
 
 import pytest
 
-import offerpilot.pilot_runtime.managed_execution as managed_execution
-from offerpilot.pilot_runtime.contracts import (
+import auroraagent.pilot_runtime.managed_execution as managed_execution
+from auroraagent.pilot_runtime.contracts import (
     AssistantDeltaEvent,
     MessageOutcome,
 )
-from offerpilot.pilot_runtime.managed_execution import (
+from auroraagent.pilot_runtime.managed_execution import (
     RuntimeExecutionManager,
     RuntimeCapacityExhausted,
     RuntimeManagerError,
@@ -84,7 +84,7 @@ def test_partial_worker_start_failure_closes_without_stranded_run(monkeypatch) -
             created.append(self)
 
         def start(self) -> None:
-            if self.name == "offerpilot-runtime-worker-2":
+            if self.name == "auroraagent-runtime-worker-2":
                 raise RuntimeError("synthetic worker start failure")
             super().start()
 
@@ -108,7 +108,7 @@ def test_partial_worker_start_failure_closes_without_stranded_run(monkeypatch) -
         )
 
     first_worker = next(
-        thread for thread in created if thread.name == "offerpilot-runtime-worker-1"
+        thread for thread in created if thread.name == "auroraagent-runtime-worker-1"
     )
     deadline = time.monotonic() + 1.0
     while first_worker.is_alive():

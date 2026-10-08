@@ -31,7 +31,7 @@ Task 0–12 的代码实现与既定验证矩阵已经完成。四条 Chat 路�
 | `uv run mypy src` | 通过：129 个 source files 无问题 |
 | `git diff --check` | 通过 |
 
-全量 pytest 唯一失败是 `tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked`。当前 release-orchestrator 环境同时缺少 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` 和 `OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE`；测试首先报告前者缺失。本分支没有伪造这两个独立门禁输入，也不声称该外部 Application JD 门禁通过。4 个 skip 是仓库批准的平台/外部环境 skip。
+全量 pytest 唯一失败是 `tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked`。当前 release-orchestrator 环境同时缺少 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` 和 `AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE`；测试首先报告前者缺失。本分支没有伪造这两个独立门禁输入，也不声称该外部 Application JD 门禁通过。4 个 skip 是仓库批准的平台/外部环境 skip。
 
 现有 FastAPI/httpx 弃用告警仍存在；它们未由本次重构引入，也未被屏蔽。
 
@@ -80,7 +80,7 @@ Docker daemon 当前不可用（本机 `dockerDesktopLinuxEngine` pipe 不存在
 
 仅保存合成截图到仓库外目录：
 
-`D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-pilot-runtime-gate\verification`
+`D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-pilot-runtime-gate\verification`
 
 保留的截图为 `01-workspace-stream-chat.png`、`02-application-multicall-chat.png` 和 `03-confirm-modify-approve-readback.png`。隔离服务、worker、数据库与端口均已关闭清理。
 

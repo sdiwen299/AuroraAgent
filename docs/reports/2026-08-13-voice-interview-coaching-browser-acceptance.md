@@ -13,8 +13,8 @@
 
 ## 截图
 
-- `D:\Users\yuqi.chen\Desktop\offerpilot-voice-coaching-live-20260813.png`
-- `D:\Users\yuqi.chen\Desktop\offerpilot-voice-coaching-review-20260813.png`
+- `D:\Users\yuqi.chen\Desktop\auroraagent-voice-coaching-live-20260813.png`
+- `D:\Users\yuqi.chen\Desktop\auroraagent-voice-coaching-review-20260813.png`
 
 ## 验收结论
 

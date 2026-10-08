@@ -40,7 +40,7 @@ Run from the worktree:
 \`\`\`powershell
 git status --short --branch
 Get-CimInstance Win32_Process |
-  Where-Object { $_.Name -match 'pytest|python|uv|node|vite' -and $_.CommandLine -match 'offerpilot|pytest|uv run|vite' } |
+  Where-Object { $_.Name -match 'pytest|python|uv|node|vite' -and $_.CommandLine -match 'auroraagent|pytest|uv run|vite' } |
   Select-Object ProcessId,ParentProcessId,Name,CommandLine
 \`\`\`
 
@@ -224,7 +224,7 @@ Expected: fail because panel/controller wiring is missing; separate fixture fail
 
 Create the controller in a ref so React StrictMode cannot create two capture runtimes. Subscribe/unsubscribe in an effect, map status to \`VoiceAnswerActivity\`, and send controlled commands to the existing composer. The panel must start preflight only from a user click, show privacy text, expose skip narration, pause/resume, cancel countdown, stop, continue, rerecord, edit, confirm, fallback, and retry states, and use Ant components/tokens.
 
-Store only \`offerpilot:interview-studio:continuous-voice-preference\` as a non-authorizing preference. Every Studio mount starts in standard mode; a saved preference changes copy only and never requests a microphone or starts capture.
+Store only \`auroraagent:interview-studio:continuous-voice-preference\` as a non-authorizing preference. Every Studio mount starts in standard mode; a saved preference changes copy only and never requests a microphone or starts capture.
 
 - [ ] **Step 4: Preserve Studio business semantics.**
 
@@ -234,7 +234,7 @@ For both \`application_event\` and \`quick_practice\`, leave service context, ev
 
 - [ ] **Step 5: Implement responsive layout and observable Haru status.**
 
-Keep one main content scroll region plus evidence drawer and fixed answer area. Reuse OfferPilot surface/font/token classes, avoid nested card scrollbars, and add responsive CSS for 1440×900, 1280×800, and 390×844. Map only observable continuous states to existing Haru activity labels; never expose unconfirmed transcript or raw media.
+Keep one main content scroll region plus evidence drawer and fixed answer area. Reuse AuroraAgent surface/font/token classes, avoid nested card scrollbars, and add responsive CSS for 1440×900, 1280×800, and 390×844. Map only observable continuous states to existing Haru activity labels; never expose unconfirmed transcript or raw media.
 
 - [ ] **Step 6: Run Studio groups and the production build.**
 

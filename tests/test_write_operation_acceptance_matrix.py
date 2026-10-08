@@ -15,32 +15,32 @@ import pytest
 from sqlalchemy.exc import IntegrityError, OperationalError
 from sqlalchemy.orm import Session
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_authority import AuthorityFactory, AuthorityUse, TrustedContextScope
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability, UndoPolicy
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_authority import AuthorityFactory, AuthorityUse, TrustedContextScope
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability, UndoPolicy
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ProviderToolContract,
     ToolExceptionMapping,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     OperationRouteIdentityV1,
     ToolMetadataBundleV1,
     ToolPresentationBindingV1,
     UndoBuilderBinding,
 )
-from offerpilot.ai.tool_runtime.pipeline import prepare_call
-from offerpilot.ai.types import ToolCall
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_runtime.legacy_proof import (
+from auroraagent.ai.tool_runtime.pipeline import prepare_call
+from auroraagent.ai.types import ToolCall
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_runtime.legacy_proof import (
     LegacyApprovedConfirmationInput,
     LegacyConfirmationLookupIdentity,
 )
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.write_operations import (
     OperationCommitted,
     OperationFailed,
     OperationReplay,
@@ -52,25 +52,25 @@ from offerpilot.ai.write_operations import (
     load_or_create_ledger_key,
     operation_request_fingerprint,
 )
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation, WriteOperation
-from offerpilot.pilot_runtime.composition import (
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation, WriteOperation
+from auroraagent.pilot_runtime.composition import (
     _SqlAlchemyLegacyPendingIdentityBackend,
     build_production_tool_metadata_components,
 )
-from offerpilot.pilot_runtime.contracts import LegacyExecutionContext
-from offerpilot.pilot_runtime.legacy_route import (
+from auroraagent.pilot_runtime.contracts import LegacyExecutionContext
+from auroraagent.pilot_runtime.legacy_route import (
     build_legacy_pending_identity_verifier_port,
 )
-from offerpilot.repositories.application_jd_versions import ApplicationJDService
-from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.repositories.application_jd_versions import ApplicationJDService
+from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,
@@ -185,7 +185,7 @@ def _harness(
     declared_failure_categories=frozenset(),
     exception_map=(),
 ):
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -381,7 +381,7 @@ def _harness(
 
 
 def _legacy_harness(tmp_path):
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -684,7 +684,7 @@ def test_all_typed_ledger_adapters_execute_once_and_replay_without_runtime_calls
     ) = _execute_typed_parent(tmp_path, tool_name)
 
     monkeypatch.setattr(
-        "offerpilot.ai.write_operations.render_compatibility",
+        "auroraagent.ai.write_operations.render_compatibility",
         lambda *_args, **_kwargs: pytest.fail("terminal replay invoked renderer"),
     )
     replay, record = coordinator.execute_primary(

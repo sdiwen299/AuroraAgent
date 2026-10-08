@@ -26,13 +26,13 @@
 
 | 文件 | 责任 |
 | --- | --- |
-| `src/offerpilot/models.py` | 新增 attempt、captured-source metadata、Knowledge Note/Version/引用模型；复用现有 Source/Snapshot/Evidence |
-| `src/offerpilot/db.py` | 全新库建表、旧库兼容、`0011_confirmed_interview_knowledge_capture` 记录、索引和外键行为 |
-| `src/offerpilot/knowledge/interview_capture.py` | UTF-16 坐标、片段 canonicalization、Snapshot byte serializer/parser、指纹和严格内容引用校验 |
-| `src/offerpilot/repositories/interview_knowledge_capture.py` | attempt 生命周期、短 session/CAS、确认事务和 Knowledge 资产写入 |
-| `src/offerpilot/ai/interview_knowledge_capture.py` | AI prompt、JSON Schema、严格解析、一次格式修复、安全空预览和安全诊断 |
-| `src/offerpilot/schemas.py` | capture 请求、预览、确认、Knowledge Note/引用响应 schema |
-| `src/offerpilot/api.py` | preview、confirm、Knowledge Note 只读入口与错误映射 |
+| `src/auroraagent/models.py` | 新增 attempt、captured-source metadata、Knowledge Note/Version/引用模型；复用现有 Source/Snapshot/Evidence |
+| `src/auroraagent/db.py` | 全新库建表、旧库兼容、`0011_confirmed_interview_knowledge_capture` 记录、索引和外键行为 |
+| `src/auroraagent/knowledge/interview_capture.py` | UTF-16 坐标、片段 canonicalization、Snapshot byte serializer/parser、指纹和严格内容引用校验 |
+| `src/auroraagent/repositories/interview_knowledge_capture.py` | attempt 生命周期、短 session/CAS、确认事务和 Knowledge 资产写入 |
+| `src/auroraagent/ai/interview_knowledge_capture.py` | AI prompt、JSON Schema、严格解析、一次格式修复、安全空预览和安全诊断 |
+| `src/auroraagent/schemas.py` | capture 请求、预览、确认、Knowledge Note/引用响应 schema |
+| `src/auroraagent/api.py` | preview、confirm、Knowledge Note 只读入口与错误映射 |
 | `tests/test_interview_knowledge_capture_migrations.py` | 全新库、旧库、Attempt cascade 与迁移幂等 |
 | `tests/test_interview_knowledge_capture_fragments.py` | UTF-16、Unicode、上限、canonical ID 和 Snapshot parser |
 | `tests/test_interview_knowledge_capture_repository.py` | attempt CAS、来源漂移、确认原子性、删除后审计 |
@@ -47,14 +47,14 @@
 | `web/src/layout/AppShell.interviewKnowledgeCapture.test.tsx` | 真实卸载/重进、普通取消与结果未知的 draft 保留语义 |
 | `web/src/components/ApplicationDetail.tsx` / `ReviewManagementView.tsx` | 接入复盘知识沉淀入口与已确认 Knowledge 查看入口 |
 | `web/src/services/knowledge.ts` / `web/src/types/knowledge.ts` | 增加已确认 interview capture 的只读展示类型/读取方法 |
-| `src/offerpilot/smoke.py` / `tests/test_smoke.py` | 隔离 real-AI 合成数据、浏览器闭环和清理断言 |
+| `src/auroraagent/smoke.py` / `tests/test_smoke.py` | 隔离 real-AI 合成数据、浏览器闭环和清理断言 |
 | `scripts/interview-knowledge-real-ai-browser-harness.ps1` | 临时数据目录、端口/进程归属、服务生命周期和失败传播 |
 
 ### Task 1: 迁移与 SQLAlchemy 模型
 
 **Files:**
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
 - Create: `tests/test_interview_knowledge_capture_migrations.py`
 
 - [ ] **Step 1: 写失败迁移测试**
@@ -164,14 +164,14 @@ uv run pytest tests/test_interview_knowledge_capture_migrations.py -q
 - [ ] **Step 5: 提交迁移切片**
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_interview_knowledge_capture_migrations.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_interview_knowledge_capture_migrations.py
 git commit -m "feat: AI add interview knowledge capture schema"
 ```
 
 ### Task 2: UTF-16 片段协议与 Snapshot canonicalization
 
 **Files:**
-- Create: `src/offerpilot/knowledge/interview_capture.py`
+- Create: `src/auroraagent/knowledge/interview_capture.py`
 - Create: `tests/test_interview_knowledge_capture_fragments.py`
 
 - [ ] **Step 1: 写失败的 Unicode、上限和 parser 测试**
@@ -267,14 +267,14 @@ uv run pytest tests/test_interview_knowledge_capture_fragments.py -q
 - [ ] **Step 5: 提交片段协议切片**
 
 ```powershell
-git add src/offerpilot/knowledge/interview_capture.py tests/test_interview_knowledge_capture_fragments.py
+git add src/auroraagent/knowledge/interview_capture.py tests/test_interview_knowledge_capture_fragments.py
 git commit -m "feat: AI add interview capture fragment protocol"
 ```
 
 ### Task 3: Attempt repository、短 session 与 CAS
 
 **Files:**
-- Create: `src/offerpilot/repositories/interview_knowledge_capture.py`
+- Create: `src/auroraagent/repositories/interview_knowledge_capture.py`
 - Create: `tests/test_interview_knowledge_capture_repository.py`
 
 - [ ] **Step 1: 写失败的 attempt/CAS 测试**
@@ -370,14 +370,14 @@ uv run pytest tests/test_interview_knowledge_capture_repository.py -q
 - [ ] **Step 5: 提交 attempt 切片**
 
 ```powershell
-git add src/offerpilot/repositories/interview_knowledge_capture.py tests/test_interview_knowledge_capture_repository.py
+git add src/auroraagent/repositories/interview_knowledge_capture.py tests/test_interview_knowledge_capture_repository.py
 git commit -m "feat: AI add interview capture attempt CAS"
 ```
 
 ### Task 4: 严格 AI 预览与安全空结果
 
 **Files:**
-- Create: `src/offerpilot/ai/interview_knowledge_capture.py`
+- Create: `src/auroraagent/ai/interview_knowledge_capture.py`
 - Create: `tests/test_interview_knowledge_capture_ai.py`
 - Modify: `tests/test_ai_client.py` only if compatibility coverage is missing
 
@@ -452,16 +452,16 @@ uv run pytest tests/test_interview_knowledge_capture_ai.py tests/test_ai_client.
 - [ ] **Step 5: 提交 AI 切片**
 
 ```powershell
-git add src/offerpilot/ai/interview_knowledge_capture.py tests/test_interview_knowledge_capture_ai.py tests/test_ai_client.py
+git add src/auroraagent/ai/interview_knowledge_capture.py tests/test_interview_knowledge_capture_ai.py tests/test_ai_client.py
 git commit -m "feat: AI add interview knowledge preview contract"
 ```
 
 ### Task 5: 确认事务、API 与历史审计
 
 **Files:**
-- Modify: `src/offerpilot/repositories/interview_knowledge_capture.py`
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/repositories/interview_knowledge_capture.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/test_interview_knowledge_capture_api.py`
 - Modify: `tests/test_notes_api.py` for visibility/deletion regression if shared fixture is required
 
@@ -583,7 +583,7 @@ uv run pytest tests/test_interview_knowledge_capture_api.py tests/test_notes_api
 - [ ] **Step 5: 提交后端切片**
 
 ```powershell
-git add src/offerpilot/repositories/interview_knowledge_capture.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_interview_knowledge_capture_api.py tests/test_notes_api.py
+git add src/auroraagent/repositories/interview_knowledge_capture.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_interview_knowledge_capture_api.py tests/test_notes_api.py
 git commit -m "feat: AI add confirmed interview knowledge capture API"
 ```
 
@@ -790,7 +790,7 @@ git commit -m "feat: AI show confirmed interview knowledge"
 ### Task 8: 隔离 real-AI smoke 与浏览器闭环
 
 **Files:**
-- Modify: `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/smoke.py`
 - Modify: `tests/test_smoke.py`
 - Create: `scripts/interview-knowledge-real-ai-browser-harness.ps1`
 
@@ -824,7 +824,7 @@ uv run pytest tests/test_smoke.py -q
 PowerShell harness 必须：
 
 1. 创建 `$tempData`，只复制脱敏配置，不复制正式数据库；
-2. 选择并确认空闲端口，启动 `OFFERPILOT_DATA=$tempData` 服务；
+2. 选择并确认空闲端口，启动 `AURORA_AGENT_DATA=$tempData` 服务；
 3. 启动后检查监听 PID 属于本次进程树，不匹配则停止本次进程并禁止浏览器打开；
 4. 逐次检查每个原生命令 `$LASTEXITCODE`，非零立即 `throw`，外层 `finally` 仍清理进程树和 tempData；
 5. 浏览器从根地址进入投递详情的面试复盘入口，完成选择→直接保存或 AI 预览→二次确认→Knowledge 历史查看；
@@ -843,7 +843,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\interview-knowledg
 - [ ] **Step 5: 提交 smoke 切片**
 
 ```powershell
-git add src/offerpilot/smoke.py tests/test_smoke.py scripts/interview-knowledge-real-ai-browser-harness.ps1
+git add src/auroraagent/smoke.py tests/test_smoke.py scripts/interview-knowledge-real-ai-browser-harness.ps1
 git commit -m "test: AI add interview knowledge capture smoke"
 ```
 
@@ -889,7 +889,7 @@ git status --short --branch
 用 `rg` 检查：
 
 ```powershell
-rg -n "job_url|requests\.get|/jobs|auto.?apply|Memory|weakness|exercise" src/offerpilot/ai/interview_knowledge_capture.py src/offerpilot/repositories/interview_knowledge_capture.py web/src/components/InterviewKnowledgeCaptureDrawer.tsx
+rg -n "job_url|requests\.get|/jobs|auto.?apply|Memory|weakness|exercise" src/auroraagent/ai/interview_knowledge_capture.py src/auroraagent/repositories/interview_knowledge_capture.py web/src/components/InterviewKnowledgeCaptureDrawer.tsx
 ```
 
 确认 AI 模块没有读取 JD/Resume/聊天/Memory，确认接口没有外部 URL 访问，确认前端没有自动练习、自动投递或未确认写入路径。日志审查不得出现模型原文、完整复盘、Evidence 摘录或密钥。
@@ -907,7 +907,7 @@ rg -n "job_url|requests\.get|/jobs|auto.?apply|Memory|weakness|exercise" src/off
 ### Task 10: 独立最终 CR 与问题回归
 
 **Files:**
-- Review: `src/offerpilot/models.py`, `src/offerpilot/db.py`, `src/offerpilot/knowledge/interview_capture.py`, `src/offerpilot/repositories/interview_knowledge_capture.py`, `src/offerpilot/ai/interview_knowledge_capture.py`, `src/offerpilot/api.py`
+- Review: `src/auroraagent/models.py`, `src/auroraagent/db.py`, `src/auroraagent/knowledge/interview_capture.py`, `src/auroraagent/repositories/interview_knowledge_capture.py`, `src/auroraagent/ai/interview_knowledge_capture.py`, `src/auroraagent/api.py`
 - Review: `web/src/layout/AppShell.tsx`, `web/src/components/InterviewKnowledgeCaptureDrawer.tsx`, `web/src/components/KnowledgeSourcesView.tsx`
 - Review: all new/modified tests and `scripts/interview-knowledge-real-ai-browser-harness.ps1`
 

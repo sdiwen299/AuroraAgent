@@ -44,7 +44,7 @@ describe('PilotContextDropTarget', () => {
     const event = new Event('drop', { bubbles: true, cancelable: true });
     Object.defineProperty(event, 'dataTransfer', {
       value: {
-        types: ['application/x-offerpilot-context-attachment'],
+        types: ['application/x-auroraagent-context-attachment'],
         getData: () => JSON.stringify({ kind: 'offer', id: '5', label: 'Acme offer' }),
       },
     });

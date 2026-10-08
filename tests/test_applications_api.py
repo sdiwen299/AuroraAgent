@@ -1,9 +1,9 @@
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 def test_create_application_defaults_and_list(tmp_path):

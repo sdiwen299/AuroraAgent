@@ -60,7 +60,7 @@
 ## Related
 
 - [Python 兼容契约](../../python-rewrite-contract.md)
-- [JD 服务](../../../src/offerpilot/repositories/application_jd_versions.py)
-- [创建协调服务](../../../src/offerpilot/repositories/application_creation.py)
+- [JD 服务](../../../src/auroraagent/repositories/application_jd_versions.py)
+- [创建协调服务](../../../src/auroraagent/repositories/application_creation.py)
 
 任务 B、岗位池、批量导入、采集、AI 提取、订阅及外部通知继续不在本轮范围内。

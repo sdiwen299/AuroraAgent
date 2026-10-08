@@ -1,4 +1,4 @@
-# OfferPilot Agent 工作指南
+# AuroraAgent Agent 工作指南
 
 ## 0. 指令与授权边界
 
@@ -31,7 +31,7 @@
 
 ## 4. 事实源
 
-OfferPilot 的产品和架构事实源是飞书 wiki：
+AuroraAgent 的产品和架构事实源是飞书 wiki：
 
 - 主 wiki：https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf
 - Root docx token：`Q353d2stRowjrFx8fmkc6uPmnQb`

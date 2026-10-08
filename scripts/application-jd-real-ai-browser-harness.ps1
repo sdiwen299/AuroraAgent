@@ -7,8 +7,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-application-jd-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-application-jd-' + [Guid]::NewGuid().ToString('N'))
 $httpAudit = Join-Path $tempData 'http-audit.jsonl'
 $providerAudit = Join-Path $tempData 'provider-audit.jsonl'
 $providerRequestAudit = Join-Path $tempData 'provider-request-audit.jsonl'
@@ -34,10 +34,10 @@ $resumeId = $null
 $eventId = $null
 $jdVersionId = $null
 $beforeCleanup = $null
-$stageDiagnosticRoot = if ($env:OFFERPILOT_APPLICATION_JD_DIAGNOSTIC_DIR) {
-  $env:OFFERPILOT_APPLICATION_JD_DIAGNOSTIC_DIR
+$stageDiagnosticRoot = if ($env:AURORA_AGENT_APPLICATION_JD_DIAGNOSTIC_DIR) {
+  $env:AURORA_AGENT_APPLICATION_JD_DIAGNOSTIC_DIR
 } else {
-  Join-Path ([IO.Path]::GetTempPath()) 'offerpilot-application-jd-stage-diagnostics'
+  Join-Path ([IO.Path]::GetTempPath()) 'auroraagent-application-jd-stage-diagnostics'
 }
 $stageDiagnosticReport = Join-Path $stageDiagnosticRoot (
   'stage-all-' + (Get-Date -Format 'yyyyMMdd-HHmmssfff') + '-' + [Guid]::NewGuid().ToString('N') + '.jsonl'
@@ -45,12 +45,12 @@ $stageDiagnosticReport = Join-Path $stageDiagnosticRoot (
 $providerAuditOffset = 0
 $operationAuditOffset = 0
 $triageReplayCount = 0
-$previousData = $env:OFFERPILOT_DATA
-$previousHttpAudit = $env:OFFERPILOT_HTTP_AUDIT_FILE
-$previousProviderRequestAudit = $env:OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE
-$previousOperationAudit = $env:OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE
-$previousFullVerifyOperation = $env:OFFERPILOT_FULL_VERIFY_OPERATION
-$previousFullVerifyStage = $env:OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE
+$previousData = $env:AURORA_AGENT_DATA
+$previousHttpAudit = $env:AURORA_AGENT_HTTP_AUDIT_FILE
+$previousProviderRequestAudit = $env:AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE
+$previousOperationAudit = $env:AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE
+$previousFullVerifyOperation = $env:AURORA_AGENT_FULL_VERIFY_OPERATION
+$previousFullVerifyStage = $env:AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE
 $previousHttpsProxy = $env:HTTPS_PROXY
 $previousHttpProxy = $env:HTTP_PROXY
 $previousNoProxy = $env:NO_PROXY
@@ -64,7 +64,7 @@ function Get-FreePort {
 
 function Get-BrowserExecutable {
   $candidates = @(
-    $env:OFFERPILOT_BROWSER_PATH,
+    $env:AURORA_AGENT_BROWSER_PATH,
     (Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'),
     (Join-Path ${env:ProgramFiles(x86)} 'Google\Chrome\Application\chrome.exe'),
     (Join-Path $env:LOCALAPPDATA 'Google\Chrome\Application\chrome.exe'),
@@ -808,7 +808,7 @@ try {
   $providerOverrideBaseUrl = [string]$env:APPLICATION_JD_PROVIDER_BASE_URL
   $providerOverrideModel = [string]$env:APPLICATION_JD_PROVIDER_MODEL
   $providerOverrideApiKey = [string]$env:APPLICATION_JD_PROVIDER_API_KEY
-  if (-not $providerOverrideApiKey) { $providerOverrideApiKey = [string]$env:OFFERPILOT_JD_PROVIDER_KEY }
+  if (-not $providerOverrideApiKey) { $providerOverrideApiKey = [string]$env:AURORA_AGENT_JD_PROVIDER_KEY }
   if ($providerOverrideBaseUrl) { $temporaryConfig.base_url = $providerOverrideBaseUrl }
   if ($providerOverrideApiKey) { $temporaryConfig.api_key = $providerOverrideApiKey }
   if ($providerOverrideModel) {
@@ -839,12 +839,12 @@ try {
   $port = Get-FreePort
   $proxyPort = Get-FreePort
   $baseUrl = "http://127.0.0.1:$port"
-  $env:OFFERPILOT_DATA = $tempData
-  $env:OFFERPILOT_HTTP_AUDIT_FILE = $httpAudit
-  $env:OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE = $providerRequestAudit
-  $env:OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE = $operationAudit
-  $env:OFFERPILOT_FULL_VERIFY_OPERATION = 'application_jd_browser'
-  $env:OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE = 'application_jd_browser'
+  $env:AURORA_AGENT_DATA = $tempData
+  $env:AURORA_AGENT_HTTP_AUDIT_FILE = $httpAudit
+  $env:AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE = $providerRequestAudit
+  $env:AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE = $operationAudit
+  $env:AURORA_AGENT_FULL_VERIFY_OPERATION = 'application_jd_browser'
+  $env:AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE = 'application_jd_browser'
   $env:HTTPS_PROXY = "http://127.0.0.1:$proxyPort"
   $env:HTTP_PROXY = "http://127.0.0.1:$proxyPort"
   $env:NO_PROXY = '127.0.0.1,localhost'
@@ -999,12 +999,12 @@ print(db.execute(
     [void]$cleanupErrors.Add('synthetic data cleanup skipped because the isolated service did not exit')
   }
   try {
-    if ($previousData) { $env:OFFERPILOT_DATA = $previousData } else { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-    if ($previousHttpAudit) { $env:OFFERPILOT_HTTP_AUDIT_FILE = $previousHttpAudit } else { Remove-Item Env:OFFERPILOT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue }
-    if ($previousProviderRequestAudit) { $env:OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE = $previousProviderRequestAudit } else { Remove-Item Env:OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE -ErrorAction SilentlyContinue }
-    if ($previousOperationAudit) { $env:OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE = $previousOperationAudit } else { Remove-Item Env:OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE -ErrorAction SilentlyContinue }
-    if ($previousFullVerifyOperation) { $env:OFFERPILOT_FULL_VERIFY_OPERATION = $previousFullVerifyOperation } else { Remove-Item Env:OFFERPILOT_FULL_VERIFY_OPERATION -ErrorAction SilentlyContinue }
-    if ($previousFullVerifyStage) { $env:OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE = $previousFullVerifyStage } else { Remove-Item Env:OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE -ErrorAction SilentlyContinue }
+    if ($previousData) { $env:AURORA_AGENT_DATA = $previousData } else { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+    if ($previousHttpAudit) { $env:AURORA_AGENT_HTTP_AUDIT_FILE = $previousHttpAudit } else { Remove-Item Env:AURORA_AGENT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue }
+    if ($previousProviderRequestAudit) { $env:AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE = $previousProviderRequestAudit } else { Remove-Item Env:AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE -ErrorAction SilentlyContinue }
+    if ($previousOperationAudit) { $env:AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE = $previousOperationAudit } else { Remove-Item Env:AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE -ErrorAction SilentlyContinue }
+    if ($previousFullVerifyOperation) { $env:AURORA_AGENT_FULL_VERIFY_OPERATION = $previousFullVerifyOperation } else { Remove-Item Env:AURORA_AGENT_FULL_VERIFY_OPERATION -ErrorAction SilentlyContinue }
+    if ($previousFullVerifyStage) { $env:AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE = $previousFullVerifyStage } else { Remove-Item Env:AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE -ErrorAction SilentlyContinue }
     if ($previousHttpsProxy) { $env:HTTPS_PROXY = $previousHttpsProxy } else { Remove-Item Env:HTTPS_PROXY -ErrorAction SilentlyContinue }
     if ($previousHttpProxy) { $env:HTTP_PROXY = $previousHttpProxy } else { Remove-Item Env:HTTP_PROXY -ErrorAction SilentlyContinue }
     if ($previousNoProxy) { $env:NO_PROXY = $previousNoProxy } else { Remove-Item Env:NO_PROXY -ErrorAction SilentlyContinue }

@@ -12,13 +12,13 @@ from typing import Any, cast
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ReadyToExecute,
     ToolExecutionRecord,
@@ -26,11 +26,11 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
-from offerpilot.ai.tool_runtime.rendering import render_compatibility
-from offerpilot.ai.types import ToolCall
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
+from auroraagent.ai.tool_runtime.rendering import render_compatibility
+from auroraagent.ai.types import ToolCall
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     InterviewNote,
@@ -38,15 +38,15 @@ from offerpilot.models import (
     Offer,
     Resume,
 )
-from offerpilot.repositories.application_events import (
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.repositories.resumes import ResumeCreate, ResumeMatchCreate, ResumesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumeMatchCreate, ResumesRepository
 from tests.tool_metadata.factories import compose_synthetic_bundle
 
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
-# OfferPilot one-line installer.
+# AuroraAgent one-line installer.
 #
-#   curl -sSL https://get.offerpilot.dev | sh
-#   curl -sSL https://get.offerpilot.dev | sh -s -- --install-dir ~/.local/bin
+#   curl -sSL https://get.auroraagent.dev | sh
+#   curl -sSL https://get.auroraagent.dev | sh -s -- --install-dir ~/.local/bin
 #
 # Installs the Python `oc` CLI using uv. This requires Python 3.10+ and uv.
 
 set -eu
 
-REPO="offercontext/offerpilot"
+REPO="sdiwen299/AuroraAgent"
 INSTALL_DIR="${INSTALL_DIR:-${HOME}/.local/bin}"
 INSTALL_NAME="${INSTALL_NAME:-oc}"
 SOURCE="${SOURCE:-https://github.com/${REPO}.git}"
@@ -26,7 +26,7 @@ require_tools() {
 install_source() {
   mkdir -p "$INSTALL_DIR"
   export UV_TOOL_BIN_DIR="$INSTALL_DIR"
-  info "installing OfferPilot from ${SOURCE}"
+  info "installing AuroraAgent from ${SOURCE}"
   uv tool install --python 3.12 --force "$SOURCE"
   if [ "$INSTALL_NAME" != "oc" ]; then
     if [ -f "${INSTALL_DIR}/oc" ]; then

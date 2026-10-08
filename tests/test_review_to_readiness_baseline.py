@@ -6,12 +6,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from offerpilot.api import _interview_preparation_request_payload
-from offerpilot.models import ApplicationJDVersion
-from offerpilot.repositories.interview_preparation_proposals import (
+from auroraagent.api import _interview_preparation_request_payload
+from auroraagent.models import ApplicationJDVersion
+from auroraagent.repositories.interview_preparation_proposals import (
     InterviewPreparationProposalsRepository,
 )
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 from tests.test_interview_preparation_repository import (
     JD_TEXT,
     SafeEmptyModel,
@@ -22,7 +22,7 @@ from tests.test_interview_preparation_repository import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "review_readiness"
-PRODUCTION = ROOT / "src" / "offerpilot"
+PRODUCTION = ROOT / "src" / "auroraagent"
 BASELINE_FIXTURE = FIXTURES / "review_to_readiness_baseline_c5a020c.json"
 LIFECYCLE_FIXTURE = FIXTURES / "event_lifecycle_v1.json"
 PREPARATION_FIXTURE = FIXTURES / "interview_preparation_v1_c5a020c.json"

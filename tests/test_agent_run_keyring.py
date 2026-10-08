@@ -8,8 +8,8 @@ from uuid import UUID
 
 import pytest
 
-import offerpilot.agent_runtime.keyring as journal_keyring
-from offerpilot.agent_runtime.keyring import JOURNAL_KEY_FILENAME, load_or_create_journal_key
+import auroraagent.agent_runtime.keyring as journal_keyring
+from auroraagent.agent_runtime.keyring import JOURNAL_KEY_FILENAME, load_or_create_journal_key
 
 
 def test_journal_key_round_trips_from_dedicated_file(tmp_path: Path) -> None:

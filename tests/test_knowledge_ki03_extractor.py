@@ -11,11 +11,11 @@ import random
 
 import pytest
 
-from offerpilot.knowledge.encoding import (
+from auroraagent.knowledge.encoding import (
     EncodingError,
     decode_source_bytes,
 )
-from offerpilot.knowledge.extractor import (
+from auroraagent.knowledge.extractor import (
     EXTRACTOR_VERSION,
     ExtractionError,
     MarkdownExtractor,

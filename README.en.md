@@ -1,8 +1,8 @@
-# OfferPilot — Open-source AI Job Application Tracker
+# AuroraAgent — Open-source AI Job Application Tracker
 
 [简体中文](README.md) | [English](README.en.md)
 
-OfferPilot by offercontext is a local-first workspace for individual
+AuroraAgent by offercontext is a local-first workspace for individual
 job seekers. Keep applications, resumes, interviews and offers together,
 with optional AI assistance for preparation and review.
 
@@ -19,7 +19,7 @@ with optional AI assistance for preparation and review.
 
 ## Getting started
 
-Run OfferPilot locally with Docker or from source.
+Run AuroraAgent locally with Docker or from source.
 
 See the [installation instructions](README.md#快速开始)
 and [user guide in Chinese](docs/product-manual/产品说明书.md).
@@ -31,7 +31,7 @@ Basic application tracking does not require AI configuration.
 Workspace data is stored locally. AI features send relevant materials
 to your configured model service and may incur provider fees.
 
-OfferPilot does not automatically submit applications or message recruiters.
+AuroraAgent does not automatically submit applications or message recruiters.
 Review generated content before using it.
 
 ## License

@@ -5,7 +5,7 @@ from dataclasses import replace
 
 import pytest
 
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     ToolPresentationBindingV1,
 )
@@ -66,7 +66,7 @@ def test_resolver_binding_does_not_accept_a_structurally_equal_descriptor_copy()
 
     # The constructor may accept an independently-created DTO; the component
     # validator must reject it when it is not the exact metadata object.
-    from offerpilot.ai.tool_runtime.metadata import validate_tool_spec_components
+    from auroraagent.ai.tool_runtime.metadata import validate_tool_spec_components
 
     with pytest.raises((TypeError, ValueError), match="descriptor|identity"):
         validate_tool_spec_components(
@@ -142,7 +142,7 @@ def test_resolver_binding_replacement_is_not_a_new_implementation_identity() -> 
     descriptor = resolver_descriptor()
     original = resolver_binding(descriptor)
 
-    from offerpilot.ai.tool_runtime.metadata import validate_tool_spec_components
+    from auroraagent.ai.tool_runtime.metadata import validate_tool_spec_components
 
     metadata = read_metadata(resolver_descriptors=(descriptor,))
     assert original.descriptor is descriptor

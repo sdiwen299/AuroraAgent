@@ -2,7 +2,7 @@
 
 ## 目标、基线与范围
 
-本项目在 `0c10e05e256eb757d5f89a8b009dcea193f2fc78` 上继续收敛 OfferPilot 桌面端任务流。目标不是删除能力或改写业务状态机，而是让普通求职者从“下一步求职行动”进入既有能力，并把内部工程概念移到高级信息。
+本项目在 `0c10e05e256eb757d5f89a8b009dcea193f2fc78` 上继续收敛 AuroraAgent 桌面端任务流。目标不是删除能力或改写业务状态机，而是让普通求职者从“下一步求职行动”进入既有能力，并把内部工程概念移到高级信息。
 
 工作分支固定为 `refactor/20260825-desktop-task-flow-simplification`，改动仅允许落在 `web/**` 与本项目三份规格、计划和验收文档中。禁止修改后端、数据库、HTTP/SSE、Tool schema、Pending/HITL、Ledger/Journal、Context Projector 与 Agent Runtime。
 

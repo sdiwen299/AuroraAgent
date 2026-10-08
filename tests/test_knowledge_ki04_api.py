@@ -246,7 +246,7 @@ def test_ki04_bundle_rejects_corrupt_image(app_client):
 def test_ki04_bundle_rejects_pixel_bomb(app_client):
     main = b"# Bundle\n\n![pic](pic.png)\n"
     # 构造一张超 40MP 的 PNG（>40M 像素）
-    from offerpilot.knowledge.assets import MAX_PIXELS
+    from auroraagent.knowledge.assets import MAX_PIXELS
 
     side = int((MAX_PIXELS + 1) ** 0.5) + 1
     big = _png_bytes(side, side)

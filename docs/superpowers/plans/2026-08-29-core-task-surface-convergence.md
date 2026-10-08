@@ -24,7 +24,7 @@
 - `web/src/features/applicationTasks/**`：ApplicationTaskResolver 与 Opportunity Fit history adapter。
 - `web/src/features/interviewEvents/**`：Interview read normalizer、EventLifecycleV1、Event card projector、ResumeSelectionLease。
 - `web/src/features/materialSurfaces/**`：Material Kit 状态、经历/参考资料分类、Resume lineage 与统一文案。
-- `src/offerpilot/repositories/interview_index.py`、`src/offerpilot/api.py`：Interview index 的唯一 Event row 和只读字段。
+- `src/auroraagent/repositories/interview_index.py`、`src/auroraagent/api.py`：Interview index 的唯一 Event row 和只读字段。
 - `tests/fixtures/core_task_surface/**`：固定 baseline 的只读资产，生产代码禁止读取。
 
 所有阶段遵守：先写一个可观察行为的失败测试并确认失败原因，再写最小生产实现；每个 commit 前运行本任务聚焦测试和 `git diff --check`。`git add` 与 `git commit` 分开执行，提交标题使用中文。
@@ -56,7 +56,7 @@ The entrypoint item shape is `{ "file", "qualified_symbol", "category", "task_id
 
 - [x] **Step 2: Write immutable-asset and RED source gates**
 
-`tests/test_core_task_surface_assets.py` must assert the pinned baseline, exact top-level keys, unique entries, closed categories, and SHA-256 constants written directly into the test. It must also assert that no file below `src/offerpilot` imports or reads these review-only assets.
+`tests/test_core_task_surface_assets.py` must assert the pinned baseline, exact top-level keys, unique entries, closed categories, and SHA-256 constants written directly into the test. It must also assert that no file below `src/auroraagent` imports or reads these review-only assets.
 
 `coreTaskSurfaceGate.test.ts` must read the same assets and initially fail because `contracts.ts`, `registry.ts`, controller owner declarations, centralized event classifier and centralized material label mapper do not yet exist. The gate must report named violations such as `registry:missing-owner`, `entrypoint:unclassified`, `event:local-classifier`, and `copy:forbidden-lexeme`; it must never rewrite fixtures.
 
@@ -234,8 +234,8 @@ git commit -m "feat: AI 建立单实例任务界面控制器"
 
 **Files:**
 
-- Modify: `src/offerpilot/repositories/interview_index.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/repositories/interview_index.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_interview_index_api.py`
 
 - [x] **Step 1: Add failing API tests for latest Note, pagination and fields**
@@ -283,7 +283,7 @@ Set `scheduled_at_state` from the same `ApplicationEvent` row. `preparation_avai
 ```powershell
 uv run pytest tests/test_interview_index_api.py -q
 uv run mypy src
-uv run ruff check src/offerpilot/repositories/interview_index.py src/offerpilot/api.py tests/test_interview_index_api.py
+uv run ruff check src/auroraagent/repositories/interview_index.py src/auroraagent/api.py tests/test_interview_index_api.py
 ```
 
 Expected: all three commands exit zero.
@@ -291,7 +291,7 @@ Expected: all three commands exit zero.
 - [x] **Step 5: Commit the controlled read-contract change**
 
 ```powershell
-git add src/offerpilot/repositories/interview_index.py src/offerpilot/api.py tests/test_interview_index_api.py
+git add src/auroraagent/repositories/interview_index.py src/auroraagent/api.py tests/test_interview_index_api.py
 git commit -m "fix: AI 修复面试索引唯一事件投影"
 ```
 

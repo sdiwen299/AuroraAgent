@@ -80,7 +80,7 @@ type StudioTerminalFailure = {
 };
 type WorkspaceTab = 'answer' | 'evidence';
 
-const CONTINUOUS_VOICE_PREFERENCE_KEY = 'offerpilot:interview-studio:continuous-voice-preference';
+const CONTINUOUS_VOICE_PREFERENCE_KEY = 'auroraagent:interview-studio:continuous-voice-preference';
 
 function continuousActivity(status: ContinuousVoiceState['status']): VoiceAnswerActivity | undefined {
   if (status === 'reading_question') return 'speaking';
@@ -136,20 +136,20 @@ function previewText(value: string, length = 180): string {
 
 function voiceRecoveryStorageKey(context: Props['context']): string {
   return context.kind === 'quick_practice'
-    ? `offerpilot:interview-studio:voice-recovery:quick:${context.caseId}`
-    : `offerpilot:interview-studio:voice-recovery:real:${context.applicationId}:${context.eventId}`;
+    ? `auroraagent:interview-studio:voice-recovery:quick:${context.caseId}`
+    : `auroraagent:interview-studio:voice-recovery:real:${context.applicationId}:${context.eventId}`;
 }
 
 function studioRecoveryStorageKey(context: Props['context']): string {
   return context.kind === 'quick_practice'
-    ? `offerpilot:interview-studio:business-recovery:quick:${context.caseId}`
-    : `offerpilot:interview-studio:business-recovery:real:${context.applicationId}:${context.eventId}`;
+    ? `auroraagent:interview-studio:business-recovery:quick:${context.caseId}`
+    : `auroraagent:interview-studio:business-recovery:real:${context.applicationId}:${context.eventId}`;
 }
 
 function studioStartRecoveryStorageKey(context: Props['context']): string {
   return context.kind === 'quick_practice'
-    ? `offerpilot:interview-studio:start-recovery:quick:${context.caseId}`
-    : `offerpilot:interview-studio:start-recovery:real:${context.applicationId}:${context.eventId}`;
+    ? `auroraagent:interview-studio:start-recovery:quick:${context.caseId}`
+    : `auroraagent:interview-studio:start-recovery:real:${context.applicationId}:${context.eventId}`;
 }
 
 function readVoiceReviewRecovery(storageKey: string): VoiceReviewRecovery | null {

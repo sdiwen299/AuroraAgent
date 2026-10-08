@@ -17,7 +17,7 @@
 - web/src/features/pilot/PilotAttachmentContext.tsx: active-draft provider shared by cards and ChatPanel.
 - web/src/components/PilotAttachmentHandle.tsx: dedicated native drag handle plus accessible add action.
 - web/src/components/ChatPanel/ContextAttachmentRail.tsx: drop target, removable chips, and attachment status.
-- src/offerpilot/api.py: validates references and injects resolved current records into JSON/SSE model context.
+- src/auroraagent/api.py: validates references and injects resolved current records into JSON/SSE model context.
 
 ### Task 1: Define bounded attachment state and quick-question selection
 
@@ -145,7 +145,7 @@ Expected: FAIL because the attachment rail does not exist.
 
 - [ ] **Step 3: Implement the rail and composer contract**
 
-ContextAttachmentRail accepts attachments, disabled, onRemove, and onNativeDrop. It reads only application/x-offerpilot-context-attachment from dataTransfer, calls preventDefault only after valid JSON parsing, and exposes removal controls with specific accessible labels.
+ContextAttachmentRail accepts attachments, disabled, onRemove, and onNativeDrop. It reads only application/x-auroraagent-context-attachment from dataTransfer, calls preventDefault only after valid JSON parsing, and exposes removal controls with specific accessible labels.
 
 Extend Composer with suggestions and onSuggestionSelect. A suggestion calls setValue(question), never onSend(question); hide suggestions while text is non-empty or the composer is disabled.
 
@@ -165,7 +165,7 @@ Expected: PASS.
 **Files:**
 - Modify: web/src/services/chat.ts
 - Modify: web/src/services/chat.test.ts
-- Modify: src/offerpilot/api.py
+- Modify: src/auroraagent/api.py
 - Modify: tests/test_chat_api.py
 
 - [ ] **Step 1: Write failing API and client tests**
@@ -209,7 +209,7 @@ Expected: PASS.
 
 - [ ] **Step 5: Commit**
 
-    git add src/offerpilot/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
+    git add src/auroraagent/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
     git commit -m "feat: AI resolve Pilot attachment references safely"
 
 ### Task 5: Expose application, offer, and resume cards safely
@@ -251,7 +251,7 @@ Expected: FAIL because no reusable attachment handle exists.
       aria-label={'添加' + attachment.label + '到 Pilot 上下文'}
       onDragStart={(event) =>
         event.dataTransfer.setData(
-          'application/x-offerpilot-context-attachment',
+          'application/x-auroraagent-context-attachment',
           JSON.stringify(attachment),
         )
       }

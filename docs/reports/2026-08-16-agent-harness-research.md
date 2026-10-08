@@ -1,10 +1,10 @@
-# OfferPilot Agent Harness 调研与改进建议
+# AuroraAgent Agent Harness 调研与改进建议
 
 日期：2026-08-16
 
 ## 结论
 
-OfferPilot 的 harness 并不是“做得太少”，而是已经累积了大量正确但分散的安全机制：冻结输入、幂等键、lease/CAS/fencing、严格证据校验、受控 Provider、真实 Provider、CDP 网络审计、跨领域写入审计和脱敏日志。当前主要问题是这些机制没有被一个统一的运行协议、诊断协议和评测数据集串起来，导致：
+AuroraAgent 的 harness 并不是“做得太少”，而是已经累积了大量正确但分散的安全机制：冻结输入、幂等键、lease/CAS/fencing、严格证据校验、受控 Provider、真实 Provider、CDP 网络审计、跨领域写入审计和脱敏日志。当前主要问题是这些机制没有被一个统一的运行协议、诊断协议和评测数据集串起来，导致：
 
 1. API、前端和 harness 对同一错误的恢复动作可能漂移；
 2. 真实 Provider 的随机失败会阻塞后续阶段，难以区分产品回归和外部波动；
@@ -118,7 +118,7 @@ Anthropic 的经验是先使用最简单可行架构，仅在评测证明必要�
 
 OpenAI Agents SDK 把 workflow、turn、generation、tool、guardrail、handoff、transcription 和 speech 都建模为 trace/span，并支持 workflow name、trace ID、group ID 以及关闭敏感输入输出记录。[OpenAI Agents tracing](https://openai.github.io/openai-agents-python/tracing/)、[OpenAI Agents run configuration](https://openai.github.io/openai-agents-python/running_agents/)、[OpenAI Agents sensitive-data configuration](https://openai.github.io/openai-agents-python/config/)
 
-OfferPilot 可采用本地、脱敏的统一 trace envelope：
+AuroraAgent 可采用本地、脱敏的统一 trace envelope：
 
 ```text
 run_id / scenario_id / operation_id
@@ -153,7 +153,7 @@ browser_request_id / response_error_code
 
 ### P2：恢复与重放缺少统一 checkpoint 语义
 
-OfferPilot 已有数据库快照和 fencing，但每个领域自行实现恢复。LangGraph 的 durable execution 要求状态可序列化，把非确定性外呼放入可 checkpoint 的 task，并在恢复时读取已保存结果而不是重复外呼；它也明确要求外部副作用具备幂等性。[LangGraph Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api)、[LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
+AuroraAgent 已有数据库快照和 fencing，但每个领域自行实现恢复。LangGraph 的 durable execution 要求状态可序列化，把非确定性外呼放入可 checkpoint 的 task，并在恢复时读取已保存结果而不是重复外呼；它也明确要求外部副作用具备幂等性。[LangGraph Functional API](https://docs.langchain.com/oss/python/langgraph/functional-api)、[LangGraph persistence](https://docs.langchain.com/oss/python/langgraph/persistence)
 
 不建议引入 LangGraph 依赖来重写产品，但可以借用其规则：
 

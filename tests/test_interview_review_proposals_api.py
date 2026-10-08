@@ -4,9 +4,9 @@ import json
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
-from offerpilot.diagnostics import read_recent_log_entries
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
+from auroraagent.diagnostics import read_recent_log_entries
 
 
 def _payload() -> dict[str, object]:

@@ -51,5 +51,5 @@ KBR-02（结构化 provenance + frontmatter 排除）和 KBR-03（元数据样�
 
 - ADR-0001 SQLite SSOT（canonical 文件 + Evidence 行）
 - ADR-0002 V1 发布范围（Extraction 是 V1 active 路径）
-- `src/offerpilot/knowledge/evidence_policy.py`（规则定义）
-- `src/offerpilot/knowledge/extractor.py`（frontmatter 边界 + adapter 信号）
+- `src/auroraagent/knowledge/evidence_policy.py`（规则定义）
+- `src/auroraagent/knowledge/extractor.py`（frontmatter 边界 + adapter 信号）

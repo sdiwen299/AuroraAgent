@@ -8,17 +8,17 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import event
 
-from offerpilot.ai.tool_authority import AuthorityFactory, ApprovalExecutionAuthority
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_authority import AuthorityFactory, ApprovalExecutionAuthority
+from auroraagent.ai.write_operations import (
     WriteOperationError,
     WriteOperationRepository,
     ledger_fingerprint,
     load_or_create_ledger_key,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
-from offerpilot.pilot_runtime.continuation import ApprovalAuthorityResolver
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
+from auroraagent.pilot_runtime.continuation import ApprovalAuthorityResolver
+from auroraagent.repositories.chat import ChatRepository
 from tests.tool_authority.test_pending_claim import create_primary_with_typed_route
 
 

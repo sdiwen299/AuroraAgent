@@ -1,4 +1,4 @@
-# OfferPilot Python Architecture Review
+# AuroraAgent Python Architecture Review
 
 Date: 2026-07-06
 Branch: `feature/20260705-python-rewrite`
@@ -9,7 +9,7 @@ architecture entry point; use `README.md`, `AGENTS.md`, and the active docs in
 
 ## First Principles
 
-OfferPilot is now a Python-first, local-first job-search workbench. The
+AuroraAgent is now a Python-first, local-first job-search workbench. The
 architecture should optimize for four properties:
 
 1. Low setup cost: `uv sync && uv run oc start` should start a useful local app.
@@ -21,16 +21,16 @@ architecture should optimize for four properties:
 
 ## Current Shape
 
-- `src/offerpilot/api.py` owns FastAPI routing, CORS, API response shape, and SPA
+- `src/auroraagent/api.py` owns FastAPI routing, CORS, API response shape, and SPA
   static fallback.
-- `src/offerpilot/cli.py` owns the Typer `oc` command surface and delegates data
+- `src/auroraagent/cli.py` owns the Typer `oc` command surface and delegates data
   work to repositories/workflows.
-- `src/offerpilot/db.py` initializes SQLite, enables foreign keys, and performs
+- `src/auroraagent/db.py` initializes SQLite, enables foreign keys, and performs
   additive compatibility columns.
-- `src/offerpilot/models.py` defines SQLAlchemy models with Go-compatible table
+- `src/auroraagent/models.py` defines SQLAlchemy models with Go-compatible table
   and column names.
-- `src/offerpilot/repositories/` owns persistence behavior by topic.
-- `src/offerpilot/ai/` owns provider adapters, tool-loop safety, and reusable AI
+- `src/auroraagent/repositories/` owns persistence behavior by topic.
+- `src/auroraagent/ai/` owns provider adapters, tool-loop safety, and reusable AI
   workflows for JD analysis, resume matching, and question generation.
 - `web/src/services` keeps the React SPA on the `/api` contract.
 
@@ -38,7 +38,7 @@ architecture should optimize for four properties:
 
 ### 1. Keep API and CLI workflows unified
 
-The Python CLI now uses `offerpilot.ai.workflows` for AI commands. API endpoints
+The Python CLI now uses `auroraagent.ai.workflows` for AI commands. API endpoints
 still contain some duplicated prompt/JSON helpers. The next cleanup should move
 JD, resume, question, material-kit, and mock scoring endpoints fully onto
 workflow functions so behavior cannot drift between HTTP and CLI.
@@ -70,5 +70,5 @@ Current expected verification commands:
 
 Docker verification should run when Docker is available:
 
-- `docker build -t offerpilot-python .`
-- `docker run --rm -p 8080:8080 -v offerpilot-data:/data offerpilot-python`
+- `docker build -t auroraagent-python .`
+- `docker run --rm -p 8080:8080 -v auroraagent-data:/data auroraagent-python`

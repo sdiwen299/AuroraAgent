@@ -5,8 +5,8 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
 
 
 class FakeModel:

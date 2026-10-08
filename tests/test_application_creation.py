@@ -4,11 +4,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import text
 import pytest
 
-from offerpilot.api import create_app
-from offerpilot.repositories.application_jd_versions import ApplicationJDService
-from offerpilot.db import init_database
-from offerpilot.repositories.application_creation import ApplicationCreationService
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.api import create_app
+from auroraagent.repositories.application_jd_versions import ApplicationJDService
+from auroraagent.db import init_database
+from auroraagent.repositories.application_creation import ApplicationCreationService
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 def payload(**changes):
@@ -170,7 +170,7 @@ def test_receipt_failure_rolls_back_application_and_jd(tmp_path):
 def test_lock_contention_is_retryable_without_new_records(tmp_path):
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
-    from offerpilot.repositories.application_jd_versions import JDVersionError
+    from auroraagent.repositories.application_jd_versions import JDVersionError
 
     path = tmp_path / 'db.sqlite'
     sessions = init_database(path)
@@ -204,9 +204,9 @@ def test_sources_remain_independent(tmp_path, job_url, source_url):
 
 def test_initial_jd_update_preserves_submission_and_rejects_stale_edit(tmp_path):
     from datetime import datetime, timezone
-    from offerpilot.repositories.application_jd_versions import JDVersionConflictError
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository, SubmissionSnapshotCreate
-    from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+    from auroraagent.repositories.application_jd_versions import JDVersionConflictError
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository, SubmissionSnapshotCreate
+    from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
     sessions = init_database(tmp_path / 'db.sqlite')
     service = ApplicationCreationService(sessions)

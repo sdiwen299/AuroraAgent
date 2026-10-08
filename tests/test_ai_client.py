@@ -2,11 +2,11 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai import client as ai_client
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.tool_runtime.contracts import ProviderToolContract
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.config import AIProviderProfile, Config
+from auroraagent.ai import client as ai_client
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.tool_runtime.contracts import ProviderToolContract
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.config import AIProviderProfile, Config
 
 
 def test_legacy_anthropic_config_routes_through_litellm(monkeypatch):

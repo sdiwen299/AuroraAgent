@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).parents[2]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 AI = SRC / "ai"
 
 _FORBIDDEN_LEGACY_NAMES = {

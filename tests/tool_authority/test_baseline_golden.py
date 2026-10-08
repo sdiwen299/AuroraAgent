@@ -11,14 +11,14 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.agent_contracts import (
+from auroraagent.ai.agent_contracts import (
     AgentToolCall,
     AgentToolResult,
     AgentTurnResult,
     PendingAction,
     StalePendingActionError,
 )
-from offerpilot.ai.agent_loop import (
+from auroraagent.ai.agent_loop import (
     AgentLoopInvocation,
     AgentLoopRunner,
     ApprovedContinuationSegment,
@@ -30,12 +30,12 @@ from offerpilot.ai.agent_loop import (
     _provider_arguments_digest,
     _delivery_error_payload,
 )
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog, compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog, compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ProviderToolContract,
     ToolExecutionRecord,
@@ -43,15 +43,15 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     ResolverImplementationBinding,
     ToolMetadataBundleV1,
     ToolOperationMetadataPort,
 )
-from offerpilot.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
-from offerpilot.ai.tool_runtime.rendering import render_compatibility
-from offerpilot.ai.types import Assistant, Message, ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
+from auroraagent.ai.tool_runtime.rendering import render_compatibility
+from auroraagent.ai.types import Assistant, Message, ToolCall
+from auroraagent.ai.write_operations import (
     DeliveryOwnership,
     LedgerOperationPreheader,
     LedgerPendingPointer,
@@ -63,9 +63,9 @@ from offerpilot.ai.write_operations import (
     WriteOperationError,
     ledger_fingerprint,
 )
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.db import init_database
-from offerpilot.chat_transport import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.db import init_database
+from auroraagent.chat_transport import (
     encode_sse_event,
     event_sse_name,
     event_sse_payload,
@@ -74,29 +74,29 @@ from offerpilot.chat_transport import (
     outcome_http_status,
     runtime_stream_response,
 )
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.pilot_runtime.continuation import (
     ConfirmationCoordinator,
     ConfirmationDependencies,
 )
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     ConfirmationRequest,
     ErrorEvent,
     ImmediateHttpOutcome,
     RuntimeFailureOutcome,
     StartTurnRequest,
 )
-from offerpilot.pilot_runtime.errors import RuntimeFailureCode
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
-from offerpilot.pilot_runtime.service import PilotRuntime, RuntimeDependencies
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.pilot_runtime.errors import RuntimeFailureCode
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
+from auroraagent.pilot_runtime.service import PilotRuntime, RuntimeDependencies
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 
 from .golden import BASELINE, FIXTURES, canonical_json, load_golden
 from tests.tool_metadata.factories import (
@@ -537,7 +537,7 @@ def _probe_repository_fixture(tmp_path_factory: pytest.TempPathFactory) -> Any:
     global _PROBE_FACTORY, _PROBE_REPOSITORY_CONTEXT, _PROBE_SESSIONS
     _PROBE_FACTORY = AuthorityFactory()
     _PROBE_SESSIONS = init_database(
-        tmp_path_factory.mktemp("offerpilot-baseline-probes") / "baseline.db"
+        tmp_path_factory.mktemp("auroraagent-baseline-probes") / "baseline.db"
     )
     _PROBE_REPOSITORY_CONTEXT = SimpleNamespace(
         applications=ApplicationsRepository(_PROBE_SESSIONS),

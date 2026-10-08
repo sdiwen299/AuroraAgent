@@ -4,13 +4,13 @@ import json
 
 import pytest
 
-from offerpilot.ai.types import Assistant
-from offerpilot.ai.material_proposals import (
+from auroraagent.ai.types import Assistant
+from auroraagent.ai.material_proposals import (
     MaterialProposalModelError,
     generate_material_proposal,
     validate_material_proposal,
 )
-from offerpilot.ai.workflows import parse_json_reply
+from auroraagent.ai.workflows import parse_json_reply
 
 
 def _snapshot() -> dict[str, object]:
@@ -329,7 +329,7 @@ def test_generate_material_proposal_emits_safe_success_evidence_counts() -> None
 
 
 def test_material_proposal_prompt_lists_contract_and_editable_before_values() -> None:
-    from offerpilot.ai.material_proposals import _material_proposal_prompt, _material_proposal_system
+    from auroraagent.ai.material_proposals import _material_proposal_prompt, _material_proposal_system
 
     system = _material_proposal_system()
     prompt = _material_proposal_prompt(_snapshot(), "")

@@ -10,7 +10,7 @@
 
 ## 1. 背景与问题
 
-OfferPilot 当前的 Chat/LangGraph 工具运行时以大型字典 registry 为中心。Provider 契约、参数 Schema、读写属性、确认描述、validator 和字符串 handler 混合在同一结构中，Agent、API、SSE 与确认恢复又分别解析这些字典和 `"错误：..."` 字符串。
+AuroraAgent 当前的 Chat/LangGraph 工具运行时以大型字典 registry 为中心。Provider 契约、参数 Schema、读写属性、确认描述、validator 和字符串 handler 混合在同一结构中，Agent、API、SSE 与确认恢复又分别解析这些字典和 `"错误：..."` 字符串。
 
 这套结构已经具备成熟的业务行为，包括：
 
@@ -827,7 +827,7 @@ Graph State 只保存：
 ## 14. 模块与依赖方向
 
 ```text
-offerpilot/ai/tool_runtime/
+auroraagent/ai/tool_runtime/
   contracts.py       ProviderToolContract、ToolSpec、ToolOutcome
   validation.py      JSON parser、Schema compiler、typed decoder
   context.py         ToolExecutionContext、capability、binding
@@ -838,7 +838,7 @@ offerpilot/ai/tool_runtime/
   catalog.py         通用 ToolCatalog、封闭校验和查询
   legacy.py          通用 Legacy adapter 基础设施
 
-offerpilot/ai/tool_specs/
+auroraagent/ai/tool_specs/
   applications.py
   application_events.py
   notes.py

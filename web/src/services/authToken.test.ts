@@ -17,7 +17,7 @@ describe('auth token storage', () => {
     setStoredAuthToken('  local-secret  ', storage);
 
     expect(getStoredAuthToken(storage)).toBe('local-secret');
-    expect(authHeaders('local-secret')).toEqual({ 'X-OfferPilot-Token': 'local-secret' });
+    expect(authHeaders('local-secret')).toEqual({ 'X-AuroraAgent-Token': 'local-secret' });
   });
 
   it('clears blank tokens', () => {

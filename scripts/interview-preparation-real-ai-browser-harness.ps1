@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-interview-preparation-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-interview-preparation-' + [Guid]::NewGuid().ToString('N'))
 $probe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $probe.Start()
 $port = ([Net.IPEndPoint]$probe.LocalEndpoint).Port
@@ -11,7 +11,7 @@ $baseUrl = "http://127.0.0.1:$port"
 $server = $null
 $applicationId = $null
 $resumeIds = @()
-$previousData = $env:OFFERPILOT_DATA
+$previousData = $env:AURORA_AGENT_DATA
 
 function Get-TreeIds([int]$processId) {
   $processId
@@ -39,10 +39,10 @@ try {
   if (Test-Path -LiteralPath $sourceConfig) {
     Copy-Item -LiteralPath $sourceConfig -Destination (Join-Path $tempData 'config.json')
   }
-  $env:OFFERPILOT_DATA = $tempData
+  $env:AURORA_AGENT_DATA = $tempData
   $server = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
-    "Set-Location '$repo'; `$env:OFFERPILOT_DATA = '$tempData'; uv run oc start --port $port"
+    "Set-Location '$repo'; `$env:AURORA_AGENT_DATA = '$tempData'; uv run oc start --port $port"
   )
   $healthy = $false
   for ($attempt = 0; $attempt -lt 60; $attempt++) {
@@ -95,9 +95,9 @@ finally {
     $env:INTERVIEW_PREPARATION_HARNESS_RESUMES = ($resumeIds -join ',')
     Push-Location $repo
     try {
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['INTERVIEW_PREPARATION_HARNESS_DATA']), int(os.environ['INTERVIEW_PREPARATION_HARNESS_APPLICATION']), [int(v) for v in os.environ['INTERVIEW_PREPARATION_HARNESS_RESUMES'].split(',') if v])"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['INTERVIEW_PREPARATION_HARNESS_DATA']), int(os.environ['INTERVIEW_PREPARATION_HARNESS_APPLICATION']), [int(v) for v in os.environ['INTERVIEW_PREPARATION_HARNESS_RESUMES'].split(',') if v])"
       if ($LASTEXITCODE -ne 0) { throw "Harness cleanup failed with exit code $LASTEXITCODE." }
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['INTERVIEW_PREPARATION_HARNESS_DATA']))"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['INTERVIEW_PREPARATION_HARNESS_DATA']))"
       if ($LASTEXITCODE -ne 0) { throw "Harness residual assertion failed with exit code $LASTEXITCODE." }
     } catch { $cleanupFailure = $_ }
     finally {
@@ -108,7 +108,7 @@ finally {
     }
   }
   if (Test-Path -LiteralPath $tempData) { Remove-Item -LiteralPath $tempData -Recurse -Force }
-  if ($null -eq $previousData) { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-  else { $env:OFFERPILOT_DATA = $previousData }
+  if ($null -eq $previousData) { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+  else { $env:AURORA_AGENT_DATA = $previousData }
   if ($cleanupFailure) { throw $cleanupFailure }
 }

@@ -4,7 +4,7 @@ The Haru receptionist character/model data and Cubism Core runtime are © Live2D
 
 > This content uses sample data owned and copyrighted by Live2D Inc. The sample data are utilized in accordance with terms and conditions set by Live2D Inc. This content itself is created at the author’s sole discretion.
 
-They are provided separately from OfferPilot's AGPLv3-licensed source code and remain subject to Live2D's terms:
+They are provided separately from AuroraAgent's AGPLv3-licensed source code and remain subject to Live2D's terms:
 
 - Sample model terms: https://www.live2d.com/eula/live2d-sample-model-terms_en.html
 - SDK license: https://www.live2d.com/en/sdk/license/

@@ -12,7 +12,7 @@
 
 - [x] 在 `tests/test_calendar_api.py` 增加无时区数据库 datetime 不允许按本机时区转换的回归；月历与日程详情必须返回同一时间。
 - [x] 运行 `uv run pytest tests/test_calendar_api.py -q` 验证 RED。
-- [x] `src/offerpilot/api.py` 月历使用既有 `_format_rfc3339(scheduled_at)`，与 `_event_json` 一致，不迁移历史数据。
+- [x] `src/auroraagent/api.py` 月历使用既有 `_format_rfc3339(scheduled_at)`，与 `_event_json` 一致，不迁移历史数据。
 - [x] GREEN 后检查暗色日历 `web/src/components/CalendarView.module.css` 使用既有语义颜色。
 
 ## 2. 准备与复盘
@@ -25,7 +25,7 @@
 ## 3. 故事回读
 
 - [x] `tests/test_interview_stories_api.py` 验证详情 version 与版本列表 `confirmed_at` 一致。
-- [x] RED 后在 `src/offerpilot/repositories/interview_stories.py::_version_payload` 输出数据库已有 `confirmed_at`，不放宽前端验证。
+- [x] RED 后在 `src/auroraagent/repositories/interview_stories.py::_version_payload` 输出数据库已有 `confirmed_at`，不放宽前端验证。
 - [x] 运行故事 API 与前端历史校验测试；浏览器回读审计故事。
 
 ## 4. 知识出题与资料刷新

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-import offerpilot.knowledge.tokenizer as tokenizer
+import auroraagent.knowledge.tokenizer as tokenizer
 
 
 def test_count_tokens_fails_fast_when_cl100k_base_is_unavailable(monkeypatch: pytest.MonkeyPatch) -> None:

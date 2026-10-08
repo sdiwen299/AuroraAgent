@@ -4,11 +4,11 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai import client as ai_client
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.tool_runtime.contracts import ProviderToolContract
-from offerpilot.ai.types import Message
-from offerpilot.config import AIProviderProfile, Config
+from auroraagent.ai import client as ai_client
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.tool_runtime.contracts import ProviderToolContract
+from auroraagent.ai.types import Message
+from auroraagent.config import AIProviderProfile, Config
 
 
 def _provider_tool(name: str) -> ProviderToolContract:
@@ -32,7 +32,7 @@ def _provider_tool(name: str) -> ProviderToolContract:
 
 def test_client_audits_request_metadata_without_prompt_or_secret(monkeypatch, tmp_path):
     audit_path = tmp_path / "provider-request-audit.jsonl"
-    monkeypatch.setenv("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
 
     def fake_completion(**kwargs: Any) -> Any:
         return {"choices": [{"message": {"content": "ok"}}]}
@@ -85,7 +85,7 @@ def test_client_audits_request_metadata_without_prompt_or_secret(monkeypatch, tm
 
 def test_provider_request_audit_failure_does_not_block_provider_call(monkeypatch, tmp_path):
     audit_path = tmp_path / "missing" / "provider-request-audit.jsonl"
-    monkeypatch.setenv("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
     calls = 0
 
     def fake_completion(**kwargs: Any) -> Any:
@@ -323,8 +323,8 @@ def test_streaming_provider_request_audit_failure_does_not_block_provider_call(
     monkeypatch, tmp_path
 ):
     audit_path = tmp_path / "missing" / "provider-request-audit.jsonl"
-    monkeypatch.setenv("OFFERPILOT_PROVIDER_AUDIT_FILE", str(audit_path))
-    monkeypatch.setenv("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_PROVIDER_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
     calls = 0
 
     def fake_completion(**kwargs: Any) -> Any:
@@ -345,7 +345,7 @@ def test_streaming_provider_request_audit_failure_does_not_block_provider_call(
 
 def test_streaming_provider_request_metadata_audit_records_request(monkeypatch, tmp_path):
     audit_path = tmp_path / "provider-request-audit.jsonl"
-    monkeypatch.setenv("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE", str(audit_path))
 
     def fake_completion(**kwargs: Any) -> Any:
         return [SimpleNamespace(choices=[SimpleNamespace(delta=SimpleNamespace(content="ok"))])]

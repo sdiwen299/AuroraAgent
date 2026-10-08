@@ -10,9 +10,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import event, select, text
 from sqlalchemy.orm import Session
 
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     AdaptivePracticePlan,
     Application,
     ApplicationEvent,
@@ -22,13 +22,13 @@ from offerpilot.models import (
     InterviewReadinessSignalVersion,
     InterviewReviewProposal,
 )
-from offerpilot.review_readiness.candidates import project_readiness_candidates
-from offerpilot.review_readiness.projection import (
+from auroraagent.review_readiness.candidates import project_readiness_candidates
+from auroraagent.review_readiness.projection import (
     compute_practice_target_fingerprint_v1,
     load_canonical_readiness_signal,
 )
-from offerpilot.review_readiness import repository as readiness_repository_module
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.review_readiness import repository as readiness_repository_module
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 from tests.review_readiness_support import seed_review_candidate
 

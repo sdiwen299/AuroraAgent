@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:test-driven-development to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 将 OfferPilot 桌面端收敛为任务优先的今日、投递、面试、资料与统一设置工作台，同时保持后端和 Assistant Surface 契约不变。
+**Goal:** 将 AuroraAgent 桌面端收敛为任务优先的今日、投递、面试、资料与统一设置工作台，同时保持后端和 Assistant Surface 契约不变。
 
 **Architecture:** 在现有 AppShell、ViewMode、React Query 服务和业务 Drawer 上重排页面；把确定性状态映射和简历无损转换抽成纯函数。固定 manifest、Golden 与源码门禁验证范围和架构不变量。
 

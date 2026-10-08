@@ -25,11 +25,11 @@ from typing import Any
 
 from fastapi.testclient import TestClient
 
-from offerpilot.config import Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.repository import KnowledgeRepository
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.knowledge.worker import (
+from auroraagent.config import Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.repository import KnowledgeRepository
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.knowledge.worker import (
     BriefWorker,
     ExtractionWorker,
     KnowledgeJobRunner,

@@ -4,7 +4,7 @@ import type { PilotExecution, PilotInterruptResult } from '@/types/chat';
 
 type StopCommand = { target: PilotExecution; commandId: string };
 const memory = new Map<string, StopCommand>();
-const prefix = 'offerpilot.pending_interrupt.v2.';
+const prefix = 'auroraagent.pending_interrupt.v2.';
 const key = (id: string) => `${prefix}${id}`;
 function readCommand(id: number): StopCommand | undefined {
   const commands = new Map(memory);

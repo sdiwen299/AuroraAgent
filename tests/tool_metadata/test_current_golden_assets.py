@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-from offerpilot.ai.tool_authority.policy import binding_policy_fingerprint
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_authority.policy import binding_policy_fingerprint
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
 
 
 ROOT = Path(__file__).parents[1] / "fixtures"

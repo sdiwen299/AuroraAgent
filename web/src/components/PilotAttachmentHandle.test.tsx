@@ -47,7 +47,7 @@ describe('createPilotAttachmentDragBinding', () => {
     act(() => cardRoot.dispatchEvent(dragStart));
 
     expect(setData).toHaveBeenCalledWith(
-      'application/x-offerpilot-context-attachment',
+      'application/x-auroraagent-context-attachment',
       JSON.stringify(attachment),
     );
     expect(dataTransfer.effectAllowed).toBe('copy');

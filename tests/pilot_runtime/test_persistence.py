@@ -10,20 +10,20 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_authority import AuthorityPhaseError
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_authority import AuthorityPhaseError
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.ai.write_operations import (
     DeliveryOwnership,
     OperationCommitted,
     WriteOperationRepository,
     ledger_fingerprint,
     operation_request_fingerprint,
 )
-from offerpilot.db import init_database
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.pilot_runtime.persistence import (
+from auroraagent.db import init_database
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.pilot_runtime.persistence import (
     ChatPersistenceCoordinator,
     DeliveryOutcome,
     PendingActionView,
@@ -51,7 +51,7 @@ _NON_LEDGER_PENDING_TOOL = "display_pending_notice"
 
 
 def make_persistence_coordinator(tmp_path: Path) -> tuple[ChatPersistenceCoordinator, int]:
-    chat = ChatRepository(init_database(tmp_path / "offerpilot.db"))
+    chat = ChatRepository(init_database(tmp_path / "auroraagent.db"))
     conversation = chat.create_conversation("test")
     return ChatPersistenceCoordinator(chat), conversation.id
 
@@ -1356,7 +1356,7 @@ def test_public_read_annotations_are_closed_snapshot_types() -> None:
         rendered = str(return_annotation)
         assert return_annotation is not Any
         assert "Any" not in rendered
-        assert "offerpilot.ai.agent.PendingAction" not in rendered
+        assert "auroraagent.ai.agent.PendingAction" not in rendered
         assert "sqlalchemy" not in rendered
 
     assert PersistedMessageView.__slots__

@@ -4,7 +4,7 @@
 
 1. 在 `tests/test_settings_api.py` 增加 GET/backup 返回预算、PUT round-trip、非法启用 Provider 和连接测试不联网测试。
 2. 运行定向测试确认 RED。
-3. 修改 `src/offerpilot/api.py`，完整读写字段并实现封闭校验。
+3. 修改 `src/auroraagent/api.py`，完整读写字段并实现封闭校验。
 4. 运行定向测试确认 GREEN。
 
 ## Task 2：补齐前端设置
@@ -18,7 +18,7 @@
 
 1. 增加 `_provider_error_message` 定向测试，锁定预算错误与普通 Provider 错误的不同文案。
 2. 运行测试确认 RED。
-3. 修改 `src/offerpilot/pilot_runtime/composition.py`，仅映射封闭预算错误 code。
+3. 修改 `src/auroraagent/pilot_runtime/composition.py`，仅映射封闭预算错误 code。
 4. 运行 Pilot Runtime / Chat API 定向测试。
 
 ## Task 4：修复 Haru 固定错误表情

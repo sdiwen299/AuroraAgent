@@ -6,11 +6,11 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.agent_runtime.events import EventDraft, prepare_event
-from offerpilot.agent_runtime.trace import reconstruct_agent_run
-from offerpilot.db import init_database, journal_session_factory_for_data_dir
-from offerpilot.models import AgentEvent, AgentRun, Conversation
-from offerpilot.repositories.agent_runs import (
+from auroraagent.agent_runtime.events import EventDraft, prepare_event
+from auroraagent.agent_runtime.trace import reconstruct_agent_run
+from auroraagent.db import init_database, journal_session_factory_for_data_dir
+from auroraagent.models import AgentEvent, AgentRun, Conversation
+from auroraagent.repositories.agent_runs import (
     AgentRunRepository,
     DispositionCommand,
     StartRunCommand,

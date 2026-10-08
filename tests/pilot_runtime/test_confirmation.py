@@ -14,32 +14,32 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.agent_contracts import AgentTurnResult, PendingAction
-from offerpilot.ai.agent_loop import ApprovedWriteSeed
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.agent_contracts import AgentTurnResult, PendingAction
+from auroraagent.ai.agent_loop import ApprovedWriteSeed
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     ToolCatalog,
     compile_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_authority import (
     ApprovalExecutionAuthority,
     AuthorityFactory,
     TrustedContextScope,
 )
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ToolFailure,
     ToolSuccess,
 )
-from offerpilot.ai.tool_specs.legacy import build_static_adapter_catalog
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_specs.legacy import build_static_adapter_catalog
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.ai.write_operations import (
     DeliveryHeartbeat,
     DeliveryOwnership,
     LedgerOperationPreheader,
@@ -56,20 +56,20 @@ from offerpilot.ai.write_operations import (
     load_or_create_ledger_key,
     pending_action_identity,
 )
-from offerpilot.agent_runtime.journal import NullRunRecorder, NullRunRecorderFactory
-from offerpilot.chat_transport import SseAgentExecutionHost, outcome_http_payload
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
-from offerpilot.pilot_runtime.persistence import ChatPersistenceCoordinator
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.agent_runtime.journal import NullRunRecorder, NullRunRecorderFactory
+from auroraagent.chat_transport import SseAgentExecutionHost, outcome_http_payload
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
+from auroraagent.pilot_runtime.persistence import ChatPersistenceCoordinator
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
+from auroraagent.pilot_runtime.contracts import (
     AssistantDeltaEvent,
     AssistantMessageEvent,
     CompletedEvent,
@@ -84,7 +84,7 @@ from offerpilot.pilot_runtime.contracts import (
     ToolCallEvent,
     ToolResultEvent,
 )
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.pilot_runtime.continuation import (
     ApprovalAuthorityResolver,
     ConfirmationApprovedWritePort,
     ConfirmationCoordinator,
@@ -94,16 +94,16 @@ from offerpilot.pilot_runtime.continuation import (
     DeliveryBundle,
     _confirmation_token,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.errors import RuntimeAgentTimedOut, RuntimeFailureCode
-from offerpilot.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
-import offerpilot.pilot_runtime.composition as composition_module
-from offerpilot.pilot_runtime.service import (
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.errors import RuntimeAgentTimedOut, RuntimeFailureCode
+from auroraagent.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
+import auroraagent.pilot_runtime.composition as composition_module
+from auroraagent.pilot_runtime.service import (
     PilotRuntime,
     RuntimeDependencies,
     _ContinuationActivationRequest,
 )
-from offerpilot.pilot_runtime.service import ResolvedModel
+from auroraagent.pilot_runtime.service import ResolvedModel
 from tests.tool_metadata.test_pending_routes import issued_typed_pending_route
 from tests.tool_metadata.test_production_bundle import _production_components
 
@@ -143,7 +143,7 @@ def _runtime_metadata_dependencies() -> dict[str, object]:
 def test_task11_confirmation_resume_accepts_only_a_legacy_route_proof() -> None:
     """The final cutover removes the transitional raw-Pending lookup."""
 
-    from offerpilot.pilot_runtime import deterministic as deterministic_module
+    from auroraagent.pilot_runtime import deterministic as deterministic_module
 
     source = inspect.getsource(deterministic_module.DeterministicPilotAdapter)
     assert ".resolve_server_loaded(pending)" not in source
@@ -817,9 +817,9 @@ def test_real_nonapproval_paths_keep_legacy_proof_pipeline_at_zero_calls(
 ) -> None:
     """Reject and terminal replay bypass every proof-only execution stage."""
 
-    importlib.import_module("offerpilot.ai.tool_runtime.legacy_proof")
-    route_module = importlib.import_module("offerpilot.pilot_runtime.legacy_route")
-    legacy_module = importlib.import_module("offerpilot.ai.tool_runtime.legacy")
+    importlib.import_module("auroraagent.ai.tool_runtime.legacy_proof")
+    route_module = importlib.import_module("auroraagent.pilot_runtime.legacy_route")
+    legacy_module = importlib.import_module("auroraagent.ai.tool_runtime.legacy")
     counts = {
         "prepare": 0,
         "mutable_recheck": 0,
@@ -2426,7 +2426,7 @@ def test_real_sqlite_coordinator_executes_prepared_call_once_and_persists_delive
 ) -> None:
     """The confirmation seam must exercise the production Ledger coordinator."""
 
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     operations = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, operations)

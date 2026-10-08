@@ -79,7 +79,7 @@ function key(): string {
 }
 
 function pendingStorageKey(applicationId: number, kind: 'snapshot' | 'outcome'): string {
-  return `offerpilot:application-outcome:${applicationId}:${kind}`;
+  return `auroraagent:application-outcome:${applicationId}:${kind}`;
 }
 
 function readPending<T>(applicationId: number, kind: 'snapshot' | 'outcome'): PendingWrite<T> | null {

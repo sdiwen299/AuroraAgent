@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     MockInterviewAttempt,
     MockInterviewTurn,
 )
-from offerpilot.repositories.voice_coaching import (
+from auroraagent.repositories.voice_coaching import (
     VoiceCoachingConflict,
     VoiceCoachingNotFound,
     VoiceCoachingRepository,

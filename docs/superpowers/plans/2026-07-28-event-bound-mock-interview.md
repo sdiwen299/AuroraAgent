@@ -14,7 +14,7 @@
 
 ## Global implementation rules
 
-- Work only in `D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260724-evidence-gated-interview-preparation` on the current branch.
+- Work only in `D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260724-evidence-gated-interview-preparation` on the current branch.
 - Do not change product behavior before the failing test for that behavior exists.
 - Do not reintroduce `MockSession`, `/api/mock/*`, `Conversation(mode="mock_interview")`, free scores, automatic InterviewNote saving, audio, transcription, URL fetching, recruiting-platform access, automatic status changes, Knowledge/Question/Memory/Reminder writes, or generic mock-interview entry points.
 - Use `input_fingerprint`/`source_fingerprint` only for immutable Application/Event/Resume/JD/selected-preparation input. Use `transcript_fingerprint` only for ordered Turns and provider CAS. A normal answer append never becomes `source_changed`.
@@ -26,15 +26,15 @@
 
 | Responsibility | Files to create or modify |
 | --- | --- |
-| Destructive migration and model registry | `src/offerpilot/db.py`, `src/offerpilot/models.py`, `src/offerpilot/schemas.py` |
-| Attempt/Turn and draft repositories | `src/offerpilot/repositories/mock_interviews.py`, `src/offerpilot/repositories/mock_interview_review_drafts.py` |
-| AI contracts and provider diagnostics | `src/offerpilot/ai/mock_interview.py`; reuse the existing optional `ChatModel.complete(messages, tools, response_format=None)` contract in `src/offerpilot/ai/agent.py` and `src/offerpilot/ai/client.py` |
-| HTTP API | `src/offerpilot/api.py` |
+| Destructive migration and model registry | `src/auroraagent/db.py`, `src/auroraagent/models.py`, `src/auroraagent/schemas.py` |
+| Attempt/Turn and draft repositories | `src/auroraagent/repositories/mock_interviews.py`, `src/auroraagent/repositories/mock_interview_review_drafts.py` |
+| AI contracts and provider diagnostics | `src/auroraagent/ai/mock_interview.py`; reuse the existing optional `ChatModel.complete(messages, tools, response_format=None)` contract in `src/auroraagent/ai/agent.py` and `src/auroraagent/ai/client.py` |
+| HTTP API | `src/auroraagent/api.py` |
 | Backend tests | `tests/test_mock_interview_migrations.py`, `tests/test_mock_interview_repository.py`, `tests/test_mock_interview_ai.py`, `tests/test_mock_interview_api.py`, `tests/test_mock_interview_review_drafts.py`, plus targeted updates to `tests/test_chat_api.py`, `tests/test_conditional_delete_repositories.py`, and `tests/test_smoke.py` |
 | Frontend service/types/state | `web/src/services/mockInterviews.ts`, `web/src/types/mockInterview.ts`, `web/src/layout/AppShell.tsx` |
 | Frontend entry and drawer | `web/src/components/InterviewV01View.tsx`, new `web/src/components/MockInterviewDrawer.tsx` and `web/src/components/MockInterviewDrawer.module.css` plus tests, `web/src/features/pilot/PilotOpportunityFitV2Card.tsx`, and `web/src/layout/AppShell.tsx` |
 | Legacy frontend removal | Delete `web/src/components/MockStudio/MockChat.tsx`, `MockResultCard.tsx`, `MockStudioView.tsx`, `MockStudio.module.css`, `RadarChart.tsx`, `web/src/services/mock.ts`, `web/src/types/mock.ts`; modify `web/src/layout/navigation.ts`, `navigation.test.ts`, `web/src/components/ChatPanel/capabilities.ts`, and `conversationList.test.ts` |
-| Isolated runtime acceptance | `src/offerpilot/smoke.py`, `tests/test_smoke.py`, new `scripts/mock-interview-real-ai-browser-harness.ps1` |
+| Isolated runtime acceptance | `src/auroraagent/smoke.py`, `tests/test_smoke.py`, new `scripts/mock-interview-real-ai-browser-harness.ps1` |
 
 The plan below assigns every file to a task so a task can be reviewed independently.
 
@@ -43,9 +43,9 @@ The plan below assigns every file to a task so a task can be reviewed independen
 **Files:**
 
 - Create: `tests/test_mock_interview_migrations.py`
-- Modify: `src/offerpilot/db.py`, `src/offerpilot/models.py`, `src/offerpilot/schemas.py`, `src/offerpilot/api.py`
+- Modify: `src/auroraagent/db.py`, `src/auroraagent/models.py`, `src/auroraagent/schemas.py`, `src/auroraagent/api.py`
 - Modify: `tests/test_conditional_delete_repositories.py`, `tests/test_chat_api.py`, `tests/test_smoke.py`
-- Delete: `src/offerpilot/repositories/mock.py`, `tests/test_mock_api.py`
+- Delete: `src/auroraagent/repositories/mock.py`, `tests/test_mock_api.py`
 - Delete: `web/src/components/MockStudio/MockChat.tsx`, `web/src/components/MockStudio/MockResultCard.tsx`, `web/src/components/MockStudio/MockStudioView.tsx`, `web/src/components/MockStudio/MockStudio.module.css`, `web/src/components/MockStudio/RadarChart.tsx`, `web/src/services/mock.ts`, `web/src/types/mock.ts`
 - Modify: `web/src/layout/navigation.ts`, `web/src/layout/navigation.test.ts`, `web/src/components/ChatPanel/capabilities.ts`, `web/src/components/ChatPanel/conversationList.test.ts`
 
@@ -80,9 +80,9 @@ Expected: FAIL while the old model and routes remain registered.
 
 - [ ] **Step 3: Implement migration `0016_event_bound_mock_interview`.**
 
-In `src/offerpilot/db.py`, delete old `mock_sessions` rows and their `chat_messages`/`mode='mock_interview'` conversations in dependency order, drop the legacy named indexes before dropping the table, create the four new tables, then insert the migration version with `INSERT OR IGNORE`. Preserve ordinary Chat rows and formal `InterviewNote` rows. Do not add foreign keys from frozen Attempt source IDs to Application/Event/Resume.
+In `src/auroraagent/db.py`, delete old `mock_sessions` rows and their `chat_messages`/`mode='mock_interview'` conversations in dependency order, drop the legacy named indexes before dropping the table, create the four new tables, then insert the migration version with `INSERT OR IGNORE`. Preserve ordinary Chat rows and formal `InterviewNote` rows. Do not add foreign keys from frozen Attempt source IDs to Application/Event/Resume.
 
-In `src/offerpilot/models.py`, add the four new models and remove `MockSession` from `APPLICATION_FOREIGN_KEY_MODELS`; in `schemas.py`, remove `MockSessionOut`. Keep `Base.metadata.create_all()` compatible with a brand-new database, while the migration test remains based on the real previous DDL.
+In `src/auroraagent/models.py`, add the four new models and remove `MockSession` from `APPLICATION_FOREIGN_KEY_MODELS`; in `schemas.py`, remove `MockSessionOut`. Keep `Base.metadata.create_all()` compatible with a brand-new database, while the migration test remains based on the real previous DDL.
 
 - [ ] **Step 4: Remove the legacy registrations and satisfy the tests.**
 
@@ -102,7 +102,7 @@ Expected: all targeted tests pass; old Mock routes are 404 and ordinary Chat rem
 - [ ] **Step 5: Commit the isolated migration/removal.**
 
 ```powershell
-git add src/offerpilot/db.py src/offerpilot/models.py src/offerpilot/schemas.py src/offerpilot/api.py src/offerpilot/repositories/mock.py tests/test_mock_interview_migrations.py tests/test_mock_legacy_removed.py tests/test_conditional_delete_repositories.py tests/test_chat_api.py tests/test_smoke.py web/src
+git add src/auroraagent/db.py src/auroraagent/models.py src/auroraagent/schemas.py src/auroraagent/api.py src/auroraagent/repositories/mock.py tests/test_mock_interview_migrations.py tests/test_mock_legacy_removed.py tests/test_conditional_delete_repositories.py tests/test_chat_api.py tests/test_smoke.py web/src
 git commit -m "feat: AI remove legacy mock interview path"
 ```
 
@@ -110,8 +110,8 @@ git commit -m "feat: AI remove legacy mock interview path"
 
 **Files:**
 
-- Create: `src/offerpilot/repositories/mock_interviews.py`
-- Modify: `src/offerpilot/models.py`, `src/offerpilot/api.py`
+- Create: `src/auroraagent/repositories/mock_interviews.py`
+- Modify: `src/auroraagent/models.py`, `src/auroraagent/api.py`
 - Create: `tests/test_mock_interview_repository.py`, `tests/test_mock_interview_api.py`
 
 - [ ] **Step 1: Write repository tests for immutable input and separate transcript fingerprints.**
@@ -181,7 +181,7 @@ Expected: all Attempt/Turn and endpoint tests pass; ordinary answer progression 
 - [ ] **Step 5: Commit Attempt/Turn persistence.**
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/repositories/mock_interviews.py src/offerpilot/api.py tests/test_mock_interview_repository.py tests/test_mock_interview_api.py
+git add src/auroraagent/models.py src/auroraagent/repositories/mock_interviews.py src/auroraagent/api.py tests/test_mock_interview_repository.py tests/test_mock_interview_api.py
 git commit -m "feat: AI add event-bound mock interview attempts"
 ```
 
@@ -189,9 +189,9 @@ git commit -m "feat: AI add event-bound mock interview attempts"
 
 **Files:**
 
-- Create: `src/offerpilot/ai/mock_interview.py`
-- Do not modify `src/offerpilot/ai/agent.py` or `src/offerpilot/ai/client.py`; their existing optional `response_format=None` contract and capability branch are part of the implementation surface
-- Modify: `src/offerpilot/api.py`, `src/offerpilot/repositories/mock_interviews.py`
+- Create: `src/auroraagent/ai/mock_interview.py`
+- Do not modify `src/auroraagent/ai/agent.py` or `src/auroraagent/ai/client.py`; their existing optional `response_format=None` contract and capability branch are part of the implementation surface
+- Modify: `src/auroraagent/api.py`, `src/auroraagent/repositories/mock_interviews.py`
 - Create: `tests/test_mock_interview_ai.py`, `tests/test_mock_interview_diagnostics.py`
 
 - [ ] **Step 1: Write strict contract failures first.**
@@ -250,7 +250,7 @@ Expected: all strict parsing, evidence, safe-empty, retry, diagnostic, CAS, and 
 - [ ] **Step 5: Commit AI contract and diagnostics.**
 
 ```powershell
-git add src/offerpilot/ai/mock_interview.py src/offerpilot/ai/types.py src/offerpilot/api.py src/offerpilot/repositories/mock_interviews.py tests/test_mock_interview_ai.py tests/test_mock_interview_diagnostics.py
+git add src/auroraagent/ai/mock_interview.py src/auroraagent/ai/types.py src/auroraagent/api.py src/auroraagent/repositories/mock_interviews.py tests/test_mock_interview_ai.py tests/test_mock_interview_diagnostics.py
 git commit -m "feat: AI gate mock interview feedback evidence"
 ```
 
@@ -258,8 +258,8 @@ git commit -m "feat: AI gate mock interview feedback evidence"
 
 **Files:**
 
-- Create: `src/offerpilot/repositories/mock_interview_review_drafts.py`
-- Modify: `src/offerpilot/models.py`, `src/offerpilot/api.py`
+- Create: `src/auroraagent/repositories/mock_interview_review_drafts.py`
+- Modify: `src/auroraagent/models.py`, `src/auroraagent/api.py`
 - Create: `tests/test_mock_interview_review_drafts.py`
 - Modify: `tests/test_mock_interview_api.py`
 
@@ -296,7 +296,7 @@ Expected: all draft atomicity, replay, conflict, source-drift, and zero-cross-do
 - [ ] **Step 4: Commit HITL persistence.**
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/repositories/mock_interview_review_drafts.py src/offerpilot/api.py tests/test_mock_interview_review_drafts.py tests/test_mock_interview_api.py
+git add src/auroraagent/models.py src/auroraagent/repositories/mock_interview_review_drafts.py src/auroraagent/api.py tests/test_mock_interview_review_drafts.py tests/test_mock_interview_api.py
 git commit -m "feat: AI add confirmed mock interview review drafts"
 ```
 
@@ -363,7 +363,7 @@ git commit -m "feat: AI connect event-bound mock interview UI"
 
 **Files:**
 
-- Modify: `src/offerpilot/smoke.py`, `tests/test_smoke.py`
+- Modify: `src/auroraagent/smoke.py`, `tests/test_smoke.py`
 - Create: `scripts/mock-interview-real-ai-browser-harness.ps1`
 - Create or modify: `tests/test_mock_interview_browser_harness.py`
 
@@ -408,7 +408,7 @@ Expected: local and real-AI use temporary data only; browser requests are local-
 - [ ] **Step 5: Commit runtime acceptance assets.**
 
 ```powershell
-git add src/offerpilot/smoke.py tests/test_smoke.py tests/test_mock_interview_browser_harness.py scripts/mock-interview-real-ai-browser-harness.ps1
+git add src/auroraagent/smoke.py tests/test_smoke.py tests/test_mock_interview_browser_harness.py scripts/mock-interview-real-ai-browser-harness.ps1
 git commit -m "test: AI verify isolated mock interview flow"
 ```
 
@@ -432,7 +432,7 @@ The PowerShell script must accept `-Group agent|domain|knowledge|proposals|misc`
 Run the following from a temporary directory and remove it in `finally`; do not create a manifest in the repository root:
 
 ```powershell
-$gateDir = Join-Path ([System.IO.Path]::GetTempPath()) ("offerpilot-pytest-gate-" + [guid]::NewGuid().ToString())
+$gateDir = Join-Path ([System.IO.Path]::GetTempPath()) ("auroraagent-pytest-gate-" + [guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $gateDir | Out-Null
 try {
     uv run pytest --collect-only -q --disable-warnings | Out-File (Join-Path $gateDir 'full-manifest.txt') -Encoding utf8

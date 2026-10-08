@@ -31,13 +31,13 @@
 
 | 文件 | 责任 |
 | --- | --- |
-| `src/offerpilot/models.py` | 执行和命令的新表、唯一约束、级联/最小墓碑 |
-| `src/offerpilot/pilot_control.py` | 接纳/认领/续租/停止/读取、执行身份及事务围栏 |
-| `src/offerpilot/pilot_runtime/turn_control.py` | 进程控制适配、有限心跳、本地权限、上下文传播 |
-| `src/offerpilot/chat_transport.py` | 显式控制注入、sync/SSE worker 传播与清理 |
-| `src/offerpilot/api.py` | 精确 Turn 控制 API、初始认领、确认控制、结果身份 |
-| `src/offerpilot/pilot_runtime/continuation.py`、`deterministic.py` | 审批校验后、实际执行前认领下一代次；终态重放不认领 |
-| `src/offerpilot/pilot_timeline.py`、`pilot_timeline_projection.py` | execution 元数据和状态展示，保持只读恢复 |
+| `src/auroraagent/models.py` | 执行和命令的新表、唯一约束、级联/最小墓碑 |
+| `src/auroraagent/pilot_control.py` | 接纳/认领/续租/停止/读取、执行身份及事务围栏 |
+| `src/auroraagent/pilot_runtime/turn_control.py` | 进程控制适配、有限心跳、本地权限、上下文传播 |
+| `src/auroraagent/chat_transport.py` | 显式控制注入、sync/SSE worker 传播与清理 |
+| `src/auroraagent/api.py` | 精确 Turn 控制 API、初始认领、确认控制、结果身份 |
+| `src/auroraagent/pilot_runtime/continuation.py`、`deterministic.py` | 审批校验后、实际执行前认领下一代次；终态重放不认领 |
+| `src/auroraagent/pilot_timeline.py`、`pilot_timeline_projection.py` | execution 元数据和状态展示，保持只读恢复 |
 | `web/src/services/chat.ts`、`web/src/types/chat.ts` | 停止命令/执行读取协议 |
 | `web/src/features/assistantSurface/`、`web/src/components/ChatPanel/` | 共享控制、跨页面读取、停止状态与旧代次保护 |
 

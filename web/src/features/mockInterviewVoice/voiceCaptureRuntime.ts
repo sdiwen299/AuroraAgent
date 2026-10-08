@@ -41,7 +41,7 @@ export type VoiceCaptureRuntime = {
 function defaultDependencies(): VoiceCaptureRuntimeDependencies {
   return {
     createAudioContext: () => new AudioContext() as unknown as AudioContextLike,
-    createWorkletNode: (context) => new AudioWorkletNode(context as unknown as BaseAudioContext, 'offerpilot-voice-activity', {
+    createWorkletNode: (context) => new AudioWorkletNode(context as unknown as BaseAudioContext, 'auroraagent-voice-activity', {
       numberOfInputs: 1,
       numberOfOutputs: 0,
       processorOptions: { frameSamples: Math.max(160, Math.round(context.sampleRate * 0.02)) },

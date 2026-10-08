@@ -7,7 +7,7 @@ declare class AudioWorkletProcessor {
   readonly port: { postMessage(message: unknown, transfer?: Transferable[]): void };
 }
 
-export class OfferPilotVoiceActivityProcessor extends AudioWorkletProcessor {
+export class AuroraAgentVoiceActivityProcessor extends AudioWorkletProcessor {
   private readonly frameSamples: number;
   private pending: number[] = [];
   private nextFrameAtMs?: number;
@@ -48,4 +48,4 @@ export class OfferPilotVoiceActivityProcessor extends AudioWorkletProcessor {
   }
 }
 
-registerProcessor('offerpilot-voice-activity', OfferPilotVoiceActivityProcessor);
+registerProcessor('auroraagent-voice-activity', AuroraAgentVoiceActivityProcessor);

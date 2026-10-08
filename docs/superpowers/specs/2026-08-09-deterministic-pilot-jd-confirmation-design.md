@@ -333,15 +333,15 @@ Stage A 必须证明 Pilot JD 确认完全不依赖 Provider。Stage B 仍使用
 
 建议新增：
 
-- `src/offerpilot/ai/deterministic_actions.py`
+- `src/auroraagent/ai/deterministic_actions.py`
 - 对应纯逻辑测试。
 
 建议修改：
 
-- `src/offerpilot/ai/tools.py`
-- `src/offerpilot/ai/agent.py`
-- `src/offerpilot/repositories/chat.py`
-- `src/offerpilot/api.py`
+- `src/auroraagent/ai/tools.py`
+- `src/auroraagent/ai/agent.py`
+- `src/auroraagent/repositories/chat.py`
+- `src/auroraagent/api.py`
 - Chat/Pilot 请求类型、服务、快捷入口和确认卡测试；
 - Application JD smoke、浏览器 Harness 与发布报告。
 

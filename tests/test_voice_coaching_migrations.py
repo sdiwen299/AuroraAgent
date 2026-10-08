@@ -6,8 +6,8 @@ import pytest
 from sqlalchemy import inspect, text
 from sqlalchemy.exc import IntegrityError
 
-from offerpilot.db import init_database
-from offerpilot.models import MockInterviewAttempt, MockInterviewTurn, VoiceCoachingSnapshot
+from auroraagent.db import init_database
+from auroraagent.models import MockInterviewAttempt, MockInterviewTurn, VoiceCoachingSnapshot
 
 
 def test_voice_coaching_schema_is_additive_and_idempotent(tmp_path: Path) -> None:

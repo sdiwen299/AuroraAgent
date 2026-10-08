@@ -34,4 +34,4 @@
 - `web/src/components/ResumeLibraryView.module.css`
 - 本设计、计划与浏览器验收报告/截图。
 
-禁止修改 `src/offerpilot/**`、`tests/**`、`web/src/services/**`、`web/src/types/**`、JD、Opportunity Fit、材料、面试、Story、Knowledge 和 Pilot 文件。
+禁止修改 `src/auroraagent/**`、`tests/**`、`web/src/services/**`、`web/src/types/**`、JD、Opportunity Fit、材料、面试、Story、Knowledge 和 Pilot 文件。

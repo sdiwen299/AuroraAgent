@@ -1,10 +1,10 @@
 import json
 
-from offerpilot.db import init_database
-from offerpilot.models import Resume
-from offerpilot.repositories.interview_practice_cases import InterviewPracticeCaseRepository
-from offerpilot.repositories.mock_interviews import MockInterviewRepository
-from offerpilot.repositories.voice_coaching import VoiceCoachingRepository
+from auroraagent.db import init_database
+from auroraagent.models import Resume
+from auroraagent.repositories.interview_practice_cases import InterviewPracticeCaseRepository
+from auroraagent.repositories.mock_interviews import MockInterviewRepository
+from auroraagent.repositories.voice_coaching import VoiceCoachingRepository
 
 
 def test_quick_practice_voice_snapshot_uses_case_context(tmp_path):

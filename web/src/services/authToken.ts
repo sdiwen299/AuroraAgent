@@ -1,4 +1,4 @@
-const AUTH_TOKEN_KEY = 'offerpilot.auth_token';
+const AUTH_TOKEN_KEY = 'auroraagent.auth_token';
 
 interface TokenStorage {
   getItem(key: string): string | null;
@@ -37,5 +37,5 @@ export function clearStoredAuthToken(storage: TokenStorage | undefined = browser
 }
 
 export function authHeaders(token = getStoredAuthToken()): Record<string, string> {
-  return token ? { 'X-OfferPilot-Token': token } : {};
+  return token ? { 'X-AuroraAgent-Token': token } : {};
 }

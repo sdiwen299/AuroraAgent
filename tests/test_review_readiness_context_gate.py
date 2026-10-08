@@ -6,14 +6,14 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.review_readiness.contributor import (
+from auroraagent.review_readiness.contributor import (
     ConfirmedReadinessContributorPort,
     ConfirmedReadinessContributorValidationError,
 )
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 CONTRIBUTOR = SRC / "review_readiness" / "contributor.py"
 SELECTION_LOADER = SRC / "review_readiness" / "preparation_selection.py"
 PREPARATION_OWNER = SRC / "repositories" / "interview_preparation_proposals.py"
@@ -102,8 +102,8 @@ def _resolved_constant_strings(tree: ast.AST) -> set[str]:
 
 
 def _future_contributor_findings(sources: dict[str, str]) -> list[str]:
-    module = "offerpilot.review_readiness.contributor"
-    parent_module = "offerpilot.review_readiness"
+    module = "auroraagent.review_readiness.contributor"
+    parent_module = "auroraagent.review_readiness"
     symbol = "ConfirmedReadinessContributorPort"
     findings: list[str] = []
     for name, source in sources.items():
@@ -161,7 +161,7 @@ def _selection_loader_findings(sources: dict[str, str]) -> list[str]:
             elif isinstance(node, ast.Attribute):
                 symbols.add(node.attr)
         reaches_loader = (
-            "offerpilot.review_readiness.preparation_selection" in imports
+            "auroraagent.review_readiness.preparation_selection" in imports
             or "PreparationReadinessSelectionLoader" in symbols
             or any(
                 "review_readiness.preparation_selection" in value
@@ -191,7 +191,7 @@ def _selection_loader_findings(sources: dict[str, str]) -> list[str]:
     direct_import_count = 0
     for node in owner_tree.body:
         if isinstance(node, ast.ImportFrom) and node.module == (
-            "offerpilot.review_readiness.preparation_selection"
+            "auroraagent.review_readiness.preparation_selection"
         ):
             for alias in node.names:
                 if alias.name == "PreparationReadinessSelectionLoader":
@@ -338,7 +338,7 @@ def test_future_contributor_port_cannot_construct_or_issue_a_runtime_proof() -> 
 
 def test_future_contributor_asset_is_leaf_only_and_production_unreachable() -> None:
     contributor_imports, contributor_names = _imports_and_names(CONTRIBUTOR)
-    assert not any(name == "offerpilot" or name.startswith("offerpilot.") for name in contributor_imports)
+    assert not any(name == "auroraagent" or name.startswith("auroraagent.") for name in contributor_imports)
     assert "ContributorResult" not in contributor_names
 
     sources = {
@@ -351,20 +351,20 @@ def test_future_contributor_asset_is_leaf_only_and_production_unreachable() -> N
 @pytest.mark.parametrize(
     "source",
     (
-        "from offerpilot.review_readiness import contributor\n",
-        "import offerpilot.review_readiness as rr\nvalue = rr.contributor\n",
+        "from auroraagent.review_readiness import contributor\n",
+        "import auroraagent.review_readiness as rr\nvalue = rr.contributor\n",
         "import importlib\nvalue = importlib.import_module("
-        "'offerpilot.review_readiness.contributor')\n",
-        "value = __import__('offerpilot.review_readiness.contributor')\n",
-        "import offerpilot.review_readiness as rr\n"
+        "'auroraagent.review_readiness.contributor')\n",
+        "value = __import__('auroraagent.review_readiness.contributor')\n",
+        "import auroraagent.review_readiness as rr\n"
         "value = getattr(rr, 'contributor')\n",
         "value = getattr(object(), 'ConfirmedReadinessContributorPort')\n",
         "import importlib\nvalue = importlib.import_module("
-        "'offerpilot.review_readiness.' + 'contributor')\n",
-        "import offerpilot.review_readiness as rr\n"
+        "'auroraagent.review_readiness.' + 'contributor')\n",
+        "import auroraagent.review_readiness as rr\n"
         "value = getattr(rr, 'contrib' + 'utor')\n",
         "value = getattr(object(), 'ConfirmedReadiness' + 'ContributorPort')\n",
-        "import importlib\nprefix = 'offerpilot.review_readiness.'\n"
+        "import importlib\nprefix = 'auroraagent.review_readiness.'\n"
         "value = importlib.import_module(prefix + 'contributor')\n",
     ),
 )
@@ -383,7 +383,7 @@ def test_preparation_selection_loader_has_only_approved_controlled_consumers() -
 def test_preparation_selection_loader_gate_rejects_alias_escape_and_multiple_loads() -> None:
     loader = "class PreparationReadinessSelectionLoader: pass\n"
     valid_owner = (
-        "from offerpilot.review_readiness.preparation_selection import "
+        "from auroraagent.review_readiness.preparation_selection import "
         "PreparationReadinessSelectionLoader as Loader\n"
         "def load_selection(session):\n"
         "    loader = Loader(session)\n"
@@ -415,7 +415,7 @@ def test_preparation_selection_loader_gate_rejects_alias_escape_and_multiple_loa
     )
 
     module_global = (
-        "from offerpilot.review_readiness.preparation_selection import "
+        "from auroraagent.review_readiness.preparation_selection import "
         "PreparationReadinessSelectionLoader as Loader\n"
         "loader = Loader(None)\n"
         "def load_selection():\n"
@@ -428,7 +428,7 @@ def test_preparation_selection_loader_gate_rejects_alias_escape_and_multiple_loa
         }
     )
     cross_scope = (
-        "from offerpilot.review_readiness.preparation_selection import "
+        "from auroraagent.review_readiness.preparation_selection import "
         "PreparationReadinessSelectionLoader as Loader\n"
         "def build(session):\n"
         "    loader = Loader(session)\n"
@@ -456,7 +456,7 @@ def test_preparation_selection_loader_gate_rejects_alias_escape_and_multiple_loa
     )
     dynamic_outside_owner = (
         "import importlib\n"
-        "prefix = 'offerpilot.review_readiness.'\n"
+        "prefix = 'auroraagent.review_readiness.'\n"
         "importlib.import_module(prefix + 'preparation_selection')\n"
     )
     assert _selection_loader_findings(
@@ -474,7 +474,7 @@ def test_preparation_selection_loader_gate_rejects_alias_escape_and_multiple_loa
     )
     duplicate_import = valid_owner.replace(
         "def load_selection(session):",
-        "from offerpilot.review_readiness.preparation_selection import "
+        "from auroraagent.review_readiness.preparation_selection import "
         "PreparationReadinessSelectionLoader as Loader\n"
         "def load_selection(session):",
     )

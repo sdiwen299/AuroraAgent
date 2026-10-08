@@ -2,11 +2,11 @@
 
 日期：2026-07-15
 状态：待实现；本文件是交给开发与审查的产品契约。
-范围：OfferPilot 内部材料流；不改变 v0.1 已冻结的面试范围。
+范围：AuroraAgent 内部材料流；不改变 v0.1 已冻结的面试范围。
 
 ## 背景与决策
 
-2026-07-14 已合入 `Application Evidence Bundle`：用户确认投递后，OfferPilot 会保存 Application、JD、Resume 和 Material Kit 的不可变内部快照。它回答“当时提交了什么”，但不能安全回答“如何基于已有事实生成下一份针对性材料”。
+2026-07-14 已合入 `Application Evidence Bundle`：用户确认投递后，AuroraAgent 会保存 Application、JD、Resume 和 Material Kit 的不可变内部快照。它回答“当时提交了什么”，但不能安全回答“如何基于已有事实生成下一份针对性材料”。
 
 本迭代补齐另一条 P0 链路：
 

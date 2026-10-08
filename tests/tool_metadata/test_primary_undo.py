@@ -13,20 +13,20 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, SessionTransaction, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ToolExecutionRecord,
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import (
     ToolMetadataBundleV1,
     UndoBuilderBinding,
     freeze_json,
 )
-from offerpilot.ai.tool_runtime.policy_types import CompensationKind, UndoPayloadKind, UndoPolicy
+from auroraagent.ai.tool_runtime.policy_types import CompensationKind, UndoPayloadKind, UndoPolicy
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,
@@ -126,9 +126,9 @@ def _build_keyboard_interrupt(seed: object, record: object) -> dict[str, object]
 
 def _required_module() -> ModuleType:
     try:
-        return importlib.import_module("offerpilot.pilot_runtime.primary_undo")
+        return importlib.import_module("auroraagent.pilot_runtime.primary_undo")
     except ModuleNotFoundError:
-        pytest.fail("Task 6 module is missing: offerpilot.pilot_runtime.primary_undo")
+        pytest.fail("Task 6 module is missing: auroraagent.pilot_runtime.primary_undo")
 
 
 def _required_api(module: ModuleType, name: str) -> Any:
@@ -438,8 +438,8 @@ def test_primary_undo_revalidates_nested_savepoint_identity_and_propagates_base_
 def test_primary_undo_module_is_shared_contract_code_without_tool_name_dispatch() -> None:
     module = _required_module()
     source = Path(cast(str, module.__file__)).read_text(encoding="utf-8")
-    write_source = Path("src/offerpilot/ai/write_operations.py").read_text(encoding="utf-8")
-    domain_sources = tuple(Path("src/offerpilot/ai/tool_specs").glob("*.py"))
+    write_source = Path("src/auroraagent/ai/write_operations.py").read_text(encoding="utf-8")
+    domain_sources = tuple(Path("src/auroraagent/ai/tool_specs").glob("*.py"))
 
     required_names = (
         "create_application",

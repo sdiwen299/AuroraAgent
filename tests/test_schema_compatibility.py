@@ -3,7 +3,7 @@ import sqlite3
 
 import pytest
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def test_chat_messages_have_conversation_foreign_key(tmp_path):
@@ -201,7 +201,7 @@ def test_knowledge_reset_preserves_other_modules(tmp_path):
         conn.execute(
             "CREATE TABLE applications (id INTEGER PRIMARY KEY, company_name TEXT NOT NULL)"
         )
-        conn.execute("INSERT INTO applications (company_name) VALUES ('OfferPilot')")
+        conn.execute("INSERT INTO applications (company_name) VALUES ('AuroraAgent')")
         conn.execute("CREATE TABLE knowledge_documents (id INTEGER PRIMARY KEY)")
         conn.execute("CREATE TABLE knowledge_wiki_pages (id INTEGER PRIMARY KEY)")
 
@@ -216,7 +216,7 @@ def test_knowledge_reset_preserves_other_modules(tmp_path):
             ).fetchall()
         }
 
-    assert rows == [("OfferPilot",)]
+    assert rows == [("AuroraAgent",)]
     assert "knowledge_documents" not in tables
     assert "knowledge_wiki_pages" not in tables
     # KI-02 起新表 knowledge_sources 由本模块创建并维护，不再视为 legacy

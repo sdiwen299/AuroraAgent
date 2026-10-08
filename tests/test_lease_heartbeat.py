@@ -5,11 +5,11 @@ import time
 
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import OpportunityFitReviewSession, OpportunityFitReviewStage
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.lease_heartbeat import LeaseHeartbeat
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.db import init_database
+from auroraagent.models import OpportunityFitReviewSession, OpportunityFitReviewStage
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.lease_heartbeat import LeaseHeartbeat
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 def _stage(tmp_path, *, generation: int = 1, token: str = "owner-token"):

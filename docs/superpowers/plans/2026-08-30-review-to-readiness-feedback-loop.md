@@ -14,15 +14,15 @@
 
 数据库和高冲突 composition 文件由主集成人串行修改：
 
-- `src/offerpilot/models.py`：0029 所需 ORM shape、WriteOperation manifest/delivery/undo checks。
-- `src/offerpilot/db.py`：0029 rebuild、indexes、triggers、migration marker 与既有 trigger 重装。
-- `src/offerpilot/api.py`：Product Action composition、owner-scoped routes、旧 Story confirm adapter、错误 codec。
+- `src/auroraagent/models.py`：0029 所需 ORM shape、WriteOperation manifest/delivery/undo checks。
+- `src/auroraagent/db.py`：0029 rebuild、indexes、triggers、migration marker 与既有 trigger 重装。
+- `src/auroraagent/api.py`：Product Action composition、owner-scoped routes、旧 Story confirm adapter、错误 codec。
 - `web/src/layout/AppShell.tsx`：canonical owner handoff、唯一 review/story/preparation/practice owner。
 
 新增边界文件：
 
-- `src/offerpilot/product_actions/{contracts,catalog,issuer,repository,coordinator,compensation}.py`：模型不可见 Product Action 2/2。
-- `src/offerpilot/review_readiness/{contracts,repository,candidates,projection,preparation_selection,contributor}.py`：Signal 聚合、候选、advisory、Preparation V2 selection 和 future-only type asset。
+- `src/auroraagent/product_actions/{contracts,catalog,issuer,repository,coordinator,compensation}.py`：模型不可见 Product Action 2/2。
+- `src/auroraagent/review_readiness/{contracts,repository,candidates,projection,preparation_selection,contributor}.py`：Signal 聚合、候选、advisory、Preparation V2 selection 和 future-only type asset。
 - `web/src/features/reviewReadiness/{contracts,service,ReviewReadinessNextStep,ReadinessFeedbackAdvisory,ProductActionConfirmation}.tsx|ts`：四个现有 Core Task owner 内的 UI 适配器。
 
 现有领域 owner 文件：
@@ -98,8 +98,8 @@ git commit -m "test: AI 固化复盘准备闭环基线"
 
 **Files:**
 
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
 - Create: `tests/test_review_to_readiness_migration_0029.py`
 - Modify: `tests/test_interview_review_migrations.py`
 - Modify: `tests/test_interview_stories_migrations.py`
@@ -181,7 +181,7 @@ The migration must rebuild `write_operations` and `adaptive_practice_plans` in o
 
 ```powershell
 uv run pytest tests/test_review_to_readiness_migration_0029.py tests/test_interview_review_migrations.py tests/test_interview_stories_migrations.py tests/test_adaptive_interview_practice_migrations.py tests/tool_authority/test_migration_0028.py tests/test_conditional_delete_repositories.py -q
-uv run ruff check src/offerpilot/models.py src/offerpilot/db.py tests/test_review_to_readiness_migration_0029.py
+uv run ruff check src/auroraagent/models.py src/auroraagent/db.py tests/test_review_to_readiness_migration_0029.py
 uv run mypy src
 git diff --check
 ```
@@ -189,7 +189,7 @@ git diff --check
 - [x] **Step 6: Commit 0029**
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_review_to_readiness_migration_0029.py tests/test_interview_review_migrations.py tests/test_interview_stories_migrations.py tests/test_adaptive_interview_practice_migrations.py tests/tool_authority/test_migration_0028.py tests/test_conditional_delete_repositories.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_review_to_readiness_migration_0029.py tests/test_interview_review_migrations.py tests/test_interview_stories_migrations.py tests/test_adaptive_interview_practice_migrations.py tests/tool_authority/test_migration_0028.py tests/test_conditional_delete_repositories.py
 git commit -m "feat: AI 建立复盘准备闭环数据模型"
 ```
 
@@ -197,13 +197,13 @@ git commit -m "feat: AI 建立复盘准备闭环数据模型"
 
 **Files:**
 
-- Modify: `src/offerpilot/repositories/notes.py`
-- Modify: `src/offerpilot/repositories/application_events.py`
-- Modify: `src/offerpilot/repositories/interview_review_proposals.py`
-- Modify: `src/offerpilot/ai/interview_review_proposals.py`
-- Modify: `src/offerpilot/pilot_runtime/compensation.py`
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/repositories/notes.py`
+- Modify: `src/auroraagent/repositories/application_events.py`
+- Modify: `src/auroraagent/repositories/interview_review_proposals.py`
+- Modify: `src/auroraagent/ai/interview_review_proposals.py`
+- Modify: `src/auroraagent/pilot_runtime/compensation.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_notes_api.py`
 - Modify: `tests/test_events_api.py`
 - Modify: `tests/test_conditional_delete_repositories.py`
@@ -250,10 +250,10 @@ Before Provider call freeze Note revision and canonical source fingerprint; afte
 ```powershell
 uv run pytest tests/test_notes_api.py tests/test_events_api.py tests/test_conditional_delete_repositories.py tests/tool_authority/test_scoped_writes.py tests/tool_metadata/test_compensation_registry.py tests/test_interview_review_proposals_repository.py tests/test_interview_review_proposals_api.py -q
 uv run pytest tests/test_review_to_readiness_source_gates.py -k "not production_cutover_gate" -q
-uv run ruff check src/offerpilot/repositories/notes.py src/offerpilot/repositories/application_events.py src/offerpilot/repositories/interview_review_proposals.py src/offerpilot/ai/interview_review_proposals.py src/offerpilot/pilot_runtime/compensation.py src/offerpilot/schemas.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/repositories/notes.py src/auroraagent/repositories/application_events.py src/auroraagent/repositories/interview_review_proposals.py src/auroraagent/ai/interview_review_proposals.py src/auroraagent/pilot_runtime/compensation.py src/auroraagent/schemas.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/repositories/notes.py src/offerpilot/repositories/application_events.py src/offerpilot/repositories/interview_review_proposals.py src/offerpilot/ai/interview_review_proposals.py src/offerpilot/pilot_runtime/compensation.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_notes_api.py tests/test_events_api.py tests/test_conditional_delete_repositories.py tests/tool_authority/test_scoped_writes.py tests/tool_metadata/test_compensation_registry.py tests/test_interview_review_proposals_repository.py tests/test_interview_review_proposals_api.py tests/test_review_to_readiness_source_gates.py
+git add src/auroraagent/repositories/notes.py src/auroraagent/repositories/application_events.py src/auroraagent/repositories/interview_review_proposals.py src/auroraagent/ai/interview_review_proposals.py src/auroraagent/pilot_runtime/compensation.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_notes_api.py tests/test_events_api.py tests/test_conditional_delete_repositories.py tests/tool_authority/test_scoped_writes.py tests/tool_metadata/test_compensation_registry.py tests/test_interview_review_proposals_repository.py tests/test_interview_review_proposals_api.py tests/test_review_to_readiness_source_gates.py
 git commit -m "feat: AI 版本化面试复盘来源"
 ```
 
@@ -261,13 +261,13 @@ git commit -m "feat: AI 版本化面试复盘来源"
 
 **Files:**
 
-- Create: `src/offerpilot/product_actions/__init__.py`
-- Create: `src/offerpilot/product_actions/contracts.py`
-- Create: `src/offerpilot/product_actions/catalog.py`
-- Create: `src/offerpilot/product_actions/issuer.py`
-- Create: `src/offerpilot/product_actions/repository.py`
-- Create: `src/offerpilot/event_lifecycle.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
+- Create: `src/auroraagent/product_actions/__init__.py`
+- Create: `src/auroraagent/product_actions/contracts.py`
+- Create: `src/auroraagent/product_actions/catalog.py`
+- Create: `src/auroraagent/product_actions/issuer.py`
+- Create: `src/auroraagent/product_actions/repository.py`
+- Create: `src/auroraagent/event_lifecycle.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
 - Create: `tests/product_actions/test_catalog.py`
 - Create: `tests/product_actions/test_identity.py`
 - Create: `tests/product_actions/test_repository.py`
@@ -344,10 +344,10 @@ Guard every delivery lease, heartbeat, takeover and fallback query in `ai/write_
 ```powershell
 uv run pytest tests/product_actions/test_catalog.py tests/product_actions/test_identity.py tests/product_actions/test_repository.py tests/product_actions/test_isolation.py tests/test_event_lifecycle_v1.py tests/tool_metadata -q
 uv run pytest tests/test_review_to_readiness_source_gates.py -k "not production_cutover_gate" -q
-uv run ruff check src/offerpilot/product_actions src/offerpilot/event_lifecycle.py src/offerpilot/ai/write_operations.py tests/product_actions tests/test_event_lifecycle_v1.py
+uv run ruff check src/auroraagent/product_actions src/auroraagent/event_lifecycle.py src/auroraagent/ai/write_operations.py tests/product_actions tests/test_event_lifecycle_v1.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/product_actions src/offerpilot/event_lifecycle.py src/offerpilot/ai/write_operations.py tests/product_actions tests/test_event_lifecycle_v1.py tests/test_review_to_readiness_source_gates.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_published_operation_checks.py
+git add src/auroraagent/product_actions src/auroraagent/event_lifecycle.py src/auroraagent/ai/write_operations.py tests/product_actions tests/test_event_lifecycle_v1.py tests/test_review_to_readiness_source_gates.py tests/tool_metadata/test_production_bundle.py tests/tool_metadata/test_published_operation_checks.py
 git commit -m "feat: AI 建立独立产品操作安全核心"
 ```
 
@@ -355,13 +355,13 @@ git commit -m "feat: AI 建立独立产品操作安全核心"
 
 **Files:**
 
-- Create: `src/offerpilot/product_actions/coordinator.py`
-- Create: `src/offerpilot/review_readiness/__init__.py`
-- Create: `src/offerpilot/review_readiness/contracts.py`
-- Create: `src/offerpilot/review_readiness/repository.py`
-- Create: `src/offerpilot/review_readiness/candidates.py`
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/product_actions/coordinator.py`
+- Create: `src/auroraagent/review_readiness/__init__.py`
+- Create: `src/auroraagent/review_readiness/contracts.py`
+- Create: `src/auroraagent/review_readiness/repository.py`
+- Create: `src/auroraagent/review_readiness/candidates.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/product_actions/test_coordinator.py`
 - Create: `tests/test_review_readiness_repository.py`
 - Create: `tests/test_review_readiness_candidates.py`
@@ -409,10 +409,10 @@ Add proposal, generic safe GET, owner recovery, rejection-only recovery and deci
 
 ```powershell
 uv run pytest tests/product_actions/test_coordinator.py tests/test_review_readiness_repository.py tests/test_review_readiness_candidates.py tests/test_review_readiness_api.py -q
-uv run ruff check src/offerpilot/product_actions/coordinator.py src/offerpilot/review_readiness src/offerpilot/schemas.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/product_actions/coordinator.py src/auroraagent/review_readiness src/auroraagent/schemas.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/product_actions/coordinator.py src/offerpilot/review_readiness src/offerpilot/schemas.py src/offerpilot/api.py tests/product_actions/test_coordinator.py tests/test_review_readiness_repository.py tests/test_review_readiness_candidates.py tests/test_review_readiness_api.py
+git add src/auroraagent/product_actions/coordinator.py src/auroraagent/review_readiness src/auroraagent/schemas.py src/auroraagent/api.py tests/product_actions/test_coordinator.py tests/test_review_readiness_repository.py tests/test_review_readiness_candidates.py tests/test_review_readiness_api.py
 git commit -m "feat: AI 保存可审计复盘准备重点"
 ```
 
@@ -420,9 +420,9 @@ git commit -m "feat: AI 保存可审计复盘准备重点"
 
 **Files:**
 
-- Modify: `src/offerpilot/repositories/interview_stories.py`
-- Modify: `src/offerpilot/api.py`
-- Modify: `src/offerpilot/schemas.py`
+- Modify: `src/auroraagent/repositories/interview_stories.py`
+- Modify: `src/auroraagent/api.py`
+- Modify: `src/auroraagent/schemas.py`
 - Modify: `tests/test_interview_stories_repository.py`
 - Modify: `tests/test_interview_stories_api.py`
 - Create: `tests/test_interview_story_product_actions.py`
@@ -470,10 +470,10 @@ Add `POST /api/interview-story-proposals/{attempt_id}/product-actions` with exac
 
 ```powershell
 uv run pytest tests/test_interview_stories_repository.py tests/test_interview_stories_api.py tests/test_interview_story_product_actions.py -q
-uv run ruff check src/offerpilot/repositories/interview_stories.py src/offerpilot/api.py src/offerpilot/schemas.py tests/test_interview_story_product_actions.py
+uv run ruff check src/auroraagent/repositories/interview_stories.py src/auroraagent/api.py src/auroraagent/schemas.py tests/test_interview_story_product_actions.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/repositories/interview_stories.py src/offerpilot/api.py src/offerpilot/schemas.py tests/test_interview_stories_repository.py tests/test_interview_stories_api.py tests/test_interview_story_product_actions.py
+git add src/auroraagent/repositories/interview_stories.py src/auroraagent/api.py src/auroraagent/schemas.py tests/test_interview_stories_repository.py tests/test_interview_stories_api.py tests/test_interview_story_product_actions.py
 git commit -m "refactor: AI 切换经历素材产品确认链路"
 ```
 
@@ -481,10 +481,10 @@ git commit -m "refactor: AI 切换经历素材产品确认链路"
 
 **Files:**
 
-- Create: `src/offerpilot/product_actions/compensation.py`
-- Modify: `src/offerpilot/review_readiness/repository.py`
-- Modify: `src/offerpilot/repositories/interview_stories.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/product_actions/compensation.py`
+- Modify: `src/auroraagent/review_readiness/repository.py`
+- Modify: `src/auroraagent/repositories/interview_stories.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/product_actions/test_compensation.py`
 - Modify: `tests/test_chat_api.py`
 - Modify: `tests/test_interview_story_product_actions.py`
@@ -522,10 +522,10 @@ Both accept only `{"parent_operation_id":"uuid"}`. Add route manifest tests that
 
 ```powershell
 uv run pytest tests/product_actions/test_compensation.py tests/test_chat_api.py tests/test_interview_story_product_actions.py tests/test_review_readiness_api.py tests/tool_metadata/test_compensation_registry.py -q
-uv run ruff check src/offerpilot/product_actions/compensation.py src/offerpilot/review_readiness/repository.py src/offerpilot/repositories/interview_stories.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/product_actions/compensation.py src/auroraagent/review_readiness/repository.py src/auroraagent/repositories/interview_stories.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/product_actions/compensation.py src/offerpilot/review_readiness/repository.py src/offerpilot/repositories/interview_stories.py src/offerpilot/api.py tests/product_actions/test_compensation.py tests/test_chat_api.py tests/test_interview_story_product_actions.py tests/test_review_readiness_api.py
+git add src/auroraagent/product_actions/compensation.py src/auroraagent/review_readiness/repository.py src/auroraagent/repositories/interview_stories.py src/auroraagent/api.py tests/product_actions/test_compensation.py tests/test_chat_api.py tests/test_interview_story_product_actions.py tests/test_review_readiness_api.py
 git commit -m "feat: AI 增加产品操作受限撤销"
 ```
 
@@ -533,11 +533,11 @@ git commit -m "feat: AI 增加产品操作受限撤销"
 
 **Files:**
 
-- Create: `src/offerpilot/review_readiness/projection.py`
-- Modify: `src/offerpilot/event_lifecycle.py`
-- Modify: `src/offerpilot/review_readiness/candidates.py`
-- Modify: `src/offerpilot/review_readiness/repository.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/review_readiness/projection.py`
+- Modify: `src/auroraagent/event_lifecycle.py`
+- Modify: `src/auroraagent/review_readiness/candidates.py`
+- Modify: `src/auroraagent/review_readiness/repository.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/test_review_readiness_projection.py`
 - Modify: `tests/test_event_lifecycle_v1.py`
 - Modify: `tests/test_interview_index_api.py`
@@ -568,10 +568,10 @@ Implement candidates, event advisory, Signal detail and exact practice focus pat
 
 ```powershell
 uv run pytest tests/test_event_lifecycle_v1.py tests/test_review_readiness_projection.py tests/test_interview_index_api.py tests/test_review_readiness_api.py -q
-uv run ruff check src/offerpilot/event_lifecycle.py src/offerpilot/review_readiness/projection.py src/offerpilot/review_readiness/repository.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/event_lifecycle.py src/auroraagent/review_readiness/projection.py src/auroraagent/review_readiness/repository.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/event_lifecycle.py src/offerpilot/review_readiness/candidates.py src/offerpilot/review_readiness/projection.py src/offerpilot/review_readiness/repository.py src/offerpilot/api.py tests/fixtures/review_readiness/event_lifecycle_v1.json tests/test_event_lifecycle_v1.py tests/test_review_readiness_projection.py tests/test_interview_index_api.py tests/test_review_readiness_api.py web/src/features/interviewEvents/eventLifecycle.test.ts
+git add src/auroraagent/event_lifecycle.py src/auroraagent/review_readiness/candidates.py src/auroraagent/review_readiness/projection.py src/auroraagent/review_readiness/repository.py src/auroraagent/api.py tests/fixtures/review_readiness/event_lifecycle_v1.json tests/test_event_lifecycle_v1.py tests/test_review_readiness_projection.py tests/test_interview_index_api.py tests/test_review_readiness_api.py web/src/features/interviewEvents/eventLifecycle.test.ts
 git commit -m "feat: AI 投影复盘准备状态"
 ```
 
@@ -579,9 +579,9 @@ git commit -m "feat: AI 投影复盘准备状态"
 
 **Files:**
 
-- Modify: `src/offerpilot/repositories/adaptive_interview_practice.py`
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/repositories/adaptive_interview_practice.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_adaptive_interview_practice_repository.py`
 - Modify: `tests/test_adaptive_interview_practice_api.py`
 
@@ -625,10 +625,10 @@ Delete the legacy create implementation after its 410/replay/complete tests are 
 
 ```powershell
 uv run pytest tests/test_adaptive_interview_practice_repository.py tests/test_adaptive_interview_practice_api.py tests/test_review_readiness_projection.py -q
-uv run ruff check src/offerpilot/repositories/adaptive_interview_practice.py src/offerpilot/schemas.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/repositories/adaptive_interview_practice.py src/auroraagent/schemas.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/repositories/adaptive_interview_practice.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_adaptive_interview_practice_repository.py tests/test_adaptive_interview_practice_api.py
+git add src/auroraagent/repositories/adaptive_interview_practice.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_adaptive_interview_practice_repository.py tests/test_adaptive_interview_practice_api.py
 git commit -m "feat: AI 绑定复盘信号与目标面试练习"
 ```
 
@@ -636,11 +636,11 @@ git commit -m "feat: AI 绑定复盘信号与目标面试练习"
 
 **Files:**
 
-- Create: `src/offerpilot/review_readiness/preparation_selection.py`
-- Modify: `src/offerpilot/repositories/interview_preparation_proposals.py`
-- Modify: `src/offerpilot/ai/interview_preparation_proposals.py`
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/review_readiness/preparation_selection.py`
+- Modify: `src/auroraagent/repositories/interview_preparation_proposals.py`
+- Modify: `src/auroraagent/ai/interview_preparation_proposals.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_interview_preparation_repository.py`
 - Modify: `tests/test_interview_preparation_ai.py`
 - Modify: `tests/test_interview_preparation_api.py`
@@ -675,10 +675,10 @@ Allow `confirmed_readiness_feedback` refs only to paths in this attempt's frozen
 
 ```powershell
 uv run pytest tests/test_interview_preparation_repository.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py -q
-uv run ruff check src/offerpilot/review_readiness/preparation_selection.py src/offerpilot/repositories/interview_preparation_proposals.py src/offerpilot/ai/interview_preparation_proposals.py src/offerpilot/schemas.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/review_readiness/preparation_selection.py src/auroraagent/repositories/interview_preparation_proposals.py src/auroraagent/ai/interview_preparation_proposals.py src/auroraagent/schemas.py src/auroraagent/api.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/review_readiness/preparation_selection.py src/offerpilot/repositories/interview_preparation_proposals.py src/offerpilot/ai/interview_preparation_proposals.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_interview_preparation_repository.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py
+git add src/auroraagent/review_readiness/preparation_selection.py src/auroraagent/repositories/interview_preparation_proposals.py src/auroraagent/ai/interview_preparation_proposals.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_interview_preparation_repository.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py
 git commit -m "feat: AI 接入显式复盘准备输入"
 ```
 
@@ -686,7 +686,7 @@ git commit -m "feat: AI 接入显式复盘准备输入"
 
 **Files:**
 
-- Create: `src/offerpilot/review_readiness/contributor.py`
+- Create: `src/auroraagent/review_readiness/contributor.py`
 - Modify: `tests/test_context_projector.py`
 - Create: `tests/test_review_readiness_context_gate.py`
 - Modify: `tests/test_pilot_runtime_extraction_gate.py`
@@ -709,10 +709,10 @@ uv run pytest tests/test_context_projector.py tests/test_review_readiness_contex
 
 ```powershell
 uv run pytest tests/test_context_projector.py tests/test_review_readiness_context_gate.py tests/test_pilot_runtime_extraction_gate.py -q
-uv run ruff check src/offerpilot/review_readiness/contributor.py tests/test_review_readiness_context_gate.py
+uv run ruff check src/auroraagent/review_readiness/contributor.py tests/test_review_readiness_context_gate.py
 uv run mypy src
 git diff --check
-git add src/offerpilot/review_readiness/contributor.py tests/test_context_projector.py tests/test_review_readiness_context_gate.py tests/test_pilot_runtime_extraction_gate.py
+git add src/auroraagent/review_readiness/contributor.py tests/test_context_projector.py tests/test_review_readiness_context_gate.py tests/test_pilot_runtime_extraction_gate.py
 git commit -m "test: AI 封闭复盘信号上下文边界"
 ```
 
@@ -789,7 +789,7 @@ git commit -m "feat: AI 接通复盘到下次面试准备"
 - Modify: `web/src/features/reviewReadiness/reviewReadinessGate.test.ts`
 - Create: `web/src/features/reviewReadiness/reviewReadinessNegativeFixtures.test.ts`
 - Modify: `tests/test_pilot_runtime_extraction_gate.py`
-- Modify: `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/smoke.py`
 
 - [x] **Step 1: Add negative fixtures for every forbidden path**
 
@@ -821,7 +821,7 @@ npm test -- --run src/features/reviewReadiness/reviewReadinessGate.test.ts src/f
 cd ..
 git diff --check
 git status --short
-git add tests/test_review_to_readiness_source_gates.py web/src/features/reviewReadiness/reviewReadinessGate.test.ts web/src/features/reviewReadiness/reviewReadinessNegativeFixtures.test.ts tests/test_pilot_runtime_extraction_gate.py src/offerpilot/smoke.py
+git add tests/test_review_to_readiness_source_gates.py web/src/features/reviewReadiness/reviewReadinessGate.test.ts web/src/features/reviewReadiness/reviewReadinessNegativeFixtures.test.ts tests/test_pilot_runtime_extraction_gate.py src/auroraagent/smoke.py
 git commit -m "test: AI 封闭旧复盘准备执行路径"
 ```
 

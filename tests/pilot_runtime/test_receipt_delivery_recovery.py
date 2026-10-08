@@ -12,12 +12,12 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select, update
 
-from offerpilot.ai.types import ToolCall
-from offerpilot.ai.write_operations import WriteOperationCoordinator
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import ChatMessage, WriteOperation
-from offerpilot.pilot_runtime.persistence import ChatPersistenceCoordinator
+from auroraagent.ai.types import ToolCall
+from auroraagent.ai.write_operations import WriteOperationCoordinator
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import ChatMessage, WriteOperation
+from auroraagent.pilot_runtime.persistence import ChatPersistenceCoordinator
 from tests.pilot_runtime.test_confirmation_cutover import _CutoverModel, _application, _propose
 
 

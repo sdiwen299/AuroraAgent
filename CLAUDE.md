@@ -16,12 +16,12 @@
 
 | 任务 | 入口 |
 |---|---|
-| CLI / 服务启动 | `src/offerpilot/cli.py` |
-| HTTP / middleware / SPA | `src/offerpilot/api.py` |
-| 领域查询 | `src/offerpilot/repositories/` |
-| 数据模型 / 迁移 / schema | `src/offerpilot/models.py`、`db.py`、`schemas.py`（均在 `src/offerpilot/`） |
-| Agent / provider / tools | `src/offerpilot/ai/` |
-| 配置 / Skill 信任 | `src/offerpilot/config.py`、`src/offerpilot/skills.py` |
+| CLI / 服务启动 | `src/auroraagent/cli.py` |
+| HTTP / middleware / SPA | `src/auroraagent/api.py` |
+| 领域查询 | `src/auroraagent/repositories/` |
+| 数据模型 / 迁移 / schema | `src/auroraagent/models.py`、`db.py`、`schemas.py`（均在 `src/auroraagent/`） |
+| Agent / provider / tools | `src/auroraagent/ai/` |
+| 配置 / Skill 信任 | `src/auroraagent/config.py`、`src/auroraagent/skills.py` |
 | 前端导航 / 页面 / API 客户端 | `web/src/` 下的 layout、components、features、services |
 
 - 后端测试在 `tests/`；前端测试在源码附近的 `*.test.ts(x)`。repository 测试使用临时目录中的真实 SQLite，不 mock repository。

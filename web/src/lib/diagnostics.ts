@@ -9,7 +9,7 @@ export function buildDiagnosticsText(settings: Settings, logs: LogEntry[]): stri
     return `- ${provider.label} | ${provider.provider} | ${provider.model} | ${provider.enabled ? 'enabled' : 'disabled'}${roles ? ` | ${roles}` : ''}`;
   });
   return [
-    `OfferPilot ${settings.version}`,
+    `AuroraAgent ${settings.version}`,
     `运行模式: ${settings.runtime_mode}`,
     `访问控制: ${settings.auth_enabled ? 'enabled' : 'disabled'}`,
     `日志级别: ${settings.log_level}`,

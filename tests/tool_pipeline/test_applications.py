@@ -11,8 +11,8 @@ import pytest
 from domain_harness import execute_case
 from golden import load_golden
 
-from offerpilot.ai.tool_runtime.contracts import materialize_provider_payloads
-from offerpilot.ai.tool_specs.applications import (
+from auroraagent.ai.tool_runtime.contracts import materialize_provider_payloads
+from auroraagent.ai.tool_specs.applications import (
     LIST_APPLICATIONS_RESULT_BYTE_CAP,
     _list,
     _validate_create,

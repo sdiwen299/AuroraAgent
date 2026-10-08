@@ -22,7 +22,7 @@ export default function OnboardingChecklist({ status, onCollapse, onAction }: Pr
     <section className={styles.card} aria-label="新手引导">
       <div className={styles.header}>
         <div>
-          <div className={styles.title}>四步开始使用 OfferPilot</div>
+          <div className={styles.title}>四步开始使用曙光</div>
           <div className={styles.subtitle}>完成这些步骤，建立你的第一条求职工作流。</div>
         </div>
         <div>

@@ -11,12 +11,12 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import Any, cast
 
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingContract,
     ProviderToolContract,
     ToolSpec,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     EditableFieldMetadataV1,
     ReadOperationMetadataV1,
@@ -27,7 +27,7 @@ from offerpilot.ai.tool_runtime.metadata import (
     UndoBuilderBinding,
     WriteOperationMetadataV1,
 )
-from offerpilot.ai.tool_runtime.policy_types import (
+from auroraagent.ai.tool_runtime.policy_types import (
     CompensationKind,
     OperationKind,
     ProviderVisibility,

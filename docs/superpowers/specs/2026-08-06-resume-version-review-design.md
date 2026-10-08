@@ -10,7 +10,7 @@
 
 ## 1. 目标与边界
 
-OfferPilot 已支持主简历、复制简历、手工编辑和岗位定制。用户复制并保存岗位版本后，需要能够人工确认相对于另一份已保存简历究竟发生了哪些结构化变化。
+AuroraAgent 已支持主简历、复制简历、手工编辑和岗位定制。用户复制并保存岗位版本后，需要能够人工确认相对于另一份已保存简历究竟发生了哪些结构化变化。
 
 本切片增加一个只读、确定性的“简历版本差异审阅”能力：
 
@@ -110,7 +110,7 @@ function diffResumeContent(
 - 字符串保留原文。
 - 有限数字、布尔值和 `null` 使用固定字面量。
 - 合法对象和数组使用键排序后的 canonical JSON；数组保持原索引顺序。
-- `undefined`、BigInt、Symbol、函数、循环结构、异常 getter、抛错 Proxy、稀疏数组和异常容器只输出固定中文占位 `（无法安全展示）`；嵌套在合法容器中时统一编码为 `{"__offerpilot_unsupported__":"（无法安全展示）"}`，不调用不可信的 `toString()`，不把原始值放入公开结果。
+- `undefined`、BigInt、Symbol、函数、循环结构、异常 getter、抛错 Proxy、稀疏数组和异常容器只输出固定中文占位 `（无法安全展示）`；嵌套在合法容器中时统一编码为 `{"__auroraagent_unsupported__":"（无法安全展示）"}`，不调用不可信的 `toString()`，不把原始值放入公开结果。
 - 所有对象属性使用 own-property 判断，区分字段不存在与字段存在但值为 `undefined`。
 - 合法对象仅限原型为 `Object.prototype` 或 `null` 的普通对象，并且只能包含 own、可枚举、字符串键、数据属性；Symbol key、非枚举 own 属性、accessor、其他原型或自定义类都使当前对象成为 `unsupported` 容器。
 - 合法数组仅限原型为 `Array.prototype` 的普通稠密数组；除内建 `length` 外不得有额外 own 属性，所有索引必须存在且为数据属性。稀疏数组、数组额外属性、数组 accessor 或其他原型都使当前数组成为 `unsupported` 容器。
@@ -187,7 +187,7 @@ web/src/services/**
 web/src/types/**
 web/src/layout/AppShell.tsx
 web/src/components/ApplicationDetail.tsx
-src/offerpilot/**
+src/auroraagent/**
 tests/**
 任何 JD、Opportunity Fit、材料、面试或 Pilot 文件
 ```

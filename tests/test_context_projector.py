@@ -18,34 +18,34 @@ from sqlalchemy import Engine, event, select, text
 from sqlalchemy.exc import IntegrityError
 from fastapi.testclient import TestClient
 
-import offerpilot.context_projector.manifest as manifest_module
-from offerpilot.agent_runtime.events import (
+import auroraagent.context_projector.manifest as manifest_module
+from auroraagent.agent_runtime.events import (
     JournalEventValidationError,
     validate_context_manifest_json,
 )
-from offerpilot.agent_runtime.budget import JournalBudgetExhausted
-from offerpilot.agent_runtime.journal import RunRecorderFactory, SafeRunRecorder
-from offerpilot.agent_runtime.keyring import JournalKeyDomain, load_or_create_journal_key
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_authority.policy import (
+from auroraagent.agent_runtime.budget import JournalBudgetExhausted
+from auroraagent.agent_runtime.journal import RunRecorderFactory, SafeRunRecorder
+from auroraagent.agent_runtime.keyring import JournalKeyDomain, load_or_create_journal_key
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_authority.policy import (
     AGENT_TYPED_V1_PROFILE,
 )
-from offerpilot.ai.tool_authority.composition import AuthorityFactory
-from offerpilot.ai.tool_authority.contracts import TrustedContextScope
-from offerpilot.ai.types import Assistant, Message, ToolCall
-from offerpilot.context_projector.binding import (
+from auroraagent.ai.tool_authority.composition import AuthorityFactory
+from auroraagent.ai.tool_authority.contracts import TrustedContextScope
+from auroraagent.ai.types import Assistant, Message, ToolCall
+from auroraagent.context_projector.binding import (
     BoundProviderResponse,
     ModelCallSurfaceBinding,
 )
-from offerpilot.context_projector.chunking import chunk_structured_source
-from offerpilot.context_projector.budget import (
+from auroraagent.context_projector.chunking import chunk_structured_source
+from auroraagent.context_projector.budget import (
     OPTIONAL_HISTORY_MESSAGE_BYTE_CAP,
     ProviderBudget,
     optional_shares,
 )
-from offerpilot.context_projector.contracts import (
+from auroraagent.context_projector.contracts import (
     CONTRIBUTOR_ORDER,
     ContributorResult,
     FrozenMessage,
@@ -57,35 +57,35 @@ from offerpilot.context_projector.contracts import (
     SourceChunk,
     canonical_json,
 )
-from offerpilot.context_projector.gateway import (
+from auroraagent.context_projector.gateway import (
     AgentProviderGatewaySession,
     FrozenProviderExecutionChain,
     SingleCandidateAgentTransport,
     normalize_provider_endpoint,
 )
-from offerpilot.context_projector.history import group_history, select_history
-from offerpilot.context_projector.loader import ContextSourceLoader, fetch_rows
-from offerpilot.context_projector.manifest import (
+from auroraagent.context_projector.history import group_history, select_history
+from auroraagent.context_projector.loader import ContextSourceLoader, fetch_rows
+from auroraagent.context_projector.manifest import (
     MANIFEST_SIGNAL_VALUES,
     ManifestV2ValidationError,
     _identity,
     prepare_surface_manifest_v2,
     validate_surface_manifest_v2,
 )
-from offerpilot.context_projector.projector import ModelSurfaceProjector, ProjectionRequest
-from offerpilot.context_projector.selector import ToolSelectionSignals, select_tools
-from offerpilot.context_projector.signals import RuntimeSignalSink
-from offerpilot.pilot_runtime.errors import (
+from auroraagent.context_projector.projector import ModelSurfaceProjector, ProjectionRequest
+from auroraagent.context_projector.selector import ToolSelectionSignals, select_tools
+from auroraagent.context_projector.signals import RuntimeSignalSink
+from auroraagent.pilot_runtime.errors import (
     RuntimeAgentTimedOut,
     RuntimeCancelled,
     RuntimeTransportAborted,
 )
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.config import AIProviderProfile, Config, save_config
-from offerpilot.db import init_database, journal_session_factory_for_data_dir
-from offerpilot.models import AgentContextSnapshot, AgentEvent, AgentRun, Conversation
-from offerpilot.repositories.agent_runs import AgentRunRepository
-from offerpilot.api import create_app
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.config import AIProviderProfile, Config, save_config
+from auroraagent.db import init_database, journal_session_factory_for_data_dir
+from auroraagent.models import AgentContextSnapshot, AgentEvent, AgentRun, Conversation
+from auroraagent.repositories.agent_runs import AgentRunRepository
+from auroraagent.api import create_app
 
 
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
@@ -1498,10 +1498,10 @@ def test_manifest_v2_budget_guard_interrupts_maximal_audit_at_exact_checkpoint()
 @pytest.mark.parametrize(
     "domain",
     [
-        b"offerpilot-surface-provider-v2",
-        b"offerpilot-surface-history-v2",
-        b"offerpilot-surface-source-v2",
-        b"offerpilot-surface-chunk-v2",
+        b"auroraagent-surface-provider-v2",
+        b"auroraagent-surface-history-v2",
+        b"auroraagent-surface-source-v2",
+        b"auroraagent-surface-chunk-v2",
     ],
 )
 @pytest.mark.parametrize("fail_at", [5, 8])
@@ -1628,7 +1628,7 @@ def test_manifest_budget_guard_reaches_source_chunk_validation_and_sha_phases(
 
 
 def test_migration_0027_records_and_database_accepts_v2_limit(tmp_path: Path) -> None:
-    factory = init_database(tmp_path / "offerpilot.db")
+    factory = init_database(tmp_path / "auroraagent.db")
     with factory() as session:
         version = session.scalar(
             text(
@@ -1697,7 +1697,7 @@ def test_migration_0027_records_and_database_accepts_v2_limit(tmp_path: Path) ->
 def test_real_chat_adapter_uses_projected_surface_and_persists_v3_manifest(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    import offerpilot.ai.client as ai_client
+    import auroraagent.ai.client as ai_client
 
     save_config(tmp_path, Config(api_key="sk-test", confirmation_secret="secret"))
     requests: list[dict[str, object]] = []
@@ -1736,8 +1736,8 @@ def test_real_chat_adapter_uses_projected_surface_and_persists_v3_manifest(
 
 @pytest.mark.parametrize("source_name", ["confirmed_readiness", "confirmed_memory", "knowledge_context", "older_conversation_summary"])
 def test_optional_sources_share_provider_budget_and_preserve_current_request(source_name: str) -> None:
-    from offerpilot.context_sources.contracts import ContributorPolicy
-    from offerpilot.context_sources.loader import OptionalSources, _contributor
+    from auroraagent.context_sources.contracts import ContributorPolicy
+    from auroraagent.context_sources.loader import OptionalSources, _contributor
     optional, source = _contributor(source_name, ContributorPolicy(enabled=True), [{"text": "可选参考" * 30}])
     assert source is not None
     values = list(contributors("当前请求必须保留"))
@@ -1757,8 +1757,8 @@ def test_optional_sources_share_provider_budget_and_preserve_current_request(sou
 
 
 def test_summary_replaces_only_matching_plain_prefix_and_falls_back_on_mismatch() -> None:
-    from offerpilot.context_sources.contracts import ContributorPolicy
-    from offerpilot.context_sources.loader import OptionalSources, _contributor
+    from auroraagent.context_sources.contracts import ContributorPolicy
+    from auroraagent.context_sources.loader import OptionalSources, _contributor
     optional, source = _contributor("older_conversation_summary", ContributorPolicy(enabled=True), [{"excerpt": "历史摘要"}])
     values = list(contributors("当前问题"))
     values[CONTRIBUTOR_ORDER.index("older_conversation_summary")] = optional

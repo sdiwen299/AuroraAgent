@@ -1,12 +1,12 @@
-# Contributing to OfferPilot
+# Contributing to AuroraAgent
 
-Thanks for helping improve OfferPilot. This file is the public contributor
+Thanks for helping improve AuroraAgent. This file is the public contributor
 entry point; detailed agent workflow rules live in [AGENTS.md](AGENTS.md), and
 historical design notes live under [docs/](docs/).
 
 ## License
 
-OfferPilot is licensed under AGPLv3. By contributing, you agree that your contribution can be distributed under the project's AGPLv3 license.
+AuroraAgent is licensed under AGPLv3. By contributing, you agree that your contribution can be distributed under the project's AGPLv3 license.
 
 Before the project broadly accepts external contributions, the maintainers should decide whether a CLA or DCO process is required. This follows ADR-001 so future licensing choices are not blocked by unclear contribution rights.
 

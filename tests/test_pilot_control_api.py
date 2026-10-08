@@ -5,8 +5,8 @@ from uuid import uuid4
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
 from tests.test_action_presentation import _Model
 
 
@@ -103,7 +103,7 @@ def test_confirmation_resumes_same_turn_but_terminal_replay_has_no_new_generatio
 
 
 def test_durable_timeout_keeps_timeout_receipt_without_accepting_late_model_output(tmp_path, monkeypatch):
-    import offerpilot.api as api
+    import auroraagent.api as api
     monkeypatch.setattr(api, 'CHAT_AGENT_TIMEOUT_SECONDS', 0.05)
     model = BarrierModel()
     try:
@@ -121,7 +121,7 @@ def test_durable_timeout_keeps_timeout_receipt_without_accepting_late_model_outp
 
 
 def test_control_endpoints_require_existing_api_auth(tmp_path):
-    from offerpilot.config import Config, save_config
+    from auroraagent.config import Config, save_config
     save_config(tmp_path, Config(auth_enabled=True, auth_token='control-api-test-token'))
     with TestClient(create_app(data_dir=tmp_path, chat_model=_Model())) as client:
         assert client.get('/api/chat/conversations/1/execution').status_code == 401
@@ -144,8 +144,8 @@ def test_interrupt_validation_has_no_model_or_tool_side_effect(tmp_path):
 
 
 def test_stop_after_approval_claim_prevents_handler_entry_and_preserves_pending(tmp_path, monkeypatch):
-    from offerpilot.pilot_control import PilotControlRepository
-    import offerpilot.ai.write_operations as writes
+    from auroraagent.pilot_control import PilotControlRepository
+    import auroraagent.ai.write_operations as writes
     claimed = Event()
     release = Event()
     original_claim = PilotControlRepository.claim_confirmation
@@ -192,8 +192,8 @@ def test_stop_after_approval_claim_prevents_handler_entry_and_preserves_pending(
 
 
 def test_successful_title_is_allowed_but_private_owner_never_enters_public_identity(tmp_path):
-    from offerpilot.db import session_factory_for_data_dir
-    from offerpilot.models import PilotExecution
+    from auroraagent.db import session_factory_for_data_dir
+    from auroraagent.models import PilotExecution
     from sqlalchemy import select
 
     class Model:

@@ -25,11 +25,11 @@
 
 | 文件/区域 | 本期职责 |
 | --- | --- |
-| `src/offerpilot/pilot_runtime/managed_execution.py`（新） | 执行注册、有限池/等待、deadline、观察缓存、清理与关闭 |
-| `src/offerpilot/pilot_runtime/execution_budget.py`（新） | 模型/工具调用预算，与观察连接分离；不使用 Journal 预算 |
-| `src/offerpilot/api.py` | 新协议接纳与读取路由、认证/来源门禁、现有运行时适配 |
-| `src/offerpilot/models.py`、`pilot_control.py`、`pilot_timeline.py` | 必要的协议身份/命令关联及只读恢复；不保存可重执行的授权载荷 |
-| `src/offerpilot/ai/agent_loop.py` 及现有实际 Provider/工具边界 | 新管理 scope 下的调用预算，旧调用不改变 |
+| `src/auroraagent/pilot_runtime/managed_execution.py`（新） | 执行注册、有限池/等待、deadline、观察缓存、清理与关闭 |
+| `src/auroraagent/pilot_runtime/execution_budget.py`（新） | 模型/工具调用预算，与观察连接分离；不使用 Journal 预算 |
+| `src/auroraagent/api.py` | 新协议接纳与读取路由、认证/来源门禁、现有运行时适配 |
+| `src/auroraagent/models.py`、`pilot_control.py`、`pilot_timeline.py` | 必要的协议身份/命令关联及只读恢复；不保存可重执行的授权载荷 |
+| `src/auroraagent/ai/agent_loop.py` 及现有实际 Provider/工具边界 | 新管理 scope 下的调用预算，旧调用不改变 |
 | `web/src/services/chat.ts` 与新增订阅适配 | 一次提交后订阅，有限重连只读，沿用上层 ChatResponse 契约 |
 | `web/src/features/assistantSurface/` | 外壳共享、关闭仅退订、原任务重订、远端完成回填 |
 | `tests/test_managed_execution*.py`、前端对应 `*.test.*` | 真实可控并发/故障与用户入口验证 |

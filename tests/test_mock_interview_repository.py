@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     ApplicationJDVersion,
@@ -15,7 +15,7 @@ from offerpilot.models import (
     MockInterviewTurn,
     Resume,
 )
-from offerpilot.repositories.mock_interviews import (
+from auroraagent.repositories.mock_interviews import (
     MockInterviewIdempotencyConflict,
     MockInterviewRepository,
     MockInterviewSourceChanged,
@@ -639,9 +639,9 @@ def test_next_question_claim_and_completion_persist_a_second_turn(tmp_path):
     assert completed is not None
     with factory() as session:
         turns = list(
-            session.query(__import__("offerpilot.models", fromlist=["MockInterviewTurn"]).MockInterviewTurn)
+            session.query(__import__("auroraagent.models", fromlist=["MockInterviewTurn"]).MockInterviewTurn)
             .filter_by(attempt_id=attempt.id)
-            .order_by(__import__("offerpilot.models", fromlist=["MockInterviewTurn"]).MockInterviewTurn.turn_no)
+            .order_by(__import__("auroraagent.models", fromlist=["MockInterviewTurn"]).MockInterviewTurn.turn_no)
         )
         assert [(turn.turn_no, turn.question_idempotency_key, turn.question_text) for turn in turns] == [
             (1, "question-1", turns[0].question_text),
@@ -744,8 +744,8 @@ def test_provider_and_contract_failure_recheck_sources_before_persisting_status(
 
 
 def test_feedback_contract_failure_does_not_create_proposal(tmp_path):
-    from offerpilot.ai.mock_interview import MockInterviewUnverifiableError, generate_feedback
-    from offerpilot.ai.types import Assistant
+    from auroraagent.ai.mock_interview import MockInterviewUnverifiableError, generate_feedback
+    from auroraagent.ai.types import Assistant
 
     class InvalidModel:
         supports_json_schema = False

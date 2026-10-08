@@ -20,9 +20,9 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
-from offerpilot.knowledge.extractor import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
+from auroraagent.knowledge.extractor import (
     EXTRACTOR_VERSION,
     METADATA_EXTRACTION_VERSION,
     MarkdownExtractor,
@@ -58,7 +58,7 @@ def _api_client(tmp_path: Path):  # type: ignore[no-untyped-def]
     """``create_app`` 复用 seam 已初始化的 ``tmp_path/data.db``。"""
     from fastapi.testclient import TestClient
 
-    from offerpilot.api import create_app
+    from auroraagent.api import create_app
 
     return TestClient(create_app(data_dir=tmp_path))
 
@@ -73,14 +73,14 @@ def test_paired_frontmatter_block_emits_no_evidence() -> None:
     extractor = MarkdownExtractor()
     content = (
         "---\n"
-        "title: OfferPilot 架构笔记\n"
+        "title: AuroraAgent 架构笔记\n"
         "author: 张三\n"
         "tags: [arch, sqlite]\n"
         "url: https://example.com/offer\n"
         "date: 2026-07-15\n"
         "---\n\n"
         "# 正文\n\n"
-        "OfferPilot 使用 SQLite 作为单一事实源。\n"
+        "AuroraAgent 使用 SQLite 作为单一事实源。\n"
     )
     result = extractor.extract(content)
     # frontmatter 独有词不进任何 Evidence 的 search_text / excerpt。
@@ -278,7 +278,7 @@ def test_extractor_version_upgraded_for_evidence_policy_change() -> None:
 # ---------------------------------------------------------------------------
 
 
-_FRONTMATTER_BODY_TOKEN = "OfferPilotSQLiteSingleSource"
+_FRONTMATTER_BODY_TOKEN = "AuroraAgentSQLiteSingleSource"
 _FRONTMATTER_TAG_TOKEN = "archmetaunique"
 _FRONTMATTER_AUTHOR_TOKEN = "张三丰"
 
@@ -432,7 +432,7 @@ def test_seam_frontmatter_import_brief_excludes_frontmatter_evidence(
         f"tags: [{_FRONTMATTER_TAG_TOKEN}]\n"
         "---\n\n"
         "# 概述\n\n"
-        "Source 描述 OfferPilot 与 SQLite 单一事实源决策。\n\n"
+        "Source 描述 AuroraAgent 与 SQLite 单一事实源决策。\n\n"
         "## 第二段\n\n"
         "Evidence 是引用单位，Evidence 不重叠。\n"
     ).encode("utf-8")

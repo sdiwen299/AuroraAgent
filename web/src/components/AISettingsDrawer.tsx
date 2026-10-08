@@ -498,7 +498,7 @@ export default function AISettingsDrawer({ open, onClose }: Props) {
           ) : null}
 
           <Typography.Paragraph type="secondary" style={{ marginTop: 14, marginBottom: 0 }}>
-            设置保存在本地 OfferPilot 配置中；接口只返回密钥是否存在。
+            设置保存在本地曙光配置中；接口只返回密钥是否存在。
           </Typography.Paragraph>
 
           <div style={{ marginTop: 14 }}>

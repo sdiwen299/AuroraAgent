@@ -6,7 +6,7 @@
 
 ## 1. 目标、背景与非目标
 
-OfferPilot 已经保存了简历版本、面试事件、面试复盘、模拟面试 Turn、证据门控 Proposal 和人工确认流程。当前缺少的是一项独立资产：用户无法把已确认的真实经历整理为可长期维护、可跨投递复用的 STAR 故事。
+AuroraAgent 已经保存了简历版本、面试事件、面试复盘、模拟面试 Turn、证据门控 Proposal 和人工确认流程。当前缺少的是一项独立资产：用户无法把已确认的真实经历整理为可长期维护、可跨投递复用的 STAR 故事。
 
 本功能将候选人故事定义为“有证据、可版本化、由用户确认的个人经历资产”，用于后续面试准备和练习；它不判断故事优劣，也不替用户选择或使用故事。
 
@@ -370,11 +370,11 @@ Provider 只返回 raw JSON。原生 JSON Schema 仅为能力优化；所有 Pro
 
 | 共享中心文件 | JD Version 分支 | Story Library 的后续策略 |
 | --- | --- | --- |
-| `src/offerpilot/api.py` | 已修改 | 新路由注册集中在独立函数/连续路由块；合并时人工重放并验证 route order |
-| `src/offerpilot/models.py` | 已修改 | 新增独立 Story 表族；不改 JD 表字段和删除语义 |
-| `src/offerpilot/schemas.py` | 已修改 | 新增独立 schema 区；不复用或改写 JD payload |
+| `src/auroraagent/api.py` | 已修改 | 新路由注册集中在独立函数/连续路由块；合并时人工重放并验证 route order |
+| `src/auroraagent/models.py` | 已修改 | 新增独立 Story 表族；不改 JD 表字段和删除语义 |
+| `src/auroraagent/schemas.py` | 已修改 | 新增独立 schema 区；不复用或改写 JD payload |
 | `web/src/layout/AppShell.tsx` | 已修改 | Story draft/state 转入独立 feature hook，AppShell 仅最小注册与导航接线 |
-| `src/offerpilot/repositories/mock_interviews.py` | 已修改 | Story 仅以只读完成 Turn 来源适配器读取，不在 Mock repository 塞 Story 写入 |
+| `src/auroraagent/repositories/mock_interviews.py` | 已修改 | Story 仅以只读完成 Turn 来源适配器读取，不在 Mock repository 塞 Story 写入 |
 | 面试准备/材料/机会评估前端与 repository | 已修改 | 第一期开端不把 Story 接入这些消费链路；只在未来单独设计 |
 
 实施前必须重新计算双方相对各自真实 fork point 的文件集合交集，并在实施计划中记录。若交集含以上中心文件，按“新模块优先、中心文件最小接线、逐文件人工合并与双分支回归”执行；不得以隐藏交集宣称无冲突。

@@ -6,7 +6,7 @@
 
 **Architecture:** Keep citations fully client-side. `model.ts` converts structured tool output into a validated `EvidenceTarget`; the evidence renderer exposes it as an accessible action; `AppShell` changes the active view or opens an existing detail surface. Destination views consume focus state once, so opening evidence cannot create, edit, or repeatedly reopen data.
 
-**Tech Stack:** React 18, TypeScript, Vite/Vitest, TanStack Query, Ant Design, Day.js, existing OfferPilot local tool-result model.
+**Tech Stack:** React 18, TypeScript, Vite/Vitest, TanStack Query, Ant Design, Day.js, existing AuroraAgent local tool-result model.
 
 ---
 

@@ -4,8 +4,8 @@ import sqlite3
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.ai.interview_stories import (
+from auroraagent.api import create_app
+from auroraagent.ai.interview_stories import (
     StoryProviderError,
     safe_empty_interview_story_proposal,
 )
@@ -308,7 +308,7 @@ def test_story_generation_persists_a_bounded_internal_repair_count_for_egress_au
         )
         return safe_empty_interview_story_proposal()
 
-    monkeypatch.setattr("offerpilot.api.generate_interview_story_proposal", repaired_generator)
+    monkeypatch.setattr("auroraagent.api.generate_interview_story_proposal", repaired_generator)
     with TestClient(create_app(data_dir=tmp_path, chat_model=object())) as client:
         note = _note(client)
         response = client.post(
@@ -352,7 +352,7 @@ def test_story_provider_unknown_persists_a_prior_internal_repair_count(tmp_path,
         )
         raise error
 
-    monkeypatch.setattr("offerpilot.api.generate_interview_story_proposal", repaired_then_unavailable)
+    monkeypatch.setattr("auroraagent.api.generate_interview_story_proposal", repaired_then_unavailable)
     with TestClient(create_app(data_dir=tmp_path, chat_model=object())) as client:
         note = _note(client)
         response = client.post(

@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 
-from offerpilot.db import init_database
-from offerpilot.models import ApplicationJDVersion
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.db import init_database
+from auroraagent.models import ApplicationJDVersion
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 def test_create_and_list_applications_ordered_by_applied_at(tmp_path):

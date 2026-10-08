@@ -17,38 +17,38 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select, text, update
 from sqlalchemy.exc import OperationalError
 
-import offerpilot.agent_runtime.journal as journal_module
-import offerpilot.chat_transport as transport_module
-from offerpilot.ai.types import Assistant, Message, ToolCall
-from offerpilot.ai.agent_contracts import PendingAction, StalePendingActionError
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.contracts import (
+import auroraagent.agent_runtime.journal as journal_module
+import auroraagent.chat_transport as transport_module
+from auroraagent.ai.types import Assistant, Message, ToolCall
+from auroraagent.ai.agent_contracts import PendingAction, StalePendingActionError
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ToolExecutionRecord,
     ToolFailure,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_specs.applications import LIST_APPLICATIONS_RESULT_BYTE_CAP
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_specs.applications import LIST_APPLICATIONS_RESULT_BYTE_CAP
+from auroraagent.ai.write_operations import (
     TypedPendingRouteHandle,
     WriteOperationError,
     pending_route_claim_for_cleanup,
 )
-from offerpilot.agent_runtime.journal import NullRunRecorderFactory, RunRecorderFactory
-from offerpilot.agent_runtime.keyring import load_or_create_journal_key
-from offerpilot.agent_runtime.trace import reconstruct_agent_run
-from offerpilot.api import (
+from auroraagent.agent_runtime.journal import NullRunRecorderFactory, RunRecorderFactory
+from auroraagent.agent_runtime.keyring import load_or_create_journal_key
+from auroraagent.agent_runtime.trace import reconstruct_agent_run
+from auroraagent.api import (
     _canonical_source_scope,
     _stored_messages_to_ai,
     _title_from_message,
     create_app,
 )
-from offerpilot.config import Config, save_config
-from offerpilot.db import journal_session_factory_for_data_dir, session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.config import Config, save_config
+from auroraagent.db import journal_session_factory_for_data_dir, session_factory_for_data_dir
+from auroraagent.models import (
     AgentContextSnapshot,
     AgentEvent,
     AgentRun,
@@ -64,28 +64,28 @@ from offerpilot.models import (
     WriteOperation,
     WriteOperationTransition,
 )
-from offerpilot.context_projector.budget import ProviderBudget
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.context_projector.budget import ProviderBudget
+from auroraagent.pilot_runtime.contracts import (
     MessageOutcome,
     PreparedStreamExecution,
     PreparationKind,
     StreamExecutionMode,
 )
-from offerpilot.pilot_runtime import (
+from auroraagent.pilot_runtime import (
     InMemoryRuntimeInvocationControl,
     RuntimeAgentTimedOut,
     RuntimeFailureCode,
 )
-from offerpilot.pilot_runtime.persistence import (
+from auroraagent.pilot_runtime.persistence import (
     ChatPersistenceCoordinator,
     PersistenceResult,
     PersistenceStatus,
 )
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.agent_runs import AgentRunRepository, JournalConflictError
-from offerpilot.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
-from offerpilot.pilot_runtime.service import PilotRuntime, _has_write_attempt, _write_outcome
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.agent_runs import AgentRunRepository, JournalConflictError
+from auroraagent.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
+from auroraagent.pilot_runtime.service import PilotRuntime, _has_write_attempt, _write_outcome
 
 _LEGACY_JD_EXECUTION_EVENTS: list[str] | None = None
 _LEGACY_JD_EXECUTION_ORIGINAL: Any = None
@@ -679,7 +679,7 @@ def test_create_app_does_not_publish_runtime_when_ledger_key_initialization_fail
     monkeypatch: pytest.MonkeyPatch,
     dispose_fails: bool,
 ) -> None:
-    import offerpilot.api as api_module
+    import auroraagent.api as api_module
 
     class EngineProbe:
         dispose_calls = 0
@@ -1388,14 +1388,14 @@ def test_deterministic_action_records_waiting_run_without_model_events(tmp_path)
 
 
 def test_deterministic_pending_readback_uses_original_journal_run(tmp_path, monkeypatch):
-    import offerpilot.ai.tool_specs.legacy as legacy_specs
+    import auroraagent.ai.tool_specs.legacy as legacy_specs
 
-    from offerpilot.ai.tool_runtime.legacy import (
+    from auroraagent.ai.tool_runtime.legacy import (
         LegacyDeterministicCatalog,
         LegacyInitialRouteIssuer,
     )
-    from offerpilot.pilot_runtime.contracts import LegacyReadContext
-    from offerpilot.pilot_runtime.legacy_route import (
+    from auroraagent.pilot_runtime.contracts import LegacyReadContext
+    from auroraagent.pilot_runtime.legacy_route import (
         LegacyPersistedPresentationPort,
         LegacyRouteProofIssuer,
     )
@@ -2017,10 +2017,10 @@ def test_deterministic_pilot_confirmation_allows_only_jd_edits_without_ai(tmp_pa
 
 
 def _legacy_confirmation_stage_spy(monkeypatch: pytest.MonkeyPatch) -> list[str]:
-    import offerpilot.ai.tool_specs.legacy as legacy_specs
+    import auroraagent.ai.tool_specs.legacy as legacy_specs
 
-    from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicCatalog
-    from offerpilot.pilot_runtime.legacy_route import (
+    from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicCatalog
+    from auroraagent.pilot_runtime.legacy_route import (
         LegacyPendingIdentityVerifierPort,
         LegacyRouteProofIssuer,
     )
@@ -5273,7 +5273,7 @@ def test_chat_returns_bad_gateway_when_model_fails(tmp_path):
 
 
 def test_chat_returns_recoverable_message_when_agent_times_out(tmp_path, monkeypatch):
-    import offerpilot.api as api_module
+    import auroraagent.api as api_module
 
     monkeypatch.setattr(api_module, "CHAT_AGENT_TIMEOUT_SECONDS", 0.01)
     client = TestClient(create_app(data_dir=tmp_path, chat_model=SlowModel()))
@@ -6979,8 +6979,8 @@ def test_chat_confirm_prehandler_validation_preserves_pending_and_undo(
     monkeypatch,
     endpoint,
 ):
-    import offerpilot.ai.agent_loop as agent_loop_module
-    from offerpilot.ai.tool_runtime.pipeline import Rejected
+    import auroraagent.ai.agent_loop as agent_loop_module
+    from auroraagent.ai.tool_runtime.pipeline import Rejected
 
     model = ScriptedModel(
         [
@@ -7246,7 +7246,7 @@ def test_chat_confirm_stream_rejection_is_normal_followup_and_preserves_previous
 
 @pytest.mark.parametrize("endpoint", ["/api/chat/confirm", "/api/chat/confirm/stream"])
 def test_chat_confirm_stale_resume_preserves_pending(tmp_path, monkeypatch, endpoint):
-    import offerpilot.pilot_runtime.continuation as continuation_module
+    import auroraagent.pilot_runtime.continuation as continuation_module
 
     model = ScriptedModel(
         [
@@ -8067,7 +8067,7 @@ def test_chat_confirm_rejection_provider_failure_records_cancellation_once(tmp_p
 
 @pytest.mark.parametrize("endpoint", ["/api/chat/confirm", "/api/chat/confirm/stream"])
 def test_chat_confirm_rejection_timeout_returns_recorded_fallback(tmp_path, monkeypatch, endpoint):
-    import offerpilot.api as api_module
+    import auroraagent.api as api_module
 
     model = SlowAfterPendingModel(
         ToolCall(
@@ -8101,8 +8101,8 @@ def test_chat_confirm_rejection_timeout_returns_recorded_fallback(tmp_path, monk
 
 @pytest.mark.parametrize("endpoint", ["/api/chat/confirm", "/api/chat/confirm/stream"])
 def test_chat_confirm_timeout_before_result_sink_keeps_pending(tmp_path, monkeypatch, endpoint):
-    import offerpilot.api as api_module
-    import offerpilot.pilot_runtime.composition as composition_module
+    import auroraagent.api as api_module
+    import auroraagent.pilot_runtime.composition as composition_module
 
     model = ScriptedModel(
         [
@@ -8152,7 +8152,7 @@ def test_chat_confirm_fallback_timeout_before_handler_keeps_retry_claim(
     monkeypatch,
     endpoint,
 ):
-    import offerpilot.ai.agent_loop as agent_module
+    import auroraagent.ai.agent_loop as agent_module
 
     model = ScriptedModel(
         [

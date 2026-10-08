@@ -23,15 +23,15 @@
 
 截图文件位于本机验证目录，不加入 Git。每张截图说明如下：
 
-1. [日历时间](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/01-calendar-time.jpg)：同一星河智能面试显示9月8日14:00，暗色日历使用语义颜色。
-2. [准备入口](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/02-preparation-open.jpg)：从具体事件选择样例简历后，能进入面试准备任务，而非“不可准备”。
-3. [真实剩余来源阻塞](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/03-preparation-source-block.jpg)：点击生成后实际POST404，不能把本图当作生成成功。
-4. [复盘入口](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/04-review-open.jpg)：已完成事件能进入正确绑定的新建复盘表单；本轮未提交新复盘。
-5. [资料搜索](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/05-knowledge-search.jpg)：检索“过期版本”，打开并定位现有合成资料的依据。
-6. [Offer 比较](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/06-offer-comparison.jpg)：先展示两份 Offer 的固定事实，设置维度在下方折叠。
-7. [Haru 正文](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/07-haru-full-answer.jpg)：真实 AI 的项目表达建议正文在小窗可滚动阅读，不再只剩一句摘要。
-8. [出题来源](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/08-question-supported-source.jpg)：参考资料明确暂未开放，默认面试复盘。
-9. [故事正文](D:/Users/yuqi.chen/.offerpilot/verification/audit-priority-fixes-20260907/09-story-readable.jpg)：原来无法打开的版本1，现可显示标题、适用问题和冻结来源。
+1. [日历时间](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/01-calendar-time.jpg)：同一星河智能面试显示9月8日14:00，暗色日历使用语义颜色。
+2. [准备入口](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/02-preparation-open.jpg)：从具体事件选择样例简历后，能进入面试准备任务，而非“不可准备”。
+3. [真实剩余来源阻塞](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/03-preparation-source-block.jpg)：点击生成后实际POST404，不能把本图当作生成成功。
+4. [复盘入口](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/04-review-open.jpg)：已完成事件能进入正确绑定的新建复盘表单；本轮未提交新复盘。
+5. [资料搜索](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/05-knowledge-search.jpg)：检索“过期版本”，打开并定位现有合成资料的依据。
+6. [Offer 比较](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/06-offer-comparison.jpg)：先展示两份 Offer 的固定事实，设置维度在下方折叠。
+7. [Haru 正文](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/07-haru-full-answer.jpg)：真实 AI 的项目表达建议正文在小窗可滚动阅读，不再只剩一句摘要。
+8. [出题来源](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/08-question-supported-source.jpg)：参考资料明确暂未开放，默认面试复盘。
+9. [故事正文](D:/Users/yuqi.chen/.auroraagent/verification/audit-priority-fixes-20260907/09-story-readable.jpg)：原来无法打开的版本1，现可显示标题、适用问题和冻结来源。
 
 ## 验证口径
 

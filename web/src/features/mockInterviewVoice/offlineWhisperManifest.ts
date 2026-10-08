@@ -19,7 +19,7 @@ export const OFFLINE_WHISPER_MANIFEST: OfflineWhisperManifest = Object.freeze({
   maxAudioSeconds: 300,
   license: 'apache-2.0',
   sourceUrl: 'https://huggingface.co/onnx-community/whisper-small',
-  cacheNamespace: 'offerpilot-offline-whisper-v1',
+  cacheNamespace: 'auroraagent-offline-whisper-v1',
 });
 
 export function validateOfflineWhisperManifest(value: OfflineWhisperManifest): boolean {

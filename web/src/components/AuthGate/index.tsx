@@ -114,7 +114,7 @@ export default function AuthGate({ children }: Props) {
         maskClosable={false}
         className="op-auth-modal"
         title={
-          legacyTokenMode ? '本地访问令牌' : registering ? '创建本地账号' : '登录 OfferPilot'
+          legacyTokenMode ? '本地访问令牌' : registering ? '创建本地账号' : '登录曙光'
         }
       >
         {legacyTokenMode ? (

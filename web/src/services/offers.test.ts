@@ -53,7 +53,7 @@ describe('Offer request timeout boundaries', () => {
     expect(aiHttp.post).toHaveBeenCalledWith(
       '/offers/11/negotiation/proposals',
       expect.objectContaining({ idempotency_key: 'offer-negotiation-key-0001' }),
-      { headers: { 'X-OfferPilot-Entrypoint': 'ui' } },
+      { headers: { 'X-AuroraAgent-Entrypoint': 'ui' } },
     );
     expect(normalHttp.post).not.toHaveBeenCalled();
   });
@@ -101,7 +101,7 @@ describe('Offer request timeout boundaries', () => {
     expect(normalHttp.post).toHaveBeenCalledWith(
       '/offer-negotiation/proposals/17/confirm',
       expect.objectContaining({ confirmation_key: 'offer-negotiation-confirm-key-0001' }),
-      { headers: { 'X-OfferPilot-Entrypoint': 'ui' } },
+      { headers: { 'X-AuroraAgent-Entrypoint': 'ui' } },
     );
     expect(aiHttp.post).not.toHaveBeenCalled();
   });

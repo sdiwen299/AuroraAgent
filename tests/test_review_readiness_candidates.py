@@ -5,15 +5,15 @@ from datetime import datetime, timezone
 import pytest
 from sqlalchemy import update
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     InterviewNote,
     InterviewReadinessSignal,
     InterviewReviewProposal,
 )
-import offerpilot.review_readiness.candidates as candidates_module
-from offerpilot.review_readiness.candidates import project_readiness_candidates
+import auroraagent.review_readiness.candidates as candidates_module
+from auroraagent.review_readiness.candidates import project_readiness_candidates
 
 from tests.review_readiness_support import seed_review_candidate
 

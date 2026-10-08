@@ -15,31 +15,31 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-from offerpilot.api import create_app
-from offerpilot.ai.write_operations import LedgerKeyDomain, build_terminal_payload
-from offerpilot.models import InterviewNote, InterviewStoryProposalAttempt
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
-from offerpilot.product_actions.contracts import (
+from auroraagent.api import create_app
+from auroraagent.ai.write_operations import LedgerKeyDomain, build_terminal_payload
+from auroraagent.models import InterviewNote, InterviewStoryProposalAttempt
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.contracts import (
     ProductActionExecutionAuthorization,
     ProductActionIntegrityError,
     ProductActionProofRegistryV1,
 )
-from offerpilot.product_actions import compensation as compensation_module
-from offerpilot.product_actions.compensation import (
+from auroraagent.product_actions import compensation as compensation_module
+from auroraagent.product_actions.compensation import (
     ProductActionCompensationError,
     product_action_compensation_request_fingerprint,
 )
-from offerpilot.product_actions.coordinator import (
+from auroraagent.product_actions.coordinator import (
     ProductActionCoordinatorError,
     ProductActionStoryWriteConflict,
 )
-from offerpilot.product_actions.repository import ProductActionPublicationV1
-from offerpilot.product_actions.issuer import (
+from auroraagent.product_actions.repository import ProductActionPublicationV1
+from auroraagent.product_actions.issuer import (
     InterviewStoryActionIssuer,
     LedgerKeyProfileStoreV1,
 )
-from offerpilot.product_actions.repository import ProductActionProposalRepository
-from offerpilot.repositories.interview_stories import (
+from auroraagent.product_actions.repository import ProductActionProposalRepository
+from auroraagent.repositories.interview_stories import (
     InterviewStoriesRepository,
     InterviewStoryProductActionHandler,
     StoryValidationError,
@@ -47,7 +47,7 @@ from offerpilot.repositories.interview_stories import (
     _story_lifecycle_idempotency_key,
     _story_lifecycle_request_fingerprint,
 )
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 
 def _note(client: TestClient) -> dict[str, Any]:
@@ -198,7 +198,7 @@ def _legacy_ready_attempt(
 @pytest.fixture
 def story_client(tmp_path: Any, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(
-        "offerpilot.api.generate_interview_story_proposal",
+        "auroraagent.api.generate_interview_story_proposal",
         lambda _model, snapshot, **_kwargs: _provider_story(snapshot),
     )
     with TestClient(create_app(data_dir=tmp_path, chat_model=object())) as client:
@@ -2789,9 +2789,9 @@ def test_invalid_raw_story_requests_make_zero_domain_calls(
 
 def test_bound_story_executor_rolls_back_with_caller_transaction(tmp_path: Any) -> None:
     # The session-bound cutover deliberately has no self-committing confirm_attempt API.
-    from offerpilot.db import init_database
-    from offerpilot.product_actions.contracts import ProductActionProofRegistryV1
-    from offerpilot.repositories.interview_stories import InterviewStoriesRepository
+    from auroraagent.db import init_database
+    from auroraagent.product_actions.contracts import ProductActionProofRegistryV1
+    from auroraagent.repositories.interview_stories import InterviewStoriesRepository
 
     factory = init_database(tmp_path / "bound-story.db")
     repository = InterviewStoriesRepository(factory)
@@ -4394,7 +4394,7 @@ def test_ready_publication_commit_unknown_fails_closed_on_partial_or_unreadable(
         return _provider_story(snapshot)
 
     monkeypatch.setattr(
-        "offerpilot.api.generate_interview_story_proposal",
+        "auroraagent.api.generate_interview_story_proposal",
         forbidden_provider,
     )
     with TestClient(create_app(data_dir=data_dir, chat_model=object())) as restarted:

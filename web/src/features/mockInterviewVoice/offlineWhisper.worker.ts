@@ -32,7 +32,7 @@ worker.addEventListener('message', (event: MessageEvent<OfflineWhisperWorkerRequ
       downloadedBytes = Math.max(downloadedBytes, loaded);
       publish({ type: 'download_progress', generation: request.generation, loaded, total });
     }).then(async (backend) => {
-      const cache = typeof caches === 'undefined' ? undefined : await caches.open('offerpilot-offline-whisper-v1');
+      const cache = typeof caches === 'undefined' ? undefined : await caches.open('auroraagent-offline-whisper-v1');
       const keys = cache ? await cache.keys() : [];
       publish({ type: 'ready', generation: request.generation, backend, cachedBytes: keys.length ? downloadedBytes || undefined : 0 });
     }).catch((error: unknown) => {

@@ -3,8 +3,8 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
 
 
 class _MockInterviewModel:
@@ -236,7 +236,7 @@ def test_contract_failure_logs_only_safe_category(tmp_path):
     assert response.json()["error_code"] == "mock_interview_unverifiable"
     assert isinstance(response.json().get("attempt_id"), int)
     assert "raw model output" not in response.text
-    log_text = (tmp_path / "logs" / "offerpilot.log").read_text(encoding="utf-8")
+    log_text = (tmp_path / "logs" / "auroraagent.log").read_text(encoding="utf-8")
     assert "mock_interview_contract_failure" in log_text
     assert "unexpected_field" in log_text
     assert "raw model output" not in log_text
@@ -284,7 +284,7 @@ def test_repair_provider_failure_preserves_original_key(tmp_path):
     assert replay.status_code == 202
     assert replay.json()["attempt_status"] == "provider_unknown"
     assert model.calls == 2
-    log_text = (tmp_path / "logs" / "offerpilot.log").read_text(encoding="utf-8")
+    log_text = (tmp_path / "logs" / "auroraagent.log").read_text(encoding="utf-8")
     assert "provider raw secret" not in log_text
     assert "JD Python" not in log_text
 

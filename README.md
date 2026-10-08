@@ -1,14 +1,14 @@
-# OfferPilot — 开源、本地优先的 AI 求职与投递管理工具
+# 曙光（AuroraAgent）— 开源、本地优先的 AI 求职与投递管理工具
 
 [简体中文](README.md) | [English](README.en.md)
 
 **集中管理投递进度、简历、面试与 Offer，让每一轮准备都有记录可查。**
 
-OfferPilot 由 offercontext 维护，是面向个人求职者的开源 AI 求职工作台。
+曙光由 offercontext 维护，是面向个人求职者的开源 AI 求职工作台。
 你可以在本地管理不同公司和岗位的投递记录，整理简历与岗位描述，
 进行模拟面试、保存复盘，并比较收到的 Offer。
 
-**English:** OfferPilot by offercontext is an open-source, local-first
+**English:** AuroraAgent by offercontext is an open-source, local-first
 AI job application tracker for individual job seekers. It supports resume
 management, interview preparation, mock interviews, interview reviews,
 offer comparison and salary negotiation preparation.
@@ -79,11 +79,11 @@ Pilot 是内置 AI 助手，Haru 是可选角色入口；隐藏 Haru 不影响�
 ### Docker
 
 ```bash
-git clone https://github.com/offercontext/offerPilot.git offerpilot
-cd offerpilot
+git clone https://github.com/sdiwen299/AuroraAgent.git AuroraAgent
+cd AuroraAgent
 
-docker build -t offerpilot .
-docker run --rm -p 127.0.0.1:8080:8080 -v offerpilot-data:/data offerpilot
+docker build -t auroraagent .
+docker run --rm -p 127.0.0.1:8080:8080 -v auroraagent-data:/data auroraagent
 ```
 
 打开 `http://localhost:8080`。
@@ -91,8 +91,8 @@ docker run --rm -p 127.0.0.1:8080:8080 -v offerpilot-data:/data offerpilot
 ### 从源码启动
 
 ```bash
-git clone https://github.com/offercontext/offerPilot.git offerpilot
-cd offerpilot
+git clone https://github.com/sdiwen299/AuroraAgent.git AuroraAgent
+cd AuroraAgent
 uv sync
 cd web
 npm ci
@@ -107,8 +107,8 @@ uv run oc start
 
 | 启动方式 | 默认数据位置 |
 | --- | --- |
-| 源码启动 | 用户主目录下的 `~/.offerpilot`，可通过 `OFFERPILOT_DATA` 调整 |
-| 上述 Docker 命令 | `offerpilot-data` 数据卷，挂载到容器内的 `/data` |
+| 源码启动 | 用户主目录下的 `~/.auroraagent`，可通过 `AURORA_AGENT_DATA` 调整 |
+| 上述 Docker 命令 | `auroraagent-data` 数据卷，挂载到容器内的 `/data` |
 
 ### 第一次使用
 
@@ -120,12 +120,12 @@ uv run oc start
 
 - 本地部署将业务数据保存在你的设备上。使用 AI 功能时，相关资料会发送给你配置的模型服务；本地存储不代表所有 AI 处理都在本地完成。模型调用可能产生服务商费用。
 - 模拟面试录音只存在于当前页面，不上传、不持久化；离线 Whisper 模型仅在你主动点击后从 Hugging Face 下载到浏览器缓存。
-- Pilot 对关键求职记录的修改默认需要你的确认；请核对系统确认卡后再执行。OfferPilot 不会自动投递，也不会替你向招聘方发送消息。
+- Pilot 对关键求职记录的修改默认需要你的确认；请核对系统确认卡后再执行。曙光不会自动投递，也不会替你向招聘方发送消息。
 - AI 输出可能包含错误。采用前请核对经历、数字、日期和承诺；是否投递、接受 Offer 或如何谈薪，仍由你决定。
 
 ## 常见问题
 
-### 不配置 AI，也能使用 OfferPilot 吗？
+### 不配置 AI，也能使用曙光吗？
 
 可以。记录投递、保存岗位描述和手动编辑资料等基础功能不要求先配置 AI。
 材料生成、模拟问答和 AI 分析等功能需要配置相应的模型服务。
@@ -136,9 +136,9 @@ uv run oc start
 相关资料会发送给你配置的模型服务，并可能产生服务商费用。
 本地保存不等于所有 AI 计算都在本地完成。
 
-### OfferPilot 会自动投递简历或联系招聘方吗？
+### 曙光会自动投递简历或联系招聘方吗？
 
-不会。OfferPilot 用于管理求职过程、准备材料和整理建议，
+不会。曙光用于管理求职过程、准备材料和整理建议，
 不自动向招聘方投递或发送消息。关键求职记录的修改默认需要用户确认。
 
 详细操作与问题排查见[用户指南](docs/product-manual/产品说明书.md#s12)。
@@ -149,7 +149,7 @@ uv run oc start
 
 ### 第三方角色与运行时
 
-桌面宽屏的 Pilot 看板娘使用 Live2D 官方样例角色 Haru 受付版与 Cubism Core。相关角色、模型数据及运行时版权归 Live2D Inc. 所有，不包含在 OfferPilot 的 AGPLv3 授权中；使用与分发需同时遵守 [Live2D 样例模型条款](https://www.live2d.com/eula/live2d-sample-model-terms_en.html) 与 [Live2D SDK 许可](https://www.live2d.com/en/sdk/license/)。
+桌面宽屏的 Pilot 看板娘使用 Live2D 官方样例角色 Haru 受付版与 Cubism Core。相关角色、模型数据及运行时版权归 Live2D Inc. 所有，不包含在曙光（AuroraAgent）的 AGPLv3 授权中；使用与分发需同时遵守 [Live2D 样例模型条款](https://www.live2d.com/eula/live2d-sample-model-terms_en.html) 与 [Live2D SDK 许可](https://www.live2d.com/en/sdk/license/)。
 
 > This content uses sample data owned and copyrighted by Live2D Inc. The sample data are utilized in accordance with terms and conditions set by Live2D Inc. This content itself is created at the author’s sole discretion.
 

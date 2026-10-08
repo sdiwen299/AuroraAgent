@@ -9,15 +9,15 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
 
-from offerpilot.ai.types import Assistant
-from offerpilot.ai.opportunity_fit_reviews import ValidatedOpportunityOutput
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.diagnostics import read_recent_log_entries
-from offerpilot.models import OpportunityFitReview
-from offerpilot.models import OpportunityFitReviewStage
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.opportunity_fit_reviews import (
+from auroraagent.ai.types import Assistant
+from auroraagent.ai.opportunity_fit_reviews import ValidatedOpportunityOutput
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.diagnostics import read_recent_log_entries
+from auroraagent.models import OpportunityFitReview
+from auroraagent.models import OpportunityFitReviewStage
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.opportunity_fit_reviews import (
     OpportunityFitReviewConfirmationExpired,
     OpportunityFitReviewsRepository,
 )
@@ -447,7 +447,7 @@ def test_v2_source_cas_rejects_jd_change_after_provider_claim(tmp_path, monkeypa
         return ValidatedOpportunityOutput(payload=_v2_payload("triage"))
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.generate_triage_v2",
+        "auroraagent.repositories.opportunity_fit_reviews.generate_triage_v2",
         blocked_triage,
     )
     client, application, resume = _ready(tmp_path, V2ReviewModel())

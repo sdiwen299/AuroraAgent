@@ -10,18 +10,18 @@ from sqlalchemy import select
 from domain_harness import execute_case
 from golden import load_golden
 
-from offerpilot.ai.tool_runtime.metadata import freeze_json
-from offerpilot.ai.tool_specs.common import offer_json
-from offerpilot.db import init_database
-from offerpilot.models import Application, Offer
-from offerpilot.pilot_runtime.compensation import (
+from auroraagent.ai.tool_runtime.metadata import freeze_json
+from auroraagent.ai.tool_specs.common import offer_json
+from auroraagent.db import init_database
+from auroraagent.models import Application, Offer
+from auroraagent.pilot_runtime.compensation import (
     CompensationConflictError,
     execute_delete_offer_undo,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.ai.tool_runtime.contracts import materialize_provider_payloads
-from offerpilot.ai.tool_specs.offers import offer_specs
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.ai.tool_runtime.contracts import materialize_provider_payloads
+from auroraagent.ai.tool_specs.offers import offer_specs
 
 
 OFFER_TOOLS = (

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.config import AIProviderProfile, Config, save_config
+from auroraagent.api import create_app
+from auroraagent.config import AIProviderProfile, Config, save_config
 
 
 class FailingModel:

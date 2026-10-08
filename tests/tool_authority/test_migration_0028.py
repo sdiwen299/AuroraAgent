@@ -11,19 +11,19 @@ from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.schema import CreateIndex, CreateTable
 
-from offerpilot.db import (
+from auroraagent.db import (
     _ensure_schema_migrations,
     _ensure_scoped_tool_authority_schema,
     _ensure_write_operation_ledger_schema,
     _record_migration,
     init_database,
 )
-from offerpilot.models import Base
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.models import Base
+from auroraagent.repositories.chat import ChatRepository
 
 
 def _engine(tmp_path: Path) -> tuple[sessionmaker[Session], Engine]:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     return sessions, sessions.kw["bind"]
 
 
@@ -52,7 +52,7 @@ def test_migration_is_repeatable_and_new_conversations_start_at_revision_zero(
 ) -> None:
     sessions, engine = _engine(tmp_path)
     engine.dispose()
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     engine = sessions.kw["bind"]
     try:
         conversation = ChatRepository(sessions).create_conversation("new")

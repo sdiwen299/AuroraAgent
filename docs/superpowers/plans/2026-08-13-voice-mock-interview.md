@@ -6,7 +6,7 @@
 
 **Architecture:** A focused browser capability layer owns TTS, recording and local-only speech recognition. `VoiceAnswerComposer` owns ephemeral audio and exposes only confirmed text; `MockInterviewDrawer` continues to own the existing Attempt/Turn workflow. Haru receives decorative activity updates through an optional callback.
 
-**Tech Stack:** React 18, TypeScript, Ant Design, MediaRecorder, Web Speech APIs, Vitest/JSDOM, existing OfferPilot Mock Interview services.
+**Tech Stack:** React 18, TypeScript, Ant Design, MediaRecorder, Web Speech APIs, Vitest/JSDOM, existing AuroraAgent Mock Interview services.
 
 ---
 

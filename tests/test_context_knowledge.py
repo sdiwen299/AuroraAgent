@@ -5,15 +5,15 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import KnowledgeEvidence, KnowledgeExtractionSnapshot, KnowledgeNote, KnowledgeNoteEvidence, KnowledgeNoteVersion, KnowledgeSource
-from offerpilot.knowledge.note_lifecycle import KnowledgeNoteConflict, KnowledgeNoteGone, KnowledgeNoteLifecycle, NoteMutation
-from offerpilot.context_projector.loader import ContextSourceLoader
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.context_sources.knowledge import recall_knowledge
-from offerpilot.context_sources.loader import _contributor
-from offerpilot.context_sources.contracts import ContributorPolicy
-from offerpilot.repositories.interview_knowledge_capture import InterviewKnowledgeCaptureRepository
+from auroraagent.db import init_database
+from auroraagent.models import KnowledgeEvidence, KnowledgeExtractionSnapshot, KnowledgeNote, KnowledgeNoteEvidence, KnowledgeNoteVersion, KnowledgeSource
+from auroraagent.knowledge.note_lifecycle import KnowledgeNoteConflict, KnowledgeNoteGone, KnowledgeNoteLifecycle, NoteMutation
+from auroraagent.context_projector.loader import ContextSourceLoader
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.context_sources.knowledge import recall_knowledge
+from auroraagent.context_sources.loader import _contributor
+from auroraagent.context_sources.contracts import ContributorPolicy
+from auroraagent.repositories.interview_knowledge_capture import InterviewKnowledgeCaptureRepository
 
 
 @pytest.fixture
@@ -303,8 +303,8 @@ def test_active_snapshot_change_invalidates_notes_and_evidence(knowledge):
 
 
 def test_captured_interview_note_is_read_and_edit_invalidates_both_lanes(knowledge):
-    from offerpilot.models import InterviewNote, KnowledgeCapturedSourceMetadata
-    from offerpilot.knowledge.interview_capture import note_fingerprint
+    from auroraagent.models import InterviewNote, KnowledgeCapturedSourceMetadata
+    from auroraagent.knowledge.interview_capture import note_fingerprint
     sessions, loader, (_, _, source_id) = knowledge
     with sessions() as session:
         note = InterviewNote(company="公司", position="职位", questions="索引与事务")

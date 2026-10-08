@@ -1,9 +1,9 @@
-export const PILOT_MASCOT_VISIBILITY_KEY = 'offerpilot:pilot-mascot-visible';
-export const PILOT_MASCOT_ZOOM_KEY = 'offerpilot:pilot-mascot-zoom';
+export const PILOT_MASCOT_VISIBILITY_KEY = 'auroraagent:pilot-mascot-visible';
+export const PILOT_MASCOT_ZOOM_KEY = 'auroraagent:pilot-mascot-zoom';
 export const PILOT_MASCOT_MIN_ZOOM = 0.8;
 export const PILOT_MASCOT_MAX_ZOOM = 1.3;
-export const PILOT_MASCOT_POSITION_KEY = 'offerpilot:pilot-mascot-position';
-export const PILOT_MASCOT_ANIMATION_KEY = 'offerpilot:pilot-mascot-animation';
+export const PILOT_MASCOT_POSITION_KEY = 'auroraagent:pilot-mascot-position';
+export const PILOT_MASCOT_ANIMATION_KEY = 'auroraagent:pilot-mascot-animation';
 
 export type PilotMascotAnimationLevel = 'full' | 'minimal' | 'off';
 

@@ -12,7 +12,7 @@ import io
 import pytest
 from PIL import Image
 
-from offerpilot.knowledge.assets import (
+from auroraagent.knowledge.assets import (
     MAX_ASSET_BYTES,
     MAX_ASSET_COUNT,
     MAX_BUNDLE_BYTES,
@@ -23,7 +23,7 @@ from offerpilot.knowledge.assets import (
     verify_bundle,
     verify_image_asset,
 )
-from offerpilot.knowledge.extractor import (
+from auroraagent.knowledge.extractor import (
     EXTRACTOR_VERSION,
     MarkdownExtractor,
     compute_bundle_source_hash,

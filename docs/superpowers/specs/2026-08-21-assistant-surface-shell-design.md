@@ -6,7 +6,7 @@
 
 ## 1. 目标
 
-OfferPilot 只保留一套前端会话所有权。`AssistantSurfaceProvider` 持有唯一的 `usePilotConversationController()` 实例，Haru 小窗与 Pilot 工作区只负责呈现同一份会话、消息、Pending、请求、附件草稿和上下文状态。
+AuroraAgent 只保留一套前端会话所有权。`AssistantSurfaceProvider` 持有唯一的 `usePilotConversationController()` 实例，Haru 小窗与 Pilot 工作区只负责呈现同一份会话、消息、Pending、请求、附件草稿和上下文状态。
 
 用户形成单一认知：平时问 Haru，复杂任务进入 Pilot。界面切换不是任务切换，关闭界面也不是停止任务。
 

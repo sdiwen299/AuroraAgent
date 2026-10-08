@@ -5,15 +5,15 @@ import json
 
 import pytest
 
-from offerpilot.ai.interview_stories import (
+from auroraagent.ai.interview_stories import (
     INTERVIEW_STORY_JSON_SCHEMA,
     StoryProposalError,
     generate_interview_story_proposal,
     safe_empty_interview_story_proposal,
     validate_interview_story_proposal,
 )
-from offerpilot.ai.types import Assistant
-from offerpilot.repositories.interview_stories import StorySourceSnapshot
+from auroraagent.ai.types import Assistant
+from auroraagent.repositories.interview_stories import StorySourceSnapshot
 
 
 class QueuedModel:

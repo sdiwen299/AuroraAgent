@@ -8,15 +8,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from offerpilot.ai.tool_runtime.contracts import ToolFailure, ToolSpec
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.contracts import ToolFailure, ToolSpec
+from auroraagent.ai.tool_runtime.metadata import (
     ResolverImplementationBinding,
     ToolPresentationBindingV1,
 )
-from offerpilot.ai.tool_runtime.policy_types import UndoPolicy
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_runtime.rendering import render_compatibility
-from offerpilot.ai.tool_runtime.transport import project_transport_event
+from auroraagent.ai.tool_runtime.policy_types import UndoPolicy
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_runtime.rendering import render_compatibility
+from auroraagent.ai.tool_runtime.transport import project_transport_event
 
 from .factories import (
     forbid_call,
@@ -150,7 +150,7 @@ def test_special_write_success_summaries_are_owned_by_exact_presentation_binding
 
 
 def test_deterministic_has_no_legacy_presentation_or_editability_shadow() -> None:
-    from offerpilot.pilot_runtime import deterministic
+    from auroraagent.pilot_runtime import deterministic
 
     source = inspect.getsource(deterministic)
     assert not hasattr(deterministic, "_LEGACY_EDITABLE_FIELDS")
@@ -180,7 +180,7 @@ def test_presentation_callable_replacement_after_catalog_seal_fails_closed() -> 
         "synthetic_presentation_seal",
         metadata=read_metadata(resolver_descriptors=(resolver_descriptor(),)),
     )
-    from offerpilot.ai.tool_runtime.catalog import ToolCatalog
+    from auroraagent.ai.tool_runtime.catalog import ToolCatalog
 
     catalog = ToolCatalog((spec,), expected_names=(spec.name,))
     assert catalog.resolve(spec.name) is spec
@@ -192,7 +192,7 @@ def test_presentation_callable_replacement_after_catalog_seal_fails_closed() -> 
 
 
 def test_complete_presentation_replacement_seals_probe_state_and_cancellation() -> None:
-    from offerpilot.ai.tool_runtime.catalog import ToolCatalog
+    from auroraagent.ai.tool_runtime.catalog import ToolCatalog
 
     _PRESENTATION_PROBE.reset()
     try:

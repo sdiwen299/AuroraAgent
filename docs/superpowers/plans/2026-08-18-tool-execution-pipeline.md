@@ -12,7 +12,7 @@
 
 ## Fixed inputs and execution rules
 
-- Worktree: `D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260818-tool-execution-pipeline`
+- Worktree: `D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260818-tool-execution-pipeline`
 - Branch: `feat/20260818-tool-execution-pipeline`
 - Fixed comparison baseline: `30c944f3bda1d99b303f8e9875a170a552f79af7`
 - Approved design: `docs/superpowers/specs/2026-08-18-tool-execution-pipeline-design.md`
@@ -29,39 +29,39 @@
 
 ### New runtime files
 
-- `src/offerpilot/ai/tool_runtime/__init__.py`: narrow public exports used by Agent/API.
-- `src/offerpilot/ai/tool_runtime/contracts.py`: Provider contracts, Spec generics, outcomes, prepared calls, execution records, confirmation authorization.
-- `src/offerpilot/ai/tool_runtime/validation.py`: duplicate-safe JSON parsing, canonical JSON, Schema reference scan, Draft 2020-12 compilation and validation, lossless typed copy.
-- `src/offerpilot/ai/tool_runtime/context.py`: capabilities, runtime dependencies, current bindings, binding aggregation.
-- `src/offerpilot/ai/tool_runtime/catalog.py`: generic closed Catalog validation and lookup; it must not import `tool_specs`.
-- `src/offerpilot/ai/tool_runtime/pipeline.py`: `prepare_call()`, `execute_prepared()`, exception mapping, exact executor-count boundary.
-- `src/offerpilot/ai/tool_runtime/rendering.py`: total pure compatibility renderer and rejection text.
-- `src/offerpilot/ai/tool_runtime/transport.py`: pure existing HTTP/SSE tool-call and tool-result payload projection.
-- `src/offerpilot/ai/tool_runtime/journal.py`: first-phase-only EventInput projection and execution-stage gating.
-- `src/offerpilot/ai/tool_runtime/legacy.py`: generic Legacy Adapter/Catalog types only.
+- `src/auroraagent/ai/tool_runtime/__init__.py`: narrow public exports used by Agent/API.
+- `src/auroraagent/ai/tool_runtime/contracts.py`: Provider contracts, Spec generics, outcomes, prepared calls, execution records, confirmation authorization.
+- `src/auroraagent/ai/tool_runtime/validation.py`: duplicate-safe JSON parsing, canonical JSON, Schema reference scan, Draft 2020-12 compilation and validation, lossless typed copy.
+- `src/auroraagent/ai/tool_runtime/context.py`: capabilities, runtime dependencies, current bindings, binding aggregation.
+- `src/auroraagent/ai/tool_runtime/catalog.py`: generic closed Catalog validation and lookup; it must not import `tool_specs`.
+- `src/auroraagent/ai/tool_runtime/pipeline.py`: `prepare_call()`, `execute_prepared()`, exception mapping, exact executor-count boundary.
+- `src/auroraagent/ai/tool_runtime/rendering.py`: total pure compatibility renderer and rejection text.
+- `src/auroraagent/ai/tool_runtime/transport.py`: pure existing HTTP/SSE tool-call and tool-result payload projection.
+- `src/auroraagent/ai/tool_runtime/journal.py`: first-phase-only EventInput projection and execution-stage gating.
+- `src/auroraagent/ai/tool_runtime/legacy.py`: generic Legacy Adapter/Catalog types only.
 
 ### New Spec files
 
-- `src/offerpilot/ai/tool_specs/__init__.py`: composition-root exports.
-- `src/offerpilot/ai/tool_specs/common.py`: shared typed domain failures and pure result serializers.
-- `src/offerpilot/ai/tool_specs/applications.py`: four application contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/application_events.py`: five application-event contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/notes.py`: four note contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/offers.py`: five offer contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/resumes.py`: five resume contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/jd_analyses.py`: two JD-analysis contracts/Args/executors.
-- `src/offerpilot/ai/tool_specs/legacy.py`: exactly three deterministic Legacy Adapters.
-- `src/offerpilot/ai/tool_specs/catalog.py`: composition root that assembles the ordered 25/3 sets and builds request contexts.
+- `src/auroraagent/ai/tool_specs/__init__.py`: composition-root exports.
+- `src/auroraagent/ai/tool_specs/common.py`: shared typed domain failures and pure result serializers.
+- `src/auroraagent/ai/tool_specs/applications.py`: four application contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/application_events.py`: five application-event contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/notes.py`: four note contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/offers.py`: five offer contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/resumes.py`: five resume contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/jd_analyses.py`: two JD-analysis contracts/Args/executors.
+- `src/auroraagent/ai/tool_specs/legacy.py`: exactly three deterministic Legacy Adapters.
+- `src/auroraagent/ai/tool_specs/catalog.py`: composition root that assembles the ordered 25/3 sets and builds request contexts.
 
 ### Existing production files
 
-- `src/offerpilot/ai/agent.py`: destructively replace registry/string execution with Catalog/Pipeline; retain LangGraph, checkpoint, selection, confirmation, and cancellation semantics.
-- `src/offerpilot/ai/client.py`: accept `ProviderToolContract`, send its complete payload unchanged, remove dict-registry conversion.
-- `src/offerpilot/ai/types.py`: keep persisted `Message` wire shape; add no typed outcome fields.
-- `src/offerpilot/api.py`: construct runtime Context, route trusted deterministic Pending Actions, consume `ToolExecutionRecord`, and stop parsing compatibility strings.
-- `src/offerpilot/repositories/chat.py`: add the narrow durable pre-executor Pending Action claim CAS used by typed confirmation recovery; preserve the public Pending Action representation.
-- `src/offerpilot/models.py` and `src/offerpilot/db.py`: add the private `0025_pending_confirmation_claim` identity and 15-minute lease columns/migration; never encode claim state into Provider-controlled fields.
-- `src/offerpilot/ai/tools.py`: delete after all production call sites move; no model-visible code remains here.
+- `src/auroraagent/ai/agent.py`: destructively replace registry/string execution with Catalog/Pipeline; retain LangGraph, checkpoint, selection, confirmation, and cancellation semantics.
+- `src/auroraagent/ai/client.py`: accept `ProviderToolContract`, send its complete payload unchanged, remove dict-registry conversion.
+- `src/auroraagent/ai/types.py`: keep persisted `Message` wire shape; add no typed outcome fields.
+- `src/auroraagent/api.py`: construct runtime Context, route trusted deterministic Pending Actions, consume `ToolExecutionRecord`, and stop parsing compatibility strings.
+- `src/auroraagent/repositories/chat.py`: add the narrow durable pre-executor Pending Action claim CAS used by typed confirmation recovery; preserve the public Pending Action representation.
+- `src/auroraagent/models.py` and `src/auroraagent/db.py`: add the private `0025_pending_confirmation_claim` identity and 15-minute lease columns/migration; never encode claim state into Provider-controlled fields.
+- `src/auroraagent/ai/tools.py`: delete after all production call sites move; no model-visible code remains here.
 - `pyproject.toml`, `uv.lock`: direct exact `jsonschema==4.26.0` dependency.
 
 ### Test and evidence files
@@ -90,9 +90,9 @@
 ### Task 0: Establish the immutable scope gate
 
 **Files:**
-- External temp evidence: `%TEMP%\offerpilot-tool-pipeline-gate\baseline.txt`
-- External temp evidence: `%TEMP%\offerpilot-tool-pipeline-gate\allowlist.txt`
-- External temp evidence: `%TEMP%\offerpilot-tool-pipeline-gate.locator.json`
+- External temp evidence: `%TEMP%\auroraagent-tool-pipeline-gate\baseline.txt`
+- External temp evidence: `%TEMP%\auroraagent-tool-pipeline-gate\allowlist.txt`
+- External temp evidence: `%TEMP%\auroraagent-tool-pipeline-gate.locator.json`
 
 - [ ] **Step 1: Verify branch, HEAD, and clean worktree**
 
@@ -111,23 +111,23 @@ Expected: branch is `feat/20260818-tool-execution-pipeline`, worktree is clean, 
 Use native PowerShell to create the temp gate. The allowlist is exact; directory prefixes end with `/` and admit only descendants of that directory.
 
 ```powershell
-$gate = Join-Path $env:TEMP 'offerpilot-tool-pipeline-gate'
+$gate = Join-Path $env:TEMP 'auroraagent-tool-pipeline-gate'
 New-Item -ItemType Directory -Force -Path $gate | Out-Null
 '30c944f3bda1d99b303f8e9875a170a552f79af7' | Set-Content -LiteralPath (Join-Path $gate 'baseline.txt') -Encoding utf8
 @(
   'pyproject.toml'
   'uv.lock'
-  'src/offerpilot/ai/agent.py'
-  'src/offerpilot/ai/client.py'
-  'src/offerpilot/ai/types.py'
-  'src/offerpilot/ai/tools.py'
-  'src/offerpilot/ai/tool_runtime/'
-  'src/offerpilot/ai/tool_specs/'
-  'src/offerpilot/api.py'
-  'src/offerpilot/db.py'
-  'src/offerpilot/models.py'
-  'src/offerpilot/repositories/chat.py'
-  'src/offerpilot/smoke.py'
+  'src/auroraagent/ai/agent.py'
+  'src/auroraagent/ai/client.py'
+  'src/auroraagent/ai/types.py'
+  'src/auroraagent/ai/tools.py'
+  'src/auroraagent/ai/tool_runtime/'
+  'src/auroraagent/ai/tool_specs/'
+  'src/auroraagent/api.py'
+  'src/auroraagent/db.py'
+  'src/auroraagent/models.py'
+  'src/auroraagent/repositories/chat.py'
+  'src/auroraagent/smoke.py'
   'tests/tool_pipeline/'
   'tests/fixtures/tool_pipeline/'
   'tests/test_ai_tools.py'
@@ -145,7 +145,7 @@ New-Item -ItemType Directory -Force -Path $gate | Out-Null
   repository_root = (Get-Location).Path
   baseline_path = (Join-Path $gate 'baseline.txt')
   allowlist_path = (Join-Path $gate 'allowlist.txt')
-} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:TEMP 'offerpilot-tool-pipeline-gate.locator.json') -Encoding utf8
+} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $env:TEMP 'auroraagent-tool-pipeline-gate.locator.json') -Encoding utf8
 ```
 
 Expected: three files exist and point only at this worktree.
@@ -155,7 +155,7 @@ Expected: three files exist and point only at this worktree.
 Use this command after every commit and before every completion claim:
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-tool-pipeline-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-tool-pipeline-gate.locator.json') | ConvertFrom-Json
 $baseline = (Get-Content -Raw $locator.baseline_path).Trim()
 $allowed = @(Get-Content $locator.allowlist_path | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $changed = @(& git diff --name-only "$baseline..HEAD")
@@ -183,7 +183,7 @@ Expected: no violation.
 - Create: `tests/fixtures/tool_pipeline/provider_manifest_30c944f.json`
 - Create: `tests/fixtures/tool_pipeline/tool_outcomes_30c944f.json`
 - Create: `tests/fixtures/tool_pipeline/journal_sequences_30c944f.json`
-- Read while capturing: `src/offerpilot/ai/tools.py`, `src/offerpilot/ai/agent.py`, `src/offerpilot/ai/client.py`
+- Read while capturing: `src/auroraagent/ai/tools.py`, `src/auroraagent/ai/agent.py`, `src/auroraagent/ai/client.py`
 
 - [ ] **Step 1: Write the read-only golden loader and failing asset tests**
 
@@ -228,7 +228,7 @@ Expected: FAIL because the three JSON files do not exist.
 
 - [ ] **Step 3: Capture the final Provider payload from the baseline adapter**
 
-Use a one-off temp script, not a committed updater. It must instantiate all repositories with synthetic data, build `offerpilot_tool_registry`, filter `model_visible`, pass each entry through the current `_openai_tool`, and emit:
+Use a one-off temp script, not a committed updater. It must instantiate all repositories with synthetic data, build `auroraagent_tool_registry`, filter `model_visible`, pass each entry through the current `_openai_tool`, and emit:
 
 ```python
 {
@@ -358,10 +358,10 @@ git commit -m "test: AI freeze tool pipeline compatibility goldens"
 **Files:**
 - Modify: `pyproject.toml`
 - Modify: `uv.lock`
-- Create: `src/offerpilot/ai/tool_runtime/__init__.py`
-- Create: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Create: `src/offerpilot/ai/tool_runtime/validation.py`
-- Create: `src/offerpilot/ai/tool_runtime/catalog.py`
+- Create: `src/auroraagent/ai/tool_runtime/__init__.py`
+- Create: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Create: `src/auroraagent/ai/tool_runtime/validation.py`
+- Create: `src/auroraagent/ai/tool_runtime/catalog.py`
 - Create: `tests/tool_pipeline/test_validation.py`
 - Create: `tests/tool_pipeline/test_catalog.py`
 
@@ -393,7 +393,7 @@ Run:
 uv run pytest tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py -q
 ```
 
-Expected: FAIL because `offerpilot.ai.tool_runtime` does not exist.
+Expected: FAIL because `auroraagent.ai.tool_runtime` does not exist.
 
 - [ ] **Step 3: Pin the dependency and implement the closed contracts**
 
@@ -486,8 +486,8 @@ Run:
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py
-uv run mypy src/offerpilot/ai/tool_runtime
+uv run ruff check src/auroraagent/ai/tool_runtime tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py
+uv run mypy src/auroraagent/ai/tool_runtime
 ```
 
 Expected: PASS; Mypy sees no `Any` leakage in public generic signatures beyond the heterogeneous Catalog boundary.
@@ -495,7 +495,7 @@ Expected: PASS; Mypy sees no `Any` leakage in public generic signatures beyond t
 - [ ] **Step 7: Commit**
 
 ```powershell
-git add pyproject.toml uv.lock src/offerpilot/ai/tool_runtime tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py
+git add pyproject.toml uv.lock src/auroraagent/ai/tool_runtime tests/tool_pipeline/test_validation.py tests/tool_pipeline/test_catalog.py
 git commit -m "feat: AI add typed tool runtime contracts"
 ```
 
@@ -504,9 +504,9 @@ git commit -m "feat: AI add typed tool runtime contracts"
 ### Task 3: Implement capability gating and audit-only binding
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_runtime/context.py`
+- Create: `src/auroraagent/ai/tool_runtime/context.py`
 - Create: `tests/tool_pipeline/test_context.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
 
 - [ ] **Step 1: Write failing capability order and binding aggregation tests**
 
@@ -577,9 +577,9 @@ Binding resolvers may read repositories but return only internal targets; the pu
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_context.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime/context.py tests/tool_pipeline/test_context.py
-uv run mypy src/offerpilot/ai/tool_runtime
-git add src/offerpilot/ai/tool_runtime tests/tool_pipeline/test_context.py
+uv run ruff check src/auroraagent/ai/tool_runtime/context.py tests/tool_pipeline/test_context.py
+uv run mypy src/auroraagent/ai/tool_runtime
+git add src/auroraagent/ai/tool_runtime tests/tool_pipeline/test_context.py
 git commit -m "feat: AI add tool capability and binding audit"
 ```
 
@@ -588,10 +588,10 @@ git commit -m "feat: AI add tool capability and binding audit"
 ### Task 4: Implement the two-stage Pipeline and pure projectors
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Create: `src/offerpilot/ai/tool_runtime/rendering.py`
-- Create: `src/offerpilot/ai/tool_runtime/transport.py`
-- Create: `src/offerpilot/ai/tool_runtime/journal.py`
+- Create: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Create: `src/auroraagent/ai/tool_runtime/rendering.py`
+- Create: `src/auroraagent/ai/tool_runtime/transport.py`
+- Create: `src/auroraagent/ai/tool_runtime/journal.py`
 - Create: `tests/tool_pipeline/test_pipeline.py`
 - Create: `tests/tool_pipeline/test_transport.py`
 - Create: `tests/tool_pipeline/test_journal.py`
@@ -671,9 +671,9 @@ The renderer delegates success formatting to the Spec and uses the transient com
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_pipeline.py tests/tool_pipeline/test_transport.py tests/tool_pipeline/test_journal.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime tests/tool_pipeline
-uv run mypy src/offerpilot/ai/tool_runtime
-git add src/offerpilot/ai/tool_runtime tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_runtime tests/tool_pipeline
+uv run mypy src/auroraagent/ai/tool_runtime
+git add src/auroraagent/ai/tool_runtime tests/tool_pipeline
 git commit -m "feat: AI add typed tool execution pipeline"
 ```
 
@@ -682,10 +682,10 @@ git commit -m "feat: AI add typed tool execution pipeline"
 ### Task 5: Migrate application and application-event Specs off-path
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_specs/__init__.py`
-- Create: `src/offerpilot/ai/tool_specs/common.py`
-- Create: `src/offerpilot/ai/tool_specs/applications.py`
-- Create: `src/offerpilot/ai/tool_specs/application_events.py`
+- Create: `src/auroraagent/ai/tool_specs/__init__.py`
+- Create: `src/auroraagent/ai/tool_specs/common.py`
+- Create: `src/auroraagent/ai/tool_specs/applications.py`
+- Create: `src/auroraagent/ai/tool_specs/application_events.py`
 - Create: `tests/tool_pipeline/test_applications.py`
 - Create: `tests/tool_pipeline/test_application_events.py`
 
@@ -743,9 +743,9 @@ Each Spec declares only its actual mappings. Preserve application result formatt
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_applications.py tests/tool_pipeline/test_application_events.py tests/test_ai_tools.py -q
-uv run ruff check src/offerpilot/ai/tool_specs tests/tool_pipeline/test_applications.py tests/tool_pipeline/test_application_events.py
-uv run mypy src/offerpilot/ai/tool_specs src/offerpilot/ai/tool_runtime
-git add src/offerpilot/ai/tool_specs tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_specs tests/tool_pipeline/test_applications.py tests/tool_pipeline/test_application_events.py
+uv run mypy src/auroraagent/ai/tool_specs src/auroraagent/ai/tool_runtime
+git add src/auroraagent/ai/tool_specs tests/tool_pipeline
 git commit -m "feat: AI migrate application tool specs"
 ```
 
@@ -754,8 +754,8 @@ git commit -m "feat: AI migrate application tool specs"
 ### Task 6: Migrate note and offer Specs off-path
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_specs/notes.py`
-- Create: `src/offerpilot/ai/tool_specs/offers.py`
+- Create: `src/auroraagent/ai/tool_specs/notes.py`
+- Create: `src/auroraagent/ai/tool_specs/offers.py`
 - Create: `tests/tool_pipeline/test_notes.py`
 - Create: `tests/tool_pipeline/test_offers.py`
 
@@ -786,9 +786,9 @@ Move current Schemas/descriptions unchanged. Use explicit domain exceptions, pre
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_notes.py tests/tool_pipeline/test_offers.py tests/test_ai_tools.py -q
-uv run ruff check src/offerpilot/ai/tool_specs tests/tool_pipeline/test_notes.py tests/tool_pipeline/test_offers.py
-uv run mypy src/offerpilot/ai/tool_specs
-git add src/offerpilot/ai/tool_specs tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_specs tests/tool_pipeline/test_notes.py tests/tool_pipeline/test_offers.py
+uv run mypy src/auroraagent/ai/tool_specs
+git add src/auroraagent/ai/tool_specs tests/tool_pipeline
 git commit -m "feat: AI migrate note and offer tool specs"
 ```
 
@@ -797,8 +797,8 @@ git commit -m "feat: AI migrate note and offer tool specs"
 ### Task 7: Migrate resume and JD-analysis Specs off-path
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_specs/resumes.py`
-- Create: `src/offerpilot/ai/tool_specs/jd_analyses.py`
+- Create: `src/auroraagent/ai/tool_specs/resumes.py`
+- Create: `src/auroraagent/ai/tool_specs/jd_analyses.py`
 - Create: `tests/tool_pipeline/test_resumes.py`
 - Create: `tests/tool_pipeline/test_jd_analyses.py`
 
@@ -830,9 +830,9 @@ Keep indexes as JSON integers after Schema validation. Do not coerce strings tha
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_resumes.py tests/tool_pipeline/test_jd_analyses.py tests/test_ai_tools.py -q
-uv run ruff check src/offerpilot/ai/tool_specs tests/tool_pipeline/test_resumes.py tests/tool_pipeline/test_jd_analyses.py
-uv run mypy src/offerpilot/ai/tool_specs
-git add src/offerpilot/ai/tool_specs tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_specs tests/tool_pipeline/test_resumes.py tests/tool_pipeline/test_jd_analyses.py
+uv run mypy src/auroraagent/ai/tool_specs
+git add src/auroraagent/ai/tool_specs tests/tool_pipeline
 git commit -m "feat: AI migrate resume and jd tool specs"
 ```
 
@@ -841,8 +841,8 @@ git commit -m "feat: AI migrate resume and jd tool specs"
 ### Task 8: Assemble the exact Typed Catalog and prove Provider equivalence
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_specs/catalog.py`
-- Modify: `src/offerpilot/ai/tool_specs/__init__.py`
+- Create: `src/auroraagent/ai/tool_specs/catalog.py`
+- Modify: `src/auroraagent/ai/tool_specs/__init__.py`
 - Modify: `tests/tool_pipeline/test_catalog.py`
 - Modify: `tests/tool_pipeline/test_golden_assets.py`
 
@@ -890,9 +890,9 @@ MODEL_TOOL_CATALOG = ToolCatalog(MODEL_TOOL_SPECS, expected_names=EXPECTED_25_NA
 
 ```powershell
 uv run pytest tests/tool_pipeline -q
-uv run ruff check src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_specs tests/tool_pipeline
-uv run mypy src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_specs
-git add src/offerpilot/ai/tool_specs tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_specs tests/tool_pipeline
+uv run mypy src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_specs
+git add src/auroraagent/ai/tool_specs tests/tool_pipeline
 git commit -m "feat: AI assemble typed tool catalog"
 ```
 
@@ -901,11 +901,11 @@ git commit -m "feat: AI assemble typed tool catalog"
 ### Task 9: Isolate the three deterministic Legacy Adapters
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_runtime/legacy.py`
-- Create: `src/offerpilot/ai/tool_specs/legacy.py`
+- Create: `src/auroraagent/ai/tool_runtime/legacy.py`
+- Create: `src/auroraagent/ai/tool_specs/legacy.py`
 - Create: `tests/tool_pipeline/test_legacy.py`
-- Read: `src/offerpilot/ai/deterministic_actions.py`
-- Read: `src/offerpilot/ai/tools.py`
+- Read: `src/auroraagent/ai/deterministic_actions.py`
+- Read: `src/auroraagent/ai/tools.py`
 
 - [ ] **Step 1: Write failing isolation and trusted-routing tests**
 
@@ -958,9 +958,9 @@ class LegacyDeterministicCatalog:
 
 ```powershell
 uv run pytest tests/tool_pipeline/test_legacy.py tests/test_application_outcomes_pilot.py tests/test_chat_api.py -q
-uv run ruff check src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_specs/legacy.py tests/tool_pipeline/test_legacy.py
-uv run mypy src/offerpilot/ai/tool_runtime/legacy.py src/offerpilot/ai/tool_specs/legacy.py
-git add src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_specs tests/tool_pipeline
+uv run ruff check src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_specs/legacy.py tests/tool_pipeline/test_legacy.py
+uv run mypy src/auroraagent/ai/tool_runtime/legacy.py src/auroraagent/ai/tool_specs/legacy.py
+git add src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_specs tests/tool_pipeline
 git commit -m "refactor: AI isolate deterministic legacy tools"
 ```
 
@@ -969,14 +969,14 @@ git commit -m "refactor: AI isolate deterministic legacy tools"
 ### Task 10: Perform the atomic production cutover and delete the model-visible legacy path
 
 **Files:**
-- Modify: `src/offerpilot/ai/agent.py`
-- Modify: `src/offerpilot/ai/client.py`
-- Modify: `src/offerpilot/api.py`
-- Modify: `src/offerpilot/db.py`
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/repositories/chat.py`
-- Modify: `src/offerpilot/smoke.py`
-- Delete: `src/offerpilot/ai/tools.py`
+- Modify: `src/auroraagent/ai/agent.py`
+- Modify: `src/auroraagent/ai/client.py`
+- Modify: `src/auroraagent/api.py`
+- Modify: `src/auroraagent/db.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/repositories/chat.py`
+- Modify: `src/auroraagent/smoke.py`
+- Delete: `src/auroraagent/ai/tools.py`
 - Modify: `tests/test_ai_agent.py`
 - Modify: `tests/test_chat_api.py`
 - Modify: `tests/test_chat_repository.py`
@@ -1041,13 +1041,13 @@ The API implementation reads the current server Pending Action under the existin
 
 - [ ] **Step 5: Replace API registry creation and string parsing**
 
-At all five current `offerpilot_tool_registry()` call sites, inject `MODEL_TOOL_CATALOG`, a fresh `ToolExecutionContext`, and the Legacy Catalog only for trusted deterministic routing. Replace `_confirmation_result_recorder`, `_write_error_followup`, `_last_successful_tool_payload`, `_write_outcome`, `_pending_action_from_added_write_call`, and write-name helpers so they consume `ToolExecutionRecord`/Spec metadata. They may use the compatibility string only when persisting `Message.content` or returning the existing transport body.
+At all five current `auroraagent_tool_registry()` call sites, inject `MODEL_TOOL_CATALOG`, a fresh `ToolExecutionContext`, and the Legacy Catalog only for trusted deterministic routing. Replace `_confirmation_result_recorder`, `_write_error_followup`, `_last_successful_tool_payload`, `_write_outcome`, `_pending_action_from_added_write_call`, and write-name helpers so they consume `ToolExecutionRecord`/Spec metadata. They may use the compatibility string only when persisting `Message.content` or returning the existing transport body.
 
 Use `project_transport_event()` for existing tool events; do not parse the rendered string. Preserve `editable_fields`, confirmation summaries, Pending Action JSON, undo seed, CAS result persistence, timeouts, cancellation, chained pending writes, and follow-up model calls.
 
 - [ ] **Step 6: Route trusted deterministic confirmations and delete tools.py**
 
-Initial deterministic actions continue to be created only by `deterministic_actions.py`. On confirmation, load the server Pending Action first and resolve it in `LegacyDeterministicCatalog`. Delete `src/offerpilot/ai/tools.py` only after every import is replaced. There must be no production compatibility module for the 25 migrated handlers.
+Initial deterministic actions continue to be created only by `deterministic_actions.py`. On confirmation, load the server Pending Action first and resolve it in `LegacyDeterministicCatalog`. Delete `src/auroraagent/ai/tools.py` only after every import is replaced. There must be no production compatibility module for the 25 migrated handlers.
 
 - [ ] **Step 7: Preserve Journal stage semantics in Agent integration**
 
@@ -1069,10 +1069,10 @@ Expected: every command passes; golden Provider/tool/Journal projections are unc
 - [ ] **Step 9: Run static checks and commit the atomic cutover**
 
 ```powershell
-uv run ruff check src/offerpilot/ai src/offerpilot/api.py tests/tool_pipeline tests/test_ai_tools.py tests/test_ai_agent.py tests/test_chat_api.py tests/test_knowledge_sources_api.py
-uv run mypy src/offerpilot/ai src/offerpilot/api.py
+uv run ruff check src/auroraagent/ai src/auroraagent/api.py tests/tool_pipeline tests/test_ai_tools.py tests/test_ai_agent.py tests/test_chat_api.py tests/test_knowledge_sources_api.py
+uv run mypy src/auroraagent/ai src/auroraagent/api.py
 git diff --check
-git add -A src/offerpilot/ai src/offerpilot/api.py src/offerpilot/smoke.py tests/tool_pipeline tests/test_ai_tools.py tests/test_ai_agent.py tests/test_chat_api.py tests/test_knowledge_sources_api.py
+git add -A src/auroraagent/ai src/auroraagent/api.py src/auroraagent/smoke.py tests/tool_pipeline tests/test_ai_tools.py tests/test_ai_agent.py tests/test_chat_api.py tests/test_knowledge_sources_api.py
 git commit -m "refactor: AI cut over typed tool execution pipeline"
 ```
 
@@ -1090,14 +1090,14 @@ Parse all production Python files and assert:
 
 ```python
 BANNED_SYMBOLS = {
-    "offerpilot_tool_registry", "application_tool_registry", "event_tool_registry",
+    "auroraagent_tool_registry", "application_tool_registry", "event_tool_registry",
     "note_tool_registry", "offer_tool_registry", "resume_tool_registry", "jd_tool_registry",
     "_execute_tool", "_model_visible_tools",
 }
 LEGACY_PREFIX_ALLOWLIST = {
-    ("src/offerpilot/ai/tool_specs/legacy.py", "save_application_jd_version"),
-    ("src/offerpilot/ai/tool_specs/legacy.py", "create_application_submission_snapshot"),
-    ("src/offerpilot/ai/tool_specs/legacy.py", "record_application_outcome"),
+    ("src/auroraagent/ai/tool_specs/legacy.py", "save_application_jd_version"),
+    ("src/auroraagent/ai/tool_specs/legacy.py", "create_application_submission_snapshot"),
+    ("src/auroraagent/ai/tool_specs/legacy.py", "record_application_outcome"),
 }
 ```
 
@@ -1120,7 +1120,7 @@ uv run pytest tests/tool_pipeline tests/test_ai_tools.py tests/test_ai_agent.py 
 uv run ruff check .
 uv run mypy src
 git diff --check
-git add tests/tool_pipeline src/offerpilot/ai src/offerpilot/api.py pyproject.toml uv.lock
+git add tests/tool_pipeline src/auroraagent/ai src/auroraagent/api.py pyproject.toml uv.lock
 git commit -m "test: AI enforce typed tool pipeline cutover"
 ```
 
@@ -1168,7 +1168,7 @@ Resolve every P0/P1/P2. Rerun focused tests after fixes and commit each logical 
 - [ ] **Step 3: Generate a fresh backend manifest without hiding duplicates**
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-tool-pipeline-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-tool-pipeline-gate.locator.json') | ConvertFrom-Json
 $backend = Join-Path (Split-Path $locator.baseline_path -Parent) 'backend-results'
 New-Item -ItemType Directory -Force -Path $backend | Out-Null
 $raw = @(& uv run pytest --collect-only -q --disable-warnings tests 2>&1)

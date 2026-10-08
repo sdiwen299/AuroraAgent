@@ -5,7 +5,7 @@ from pathlib import Path
 
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 STORY_TABLES = {

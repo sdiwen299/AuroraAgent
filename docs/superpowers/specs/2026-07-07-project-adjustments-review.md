@@ -1,12 +1,12 @@
-# OfferPilot Project Adjustment Review
+# AuroraAgent Project Adjustment Review
 
 Date: 2026-07-07
 Branch: `codex/feat/project-adjustments-review`
-Inputs: Feishu wiki `OfferPilot开源MVP版本wiki`, Feishu ADR page, current `main` code, frontend design / UI polish skill checks.
+Inputs: Feishu wiki `AuroraAgent开源MVP版本wiki`, Feishu ADR page, current `main` code, frontend design / UI polish skill checks.
 
 ## First-Principles Frame
 
-OfferPilot's MVP should optimize for five properties:
+AuroraAgent's MVP should optimize for five properties:
 
 1. A user can start locally with one command and trust that private job-search data stays local.
 2. The first screen explains the job-search workflow, not the implementation inventory.
@@ -65,7 +65,7 @@ OfferPilot's MVP should optimize for five properties:
 ## Verification Run
 
 - `git fetch origin main` and `git pull --ff-only origin main`: main was already up to date.
-- Worktree created at `D:\Users\yuqi.chen\offerpilot\.worktrees\project-adjustments-review` on `codex/feat/project-adjustments-review`.
+- Worktree created at `D:\Users\yuqi.chen\auroraagent\.worktrees\project-adjustments-review` on `codex/feat/project-adjustments-review`.
 - `uv sync`: passed.
 - `npm install`: passed, with npm audit reporting 5 vulnerabilities (3 moderate, 1 high, 1 critical).
 - `uv run pytest -q`: 88 passed, 1 Starlette/httpx deprecation warning.

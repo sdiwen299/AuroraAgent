@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_runtime.protocol_seals import (
+from auroraagent.ai.tool_runtime.protocol_seals import (
     APPROVED_LEGACY_DETERMINISTIC_BOUNDARY_V1,
     APPROVED_PROVIDER_TOOL_BOUNDARY_V1,
     APPROVED_PROVIDER_TOOL_BOUNDARY_V2,
@@ -160,7 +160,7 @@ def test_protocol_seal_inputs_do_not_expose_single_tool_lookup() -> None:
     module_source = (
         Path(__file__).parents[2]
         / "src"
-        / "offerpilot"
+        / "auroraagent"
         / "ai"
         / "tool_runtime"
         / "protocol_seals.py"

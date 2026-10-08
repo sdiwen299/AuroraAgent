@@ -76,7 +76,7 @@ Pilot/Haru 共用控制器。关窗取消当前订阅；重开读取原任务并
 读取内存状态、快照与每条 SSE 帧前重新验证对话和原来源仍可见；持久执行终态优先于内存中的
 运行状态。进程重启后的回复重建只使用绑定到原 Turn 的消息/操作，不能借用其他轮次的最新回复。
 
-HTTP/SSE 适配器位于 `offerpilot/runtime_transport.py`，依赖 Runtime 的只读订阅接口；
+HTTP/SSE 适配器位于 `auroraagent/runtime_transport.py`，依赖 Runtime 的只读订阅接口；
 Runtime 包本身不依赖 FastAPI/Starlette，保持执行与传输的依赖方向。
 
 关闭窗口或网络断开不再决定新协议任务的生命周期，多个页面可以观察同一任务。代价是单实例

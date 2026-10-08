@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator
 
-from offerpilot.ai.tool_runtime.validation import (
+from auroraagent.ai.tool_runtime.validation import (
     ArgumentValidationError,
     SchemaContractError,
     canonical_json,

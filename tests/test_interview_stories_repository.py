@@ -6,8 +6,8 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     InterviewNote,
     InterviewStory,
     InterviewStoryProposalAttempt,
@@ -18,7 +18,7 @@ from offerpilot.models import (
     MockInterviewTurn,
     Resume,
 )
-from offerpilot.repositories.interview_stories import (
+from auroraagent.repositories.interview_stories import (
     InterviewStoriesRepository,
     StoryConflictError,
     StoryValidationError,
@@ -643,8 +643,8 @@ def _manual_content_from_proposal(proposal: dict[str, object]) -> dict[str, obje
 
 
 def test_provider_result_source_deletion_invalidates_the_claim(tmp_path) -> None:
-    from offerpilot.ai.interview_stories import safe_empty_interview_story_proposal
-    from offerpilot.repositories.interview_stories import StorySourceConflictError
+    from auroraagent.ai.interview_stories import safe_empty_interview_story_proposal
+    from auroraagent.repositories.interview_stories import StorySourceConflictError
 
     factory = init_database(tmp_path / "story-source-conflict.db")
     repository = InterviewStoriesRepository(factory)
@@ -679,7 +679,7 @@ def test_provider_result_source_deletion_invalidates_the_claim(tmp_path) -> None
 
 
 def test_target_story_change_during_provider_immediately_invalidates_the_attempt_and_clears_lease(tmp_path) -> None:
-    from offerpilot.ai.interview_stories import safe_empty_interview_story_proposal
+    from auroraagent.ai.interview_stories import safe_empty_interview_story_proposal
 
     factory = init_database(tmp_path / "story-target-conflict.db")
     repository = InterviewStoriesRepository(factory)
@@ -737,7 +737,7 @@ def test_target_story_change_during_provider_immediately_invalidates_the_attempt
 
 
 def test_ready_attempt_detects_when_frozen_source_changes(tmp_path) -> None:
-    from offerpilot.ai.interview_stories import validate_interview_story_proposal
+    from auroraagent.ai.interview_stories import validate_interview_story_proposal
 
     factory = init_database(tmp_path / "story-confirm-source-conflict.db")
     repository = InterviewStoriesRepository(factory)
@@ -804,7 +804,7 @@ def test_story_assertions_and_evidence_links_reject_duplicates_before_persistenc
 
 
 def test_story_attempt_replay_heartbeat_and_ready_publication_are_fenced(tmp_path) -> None:
-    from offerpilot.ai.interview_stories import validate_interview_story_proposal
+    from auroraagent.ai.interview_stories import validate_interview_story_proposal
 
     factory = init_database(tmp_path / "story.db")
     repository = InterviewStoriesRepository(factory)
@@ -871,7 +871,7 @@ def test_story_attempt_replay_heartbeat_and_ready_publication_are_fenced(tmp_pat
 
 
 def test_proposal_confirmation_must_use_the_cas_values_frozen_at_claim(tmp_path) -> None:
-    from offerpilot.ai.interview_stories import validate_interview_story_proposal
+    from auroraagent.ai.interview_stories import validate_interview_story_proposal
 
     factory = init_database(tmp_path / "story.db")
     repository = InterviewStoriesRepository(factory)

@@ -7,7 +7,7 @@
 - 第二阶段起始 baseline：`2f6e895e02b86f33052a2e507e9b0404bb82f4b5`（`refactor: AI 统一助手界面与 Haru 对话`）。
 - Pilot Runtime integration baseline：尚未产生；Pilot Runtime 尚未按约定先合并到 `main`，因此本报告不声称组合集成已经验收。
 - 最终提交：本报告所在的唯一交付提交，标题为 `refactor: AI 重构桌面求职工作区体验`；提交后以 `git rev-parse HEAD` 回读其不可自引用的 SHA。
-- 工作树：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260821-assistant-surface-shell`。
+- 工作树：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260821-assistant-surface-shell`。
 - 分支：`refactor/20260821-assistant-surface-shell`。
 - 未 push、未 merge，未触碰根工作区或 Pilot Runtime worktree。
 
@@ -26,7 +26,7 @@ Allowlist canonical JSON 的 SHA-256：
 6806fa6815a5eb009934d12178e92d32bbe4ce7163fbe407266e1ad505c3e873
 ```
 
-门禁文件：`web/workspace-experience-gate.json`。最终审计覆盖 52 个改动文件（含本报告），allowlist 外文件为 0；没有 `src/offerpilot/**`、数据库、migration、API schema、SSE、Agent、Repository 或移动端依赖进入 diff。
+门禁文件：`web/workspace-experience-gate.json`。最终审计覆盖 52 个改动文件（含本报告），allowlist 外文件为 0；没有 `src/auroraagent/**`、数据库、migration、API schema、SSE、Agent、Repository 或移动端依赖进入 diff。
 
 ## 实施结果
 

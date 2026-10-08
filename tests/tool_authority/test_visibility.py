@@ -5,13 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.ai.tool_authority.visibility import (
+from auroraagent.ai.tool_authority.visibility import (
     AuthorityApplicationVisibilityError,
     AuthorityApplicationVisibilityQuery,
     VisibleAuthorityApplication,
 )
-from offerpilot.db import init_database
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.db import init_database
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 class _ExplodingBaseException(BaseException):

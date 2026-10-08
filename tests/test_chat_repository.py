@@ -7,15 +7,15 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import update
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.types import Message
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.types import Message
+from auroraagent.ai.write_operations import (
     WriteOperationRepository,
     load_or_create_ledger_key,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Conversation, WriteOperation
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.db import init_database
+from auroraagent.models import Conversation, WriteOperation
+from auroraagent.repositories.chat import ChatRepository
 from tests.tool_authority.test_pending_claim import (
     clarification_pending_route,
     legacy_pending_route,
@@ -321,7 +321,7 @@ def test_pending_confirmation_claim_is_durable_private_and_single_winner(tmp_pat
 def test_pending_confirmation_claim_never_rewrites_provider_tool_call_id(tmp_path):
     repo = ChatRepository(init_database(tmp_path / "data.db"))
     conversation = repo.create_conversation("confirm")
-    provider_id = "\x1eofferpilot-confirmation-claim:provider:owned"
+    provider_id = "\x1eauroraagent-confirmation-claim:provider:owned"
     pending = PendingAction(
         provider_id,
         "display_pending_notice",

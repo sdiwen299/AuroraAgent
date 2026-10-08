@@ -8,13 +8,13 @@ from sqlalchemy import event
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-import offerpilot.ai.write_operations as write_operations_module
-from offerpilot.ai.tool_authority import AuthorityFactory, AuthorityPhaseError
-from offerpilot.ai.write_operations import (
+import auroraagent.ai.write_operations as write_operations_module
+from auroraagent.ai.tool_authority import AuthorityFactory, AuthorityPhaseError
+from auroraagent.ai.write_operations import (
     WriteOperationCoordinator,
     WriteOperationError,
 )
-from offerpilot.models import Conversation
+from auroraagent.models import Conversation
 from tests.tool_authority.test_reject_privacy import _setup
 
 

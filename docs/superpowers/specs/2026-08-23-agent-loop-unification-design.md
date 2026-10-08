@@ -780,20 +780,20 @@ Approved Port 的业务 at-most-once 不依赖进程内锁：
 目标模块建议收敛为：
 
 ```text
-src/offerpilot/ai/agent_contracts.py
+src/auroraagent/ai/agent_contracts.py
   ChatModel / PendingAction / AgentTurnResult
   Agent errors / AgentLoopEvent / narrow protocols
 
-src/offerpilot/ai/agent_loop.py
+src/auroraagent/ai/agent_loop.py
   AgentLoopSeed / AgentLoopInvocation
   ApprovedWriteContinuation
   AgentLoopRunner
   model step / dispatch helpers
 
-src/offerpilot/ai/confirmation.py
+src/auroraagent/ai/confirmation.py
   prepare_pending_action（确认编辑的纯参数转换）
 
-src/offerpilot/pilot_runtime/composition.py
+src/auroraagent/pilot_runtime/composition.py
   one AgentDriver adapter
   ConfirmationSession → ApprovedWriteContinuation adapter
 ```
@@ -806,7 +806,7 @@ agent loop → Context Projector / Tool Runtime / Journal interfaces
 agent loop ↛ pilot_runtime / FastAPI / Repository / Transport
 ```
 
-旧 `offerpilot.ai.agent` 不作为长期 façade 保留。其生产调用方、非 Agent `ChatModel` 引用和
+旧 `auroraagent.ai.agent` 不作为长期 façade 保留。其生产调用方、非 Agent `ChatModel` 引用和
 测试同步迁移到新契约模块；完成后删除旧执行模块或确保其中不存在旧入口/Graph 实现。
 
 若全仓扫描确认无其他 LangGraph 使用者，则从 `pyproject.toml` 和 `uv.lock` 删除：

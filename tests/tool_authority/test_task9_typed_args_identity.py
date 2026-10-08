@@ -6,11 +6,11 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_authority import AuthorityPhaseError
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.types import ToolCall
+from auroraagent.ai.tool_authority import AuthorityPhaseError
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.types import ToolCall
 from tests.tool_authority.test_execution_claim import (
     ARGUMENTS_DIGEST,
     _issue,

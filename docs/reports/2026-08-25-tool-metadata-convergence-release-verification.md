@@ -45,7 +45,7 @@
 - 最终支持的完整后端运行：`4997 passed, 4 skipped, 1 deselected, 4283 warnings in 13727.40s (3:48:47)`。
 - 首次 aggregate 发现 `test_legacy_confirmation_proof.py` 的三个 `uuid4()` 参数导致跨 collection node ID 漂移；提交 `6347395` 改为三个固定、合法 UUID。两次 collection 18/18 完全一致，相关参数化测试 18 passed。
 
-外部 Application-JD release-orchestrator 输入确实不可用：`OFFERPILOT_APPLICATION_JD_BASELINE_FILE`、`OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE` 均未设置，locator 也不存在，因此按计划只排除：
+外部 Application-JD release-orchestrator 输入确实不可用：`AURORA_AGENT_APPLICATION_JD_BASELINE_FILE`、`AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE` 均未设置，locator 也不存在，因此按计划只排除：
 
 ```text
 PYTEST_ADDOPTS=--deselect=tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked
@@ -86,7 +86,7 @@ rejects every committed, staged, unstaged, and untracked path outside the allowl
 
 ```text
 uv run python scripts/full_real_ai_verify.py --static-dir web/dist \
-  --report-dir %TEMP%/offerpilot-tool-metadata-task13-real-ai-9f2545260697 \
+  --report-dir %TEMP%/auroraagent-tool-metadata-task13-real-ai-9f2545260697 \
   --model deepseek-v4-flash --timeout-seconds 900
 ```
 
@@ -101,7 +101,7 @@ uv run python scripts/full_real_ai_verify.py --static-dir web/dist \
 
 ### 内置浏览器
 
-- 使用 `OFFERPILOT_DATA=%TEMP%/offerpilot-tool-metadata-task13-browser-isolated` 启动真实构建并通过内置浏览器走查 dashboard、Haru 轻量入口与 Pilot 工作区。
+- 使用 `AURORA_AGENT_DATA=%TEMP%/auroraagent-tool-metadata-task13-browser-isolated` 启动真实构建并通过内置浏览器走查 dashboard、Haru 轻量入口与 Pilot 工作区。
 - 共捕获三张会话内截图；页面结构、未配置 Provider 的禁用态、上下文 badge 与展开路径符合预期。
 - 控制台 error 为 0。隔离页 reload 捕获 8 个 bootstrap API GET，每个 endpoint 精确一次；无 Chat/SSE 请求，也无重复 API/SSE 调用。
 - 浏览器验收服务已停止。浏览器未注入真实 Provider 凭据，因此 real-AI 为上面的隔离 HTTP gate，不能扩写为真实浏览器端 Provider/SSE 全矩阵。

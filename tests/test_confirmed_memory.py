@@ -5,9 +5,9 @@ from pydantic import ValidationError
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
-from offerpilot.models import Base
-from offerpilot.confirmed_memory.models import ConfirmedMemoryVersion
-from offerpilot.confirmed_memory.repository import (
+from auroraagent.models import Base
+from auroraagent.confirmed_memory.models import ConfirmedMemoryVersion
+from auroraagent.confirmed_memory.repository import (
     ConfirmedMemoryRepository, MemoryConflict, MemoryGone, MemoryMutation,
 )
 

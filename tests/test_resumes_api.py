@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.repositories.resumes import ResumeMatchCreate, ResumesRepository
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.repositories.resumes import ResumeMatchCreate, ResumesRepository
 
 
 def _pdf_with_text(text: str) -> bytes:
@@ -52,7 +52,7 @@ def test_create_manual_resume_returns_v01_structure_and_master_completion(tmp_pa
                 "career_intent": {"target_roles": []},
                 "contact": {"name": "Ada"},
                 "education": [{"school": "XHS University"}],
-                "experience": [{"company": "OfferPilot"}],
+                "experience": [{"company": "AuroraAgent"}],
                 "projects": [{"name": "Resume v0.1"}],
                 "skills": ["Python", "FastAPI"],
             },
@@ -77,7 +77,7 @@ def test_create_manual_resume_returns_v01_structure_and_master_completion(tmp_pa
                 "career_intent": {"target_roles": ["Backend Engineer"]},
                 "contact": {"name": "Ada"},
                 "education": [{"school": "XHS University"}],
-                "experience": [{"company": "OfferPilot"}],
+                "experience": [{"company": "AuroraAgent"}],
                 "projects": [{"name": "Resume v0.1"}],
                 "skills": ["Python", "FastAPI"],
             }
@@ -165,7 +165,7 @@ def test_create_dialog_resume_uses_dialog_source_and_completion(tmp_path):
                 "career_intent": {"target_roles": ["Backend Engineer"]},
                 "contact": {"name": "Ada"},
                 "education": [{"school": "XHS University"}],
-                "experience": [{"company": "OfferPilot"}],
+                "experience": [{"company": "AuroraAgent"}],
                 "projects": [{"name": "Resume v0.1"}],
                 "skills": ["Python"],
             },

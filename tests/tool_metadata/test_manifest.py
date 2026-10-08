@@ -7,13 +7,13 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.tool_runtime.catalog import (
     ToolMetadataManifestV1,
     compile_tool_metadata_manifest,
     validate_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.metadata import freeze_json
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_runtime.metadata import freeze_json
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
 
 from .golden import load_asset
 

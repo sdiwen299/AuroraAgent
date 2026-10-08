@@ -17,11 +17,11 @@ from sqlalchemy import delete, select, text
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-from offerpilot.agent_runtime.journal import SafeRunRecorder
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.write_operations import ledger_fingerprint, payload_from_operation
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.agent_runtime.journal import SafeRunRecorder
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.write_operations import ledger_fingerprint, payload_from_operation
+from auroraagent.db import init_database
+from auroraagent.models import (
     ApplicationEvent,
     AgentContextSnapshot,
     AgentEvent,
@@ -37,11 +37,11 @@ from offerpilot.models import (
     WriteOperation,
     WriteOperationTransition,
 )
-from offerpilot.product_actions.catalog import (
+from auroraagent.product_actions.catalog import (
     ProductActionCatalogV1,
     ProductActionCompensationCatalogV1,
 )
-from offerpilot.product_actions.compensation import (
+from auroraagent.product_actions.compensation import (
     PRODUCT_ACTION_COMPENSATION_NAMESPACE,
     READINESS_SIGNAL_RETRACTION_VERSION_NAMESPACE,
     ProductActionCompensationCoordinator,
@@ -61,25 +61,25 @@ from offerpilot.product_actions.compensation import (
     _seal_product_action_compensation_handler,
     _CompensationExecutionUowV1,
 )
-from offerpilot.product_actions.contracts import (
+from auroraagent.product_actions.contracts import (
     ProductActionContractError,
     ProductActionExecutionAuthorization,
     ProductActionIntegrityError,
     ProductActionProofRegistryV1,
     canonical_product_action_json,
 )
-from offerpilot.product_actions.coordinator import ProductActionCoordinator
-from offerpilot.product_actions.issuer import LedgerKeyProfileStoreV1, ReviewReadinessActionIssuer
-from offerpilot.product_actions.repository import ProductActionProposalRepository
-from offerpilot.pilot_runtime.compensation import CompensationHandlerRegistry
-from offerpilot.review_readiness.candidates import project_readiness_candidates
-from offerpilot.review_readiness.repository import (
+from auroraagent.product_actions.coordinator import ProductActionCoordinator
+from auroraagent.product_actions.issuer import LedgerKeyProfileStoreV1, ReviewReadinessActionIssuer
+from auroraagent.product_actions.repository import ProductActionProposalRepository
+from auroraagent.pilot_runtime.compensation import CompensationHandlerRegistry
+from auroraagent.review_readiness.candidates import project_readiness_candidates
+from auroraagent.review_readiness.repository import (
     ReadinessSignalRepository,
     ReadinessSignalRetractionResultV1,
     _CompensationDomainClaimV1,
 )
-from offerpilot.repositories.agent_runs import AgentRunRepository
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.repositories.agent_runs import AgentRunRepository
+from auroraagent.repositories.chat import ChatRepository
 
 from tests.product_actions.conftest import KEY_ONE, KEY_TWO
 from tests.review_readiness_support import seed_review_candidate
@@ -361,7 +361,7 @@ def test_compensation_operation_identity_is_cross_process_stable(
         == expected
     )
     script = (
-        "from offerpilot.product_actions.compensation import "
+        "from auroraagent.product_actions.compensation import "
         "product_action_compensation_operation_id as f;"
         f"print(f({PARENT_OPERATION_ID!r},{compensation_kind!r}))"
     )
@@ -2256,7 +2256,7 @@ def test_execution_serialization_failure_rolls_back_domain_and_seq2_to_seq4(
         raise ValueError("closed projector failure")
 
     monkeypatch.setattr(
-        "offerpilot.product_actions.compensation.build_terminal_payload",
+        "auroraagent.product_actions.compensation.build_terminal_payload",
         serialization_failure,
     )
     with pytest.raises(ValueError, match="closed projector failure"):

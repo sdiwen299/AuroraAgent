@@ -8,9 +8,9 @@ from concurrent.futures import ThreadPoolExecutor
 import pytest
 from starlette.requests import ClientDisconnect
 
-from offerpilot.sse import SseRun
+from auroraagent.sse import SseRun
 
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     AssistantMessageEvent,
     CompletionReason,
     CompletedEvent,
@@ -22,12 +22,12 @@ from offerpilot.pilot_runtime.contracts import (
     RuntimeFailureCode,
     RuntimeEventSink,
 )
-from offerpilot.pilot_runtime.errors import (
+from auroraagent.pilot_runtime.errors import (
     RuntimeAgentTimedOut,
     RuntimeCancelled,
     RuntimeTransportAborted,
 )
-from offerpilot.chat_transport import (
+from auroraagent.chat_transport import (
     build_guarded_streaming_response,
     encode_sse_event,
     GuardedStreamingResponse,
@@ -37,7 +37,7 @@ from offerpilot.chat_transport import (
     outcome_http_payload,
     outcome_http_response,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
 
 
 def test_outcome_http_and_event_sse_renderers_are_pure_and_safe() -> None:
@@ -767,7 +767,7 @@ def test_sse_run_complete_envelope_merges_with_canonical_typed_event() -> None:
 
 
 def test_unneeded_transport_aliases_are_not_exported() -> None:
-    import offerpilot.chat_transport as transport
+    import auroraagent.chat_transport as transport
 
     for name in (
         "runtime_event_sse_payload",
@@ -966,8 +966,8 @@ def test_guard_cleanup_type_error_is_called_once_without_signature_retry() -> No
 @pytest.mark.parametrize("terminal_state", ["timeout", "cancel"])
 @pytest.mark.parametrize("result_kind", ["message", "failure"])
 def test_timeout_stream_keeps_only_durable_terminal_receipts(execution_mode, terminal_state, result_kind):
-    from offerpilot.chat_transport import runtime_sse_content
-    from offerpilot.pilot_runtime.contracts import (
+    from auroraagent.chat_transport import runtime_sse_content
+    from auroraagent.pilot_runtime.contracts import (
         AssistantDeltaEvent, CancelReason, ErrorEvent, PreparationKind,
         PreparedStreamExecution, StreamExecutionMode,
     )

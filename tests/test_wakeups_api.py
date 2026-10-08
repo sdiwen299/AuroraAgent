@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def test_create_and_list_wakeups(tmp_path):

@@ -45,11 +45,11 @@
 
 | 场景 | 文件 | 尺寸 | SHA-256 |
 |---|---|---:|---|
-| 保存前二次确认 | `offerpilot-voice-coaching-save-confirmation-20260814.png` | 1455×1100 | `3fbc854069a385df2fbd23903c2f7cdeb5b2ea0e5e242dd7cf5acc480152b2c9` |
-| 成长总览与趋势 | `offerpilot-voice-coaching-growth-overview-20260814.png` | 1455×1100 | `ac4c56eeff071f01c77fa9078b4269bae4e555fde787ffc1ddff4b4a1e2f6353` |
-| 已确认历史详情 | `offerpilot-voice-coaching-confirmed-history-20260814.png` | 1455×1100 | `3145525971e4a613bcf4a777d1bf4ac22768a5387e242800be6d4fdb47851601` |
-| 从弱项发起定向复练 | `offerpilot-voice-coaching-focused-practice-20260814.png` | 1455×1100 | `b2b07299c9a8a62cc68486fe2aa5612c9a62598e834894e8bceab355ddd7ba6a` |
-| Pilot 本地快捷入口 | `offerpilot-voice-coaching-pilot-entry-20260814.png` | 1455×1100 | `d66788af4fc0ae24df8dfa42ea65ab5b6c6a618b5a84d045a2d0f167be482e42` |
+| 保存前二次确认 | `auroraagent-voice-coaching-save-confirmation-20260814.png` | 1455×1100 | `3fbc854069a385df2fbd23903c2f7cdeb5b2ea0e5e242dd7cf5acc480152b2c9` |
+| 成长总览与趋势 | `auroraagent-voice-coaching-growth-overview-20260814.png` | 1455×1100 | `ac4c56eeff071f01c77fa9078b4269bae4e555fde787ffc1ddff4b4a1e2f6353` |
+| 已确认历史详情 | `auroraagent-voice-coaching-confirmed-history-20260814.png` | 1455×1100 | `3145525971e4a613bcf4a777d1bf4ac22768a5387e242800be6d4fdb47851601` |
+| 从弱项发起定向复练 | `auroraagent-voice-coaching-focused-practice-20260814.png` | 1455×1100 | `b2b07299c9a8a62cc68486fe2aa5612c9a62598e834894e8bceab355ddd7ba6a` |
+| Pilot 本地快捷入口 | `auroraagent-voice-coaching-pilot-entry-20260814.png` | 1455×1100 | `d66788af4fc0ae24df8dfa42ea65ab5b6c6a618b5a84d045a2d0f167be482e42` |
 
 截图保存在 `D:\Users\yuqi.chen\Desktop`，均已逐张回读检查。
 
@@ -70,7 +70,7 @@
 
 后端五组门禁收集 2089 个唯一 node ID；结果为 2083 passed、4 个既定 Windows symlink 权限 skip、2 failed：
 
-1. `tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked`：缺少独立 JD 发布门禁要求的 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` 环境变量。
+1. `tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked`：缺少独立 JD 发布门禁要求的 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` 环境变量。
 2. `tests/test_cutover_files.py::test_readme_states_the_product_boundary_and_core_capabilities`：测试仍断言旧 README 文案“准备面试、进行文本模拟与复盘”，当前 main 的 README 已改为“准备面试、进行文字或语音模拟与复盘”。
 
 `README.md`、`tests/test_cutover_files.py`、`tests/test_application_jd_browser_harness.py` 相对固定 baseline 均无变更，因此上述两项不由本分支引入；但五组 aggregate 仍不能宣称通过。

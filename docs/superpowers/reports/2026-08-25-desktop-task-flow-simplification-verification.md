@@ -9,7 +9,7 @@
 - Desktop 独立实现：`78195000bd94fdfd6fe8508033e0a8687fde3323`
 - 组合提交：`3b7864fa`（第一父提交为 Desktop，第二父提交为 Tool Metadata）
 - Branch：`refactor/20260825-desktop-task-flow-simplification`
-- Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260825-desktop-task-flow-simplification`
+- Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260825-desktop-task-flow-simplification`
 - Tool Metadata 已先快进合并到本地 `main`，再以显式 merge commit 同步到本分支；桌面代码没有覆盖 Tool Metadata 的后端实现。
 - 按 `package-lock.json` 执行了独立 `npm ci`；未修改依赖清单或 lockfile。安装审计仍报告 13 个既有依赖漏洞。
 
@@ -17,7 +17,7 @@
 
 - Desktop 独立项目范围仍限定在 `web/**` 与本项目三份设计、计划、验收文档。
 - 禁止触碰的 Chat transport、Tool metadata、Pending/HITL、HTTP/SSE、Controller ownership 文件均无 diff。
-- `src/offerpilot/**`、数据库、migration、后端 schema、Ledger、Journal、Context Projector 与 Agent Runtime 均无 diff。
+- `src/auroraagent/**`、数据库、migration、后端 schema、Ledger、Journal、Context Projector 与 Agent Runtime 均无 diff。
 - `git diff --check`：通过。
 - 组合后旧门禁按 `baseline..HEAD` 扫描时准确拒绝了 139 个 Tool Metadata 路径。该门禁已修正为固定、只读的历史项目范围 `0c10e05..7819500`，继续证明 Desktop 独立改动只落在批准范围，同时不把后续主线 merge 误归类为越界。
 - `desktopTaskFlowGate.test.ts` 同时固定 baseline、项目终点、allowlist、forbidden paths、单一 Assistant owner、无 Chat transport 引入及主题/768 视觉门禁；不得自更新或扫描未跟踪文件绕过历史范围。
@@ -108,5 +108,5 @@
 ## 集成状态与剩余风险
 
 - Tool Metadata 已先进入本地 `main`，当前分支已同步该提交并完成 Agent/Chat/Context/Metadata 交界的机器化组合矩阵；不再保留“等待 Tool Metadata”的前置条件。
-- Application-JD 独立发布门禁仍依赖 release orchestrator 提供 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` 与 `OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE`。本次未伪造输入，也不宣称该外部门禁通过。
+- Application-JD 独立发布门禁仍依赖 release orchestrator 提供 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` 与 `AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE`。本次未伪造输入，也不宣称该外部门禁通过。
 - 非阻塞技术债为既有依赖审计、测试 deprecation/act warning、Vite 主 chunk 体积 warning，以及上述 P3；本项目未扩大这些问题。

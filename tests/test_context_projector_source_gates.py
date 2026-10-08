@@ -6,12 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.ai.provider_boundaries import (
+from auroraagent.ai.provider_boundaries import (
     NON_AGENT_PROVIDER_CALL_MANIFEST,
     RAW_PROVIDER_BOUNDARIES,
 )
 
-ROOT = Path(__file__).resolve().parents[1] / "src" / "offerpilot"
+ROOT = Path(__file__).resolve().parents[1] / "src" / "auroraagent"
 
 
 def _annotation_name(node: ast.expr | None) -> str | None:
@@ -395,7 +395,7 @@ def test_litellm_imports_are_confined_and_cli_uses_knowledge_factory() -> None:
             if isinstance(node, ast.ImportFrom) and node.module == "litellm":
                 imports.append(path.relative_to(ROOT.parent).as_posix())
     assert Counter(imports) == Counter(
-        {"offerpilot/ai/client.py": 1, "offerpilot/knowledge/provider.py": 1}
+        {"auroraagent/ai/client.py": 1, "auroraagent/knowledge/provider.py": 1}
     )
     cli = (ROOT / "cli.py").read_text(encoding="utf-8")
     cli_tree = ast.parse(cli)

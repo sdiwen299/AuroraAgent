@@ -4,14 +4,14 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import text
 
-from offerpilot.db import init_database
-from offerpilot.models import Application, ApplicationEvent, InterviewPracticeCase, Resume
-from offerpilot.repositories.interview_practice_cases import (
+from auroraagent.db import init_database
+from auroraagent.models import Application, ApplicationEvent, InterviewPracticeCase, Resume
+from auroraagent.repositories.interview_practice_cases import (
     InterviewPracticeCaseIdempotencyConflict,
     InterviewPracticeCaseRepository,
     InterviewPracticeCaseValidationError,
 )
-from offerpilot.repositories.mock_interviews import MockInterviewRepository
+from auroraagent.repositories.mock_interviews import MockInterviewRepository
 
 
 def _seed_resume(factory):

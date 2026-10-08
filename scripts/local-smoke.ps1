@@ -22,12 +22,12 @@ if (-not (Test-Path -LiteralPath (Join-Path $Repo "web/dist/index.html") -PathTy
 }
 
 if (-not $DataDir) {
-    $DataDir = Join-Path ([System.IO.Path]::GetTempPath()) ("offerpilot-local-smoke-" + [System.Guid]::NewGuid().ToString("N"))
+    $DataDir = Join-Path ([System.IO.Path]::GetTempPath()) ("auroraagent-local-smoke-" + [System.Guid]::NewGuid().ToString("N"))
 }
 New-Item -ItemType Directory -Force -Path $DataDir | Out-Null
 
-$previousData = $env:OFFERPILOT_DATA
-$env:OFFERPILOT_DATA = $DataDir
+$previousData = $env:AURORA_AGENT_DATA
+$env:AURORA_AGENT_DATA = $DataDir
 $server = $null
 try {
     $server = Start-Process `
@@ -37,7 +37,7 @@ try {
             "-ExecutionPolicy",
             "Bypass",
             "-Command",
-            "Set-Location '$Repo'; `$env:OFFERPILOT_DATA = '$DataDir'; uv run oc start --port $Port"
+            "Set-Location '$Repo'; `$env:AURORA_AGENT_DATA = '$DataDir'; uv run oc start --port $Port"
         ) `
         -WorkingDirectory $Repo `
         -WindowStyle Hidden `
@@ -59,7 +59,7 @@ try {
         }
     }
     if (-not $ready) {
-        throw "OfferPilot did not become healthy at $healthUri"
+        throw "AuroraAgent did not become healthy at $healthUri"
     }
 
     $spa = Invoke-WebRequest -UseBasicParsing -Uri $spaUri -TimeoutSec 5
@@ -87,7 +87,7 @@ finally {
         }
     }
     finally {
-        $env:OFFERPILOT_DATA = $previousData
+        $env:AURORA_AGENT_DATA = $previousData
     }
 }
 

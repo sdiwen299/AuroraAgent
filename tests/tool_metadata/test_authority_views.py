@@ -10,30 +10,30 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.agent_loop import build_segment_surface_gate
-from offerpilot.ai.tool_authority import AuthorityFactory, AuthorityPhaseError
-from offerpilot.ai.tool_authority import composition as authority_composition_module
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime import pipeline as pipeline_module
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.agent_loop import build_segment_surface_gate
+from auroraagent.ai.tool_authority import AuthorityFactory, AuthorityPhaseError
+from auroraagent.ai.tool_authority import composition as authority_composition_module
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime import pipeline as pipeline_module
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     ToolCatalog,
     compile_tool_metadata_manifest,
 )
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ToolSpec,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     ToolMetadataBundleV1,
     WriteOperationMetadataV1,
 )
-from offerpilot.ai.types import Message
-from offerpilot.ai import write_operations as write_operations_module
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.ai.types import Message
+from auroraagent.ai import write_operations as write_operations_module
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
 from tests.agent_loop.helpers import ToolDefinition, runtime
 
 
@@ -496,7 +496,7 @@ def test_authority_uses_bound_view_and_handle_without_name_lookup_or_second_cata
         property(forbidden),
     )
     monkeypatch.setattr(
-        "offerpilot.ai.tool_runtime.catalog.compile_tool_metadata_manifest",
+        "auroraagent.ai.tool_runtime.catalog.compile_tool_metadata_manifest",
         forbidden,
     )
 

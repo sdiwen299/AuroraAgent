@@ -1,4 +1,4 @@
-from offerpilot.smoke import run_application_jd_smoke
+from auroraagent.smoke import run_application_jd_smoke
 
 
 def test_application_jd_smoke_isolated_contract(tmp_path) -> None:

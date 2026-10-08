@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-pilot-real-ai-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-pilot-real-ai-' + [Guid]::NewGuid().ToString('N'))
 $portProbe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $portProbe.Start()
 $port = ([Net.IPEndPoint]$portProbe.LocalEndpoint).Port
@@ -18,8 +18,8 @@ if (Test-Path -LiteralPath $sourceConfig) {
   Copy-Item -LiteralPath $sourceConfig -Destination (Join-Path $tempData 'config.json')
 }
 
-$previousData = $env:OFFERPILOT_DATA
-$env:OFFERPILOT_DATA = $tempData
+$previousData = $env:AURORA_AGENT_DATA
+$env:AURORA_AGENT_DATA = $tempData
 $server = $null
 $applicationId = $null
 $resumeIds = @()
@@ -45,13 +45,13 @@ function Assert-HarnessPortOwner([int]$rootProcessId, [int]$expectedPort) {
 try {
   $server = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
-    "Set-Location '$repo'; `$env:OFFERPILOT_DATA = '$tempData'; uv run oc start --port $port"
+    "Set-Location '$repo'; `$env:AURORA_AGENT_DATA = '$tempData'; uv run oc start --port $port"
   )
   $healthy = $false
   for ($attempt = 0; $attempt -lt 60; $attempt++) {
     $ownerVerified = Assert-HarnessPortOwner ([int]$server.Id) $port
     if (-not $ownerVerified) {
-      if ($server.HasExited) { throw "Isolated OfferPilot exited before binding harness port $port." }
+      if ($server.HasExited) { throw "Isolated AuroraAgent exited before binding harness port $port." }
       Start-Sleep -Milliseconds 500
       continue
     }
@@ -62,7 +62,7 @@ try {
       Start-Sleep -Milliseconds 500
     }
   }
-  if (-not $healthy) { throw "Isolated OfferPilot service did not become healthy." }
+  if (-not $healthy) { throw "Isolated AuroraAgent service did not become healthy." }
   Assert-HarnessPortOwner ([int]$server.Id) $port
 
   $resume = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/resumes" -ContentType 'application/json' -Body (@{
@@ -107,7 +107,7 @@ try {
   $env:PILOT_BROWSER_HARNESS_RESUME_IDS = ($resumeIds -join ',')
   Push-Location $repo
   try {
-    $baselineJson = & uv run python -c "import json, os; from pathlib import Path; from offerpilot.smoke import _capture_real_ai_browser_domain_baseline; print(json.dumps(_capture_real_ai_browser_domain_baseline(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), [int(os.environ['PILOT_BROWSER_HARNESS_EVENT_ID'])], [int(v) for v in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if v])))"
+    $baselineJson = & uv run python -c "import json, os; from pathlib import Path; from auroraagent.smoke import _capture_real_ai_browser_domain_baseline; print(json.dumps(_capture_real_ai_browser_domain_baseline(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), [int(os.environ['PILOT_BROWSER_HARNESS_EVENT_ID'])], [int(v) for v in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if v])))"
     if ($LASTEXITCODE -ne 0) { throw "Isolated browser domain baseline capture failed with exit code $LASTEXITCODE." }
     $env:PILOT_BROWSER_HARNESS_BASELINE_JSON = ($baselineJson -join '')
   }
@@ -122,7 +122,7 @@ try {
   [void](Read-Host 'Press Enter after the isolated interview-preparation boundary acceptance')
   Push-Location $repo
   try {
-    & uv run python -c "import json, os; from pathlib import Path; from offerpilot.smoke import _assert_real_ai_browser_no_cross_domain_writes; _assert_real_ai_browser_no_cross_domain_writes(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), json.loads(os.environ['PILOT_BROWSER_HARNESS_BASELINE_JSON']), [int(os.environ['PILOT_BROWSER_HARNESS_EVENT_ID'])], [int(v) for v in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if v])"
+    & uv run python -c "import json, os; from pathlib import Path; from auroraagent.smoke import _assert_real_ai_browser_no_cross_domain_writes; _assert_real_ai_browser_no_cross_domain_writes(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), json.loads(os.environ['PILOT_BROWSER_HARNESS_BASELINE_JSON']), [int(os.environ['PILOT_BROWSER_HARNESS_EVENT_ID'])], [int(v) for v in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if v])"
     if ($LASTEXITCODE -ne 0) { throw "Isolated interview-preparation boundary assertion failed with exit code $LASTEXITCODE." }
   }
   finally {
@@ -150,9 +150,9 @@ finally {
     $env:PILOT_BROWSER_HARNESS_RESUME_IDS = ($resumeIds -join ',')
     Push-Location $repo
     try {
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), [int(value) for value in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if value])"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']), int(os.environ['PILOT_BROWSER_HARNESS_APPLICATION_ID']), [int(value) for value in os.environ['PILOT_BROWSER_HARNESS_RESUME_IDS'].split(',') if value])"
       if ($LASTEXITCODE -ne 0) { throw "Isolated browser harness record cleanup failed with exit code $LASTEXITCODE." }
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']))"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['PILOT_BROWSER_HARNESS_DATA']))"
       if ($LASTEXITCODE -ne 0) { throw "Isolated browser harness residual assertion failed with exit code $LASTEXITCODE." }
     } catch {
       $cleanupFailure = $_
@@ -170,7 +170,7 @@ finally {
   if (Test-Path -LiteralPath $tempData) {
     Remove-Item -LiteralPath $tempData -Recurse -Force
   }
-  if ($null -eq $previousData) { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-  else { $env:OFFERPILOT_DATA = $previousData }
+  if ($null -eq $previousData) { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+  else { $env:AURORA_AGENT_DATA = $previousData }
   if ($cleanupFailure) { throw $cleanupFailure }
 }

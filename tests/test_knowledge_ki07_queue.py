@@ -20,18 +20,18 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.repository import (
+from auroraagent.api import create_app
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.repository import (
     JobCreateInput,
     KnowledgeRepository,
 )
-from offerpilot.knowledge.worker import (
+from auroraagent.knowledge.worker import (
     ExtractionWorker,
     JobExecutionResult,
     KnowledgeJobRunner,
 )
-from offerpilot.models import KnowledgeJob, KnowledgeSource
+from auroraagent.models import KnowledgeJob, KnowledgeSource
 
 
 @pytest.fixture

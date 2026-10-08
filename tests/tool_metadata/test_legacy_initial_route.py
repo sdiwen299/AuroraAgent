@@ -17,28 +17,28 @@ from typing import Any, NoReturn
 import pytest
 from starlette.responses import JSONResponse
 
-from offerpilot.ai.tool_runtime import legacy as legacy_runtime
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_runtime.contracts import TransientToolRuntimeValue
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime import legacy as legacy_runtime
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_runtime.contracts import TransientToolRuntimeValue
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import (
     CommittedPrimaryOperationIdentityV1,
     ToolMetadataBundleV1,
     canonical_json_bytes,
     freeze_json,
     materialize_json,
 )
-from offerpilot.ai.tool_runtime.protocol_seals import verify_legacy_boundary
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.agent_runtime.events import canonical_json as journal_canonical_json
-from offerpilot.pilot_runtime import contracts as runtime_contracts
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.schemas import ChatMessageOut
+from auroraagent.ai.tool_runtime.protocol_seals import verify_legacy_boundary
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.agent_runtime.events import canonical_json as journal_canonical_json
+from auroraagent.pilot_runtime import contracts as runtime_contracts
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.schemas import ChatMessageOut
 
 
 ROOT = Path(__file__).parents[2]
-PRODUCTION_ROOT = ROOT / "src" / "offerpilot"
+PRODUCTION_ROOT = ROOT / "src" / "auroraagent"
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
 
 ORDERED_ADAPTERS = (
@@ -290,10 +290,10 @@ def test_static_catalog_declares_complete_legacy_presentation_bindings() -> None
 def test_legacy_presentation_uses_exact_read_context_and_matches_baseline(
     tmp_path: Path,
 ) -> None:
-    from offerpilot.db import init_database
-    from offerpilot.models import Application
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+    from auroraagent.db import init_database
+    from auroraagent.models import Application
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
     read_context_type = getattr(runtime_contracts, "LegacyReadContext", None)
     assert read_context_type is not None
@@ -444,9 +444,9 @@ def test_legacy_presentation_uses_exact_read_context_and_matches_baseline(
 def test_initial_route_projects_exact_pending_presentation_without_adapter_access(
     tmp_path: Path,
 ) -> None:
-    from offerpilot.db import init_database
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+    from auroraagent.db import init_database
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
     session_factory = init_database(tmp_path / "legacy-route-presentation.sqlite3")
     applications = ApplicationsRepository(session_factory)
@@ -585,8 +585,8 @@ def test_legacy_execution_context_rejects_spoofed_session_and_adapter_types() ->
     from sqlalchemy import create_engine
     from sqlalchemy.orm import Session, sessionmaker
 
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
 
     class FakeTransaction:
         parent = None
@@ -660,9 +660,9 @@ def test_static_legacy_executor_requires_exact_integrity_checked_context() -> No
 def test_legacy_execution_context_binds_exact_adapters_to_the_live_transaction(
     tmp_path: Path,
 ) -> None:
-    from offerpilot.db import init_database
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
+    from auroraagent.db import init_database
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
 
     session_factory = init_database(tmp_path / "legacy-context.sqlite3")
     with session_factory() as session:
@@ -1286,7 +1286,7 @@ def test_initial_component_factory_has_only_final_composition_caller() -> None:
                 consumers.append((path.relative_to(ROOT).as_posix(), node.name))
     assert consumers == [
         (
-            "src/offerpilot/pilot_runtime/composition.py",
+            "src/auroraagent/pilot_runtime/composition.py",
             "build_production_tool_metadata_components",
         )
     ]
@@ -1328,13 +1328,13 @@ class _CountingSessionFactory:
 
 
 def _seed_legacy_executor_case(session_factory: Any) -> SimpleNamespace:
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import (
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import (
         ApplicationOutcomesRepository,
         SubmissionSnapshotCreate,
     )
-    from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-    from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+    from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+    from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
     application = ApplicationsRepository(session_factory).create(
         ApplicationCreate(company_name="Legacy transaction", position_name="Engineer")
@@ -1424,7 +1424,7 @@ def _legacy_executor_args(
 
 
 def _legacy_model_and_record_type(adapter_name: str) -> tuple[type[Any], str]:
-    from offerpilot.models import (
+    from auroraagent.models import (
         ApplicationJDVersion,
         ApplicationOutcome,
         ApplicationSubmissionSnapshot,
@@ -1460,8 +1460,8 @@ def _legacy_execution_context(
     session: Any,
     session_factory: Any,
 ) -> runtime_contracts.LegacyExecutionContext:
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
 
     return runtime_contracts.LegacyExecutionContext(
         session,
@@ -1475,7 +1475,7 @@ def test_static_legacy_executors_share_the_caller_commit_and_rollback(
     tmp_path: Path,
     adapter_name: str,
 ) -> None:
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     session_factory = init_database(tmp_path / f"{adapter_name}.sqlite3")
     seeded = _seed_legacy_executor_case(session_factory)
@@ -1516,7 +1516,7 @@ def test_static_legacy_executor_contexts_are_isolated_and_invalid_across_session
     tmp_path: Path,
     adapter_name: str,
 ) -> None:
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     session_factory = init_database(tmp_path / f"isolated-{adapter_name}.sqlite3")
     seeded = _seed_legacy_executor_case(session_factory)
@@ -1572,7 +1572,7 @@ def test_static_legacy_repository_exception_rolls_back_every_partial_write(
     repository_attribute: str,
     write_method: str,
 ) -> None:
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     session_factory = init_database(tmp_path / f"exception-{adapter_name}.sqlite3")
     seeded = _seed_legacy_executor_case(session_factory)
@@ -1619,9 +1619,9 @@ def test_tampered_unbound_legacy_adapter_cannot_open_an_implicit_session(
     adapter_name: str,
     bound_attribute: str,
 ) -> None:
-    from offerpilot.db import init_database
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
+    from auroraagent.db import init_database
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
 
     session_factory = init_database(tmp_path / f"implicit-{adapter_name}.sqlite3")
     seeded = _seed_legacy_executor_case(session_factory)
@@ -1653,7 +1653,7 @@ def test_tampered_unbound_legacy_adapter_cannot_open_an_implicit_session(
 def test_legacy_execution_context_rejects_all_copy_and_transport_sinks(
     tmp_path: Path,
 ) -> None:
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     session_factory = init_database(tmp_path / "legacy-context-sinks.sqlite3")
     with session_factory() as caller, caller.begin():

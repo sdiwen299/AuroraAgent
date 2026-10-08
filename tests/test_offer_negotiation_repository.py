@@ -5,14 +5,14 @@ import json
 import pytest
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import Application, Offer, OfferComparisonDimension, OfferComparisonValue, OfferNegotiationProposal
-from offerpilot.repositories.offer_negotiation import (
+from auroraagent.db import init_database
+from auroraagent.models import Application, Offer, OfferComparisonDimension, OfferComparisonValue, OfferNegotiationProposal
+from auroraagent.repositories.offer_negotiation import (
     OfferNegotiationConflictError,
     OfferNegotiationRepository,
     OfferNegotiationValidationError,
 )
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 
 def _repo(tmp_path):

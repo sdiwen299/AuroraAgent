@@ -4,7 +4,7 @@ import sqlite3
 
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def test_fresh_database_creates_capture_schema_and_records_0011(tmp_path) -> None:

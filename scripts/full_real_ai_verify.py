@@ -14,10 +14,10 @@ import time
 from typing import Any
 from urllib.parse import urlparse
 
-from offerpilot.config import resolve_data_dir
+from auroraagent.config import resolve_data_dir
 
 
-_DEFAULT_REPORT_DIR = Path(tempfile.gettempdir()) / "offerpilot-full-real-ai-report"
+_DEFAULT_REPORT_DIR = Path(tempfile.gettempdir()) / "auroraagent-full-real-ai-report"
 _SAFE_HASH = re.compile(r"^[0-9a-f]{64}$")
 _SAFE_REQUEST_ID_HASH = re.compile(r"^[0-9a-f]{12,64}$")
 _SAFE_CATEGORY = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
@@ -86,7 +86,7 @@ def _safe_config_summary(config_path: Path, data_dir: Path) -> dict[str, Any]:
         profile = raw
     return {
         "config_path": str(config_path),
-        "offerpilot_data": str(data_dir),
+        "auroraagent_data": str(data_dir),
         "active_provider_id": str(active_id or profile.get("id") or "default"),
         "provider": str(profile.get("provider") or ""),
         "model": str(profile.get("model") or raw.get("model") or ""),
@@ -427,12 +427,12 @@ def _build_summary(
         "structure_summaries": inner.get("structure_summaries", []),
         "evidence_counts": inner.get("evidence_counts", {}),
         "child_env": {
-            "OFFERPILOT_DATA": str(child_data_dir),
-            "OFFERPILOT_FULL_VERIFY_REPORT_DIR": str(report_dir),
-            "OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE": str(
+            "AURORA_AGENT_DATA": str(child_data_dir),
+            "AURORA_AGENT_FULL_VERIFY_REPORT_DIR": str(report_dir),
+            "AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE": str(
                 report_dir / "provider-request-audit.jsonl"
             ),
-            "OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(
+            "AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(
                 report_dir / "full-verify-operation-audit.jsonl"
             ),
         },
@@ -496,7 +496,7 @@ def run_full_verify(
         (report_dir / artifact).unlink(missing_ok=True)
     source_config = source_data / "config.json"
     source_hash_before = _sha256_file(source_config)
-    isolated_data = Path(tempfile.mkdtemp(prefix="offerpilot-full-real-ai-"))
+    isolated_data = Path(tempfile.mkdtemp(prefix="auroraagent-full-real-ai-"))
     process: subprocess.Popen[str] | None = None
     stdout = ""
     stderr = ""
@@ -512,24 +512,24 @@ def run_full_verify(
                 "stage": "real_ai_http_verify",
                 "config": config_summary,
                 "child_env": {
-                    "OFFERPILOT_DATA": str(isolated_data),
-                    "OFFERPILOT_FULL_VERIFY_REPORT_DIR": str(report_dir),
-                    "OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE": str(
+                    "AURORA_AGENT_DATA": str(isolated_data),
+                    "AURORA_AGENT_FULL_VERIFY_REPORT_DIR": str(report_dir),
+                    "AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE": str(
                         report_dir / "provider-request-audit.jsonl"
                     ),
-                    "OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(
+                    "AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(
                         report_dir / "full-verify-operation-audit.jsonl"
                     ),
                 },
             },
         )
         child_env = os.environ.copy()
-        child_env["OFFERPILOT_DATA"] = str(isolated_data)
-        child_env["OFFERPILOT_FULL_VERIFY_REPORT_DIR"] = str(report_dir)
-        child_env["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"] = str(
+        child_env["AURORA_AGENT_DATA"] = str(isolated_data)
+        child_env["AURORA_AGENT_FULL_VERIFY_REPORT_DIR"] = str(report_dir)
+        child_env["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"] = str(
             report_dir / "provider-request-audit.jsonl"
         )
-        child_env["OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE"] = str(
+        child_env["AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE"] = str(
             report_dir / "full-verify-operation-audit.jsonl"
         )
         process = subprocess.Popen(
@@ -558,7 +558,7 @@ def run_full_verify(
         source_hash_after = _sha256_file(source_config)
         config_summary = locals().get("config_summary") or {
             "config_path": str(isolated_data / "config.json"),
-            "offerpilot_data": str(isolated_data),
+            "auroraagent_data": str(isolated_data),
             "provider": "",
             "model": model,
         }

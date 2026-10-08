@@ -15,7 +15,7 @@
 **Files:**
 
 - Read: `docs/superpowers/specs/2026-07-27-product-convergence-audit-design.md`
-- Read: `src/offerpilot/api.py`, `src/offerpilot/models.py`, `src/offerpilot/schemas.py`
+- Read: `src/auroraagent/api.py`, `src/auroraagent/models.py`, `src/auroraagent/schemas.py`
 - Read: `tests/test_jd_resume_ai_api.py`, `tests/test_ai_agent.py`, `tests/test_ai_tools.py`, `tests/test_opportunity_fit_reviews_{ai,api,repository}.py`, `tests/test_offers_api.py`
 
 - [ ] 确认 `git status --short --branch` 干净，确认工作在 `feat/20260724-evidence-gated-interview-preparation`，每个任务只修改其列出的文件。
@@ -26,7 +26,7 @@
 
 **Files:**
 
-- Modify: `src/offerpilot/api.py`, `src/offerpilot/ai/workflows.py`, `src/offerpilot/cli.py`
+- Modify: `src/auroraagent/api.py`, `src/auroraagent/ai/workflows.py`, `src/auroraagent/cli.py`
 - Test: `tests/test_jd_resume_ai_api.py`, `tests/test_cli.py`, `tests/test_module_workflows.py`
 
 - [ ] **Step 1: 写 URL 负向测试。** 在两个 HTTP 路由各加入四类断言：`{}` 与仅 URL 返回 `422`/`jd_text_required`，非空 `jd_text + jd_url` 返回 `422`/`jd_url_not_supported`，并用 `monkeypatch` 将 `httpx.get` 替换为抛错函数，证明它从未被调用；AI provider fake 也必须为零调用。
@@ -47,7 +47,7 @@ assert response.json()["code"] == "jd_text_required"
 - [ ] **Step 5: 提交。** 分开执行以下命令，不能合并成一条 shell 命令：
 
 ```powershell
-git add src/offerpilot/api.py src/offerpilot/ai/workflows.py src/offerpilot/cli.py tests/test_jd_resume_ai_api.py tests/test_cli.py tests/test_module_workflows.py
+git add src/auroraagent/api.py src/auroraagent/ai/workflows.py src/auroraagent/cli.py tests/test_jd_resume_ai_api.py tests/test_cli.py tests/test_module_workflows.py
 git commit -m "fix: AI block JD URL analysis fallback"
 ```
 
@@ -57,7 +57,7 @@ git commit -m "fix: AI block JD URL analysis fallback"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/agent.py`, `src/offerpilot/ai/tools.py`, `src/offerpilot/config.py`, `src/offerpilot/api.py`, `src/offerpilot/cli.py`
+- Modify: `src/auroraagent/ai/agent.py`, `src/auroraagent/ai/tools.py`, `src/auroraagent/config.py`, `src/auroraagent/api.py`, `src/auroraagent/cli.py`
 - Test: `tests/test_ai_agent.py`, `tests/test_ai_tools.py`, `tests/test_config.py`, `tests/test_settings_api.py`, `tests/test_chat_api.py`, `tests/test_cli.py`
 
 - [ ] **Step 1: 写控制面失败测试。** 遍历 registry 中 `write is True` 的工具，在 `auto_approve=True` 时断言仍产生 pending confirmation 且 handler 未调用；批准后才调用一次。拒绝、取消、过期只写控制面审计并清除 pending，不改变 Application/Event/Resume/Offer/Material Kit/Knowledge/Question/Memory。审计断言只允许工具名、调用 id、结果、时间、generation 和安全错误类别；写入模型原文、provider API key、JD、Resume、用户断言或完整参数的测试必须失败。
@@ -73,7 +73,7 @@ for name, tool in registry.items():
 - [ ] **Step 2: 写旧配置和备份失败测试。** `Config` 从 `True`、`"true"`、`1` 读取都归一为 `False`；`GET/PUT /api/settings`、设置备份导出/恢复和 CLI config 更新永远返回/写入 false，手工保存接口不经过 Agent gate。
 - [ ] **Step 3: 运行失败测试。** 运行 `uv run pytest tests/test_ai_agent.py tests/test_ai_tools.py tests/test_config.py tests/test_settings_api.py tests/test_chat_api.py tests/test_cli.py -q`；当前 `auto_approve` 分支和设置转换应暴露失败。
 - [ ] **Step 4: 写最小实现。** 将写工具的 confirmation 判定固定为 true，保留 `always_confirm` 语义但不能被配置绕过；pending 的 approved/rejected/cancelled/expired 使用现有 generation/token CAS。加载配置时固定 `chat_auto_approve_writes=False`，设置、备份和恢复只读兼容旧字段并重新写 false，不让 `bool("false")` 绕过。
-- [ ] **Step 5: 运行专项测试并提交。** 重新运行上面的 pytest 命令，再运行 `uv run ruff check src tests`；全绿后分开执行 `git add src/offerpilot/ai/agent.py src/offerpilot/ai/tools.py src/offerpilot/config.py src/offerpilot/api.py src/offerpilot/cli.py tests/test_ai_agent.py tests/test_ai_tools.py tests/test_config.py tests/test_settings_api.py tests/test_chat_api.py tests/test_cli.py` 和 `git commit -m "fix: AI require confirmation for every agent write"`。
+- [ ] **Step 5: 运行专项测试并提交。** 重新运行上面的 pytest 命令，再运行 `uv run ruff check src tests`；全绿后分开执行 `git add src/auroraagent/ai/agent.py src/auroraagent/ai/tools.py src/auroraagent/config.py src/auroraagent/api.py src/auroraagent/cli.py tests/test_ai_agent.py tests/test_ai_tools.py tests/test_config.py tests/test_settings_api.py tests/test_chat_api.py tests/test_cli.py` 和 `git commit -m "fix: AI require confirmation for every agent write"`。
 
 **验收门槛：** 所有 registry 写工具都必须先 pending；网络/超时未知保持原 pending/token；任何自动批准配置不能改变该结论，旧 config/backup 仍可启动。
 
@@ -81,7 +81,7 @@ for name, tool in registry.items():
 
 **Files:**
 
-- Modify: `src/offerpilot/models.py`, `src/offerpilot/schemas.py`, `src/offerpilot/db.py`, `src/offerpilot/ai/opportunity_fit_reviews.py`, `src/offerpilot/repositories/opportunity_fit_reviews.py`, `src/offerpilot/api.py`
+- Modify: `src/auroraagent/models.py`, `src/auroraagent/schemas.py`, `src/auroraagent/db.py`, `src/auroraagent/ai/opportunity_fit_reviews.py`, `src/auroraagent/repositories/opportunity_fit_reviews.py`, `src/auroraagent/api.py`
 - Modify: `web/src/types/opportunityFitReview.ts`, `web/src/services/opportunityFitReviews.ts`, `web/src/features/pilot/PilotOpportunityFitCard.tsx`, `web/src/components/ApplicationDetail.tsx`
 - Create: `tests/test_opportunity_fit_reviews_migrations.py`
 - Test: `tests/test_opportunity_fit_reviews_ai.py`, `tests/test_opportunity_fit_reviews_repository.py`, `tests/test_opportunity_fit_reviews_api.py`, `web/src/features/pilot/PilotOpportunityFitCard.test.tsx`, `web/src/features/pilot/pilotOpportunityFitLifecycle.test.ts`
@@ -91,8 +91,8 @@ for name, tool in registry.items():
 - [ ] **Step 3: 写 v2 root/stage 两阶段生命周期测试。** 覆盖 Triage 首次请求在一个事务内原子创建 `review_id` root 与首个 `stage=triage`，失败时不得留下无 stage root；使用两个独立 SQLite connection 和 barrier 并发首次请求，断言数据库约束最终只有一条 root 与一条 Triage stage，失败事务读取获胜记录。同 key 同快照重试返回同一 root/stage，不创建第二个 root；用户确认 token CAS、重复消费 token 稳定 409、未确认 Triage 调 Deep 被拒绝、确认后使用独立 Deep key 生成 `stage=deep_review`。Deep 必须同时校验 `review_id`、`parent_triage_stage_id`、`application_id`，跨 review/跨投递父 stage 一律拒绝；列表/详情按 root 聚合一个 Triage 与零到多个 Deep。两个 stage 各自保存 source snapshot/fingerprint、proposal hash 和 idempotency key。分别覆盖 token 篡改、跨 root/stage token、过期 token、并发确认只有一个 CAS 成功、确认后不重新签发可消费 token；覆盖同 key 同快照重放、同 key 不同快照 409、确认后来源变化时首次/重生成 Deep 均 409 且不落 Deep、Deep 重新生成使用新 key 新 stage 且不覆盖旧 Deep；Provider 未知使用同一 Deep key 重试且不新增 stage。v1 双阶段行仍按原字节/哈希只读展示。
 - [ ] **Step 4: 写 API/前端联合类型失败测试。** v1 响应保留 `recommendation/triage/deep_review` 并只读显示；v2 Triage 响应含稳定 `review_id`、`stage=triage`、`stage_id`、一次性确认 token 和阶段字段，v2 Deep 响应含同一 `review_id`、`stage=deep_review`、`parent_triage_stage_id` 和独立阶段字段，均没有 recommendation。前端只能对 v1 显示“历史事实”，不渲染决策按钮；v2 必须先显示 Triage 确认，再显示 Deep Review；重试必须复用对应阶段 key，不能重复消费 Triage token。
 - [ ] **Step 5: 运行失败测试。** 运行 `uv run pytest tests/test_opportunity_fit_reviews_ai.py tests/test_opportunity_fit_reviews_repository.py tests/test_opportunity_fit_reviews_api.py tests/test_opportunity_fit_reviews_migrations.py -q` 与 `cd web; npm.cmd test -- --run src/features/pilot/PilotOpportunityFitCard.test.tsx src/features/pilot/pilotOpportunityFitLifecycle.test.ts`，确认当前 v1-only 实现失败。
-- [ ] **Step 6: 写最小实现和明确迁移顺序。** 当前仓库没有独立 migrations 目录，具体迁移固定为 `src/offerpilot/db.py` 中新增的 `_migrate_opportunity_fit_v2()`，使用未占用版本 `0013_opportunity_fit_v2`；顺序固定为：`_ensure_schema_migrations()` → `Base.metadata.create_all()`（全新库创建 v2 root/stage 表）→ 对既有 `opportunity_fit_reviews` 使用 `_ensure_column(..., "proposal_schema_version", "INTEGER NOT NULL DEFAULT 1")` → 以 SQLite 写事务 `CREATE TABLE IF NOT EXISTS` 确认 `opportunity_fit_review_sessions` 与 `opportunity_fit_review_stages`、`review_id`/父 stage 索引、`UNIQUE(application_id, triage_idempotency_key)` 和 `UNIQUE(application_id, stage, idempotency_key)` → `INSERT OR IGNORE` 记录 `0013_opportunity_fit_v2`。不重建旧表、不回填旧 stage、不改变旧 JSON/哈希。v2 root 的 `id` 即 `review_id`，Triage root+stage 和 `triage_idempotency_key` 唯一性在同一短事务由数据库约束兜底，冲突事务回滚后读取获胜记录；每个 stage 的 `proposal_json` 使用严格 canonical JSON，`proposal_sha256` 哈希该阶段，`source_fingerprint_sha256` 哈希该阶段冻结输入。Triage token 使用服务端 secret HMAC-SHA256，绑定 `review_id`、stage id、`stage_generation`、`confirmation_expires_at`，只存 token hash；确认 CAS 同时匹配 stage/generation/ready/未确认/token hash，过期、篡改、跨 root/stage 和并发确认均有稳定语义。Deep 前置条件同时校验 root/父 stage/application 和逐字段来源哈希，Deep 重生成用新 key、新 stage，Provider 未知按同 key CAS 重试；API 使用 `schema_version + stage` discriminator，Chat prompt、Pydantic schema、repository validator、API 和 TypeScript union 同批切换；历史 v1 只读，不产生状态动作。
-- [ ] **Step 7: 运行专项并提交。** 运行后端专项、前端定向测试、`uv run ruff check src tests`、`uv run mypy src`；全绿后分开执行 `git add src/offerpilot/models.py src/offerpilot/schemas.py src/offerpilot/db.py src/offerpilot/ai/opportunity_fit_reviews.py src/offerpilot/repositories/opportunity_fit_reviews.py src/offerpilot/api.py web/src/types/opportunityFitReview.ts web/src/services/opportunityFitReviews.ts web/src/features/pilot/PilotOpportunityFitCard.tsx web/src/components/ApplicationDetail.tsx tests/test_opportunity_fit_reviews_ai.py tests/test_opportunity_fit_reviews_repository.py tests/test_opportunity_fit_reviews_api.py tests/test_opportunity_fit_reviews_migrations.py web/src/features/pilot/PilotOpportunityFitCard.test.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.test.ts` 和 `git commit -m "feat: AI add neutral opportunity fit v2 contract"`。
+- [ ] **Step 6: 写最小实现和明确迁移顺序。** 当前仓库没有独立 migrations 目录，具体迁移固定为 `src/auroraagent/db.py` 中新增的 `_migrate_opportunity_fit_v2()`，使用未占用版本 `0013_opportunity_fit_v2`；顺序固定为：`_ensure_schema_migrations()` → `Base.metadata.create_all()`（全新库创建 v2 root/stage 表）→ 对既有 `opportunity_fit_reviews` 使用 `_ensure_column(..., "proposal_schema_version", "INTEGER NOT NULL DEFAULT 1")` → 以 SQLite 写事务 `CREATE TABLE IF NOT EXISTS` 确认 `opportunity_fit_review_sessions` 与 `opportunity_fit_review_stages`、`review_id`/父 stage 索引、`UNIQUE(application_id, triage_idempotency_key)` 和 `UNIQUE(application_id, stage, idempotency_key)` → `INSERT OR IGNORE` 记录 `0013_opportunity_fit_v2`。不重建旧表、不回填旧 stage、不改变旧 JSON/哈希。v2 root 的 `id` 即 `review_id`，Triage root+stage 和 `triage_idempotency_key` 唯一性在同一短事务由数据库约束兜底，冲突事务回滚后读取获胜记录；每个 stage 的 `proposal_json` 使用严格 canonical JSON，`proposal_sha256` 哈希该阶段，`source_fingerprint_sha256` 哈希该阶段冻结输入。Triage token 使用服务端 secret HMAC-SHA256，绑定 `review_id`、stage id、`stage_generation`、`confirmation_expires_at`，只存 token hash；确认 CAS 同时匹配 stage/generation/ready/未确认/token hash，过期、篡改、跨 root/stage 和并发确认均有稳定语义。Deep 前置条件同时校验 root/父 stage/application 和逐字段来源哈希，Deep 重生成用新 key、新 stage，Provider 未知按同 key CAS 重试；API 使用 `schema_version + stage` discriminator，Chat prompt、Pydantic schema、repository validator、API 和 TypeScript union 同批切换；历史 v1 只读，不产生状态动作。
+- [ ] **Step 7: 运行专项并提交。** 运行后端专项、前端定向测试、`uv run ruff check src tests`、`uv run mypy src`；全绿后分开执行 `git add src/auroraagent/models.py src/auroraagent/schemas.py src/auroraagent/db.py src/auroraagent/ai/opportunity_fit_reviews.py src/auroraagent/repositories/opportunity_fit_reviews.py src/auroraagent/api.py web/src/types/opportunityFitReview.ts web/src/services/opportunityFitReviews.ts web/src/features/pilot/PilotOpportunityFitCard.tsx web/src/components/ApplicationDetail.tsx tests/test_opportunity_fit_reviews_ai.py tests/test_opportunity_fit_reviews_repository.py tests/test_opportunity_fit_reviews_api.py tests/test_opportunity_fit_reviews_migrations.py web/src/features/pilot/PilotOpportunityFitCard.test.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.test.ts` 和 `git commit -m "feat: AI add neutral opportunity fit v2 contract"`。
 
 **验收门槛：** v1 历史字节和哈希不变；新生成永不持久化 recommendation；证据门控、幂等冲突和历史只读均由后端强制，不能只靠 UI 隐藏。
 
@@ -100,8 +100,8 @@ for name, tool in registry.items():
 
 **Files:**
 
-- Create: `src/offerpilot/repositories/interview_index.py`, `web/src/services/interviews.ts`, `web/src/types/interviewIndex.ts`
-- Modify: `src/offerpilot/api.py`, `web/src/components/InterviewV01View.tsx`, `web/src/layout/AppShell.tsx`
+- Create: `src/auroraagent/repositories/interview_index.py`, `web/src/services/interviews.ts`, `web/src/types/interviewIndex.ts`
+- Modify: `src/auroraagent/api.py`, `web/src/components/InterviewV01View.tsx`, `web/src/layout/AppShell.tsx`
 - Create: `tests/test_interview_index_api.py`
 - Test: `web/src/components/InterviewV01View.test.tsx`, `web/src/layout/AppShell.interviewReview.test.tsx`
 
@@ -111,20 +111,20 @@ for name, tool in registry.items():
 - [ ] **Step 4: 写 UI 失败测试。** `InterviewV01View` 消费索引而非固定空状态；展示中文空状态、事件/历史只读状态并跳转详情；深链 404 清除当前卡片/Drawer 且不创建 handoff，全局列表中的软删除条目只消失不清空整个页面。先验证 `ReviewManagementView` 可复用，否则不挂载半可达 Mock/Review 页面。
 - [ ] **Step 5: 运行失败测试。** 运行 `uv run pytest tests/test_interview_index_api.py -q` 与 `cd web; npm.cmd test -- --run src/components/InterviewV01View.test.tsx src/layout/AppShell.interviewReview.test.tsx`。
 - [ ] **Step 6: 写最小实现并回归。** repository 统一可见性、排序和 cursor；全局 API 对软删除 Application 过滤后返回 200，详情上下文沿用现有 404 语义；API 只读组合已有 Application/Event/Note/Proposal/Knowledge 数据；AppShell 保持当前 Pilot/Drawer 的 handoff 和深链 404 清理语义，不新增领域写入。
-- [ ] **Step 7: 提交。** 运行专项、`npm.cmd run build`，分开执行 `git add src/offerpilot/repositories/interview_index.py src/offerpilot/api.py web/src/services/interviews.ts web/src/types/interviewIndex.ts web/src/components/InterviewV01View.tsx web/src/layout/AppShell.tsx tests/test_interview_index_api.py web/src/components/InterviewV01View.test.tsx web/src/layout/AppShell.interviewReview.test.tsx` 和 `git commit -m "feat: AI add top-level interview index"`。
+- [ ] **Step 7: 提交。** 运行专项、`npm.cmd run build`，分开执行 `git add src/auroraagent/repositories/interview_index.py src/auroraagent/api.py web/src/services/interviews.ts web/src/types/interviewIndex.ts web/src/components/InterviewV01View.tsx web/src/layout/AppShell.tsx tests/test_interview_index_api.py web/src/components/InterviewV01View.test.tsx web/src/layout/AppShell.interviewReview.test.tsx` 和 `git commit -m "feat: AI add top-level interview index"`。
 
 ## 5. P0-C：Offer 比较护栏
 
 **Files:**
 
-- Modify: `src/offerpilot/api.py`, `web/src/services/offers.ts`, `web/src/components/OfferCompareDrawer.tsx`, `web/src/components/OfferCenterView.tsx`
+- Modify: `src/auroraagent/api.py`, `web/src/services/offers.ts`, `web/src/components/OfferCompareDrawer.tsx`, `web/src/components/OfferCenterView.tsx`
 - Create: `web/src/components/OfferCompareDrawer.test.tsx`, `web/src/components/OfferCenterView.test.tsx`
 - Test: `tests/test_offers_api.py`
 
 - [ ] **Step 1: 写 API/UI 失败测试。** `/api/offers/compare` 先按请求首次出现顺序去重 ID；重复同一 ID 后不足两个不同可见 Offer 返回稳定 `422 offer_comparison_requires_two_offers`。非整数/非正整数返回 `422 offer_comparison_invalid_ids`；缺失或不可见 ID 返回稳定 `404 offer_comparison_offer_not_found`，不返回部分结果；两个不同且可见 Offer 才保持用户请求顺序返回。UI 对 0/1 条不显示或禁用比较入口。
 - [ ] **Step 2: 运行失败测试。** 运行 `uv run pytest tests/test_offers_api.py -q` 与对应 Vitest 文件，确认当前 endpoint 会接受少于两个结果。
 - [ ] **Step 3: 写最小实现并验证。** API 解析 ID 后先去重，再验证每个 ID 的可见性，最后检查不同 Offer 数量；不再静默跳过缺失 ID。保持请求顺序，不增加 currency/pay_period/amount_basis 或平均/排名逻辑，不做税后、权益价值或“最优 Offer”推断。运行专项和 `npm.cmd run build`。
-- [ ] **Step 4: 提交。** 分开执行 `git add src/offerpilot/api.py web/src/services/offers.ts web/src/components/OfferCompareDrawer.tsx web/src/components/OfferCenterView.tsx tests/test_offers_api.py web/src/components/OfferCompareDrawer.test.tsx web/src/components/OfferCenterView.test.tsx` 和 `git commit -m "fix: AI guard offer comparison inputs"`。
+- [ ] **Step 4: 提交。** 分开执行 `git add src/auroraagent/api.py web/src/services/offers.ts web/src/components/OfferCompareDrawer.tsx web/src/components/OfferCenterView.tsx tests/test_offers_api.py web/src/components/OfferCompareDrawer.test.tsx web/src/components/OfferCenterView.test.tsx` 和 `git commit -m "fix: AI guard offer comparison inputs"`。
 
 ## 6. P1-A：行动提示单一事实源
 
@@ -144,14 +144,14 @@ for name, tool in registry.items():
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/material_proposals.py`, `src/offerpilot/ai/opportunity_fit_reviews.py`, `src/offerpilot/ai/interview_review_proposals.py`, `src/offerpilot/ai/interview_preparation_proposals.py`, `src/offerpilot/repositories/interview_knowledge_capture.py`, `src/offerpilot/api.py`, `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/ai/material_proposals.py`, `src/auroraagent/ai/opportunity_fit_reviews.py`, `src/auroraagent/ai/interview_review_proposals.py`, `src/auroraagent/ai/interview_preparation_proposals.py`, `src/auroraagent/repositories/interview_knowledge_capture.py`, `src/auroraagent/api.py`, `src/auroraagent/smoke.py`
 - Test: existing `tests/test_material_revision_proposals_{ai,api,repository}.py`, `tests/test_opportunity_fit_reviews_{ai,api,repository}.py`, `tests/test_interview_review_proposals_{ai,api,repository}.py`, `tests/test_interview_knowledge_capture_{ai,api,repository}.py`, `tests/test_interview_preparation_{ai,api,repository}.py`, `tests/test_smoke.py`
 
 - [ ] **Step 1: 写每领域终态表测试。** 分别锁定 Provider/网络未知、模型契约失败、严格校验后的安全空结果、无证据可用四类结果：材料契约失败仍为 `502 material_proposal_unverifiable`，只有合法 `changes=[]` 才 safe_empty；机会评估契约失败不写 Review；复盘两次契约失败按既有安全空语义；知识沉淀 AI 失败不阻塞 direct save；面试准备保留 `202/502` key 并只对两次契约失败落 safe_empty。
 - [ ] **Step 2: 写未知结果重试测试。** 断言所有 Provider/网络未知路径保留原 key、冻结输入和必要 lease；同 key 重试不生成第二条 Proposal/Attempt；禁止将未知结果映射成确定失败或清除 key。
 - [ ] **Step 3: 运行失败测试。** 分别运行五组后端专项和 `uv run pytest tests/test_smoke.py -q`，确认矩阵中错误码/空结果不一致处失败。
 - [ ] **Step 4: 写最小实现。** 只统一诊断字段和测试断言，不合并各领域输入快照、证据路径或 repository；保留各流程已有错误码、HITL、原子写入和外部访问禁止边界。
-- [ ] **Step 5: 验证并提交。** 运行五组专项、smoke、Ruff、Mypy，分开执行 `git add src/offerpilot/ai/material_proposals.py src/offerpilot/ai/opportunity_fit_reviews.py src/offerpilot/ai/interview_review_proposals.py src/offerpilot/ai/interview_preparation_proposals.py src/offerpilot/repositories/interview_knowledge_capture.py src/offerpilot/api.py src/offerpilot/smoke.py tests/test_material_revision_proposals_ai.py tests/test_material_revision_proposals_api.py tests/test_material_revision_proposals_repository.py tests/test_opportunity_fit_reviews_ai.py tests/test_opportunity_fit_reviews_api.py tests/test_opportunity_fit_reviews_repository.py tests/test_interview_review_proposals_ai.py tests/test_interview_review_proposals_api.py tests/test_interview_review_proposals_repository.py tests/test_interview_knowledge_capture_ai.py tests/test_interview_knowledge_capture_api.py tests/test_interview_knowledge_capture_repository.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py tests/test_interview_preparation_repository.py tests/test_smoke.py` 和 `git commit -m "test: AI codify proposal terminal semantics"`。
+- [ ] **Step 5: 验证并提交。** 运行五组专项、smoke、Ruff、Mypy，分开执行 `git add src/auroraagent/ai/material_proposals.py src/auroraagent/ai/opportunity_fit_reviews.py src/auroraagent/ai/interview_review_proposals.py src/auroraagent/ai/interview_preparation_proposals.py src/auroraagent/repositories/interview_knowledge_capture.py src/auroraagent/api.py src/auroraagent/smoke.py tests/test_material_revision_proposals_ai.py tests/test_material_revision_proposals_api.py tests/test_material_revision_proposals_repository.py tests/test_opportunity_fit_reviews_ai.py tests/test_opportunity_fit_reviews_api.py tests/test_opportunity_fit_reviews_repository.py tests/test_interview_review_proposals_ai.py tests/test_interview_review_proposals_api.py tests/test_interview_review_proposals_repository.py tests/test_interview_knowledge_capture_ai.py tests/test_interview_knowledge_capture_api.py tests/test_interview_knowledge_capture_repository.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py tests/test_interview_preparation_repository.py tests/test_smoke.py` 和 `git commit -m "test: AI codify proposal terminal semantics"`。
 
 ## 8. P1-C：材料与面试 Proposal 流程固定文案中文扫描
 

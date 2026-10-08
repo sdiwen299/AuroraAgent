@@ -16,21 +16,21 @@ from sqlalchemy.exc import OperationalError, TimeoutError
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.session import SessionTransaction
 
-from offerpilot.agent_runtime.events import (
+from auroraagent.agent_runtime.events import (
     EventDraft,
     PreparedSnapshot,
     canonical_json,
     prepare_event,
 )
-from offerpilot.agent_runtime.budget import (
+from auroraagent.agent_runtime.budget import (
     JOURNAL_DEFAULT_BUSY_TIMEOUT_MS,
     JournalDeadlineExceeded as BudgetJournalDeadlineExceeded,
     MonotonicSample,
     SafeClockAdapter,
 )
-from offerpilot.db import init_database, journal_session_factory_for_data_dir
-from offerpilot.models import AgentContextSnapshot, AgentEvent, ChatMessage, Conversation
-from offerpilot.repositories.agent_runs import (
+from auroraagent.db import init_database, journal_session_factory_for_data_dir
+from auroraagent.models import AgentContextSnapshot, AgentEvent, ChatMessage, Conversation
+from auroraagent.repositories.agent_runs import (
     AgentRunRepository,
     CaptureContextCommand,
     DispositionCommand,

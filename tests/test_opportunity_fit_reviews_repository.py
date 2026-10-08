@@ -10,19 +10,19 @@ import pytest
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
-from offerpilot.ai.types import Assistant
-from offerpilot.db import init_database
-from offerpilot.models import OpportunityFitReview
-from offerpilot.models import OpportunityFitReviewSession, OpportunityFitReviewStage
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.application_jd_versions import ApplicationJDService
-from offerpilot.repositories.opportunity_fit_reviews import (
+from auroraagent.ai.types import Assistant
+from auroraagent.db import init_database
+from auroraagent.models import OpportunityFitReview
+from auroraagent.models import OpportunityFitReviewSession, OpportunityFitReviewStage
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.application_jd_versions import ApplicationJDService
+from auroraagent.repositories.opportunity_fit_reviews import (
     OpportunityFitReviewConflictError,
     OpportunityFitReviewNotFound,
     OpportunityFitReviewsRepository,
 )
-from offerpilot.ai.opportunity_fit_reviews import OpportunityFitModelError
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.ai.opportunity_fit_reviews import OpportunityFitModelError
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 def _triage() -> dict[str, object]:
@@ -656,7 +656,7 @@ def test_v2_expired_triage_owner_cannot_finalize_ready(tmp_path, monkeypatch) ->
             return None
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.LeaseHeartbeat",
+        "auroraagent.repositories.opportunity_fit_reviews.LeaseHeartbeat",
         StoppedHeartbeat,
     )
 
@@ -719,7 +719,7 @@ def test_v2_expired_deep_owner_cannot_finalize_ready(tmp_path, monkeypatch) -> N
             return None
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.LeaseHeartbeat",
+        "auroraagent.repositories.opportunity_fit_reviews.LeaseHeartbeat",
         StoppedHeartbeat,
     )
 
@@ -775,7 +775,7 @@ def test_v2_expired_provider_error_does_not_mark_stale_stage_unknown(tmp_path, m
             return None
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.LeaseHeartbeat",
+        "auroraagent.repositories.opportunity_fit_reviews.LeaseHeartbeat",
         StoppedHeartbeat,
     )
 
@@ -825,7 +825,7 @@ def test_v2_expired_contract_error_does_not_delete_stale_stage(tmp_path, monkeyp
             return None
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.LeaseHeartbeat",
+        "auroraagent.repositories.opportunity_fit_reviews.LeaseHeartbeat",
         StoppedHeartbeat,
     )
 
@@ -912,7 +912,7 @@ def test_v2_stopped_heartbeat_allows_takeover_but_fences_late_result(tmp_path, m
             return None
 
     monkeypatch.setattr(
-        "offerpilot.repositories.opportunity_fit_reviews.LeaseHeartbeat",
+        "auroraagent.repositories.opportunity_fit_reviews.LeaseHeartbeat",
         StoppedHeartbeat,
     )
 

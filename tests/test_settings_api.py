@@ -6,11 +6,11 @@ from zipfile import ZipFile
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.ai import client as ai_client
-from offerpilot.api import create_app
-from offerpilot.agent_runtime.keyring import JOURNAL_KEY_FILENAME, load_or_create_journal_key
-from offerpilot.config import AIProviderProfile, Config, load_config, save_config
-from offerpilot.diagnostics import read_recent_log_entries
+from auroraagent.ai import client as ai_client
+from auroraagent.api import create_app
+from auroraagent.agent_runtime.keyring import JOURNAL_KEY_FILENAME, load_or_create_journal_key
+from auroraagent.config import AIProviderProfile, Config, load_config, save_config
+from auroraagent.diagnostics import read_recent_log_entries
 
 
 def test_get_settings_hides_api_key(tmp_path):
@@ -822,7 +822,7 @@ def test_settings_backup_omits_plaintext_api_keys(tmp_path):
     )
     client = TestClient(create_app(data_dir=tmp_path))
 
-    response = client.get("/api/settings/backup", headers={"X-OfferPilot-Token": "local-secret"})
+    response = client.get("/api/settings/backup", headers={"X-AuroraAgent-Token": "local-secret"})
 
     assert response.status_code == 200
     body = response.json()
@@ -840,16 +840,16 @@ def test_backup_export_returns_local_data_archive_without_credentials(tmp_path):
     import zipfile
 
     save_config(tmp_path, Config(api_key="sk-secret", auth_token="local-secret"))
-    (tmp_path / "offerpilot.log").write_text("log line\n", encoding="utf-8")
+    (tmp_path / "auroraagent.log").write_text("log line\n", encoding="utf-8")
     client = TestClient(create_app(data_dir=tmp_path))
 
     response = client.get("/api/backups/export")
 
     assert response.status_code == 200
     assert response.headers["content-type"] == "application/zip"
-    assert "offerpilot-backup-" in response.headers["content-disposition"]
+    assert "auroraagent-backup-" in response.headers["content-disposition"]
     with zipfile.ZipFile(BytesIO(response.content)) as archive:
-        assert {"config.json", "data.db", "offerpilot.log"}.issubset(archive.namelist())
+        assert {"config.json", "data.db", "auroraagent.log"}.issubset(archive.namelist())
         config = archive.read("config.json").decode("utf-8")
         assert "sk-secret" not in config
         assert "local-secret" not in config

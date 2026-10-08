@@ -25,7 +25,7 @@
 
 ### 后端五组
 
-结果目录：`%TEMP%\offerpilot-story-pytest-release-ac5a4f43344d4cfbaeb913ead63a4432`
+结果目录：`%TEMP%\auroraagent-story-pytest-release-ac5a4f43344d4cfbaeb913ead63a4432`
 
 先执行全量收集、原始 node ID 重复检查并写入 `full-manifest.txt`，再运行五个命名组及 aggregate。最终收集 **1,851** 个唯一 node ID，分组并集与 manifest 完全一致，无重复、遗漏或额外项。
 
@@ -42,7 +42,7 @@
 
 ### 前端十组
 
-结果目录：`%TEMP%\offerpilot-story-vitest-72fc088077a543ce8c8faa8e38e4580f`
+结果目录：`%TEMP%\auroraagent-story-vitest-72fc088077a543ce8c8faa8e38e4580f`
 
 当前 Web 指纹与分组结果一致；aggregate 通过，共 **114 个测试文件、862 项测试**：
 
@@ -87,7 +87,7 @@
 
 ## UI / Pilot 真实浏览器闭环
 
-证据目录：`D:\Users\yuqi.chen\.offerpilot\verification\interview-story-browser-release-verified-20260812-022741`
+证据目录：`D:\Users\yuqi.chen\.auroraagent\verification\interview-story-browser-release-verified-20260812-022741`
 
 Harness 最终输出：`Story browser acceptance passed.`
 

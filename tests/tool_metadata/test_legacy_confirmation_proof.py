@@ -18,14 +18,14 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.contracts import TransientToolRuntimeValue
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1, freeze_json
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.write_operations import ledger_fingerprint, load_or_create_ledger_key
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.pilot_runtime.contracts import EditedArgs
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.contracts import TransientToolRuntimeValue
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1, freeze_json
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.write_operations import ledger_fingerprint, load_or_create_ledger_key
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.pilot_runtime.contracts import EditedArgs
 
 
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
@@ -183,16 +183,16 @@ def _stateful_describe(encoded_args: str) -> Any:
 
 def _proof_module() -> Any:
     try:
-        return importlib.import_module("offerpilot.ai.tool_runtime.legacy_proof")
+        return importlib.import_module("auroraagent.ai.tool_runtime.legacy_proof")
     except ModuleNotFoundError:
-        pytest.fail("Task 8 must provide offerpilot.ai.tool_runtime.legacy_proof", pytrace=False)
+        pytest.fail("Task 8 must provide auroraagent.ai.tool_runtime.legacy_proof", pytrace=False)
 
 
 def _route_module() -> Any:
     try:
-        return importlib.import_module("offerpilot.pilot_runtime.legacy_route")
+        return importlib.import_module("auroraagent.pilot_runtime.legacy_route")
     except ModuleNotFoundError:
-        pytest.fail("Task 8 must provide offerpilot.pilot_runtime.legacy_route", pytrace=False)
+        pytest.fail("Task 8 must provide auroraagent.pilot_runtime.legacy_route", pytrace=False)
 
 
 def _symbol(module: Any, name: str) -> Any:
@@ -208,7 +208,7 @@ def _task11_symbol(module: Any, name: str) -> Any:
 
 
 def _catalog_with_spy_executor(*, describe: Any = None) -> Any:
-    legacy_runtime = importlib.import_module("offerpilot.ai.tool_runtime.legacy")
+    legacy_runtime = importlib.import_module("auroraagent.ai.tool_runtime.legacy")
     baseline = legacy_specs.build_static_adapter_catalog()
     first, *rest = baseline.ordered_adapters
     replaced = legacy_runtime.LegacyDeterministicAdapterSpec(
@@ -242,7 +242,7 @@ def _components(
     describe: Any = None,
 ) -> tuple[Any, _VerifierBackend, Any]:
     route_module = _route_module()
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     data_dir = Path(tmp_path)
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -305,9 +305,9 @@ def _dispose_caller_session(session: Any) -> None:
 
 
 def _execution_context(backend: _VerifierBackend, session: Any) -> Any:
-    from offerpilot.pilot_runtime.contracts import LegacyExecutionContext
-    from offerpilot.repositories.application_jd_versions import ApplicationJDService
-    from offerpilot.repositories.application_outcomes import ApplicationOutcomesRepository
+    from auroraagent.pilot_runtime.contracts import LegacyExecutionContext
+    from auroraagent.repositories.application_jd_versions import ApplicationJDService
+    from auroraagent.repositories.application_outcomes import ApplicationOutcomesRepository
 
     return LegacyExecutionContext(
         session,
@@ -425,7 +425,7 @@ def test_prepare_reuses_the_single_legacy_argument_preparer_through_binding(
     tmp_path: Any,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    legacy_runtime = importlib.import_module("offerpilot.ai.tool_runtime.legacy")
+    legacy_runtime = importlib.import_module("auroraagent.ai.tool_runtime.legacy")
     route_module = _route_module()
     original = legacy_runtime.prepare_legacy_arguments
     calls: list[tuple[object, str, object, bool]] = []
@@ -2043,7 +2043,7 @@ def test_executor_cannot_end_the_caller_transaction_while_lease_is_live(
 ) -> None:
     from sqlalchemy import text
 
-    from offerpilot.ai.write_operations import WriteOperationError
+    from auroraagent.ai.write_operations import WriteOperationError
 
     global _EXECUTION_OBSERVER
 
@@ -2099,7 +2099,7 @@ def test_bound_projection_cannot_take_ledger_transaction_or_business_write_autho
 ) -> None:
     from sqlalchemy import text
 
-    from offerpilot.ai.write_operations import WriteOperationError
+    from auroraagent.ai.write_operations import WriteOperationError
 
     _EXECUTION_EVENTS.clear()
     components, backend, _key = _components(tmp_path)
@@ -3126,7 +3126,7 @@ def test_canonical_claim_time_and_route_digest_use_existing_ledger_domain(
     tmp_path: Any,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    write_operations = importlib.import_module("offerpilot.ai.write_operations")
+    write_operations = importlib.import_module("auroraagent.ai.write_operations")
     original = write_operations.ledger_fingerprint
     calls: list[tuple[str, object]] = []
 

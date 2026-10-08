@@ -7,19 +7,19 @@ from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy import text
 
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     ApplicationEvent,
     InterviewNote,
     InterviewReviewProposal,
     KnowledgeCapturedSourceMetadata,
     KnowledgeSource,
 )
-from offerpilot.repositories.application_events import ApplicationEventCreate, ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.interview_index import _item
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.application_events import ApplicationEventCreate, ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.interview_index import _item
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
 
 
 LEGACY_INTERVIEW_INDEX_KEYS = {

@@ -365,13 +365,13 @@ Set-Location ..
 ### Task 7: Real-AI 隔离 smoke 与本地浏览器验收
 
 **Files:**
-- Modify: src/offerpilot/smoke.py
+- Modify: src/auroraagent/smoke.py
 - Modify: tests/test_smoke.py
 - Create: scripts/pilot-real-ai-browser-harness.ps1
 
 - [ ] **Step 1: 先写 smoke 与 harness RED 回归**
 
-保留现有 run_http_smoke(real_ai=True) 的临时数据目录复制配置行为，新增断言：空数据目录运行结束后无 active Resume、无 master、无 Application Material Kit、无 Material Revision Proposal、无 Opportunity Fit Review；local profile 不使用真实 Provider。API smoke 只校验公共字段，不输出完整 Resume/JD、断言或模型原文。新增 harness 的静态回归测试必须断言它包含 OFFERPILOT_DATA 临时目录、只复制 config.json、启动后创建合成 Application/Resume、使用 TcpListener 和 Get-NetTCPConnection 校验监听 owner 属于 Get-TreeIds 进程树、等待人工浏览器完成、停止精确服务进程、执行数据库残留断言并删除临时目录；禁止在 harness 中调用默认数据目录的 oc start，也禁止拼接不存在的 /applications/{id} 前端路由。
+保留现有 run_http_smoke(real_ai=True) 的临时数据目录复制配置行为，新增断言：空数据目录运行结束后无 active Resume、无 master、无 Application Material Kit、无 Material Revision Proposal、无 Opportunity Fit Review；local profile 不使用真实 Provider。API smoke 只校验公共字段，不输出完整 Resume/JD、断言或模型原文。新增 harness 的静态回归测试必须断言它包含 AURORA_AGENT_DATA 临时目录、只复制 config.json、启动后创建合成 Application/Resume、使用 TcpListener 和 Get-NetTCPConnection 校验监听 owner 属于 Get-TreeIds 进程树、等待人工浏览器完成、停止精确服务进程、执行数据库残留断言并删除临时目录；禁止在 harness 中调用默认数据目录的 oc start，也禁止拼接不存在的 /applications/{id} 前端路由。
 
 浏览器 harness 需要记录自己创建的 applicationId 和 resumeId 列表。停服后先调用新的 scoped cleanup helper 删除这些 ID 对应的 MaterialRevisionProposal、ApplicationMaterialKit、OpportunityFitReview、ApplicationEvidenceBundle、Application 和 Resume，再调用 _assert_real_ai_smoke_data_clean(tempData)。cleanup helper 必须只接收 tempData 和显式合成 ID，不能执行“删除所有用户记录”的查询。
 
@@ -383,9 +383,9 @@ uv run pytest tests/test_smoke.py -q
 
 - [ ] **Step 3: 实现或确认隔离 API smoke**
 
-真实 profile 将 config.json 复制到 TemporaryDirectory(prefix="offerpilot-real-ai-verify-")，只在该目录创建合成数据；finally 删除临时目录并调用现有清理/残留断言。real-AI API smoke 调用 Triage/Deep Review，允许安全空结果；local profile 保持 fake model。若当前实现已经满足这些断言，只保留回归测试而不添加重复生产逻辑。
+真实 profile 将 config.json 复制到 TemporaryDirectory(prefix="auroraagent-real-ai-verify-")，只在该目录创建合成数据；finally 删除临时目录并调用现有清理/残留断言。real-AI API smoke 调用 Triage/Deep Review，允许安全空结果；local profile 保持 fake model。若当前实现已经满足这些断言，只保留回归测试而不添加重复生产逻辑。
 
-在 src/offerpilot/smoke.py 增加 _cleanup_real_ai_browser_records(data_dir, application_id, resume_ids)。它必须在一个 session 中按外键顺序删除：MaterialRevisionProposal、ApplicationMaterialKit、OpportunityFitReview、ApplicationEvidenceBundle、指定 Application，最后删除 resume_ids；所有 delete 都带 application_id 或显式 ID 条件。tests/test_smoke.py 必须建立 sourceData 与 tempData 两个独立数据库/配置，调用 cleanup helper 后断言 tempData 的残留计数为零、sourceData 的 Application/Resume/Material Kit/Proposal/Review 仍存在，并断言传入 tempData 之外的 ID 不会被删除。
+在 src/auroraagent/smoke.py 增加 _cleanup_real_ai_browser_records(data_dir, application_id, resume_ids)。它必须在一个 session 中按外键顺序删除：MaterialRevisionProposal、ApplicationMaterialKit、OpportunityFitReview、ApplicationEvidenceBundle、指定 Application，最后删除 resume_ids；所有 delete 都带 application_id 或显式 ID 条件。tests/test_smoke.py 必须建立 sourceData 与 tempData 两个独立数据库/配置，调用 cleanup helper 后断言 tempData 的残留计数为零、sourceData 的 Application/Resume/Material Kit/Proposal/Review 仍存在，并断言传入 tempData 之外的 ID 不会被删除。
 
 - [ ] **Step 4: 实现连续隔离浏览器 harness**
 
@@ -394,8 +394,8 @@ scripts/pilot-real-ai-browser-harness.ps1 必须把浏览器验收与服务生�
 ```powershell
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-pilot-real-ai-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-pilot-real-ai-' + [Guid]::NewGuid().ToString('N'))
 $portProbe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $portProbe.Start()
 $port = ([Net.IPEndPoint]$portProbe.LocalEndpoint).Port
@@ -404,8 +404,8 @@ New-Item -ItemType Directory -Force -Path $tempData | Out-Null
 if (Test-Path (Join-Path $sourceData 'config.json')) {
   Copy-Item (Join-Path $sourceData 'config.json') (Join-Path $tempData 'config.json')
 }
-$previousData = $env:OFFERPILOT_DATA
-$env:OFFERPILOT_DATA = $tempData
+$previousData = $env:AURORA_AGENT_DATA
+$env:AURORA_AGENT_DATA = $tempData
 $server = $null
 $applicationId = $null
 $resumeIds = @()
@@ -417,7 +417,7 @@ function Get-TreeIds([int]$processId) {
 try {
   $server = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
-    "Set-Location '$repo'; `$env:OFFERPILOT_DATA = '$tempData'; uv run oc start --port $port"
+    "Set-Location '$repo'; `$env:AURORA_AGENT_DATA = '$tempData'; uv run oc start --port $port"
   )
   $baseUrl = "http://127.0.0.1:$port"
   $ownerVerified = $false
@@ -432,7 +432,7 @@ try {
       $ownerVerified = $true
       break
     }
-    if ($server.HasExited) { throw "isolated OfferPilot exited before binding port $port" }
+    if ($server.HasExited) { throw "isolated AuroraAgent exited before binding port $port" }
     Start-Sleep -Milliseconds 500
   }
   if (-not $ownerVerified) { throw "harness could not verify the isolated listener owner on port $port" }
@@ -442,7 +442,7 @@ try {
       if ((Invoke-RestMethod -Uri "$baseUrl/api/health" -TimeoutSec 2).status -eq 'ok') { $ready = $true; break }
     } catch { Start-Sleep -Milliseconds 500 }
   }
-  if (-not $ready) { throw "isolated OfferPilot did not become healthy on port $port" }
+  if (-not $ready) { throw "isolated AuroraAgent did not become healthy on port $port" }
   # Create data through the local API only after the isolated service is healthy.
   $application = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/applications" -ContentType 'application/json' -Body (@{
     company_name = 'Pilot Browser Smoke'
@@ -469,12 +469,12 @@ finally {
     Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
   }
   if ($server) { Stop-Tree ([int]$server.Id) }
-  $env:OFFERPILOT_DATA = $previousData
+  $env:AURORA_AGENT_DATA = $previousData
   try {
     if ($applicationId) {
-      uv run python -c "from pathlib import Path; from offerpilot.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(r'$tempData'), $applicationId, [$($resumeIds -join ',')])"
+      uv run python -c "from pathlib import Path; from auroraagent.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(r'$tempData'), $applicationId, [$($resumeIds -join ',')])"
     }
-    uv run python -c "from pathlib import Path; from offerpilot.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(r'$tempData'))"
+    uv run python -c "from pathlib import Path; from auroraagent.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(r'$tempData'))"
   }
   finally {
     Remove-Item -Recurse -Force -LiteralPath $tempData

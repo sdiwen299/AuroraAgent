@@ -8,8 +8,8 @@ import pytest
 from domain_harness import execute_case
 from golden import load_golden
 
-from offerpilot.ai.tool_runtime.contracts import materialize_provider_payloads
-from offerpilot.ai.tool_specs.jd_analyses import jd_analysis_specs
+from auroraagent.ai.tool_runtime.contracts import materialize_provider_payloads
+from auroraagent.ai.tool_specs.jd_analyses import jd_analysis_specs
 
 
 JD_TOOLS = ("list_jd_analyses", "get_jd_analysis")

@@ -5,18 +5,18 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.db import init_database
-from offerpilot.repositories.application_jd_versions import ApplicationJDService
-from offerpilot.repositories.application_outcomes import (
+from auroraagent.db import init_database
+from auroraagent.repositories.application_jd_versions import ApplicationJDService
+from auroraagent.repositories.application_outcomes import (
     ApplicationOutcomeConflict,
     ApplicationOutcomeValidationError,
     ApplicationOutcomesRepository,
     OutcomeCreate,
     SubmissionSnapshotCreate,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 def _fixture(tmp_path: Path):  # type: ignore[no-untyped-def]

@@ -3,9 +3,9 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import event, text
 
-from offerpilot.db import init_database
-from offerpilot.pilot_timeline import PilotTimelineRepository, TimelineResyncRequired, TimelineSource
-from offerpilot.presentation_contracts import PilotTurnItemV1
+from auroraagent.db import init_database
+from auroraagent.pilot_timeline import PilotTimelineRepository, TimelineResyncRequired, TimelineSource
+from auroraagent.presentation_contracts import PilotTurnItemV1
 
 
 def setup_timeline(tmp_path):

@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from offerpilot.ai.interview_preparation_proposals import (
+from auroraagent.ai.interview_preparation_proposals import (
     InterviewPreparationModelError,
     _repair_prompt,
     _system_prompt,
@@ -14,7 +14,7 @@ from offerpilot.ai.interview_preparation_proposals import (
     safe_empty_interview_preparation_proposal,
     validate_interview_preparation,
 )
-from offerpilot.ai.types import Assistant
+from auroraagent.ai.types import Assistant
 
 
 def test_provider_prompt_spells_out_evidence_reference_object_contract() -> None:
@@ -99,7 +99,7 @@ def _v2_snapshot() -> dict[str, object]:
 def test_v2_snapshot_accepts_authoritative_exact_pair_practice_states(
     practice_state: str,
 ) -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         validate_interview_preparation_v2,
     )
 
@@ -117,7 +117,7 @@ def test_v2_snapshot_accepts_authoritative_exact_pair_practice_states(
 def test_v2_snapshot_rejects_non_authoritative_practice_states(
     practice_state: object,
 ) -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         validate_interview_preparation_v2,
     )
 
@@ -216,7 +216,7 @@ def test_validator_accepts_five_evidence_gated_preparation_arrays() -> None:
 
 
 def test_v2_validator_accepts_only_frozen_readiness_provider_paths() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         validate_interview_preparation_v2,
     )
 
@@ -248,7 +248,7 @@ def test_v2_validator_accepts_only_frozen_readiness_provider_paths() -> None:
 
 
 def test_v2_prompt_uses_bounded_untrusted_feedback_without_internal_ids() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         generate_interview_preparation_proposal_v2,
     )
 
@@ -267,7 +267,7 @@ def test_v2_prompt_uses_bounded_untrusted_feedback_without_internal_ids() -> Non
 
 
 def test_v2_prompt_spells_out_all_canonical_evidence_paths() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         _repair_prompt_v2,
         _system_prompt_v2,
     )
@@ -290,7 +290,7 @@ def test_v2_prompt_spells_out_all_canonical_evidence_paths() -> None:
 
 
 def test_v1_schema_prompt_and_validator_remain_closed_to_readiness_v2() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         INTERVIEW_PREPARATION_JSON_SCHEMA,
         _initial_prompt,
     )
@@ -323,7 +323,7 @@ def test_v1_schema_prompt_and_validator_remain_closed_to_readiness_v2() -> None:
 
 
 def test_readiness_feedback_final_wrapper_exact_utf8_budget() -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionError,
         canonical_readiness_feedback_bytes,
     )
@@ -381,7 +381,7 @@ def test_readiness_feedback_final_wrapper_exact_utf8_budget() -> None:
             "readiness_feedback": feedback,
         }
     )
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         validate_interview_preparation_v2,
     )
 
@@ -503,7 +503,7 @@ def test_generate_repairs_once_with_machine_failure_category() -> None:
 
 
 def test_v2_stateless_repair_reuses_frozen_input_without_invalid_output() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         INTERVIEW_PREPARATION_V2_RESPONSE_FORMAT,
         _repair_prompt_v2,
         generate_interview_preparation_proposal_v2,
@@ -562,7 +562,7 @@ def test_v2_stateless_repair_reuses_frozen_input_without_invalid_output() -> Non
 
 
 def test_v2_provider_failure_is_called_once_and_not_repaired() -> None:
-    from offerpilot.ai.interview_preparation_proposals import (
+    from auroraagent.ai.interview_preparation_proposals import (
         generate_interview_preparation_proposal_v2,
     )
 

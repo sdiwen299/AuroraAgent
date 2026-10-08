@@ -4,7 +4,7 @@ import type { LogEntry, Settings } from '@/services/chat';
 
 const settings: Settings = {
   version: '0.1.0',
-  data_dir: '/tmp/offerpilot',
+  data_dir: '/tmp/auroraagent',
   chat_auto_approve_writes: false,
   active_provider_id: 'local',
   fallback_provider_ids: [],
@@ -36,7 +36,7 @@ describe('buildDiagnosticsText', () => {
     const logs: LogEntry[] = [{ level: 'ERROR', message: 'provider failed' }];
     const text = buildDiagnosticsText(settings, logs);
 
-    expect(text).toContain('数据目录: /tmp/offerpilot');
+    expect(text).toContain('数据目录: /tmp/auroraagent');
     expect(text).toContain('ERROR provider failed');
     expect(text).not.toContain('sk-secret');
     expect(text).not.toContain('auth-secret');

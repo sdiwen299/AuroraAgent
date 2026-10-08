@@ -1,5 +1,5 @@
 {
-  "contract_name": "offerpilot.recovery-policy",
+  "contract_name": "auroraagent.recovery-policy",
   "version": 1,
   "domain": "mock_interview",
   "dispositions": [

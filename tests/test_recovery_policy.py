@@ -19,13 +19,13 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 CONTRACT_PATH = REPO_ROOT / "contracts" / "recovery-policy.v1.json"
 GENERATOR_PATH = REPO_ROOT / "scripts" / "generate_recovery_contract.py"
-GENERATED_PY = REPO_ROOT / "src" / "offerpilot" / "reliability" / "recovery_policy_generated.py"
+GENERATED_PY = REPO_ROOT / "src" / "auroraagent" / "reliability" / "recovery_policy_generated.py"
 GENERATED_TS = REPO_ROOT / "web" / "src" / "lib" / "recoveryPolicy" / "generatedRecoveryPolicy.ts"
 
 CONTRACT = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
@@ -196,7 +196,7 @@ def test_generator_is_deterministic_and_committed_outputs_are_current() -> None:
 
 
 def test_generated_python_module_matches_contract_json() -> None:
-    from offerpilot.reliability.recovery_policy_generated import RECOVERY_POLICIES
+    from auroraagent.reliability.recovery_policy_generated import RECOVERY_POLICIES
 
     assert set(RECOVERY_POLICIES) == set(CONTRACT_BY_CODE)
     for code, entry in CONTRACT_BY_CODE.items():
@@ -227,7 +227,7 @@ def test_generated_typescript_module_matches_contract_json() -> None:
 
 
 def test_every_api_mock_interview_error_code_has_a_contract_entry() -> None:
-    api_source = (REPO_ROOT / "src" / "offerpilot" / "api.py").read_text(encoding="utf-8")
+    api_source = (REPO_ROOT / "src" / "auroraagent" / "api.py").read_text(encoding="utf-8")
     emitted = set(re.findall(r'(?:code=|, )"((?:mock_interview|interview_practice_case|application_jd_version)[a-z0-9_]*)"', api_source))
     assert emitted, "api.py must still emit coded mock-interview errors"
     assert emitted <= set(CONTRACT_BY_CODE), sorted(emitted - set(CONTRACT_BY_CODE))
@@ -261,7 +261,7 @@ def test_application_provider_error_matches_contract_and_replay_keeps_same_key(t
     assert replay.json()["attempt_id"] == first.json()["attempt_id"]
     calls_after_replay = model.calls
     assert calls_after_replay == 1  # same-key replay while lease is active never re-calls the provider
-    from offerpilot.reliability.trace import hash_idempotency_key, read_mock_interview_traces
+    from auroraagent.reliability.trace import hash_idempotency_key, read_mock_interview_traces
 
     trace = read_mock_interview_traces(tmp_path)[-1]
     assert trace["operation_id"] == first.json()["operation_id"]
@@ -404,7 +404,7 @@ def test_quick_attempt_not_found_matches_contract(tmp_path) -> None:
 
 
 def test_trace_envelope_records_all_fields_and_no_sensitive_content(tmp_path) -> None:
-    from offerpilot.reliability.trace import (
+    from auroraagent.reliability.trace import (
         TRACE_FIELDS,
         MockInterviewTraceEnvelope,
         read_mock_interview_traces,
@@ -447,7 +447,7 @@ def test_trace_envelope_records_all_fields_and_no_sensitive_content(tmp_path) ->
 
 
 def test_trace_envelope_sanitizes_idempotency_key(tmp_path) -> None:
-    from offerpilot.reliability.trace import hash_idempotency_key
+    from auroraagent.reliability.trace import hash_idempotency_key
 
     digest = hash_idempotency_key("attempt-secret-key-001")
     assert digest.startswith("idem-")
@@ -456,8 +456,8 @@ def test_trace_envelope_sanitizes_idempotency_key(tmp_path) -> None:
 
 
 def test_feedback_trace_records_the_final_cas_disposition(tmp_path, monkeypatch) -> None:
-    from offerpilot.reliability.trace import read_mock_interview_traces
-    from offerpilot.repositories.mock_interviews import MockInterviewRepository
+    from auroraagent.reliability.trace import read_mock_interview_traces
+    from auroraagent.repositories.mock_interviews import MockInterviewRepository
 
     client, app_id, event_id, resume_id = _application_client(tmp_path)
     base = f"/api/applications/{app_id}/events/{event_id}/mock-interview/attempts"
@@ -499,8 +499,8 @@ def test_feedback_trace_records_the_final_cas_disposition(tmp_path, monkeypatch)
 def test_provider_trace_survives_source_conflict_during_failure_finalization(
     tmp_path, monkeypatch
 ) -> None:
-    from offerpilot.reliability.trace import read_mock_interview_traces
-    from offerpilot.repositories.mock_interviews import (
+    from auroraagent.reliability.trace import read_mock_interview_traces
+    from auroraagent.repositories.mock_interviews import (
         MockInterviewRepository,
         MockInterviewSourceChanged,
     )
@@ -533,8 +533,8 @@ def test_provider_trace_survives_source_conflict_during_failure_finalization(
 def test_stale_contract_failure_finalization_is_reconcilable_not_terminal(
     tmp_path, monkeypatch
 ) -> None:
-    from offerpilot.reliability.trace import read_mock_interview_traces
-    from offerpilot.repositories.mock_interviews import MockInterviewRepository
+    from auroraagent.reliability.trace import read_mock_interview_traces
+    from auroraagent.repositories.mock_interviews import MockInterviewRepository
 
     model = _ContractFailureModel()
     client, app_id, event_id, resume_id = _application_client(tmp_path, model)
@@ -563,8 +563,8 @@ def test_stale_contract_failure_finalization_is_reconcilable_not_terminal(
 def test_successful_provider_source_drift_returns_correlated_trace(
     tmp_path, monkeypatch
 ) -> None:
-    from offerpilot.reliability.trace import read_mock_interview_traces
-    from offerpilot.repositories.mock_interviews import (
+    from auroraagent.reliability.trace import read_mock_interview_traces
+    from auroraagent.repositories.mock_interviews import (
         MockInterviewRepository,
         MockInterviewSourceChanged,
     )
@@ -593,7 +593,7 @@ def test_successful_provider_source_drift_returns_correlated_trace(
 
 
 def test_existing_attempt_replay_revalidates_frozen_sources(tmp_path, monkeypatch) -> None:
-    from offerpilot.repositories.mock_interviews import (
+    from auroraagent.repositories.mock_interviews import (
         MockInterviewRepository,
         MockInterviewSourceChanged,
     )

@@ -9,11 +9,11 @@ import tempfile
 import time
 from typing import Any
 
-from offerpilot.api import create_app
-from offerpilot.config import resolve_data_dir
-from offerpilot.models import ApplicationMaterialKit
-from offerpilot.repositories.json_contract import canonical_json
-from offerpilot.smoke import (
+from auroraagent.api import create_app
+from auroraagent.config import resolve_data_dir
+from auroraagent.models import ApplicationMaterialKit
+from auroraagent.repositories.json_contract import canonical_json
+from auroraagent.smoke import (
     _cleanup_real_ai_smoke_records,
     _full_verify_client,
     _read_material_proposal_smoke_diagnostic,
@@ -28,7 +28,7 @@ from scripts.full_real_ai_verify import (
     _safe_config_summary,
     _write_json,
 )
-from offerpilot.db import session_factory_for_data_dir
+from auroraagent.db import session_factory_for_data_dir
 
 
 TARGET_JD = "Evidence QA Engineer: build reliable API quality workflows."
@@ -51,18 +51,18 @@ def run_targeted_diagnostic(
     ):
         (report_dir / artifact).unlink(missing_ok=True)
 
-    isolated_data = Path(tempfile.mkdtemp(prefix="offerpilot-material-proposal-targeted-"))
+    isolated_data = Path(tempfile.mkdtemp(prefix="auroraagent-material-proposal-targeted-"))
     source_config = source_data / "config.json"
     source_hash_before = source_config.read_bytes() if source_config.is_file() else b""
     previous_env = {
         key: os.environ.get(key)
         for key in (
-            "OFFERPILOT_DATA",
-            "OFFERPILOT_FULL_VERIFY_REPORT_DIR",
-            "OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE",
-            "OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE",
-            "OFFERPILOT_FULL_VERIFY_OPERATION",
-            "OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE",
+            "AURORA_AGENT_DATA",
+            "AURORA_AGENT_FULL_VERIFY_REPORT_DIR",
+            "AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE",
+            "AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE",
+            "AURORA_AGENT_FULL_VERIFY_OPERATION",
+            "AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE",
             "NO_PROXY",
         )
     }
@@ -85,20 +85,20 @@ def run_targeted_diagnostic(
                 "operation": "material_proposal",
                 "config": config_summary,
                 "child_env": {
-                    "OFFERPILOT_DATA": str(isolated_data),
-                    "OFFERPILOT_FULL_VERIFY_REPORT_DIR": str(report_dir),
-                    "OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE": str(request_audit),
-                    "OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(operation_audit),
+                    "AURORA_AGENT_DATA": str(isolated_data),
+                    "AURORA_AGENT_FULL_VERIFY_REPORT_DIR": str(report_dir),
+                    "AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE": str(request_audit),
+                    "AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE": str(operation_audit),
                 },
                 "source_fixture": "synthetic_resume_and_material_kit",
             },
         )
-        os.environ["OFFERPILOT_DATA"] = str(isolated_data)
-        os.environ["OFFERPILOT_FULL_VERIFY_REPORT_DIR"] = str(report_dir)
-        os.environ["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"] = str(request_audit)
-        os.environ["OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE"] = str(operation_audit)
-        os.environ["OFFERPILOT_FULL_VERIFY_OPERATION"] = "material_proposal"
-        os.environ["OFFERPILOT_FULL_VERIFY_ACTIVE_STAGE"] = "material_proposal"
+        os.environ["AURORA_AGENT_DATA"] = str(isolated_data)
+        os.environ["AURORA_AGENT_FULL_VERIFY_REPORT_DIR"] = str(report_dir)
+        os.environ["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"] = str(request_audit)
+        os.environ["AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE"] = str(operation_audit)
+        os.environ["AURORA_AGENT_FULL_VERIFY_OPERATION"] = "material_proposal"
+        os.environ["AURORA_AGENT_FULL_VERIFY_ACTIVE_STAGE"] = "material_proposal"
         os.environ["NO_PROXY"] = "127.0.0.1,localhost"
 
         app = create_app(data_dir=isolated_data)
@@ -225,7 +225,7 @@ def run_targeted_diagnostic(
         summary = _build_summary(
             config_summary=locals().get("config_summary") or {
                 "config_path": str(isolated_data / "config.json"),
-                "offerpilot_data": str(isolated_data),
+                "auroraagent_data": str(isolated_data),
                 "provider": "",
                 "model": model,
             },

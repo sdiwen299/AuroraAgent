@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def _create_pre_negotiation_db(db_path: Path) -> None:

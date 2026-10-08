@@ -12,35 +12,35 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import select
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.types import Message
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.types import Message
+from auroraagent.ai.tool_authority import (
     AuthorityFactory,
     AuthorityPhaseError,
     PendingAuthorityClaim,
     TrustedContextScope,
 )
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     ProviderToolContract,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.catalog import SegmentToolCatalogLease, ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.metadata import CommittedPrimaryOperationIdentityV1
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_runtime.catalog import SegmentToolCatalogLease, ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.metadata import CommittedPrimaryOperationIdentityV1
+from auroraagent.ai.write_operations import (
     WriteOperationRepository,
     load_or_create_ledger_key,
     pending_action_identity,
 )
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation, WriteOperation
-from offerpilot.pilot_runtime.persistence import (
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation, WriteOperation
+from auroraagent.pilot_runtime.persistence import (
     ChatPersistenceCoordinator,
     PersistenceStatus,
 )
-from offerpilot.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
+from auroraagent.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,

@@ -13,8 +13,8 @@
 ### Task 1: Schema and migration
 
 **Files:**
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
 - Create: `tests/test_application_outcome_migrations.py`
 
 - [ ] Write migration tests asserting both new tables, indexes, foreign keys, unique application/key constraints, migration `0020_application_outcome_feedback`, idempotent upgrade, and coexistence with `0018`/`0019`.
@@ -26,7 +26,7 @@
 ### Task 2: Repository and source-state derivation
 
 **Files:**
-- Create: `src/offerpilot/repositories/application_outcomes.py`
+- Create: `src/auroraagent/repositories/application_outcomes.py`
 - Create: `tests/test_application_outcomes_repository.py`
 
 - [ ] Write failing tests for atomic ownership checks, canonical snapshots, same-key replay, changed-input conflict, append-only outcomes, enum/length validation, source `current|changed|missing`, event ownership, stable ordering and deterministic summary counts.
@@ -37,8 +37,8 @@
 ### Task 3: REST API
 
 **Files:**
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/test_application_outcomes_api.py`
 
 - [ ] Write failing API tests for all five routes, 201/200 replay, stable 404/409/422 codes, source states, summary and no cross-domain writes.
@@ -49,9 +49,9 @@
 ### Task 4: Deterministic Pilot confirmation
 
 **Files:**
-- Modify: `src/offerpilot/ai/deterministic_actions.py`
-- Modify: `src/offerpilot/ai/tools.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/ai/deterministic_actions.py`
+- Modify: `src/auroraagent/ai/tools.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] Write failing tests for explicit archive/outcome actions, provider call count zero, PendingAction persistence, approval/rejection, same token/key recovery, edited fields, application ownership and no keyword auto-trigger.
@@ -82,7 +82,7 @@
 ### Task 6: Smoke, browser acceptance and screenshots
 
 **Files:**
-- Modify: `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/smoke.py`
 - Create: `docs/reports/2026-08-12-application-outcome-feedback-release-verification.md`
 - Create: `artifacts/2026-08-12-application-outcome-feedback/*.png`
 

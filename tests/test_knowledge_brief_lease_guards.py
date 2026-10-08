@@ -7,29 +7,29 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
-from offerpilot.config import Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import (
+from auroraagent.config import Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_MIN_CONTEXT_WINDOW,
     BRIEF_PROMPT_VERSION,
     BRIEF_SCHEMA_VERSION,
 )
-from offerpilot.knowledge.repository import (
+from auroraagent.knowledge.repository import (
     BRIEF_LEASE_REQUEUE_MAX,
     BriefAttemptCreateInput,
     JobCreateInput,
     KnowledgeRepository,
 )
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.knowledge.worker import (
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.knowledge.worker import (
     BRIEF_HEARTBEAT_LEASE_SECONDS,
     BRIEF_MODEL_TIMEOUT_SECONDS,
     BriefWorker,
     ExtractionWorker,
     KnowledgeJobRunner,
 )
-from offerpilot.models import KnowledgeExtractionSnapshot, KnowledgeJob, KnowledgeSource
+from auroraagent.models import KnowledgeExtractionSnapshot, KnowledgeJob, KnowledgeSource
 
 
 def _setup(tmp_path: Path) -> tuple[KnowledgeRepository, int, int]:

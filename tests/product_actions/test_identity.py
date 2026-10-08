@@ -13,9 +13,9 @@ from pathlib import Path
 
 import pytest
 
-import offerpilot.product_actions.issuer as issuer_module
-from offerpilot.ai.write_operations import LedgerKeyDomain
-from offerpilot.product_actions.contracts import (
+import auroraagent.product_actions.issuer as issuer_module
+from auroraagent.ai.write_operations import LedgerKeyDomain
+from auroraagent.product_actions.contracts import (
     HistoricalStoryRouteProof,
     ProductActionContractError,
     ProductActionExecutionAuthorization,
@@ -28,7 +28,7 @@ from offerpilot.product_actions.contracts import (
     decode_product_action_route_payload,
     tagged_optional,
 )
-from offerpilot.product_actions.issuer import LedgerKeyProfileStoreV1
+from auroraagent.product_actions.issuer import LedgerKeyProfileStoreV1
 from tests.product_actions.conftest import raw_json, signal_route, story_route
 
 
@@ -291,17 +291,17 @@ def test_identity_goldens_are_exact_across_fresh_processes_hash_seeds_and_sqlite
         import sys
         from pathlib import Path
         from sqlalchemy import text
-        from offerpilot.ai.write_operations import LedgerKeyDomain
-        from offerpilot.db import init_database
-        from offerpilot.models import InterviewStoryProposalAttempt
-        from offerpilot.product_actions.catalog import ProductActionCatalogV1
-        from offerpilot.product_actions.contracts import ProductActionProofRegistryV1
-        from offerpilot.product_actions.issuer import (
+        from auroraagent.ai.write_operations import LedgerKeyDomain
+        from auroraagent.db import init_database
+        from auroraagent.models import InterviewStoryProposalAttempt
+        from auroraagent.product_actions.catalog import ProductActionCatalogV1
+        from auroraagent.product_actions.contracts import ProductActionProofRegistryV1
+        from auroraagent.product_actions.issuer import (
             InterviewStoryActionIssuer,
             LedgerKeyProfileStoreV1,
             ReviewReadinessActionIssuer,
         )
-        from offerpilot.product_actions.repository import ProductActionProposalRepository
+        from auroraagent.product_actions.repository import ProductActionProposalRepository
         from tests.product_actions.conftest import raw_json, signal_route, story_route
 
         key = LedgerKeyDomain("11111111-1111-4111-8111-111111111111", b"1" * 32)

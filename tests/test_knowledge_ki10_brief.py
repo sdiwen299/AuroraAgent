@@ -19,9 +19,9 @@ from typing import Any
 import pytest
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_MIN_CONTEXT_WINDOW,
     BRIEF_PROMPT_VERSION,
@@ -30,24 +30,24 @@ from offerpilot.knowledge.brief import (
     parse_brief_payload,
     validate_brief_against_evidence,
 )
-from offerpilot.knowledge.brief import BriefSchemaError
-from offerpilot.knowledge.repository import (
+from auroraagent.knowledge.brief import BriefSchemaError
+from auroraagent.knowledge.repository import (
     BriefAttemptCreateInput,
     EvidenceRecord,
     KnowledgeRepository,
 )
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.knowledge.worker import (
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.knowledge.worker import (
     BRIEF_PROVIDER_MAX_ATTEMPTS,
     BriefWorker,
     ExtractionWorker,
     KnowledgeJobRunner,
 )
-from offerpilot.models import KnowledgeExtractionSnapshot
+from auroraagent.models import KnowledgeExtractionSnapshot
 
 _CONTENT = (
     "# 概述\n\n"
-    "Source 描述 OfferPilot 与 SQLite 单一事实源决策。\n\n"
+    "Source 描述 AuroraAgent 与 SQLite 单一事实源决策。\n\n"
     "## 第二段\n\n"
     "Evidence 是引用单位，Evidence 不重叠。\n"
 )
@@ -112,7 +112,7 @@ def _valid_payload_dict() -> dict[str, Any]:
         "schema_version": 2,
         "language": "zh-CN",
         "overview": [
-            {"statement": "Source 描述 OfferPilot 架构。", "evidence_ids": []},
+            {"statement": "Source 描述 AuroraAgent 架构。", "evidence_ids": []},
             {"statement": "Source 给出 SQLite SSOT 决策。", "evidence_ids": []},
         ],
         "key_points": [
@@ -122,7 +122,7 @@ def _valid_payload_dict() -> dict[str, Any]:
             {
                 "section_key": "概述",
                 "heading_path": ["概述"],
-                "summary": "该章节介绍 OfferPilot 整体方向。",
+                "summary": "该章节介绍 AuroraAgent 整体方向。",
                 "evidence_ids": [],
             },
         ],
@@ -361,7 +361,7 @@ def test_no_provider_source_stays_extracted_evidence_searchable(tmp_path: Path) 
     assert source.brief_status == "pending"
     assert source.brief_block_reason == "provider_unavailable"
     # Evidence FTS 仍可搜索。
-    hits = repository.search_evidence("OfferPilot", limit=5)
+    hits = repository.search_evidence("AuroraAgent", limit=5)
     assert hits, "无 Provider 时 Evidence 必须仍可搜索"
 
 
@@ -533,7 +533,7 @@ def test_context_window_error_does_not_retry_or_fallback(tmp_path: Path) -> None
 
 def test_retry_delay_prefers_retry_after_header() -> None:
     """Spec §11.4：优先 Retry-After，否则 2s/10s 退避。"""
-    from offerpilot.knowledge.worker import (
+    from auroraagent.knowledge.worker import (
         BRIEF_RETRY_BACKOFF_SECONDS,
         BRIEF_RETRY_MAX_DELAY_SECONDS,
         _extract_retry_after_seconds,
@@ -783,7 +783,7 @@ def test_first_failure_without_existing_brief_marks_failed(tmp_path: Path) -> No
 
 
 def _job_brief_input(source_id: int, snapshot_id: int, *, stage: str = "brief_pending"):
-    from offerpilot.knowledge.repository import JobCreateInput
+    from auroraagent.knowledge.repository import JobCreateInput
 
     return JobCreateInput(
         kind="brief",
@@ -1114,7 +1114,7 @@ def test_cancel_during_rebuild_preserves_existing_brief(tmp_path: Path) -> None:
     assert existing is not None
     existing_payload = existing.payload_json
 
-    from offerpilot.knowledge.repository import JobCreateInput
+    from auroraagent.knowledge.repository import JobCreateInput
 
     job = repository.create_job(
         JobCreateInput(
@@ -1182,7 +1182,7 @@ def _attempt_namespace(**overrides: Any) -> SimpleNamespace:
 
 def test_api_attempt_payload_exposes_ki10_fields() -> None:
     """Spec §14：处理记录展示实际 Provider、token、耗时、重试。"""
-    from offerpilot.api import _knowledge_brief_attempt_payload
+    from auroraagent.api import _knowledge_brief_attempt_payload
 
     payload = _knowledge_brief_attempt_payload(_attempt_namespace())
     assert payload is not None
@@ -1198,7 +1198,7 @@ def test_api_attempt_payload_exposes_ki10_fields() -> None:
 
 def test_api_attempt_payload_does_not_expose_api_key_or_prompt() -> None:
     """Spec §18：Attempt payload 不暴露 API Key、完整 Prompt 或原始响应。"""
-    from offerpilot.api import _knowledge_brief_attempt_payload
+    from auroraagent.api import _knowledge_brief_attempt_payload
 
     payload = _knowledge_brief_attempt_payload(_attempt_namespace())
     assert payload is not None

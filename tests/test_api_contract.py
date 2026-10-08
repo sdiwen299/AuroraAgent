@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def test_bad_path_id_returns_go_style_error(tmp_path):

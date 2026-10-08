@@ -7,12 +7,12 @@ from scripts.full_real_ai_verify import (
     _safe_config_summary,
     run_full_verify,
 )
-from offerpilot.ai import client as ai_client
-from offerpilot.ai.client import ConfiguredAIClient
-from offerpilot.ai.types import Message
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.smoke import run_http_smoke
-from offerpilot.smoke import _full_verify_client
+from auroraagent.ai import client as ai_client
+from auroraagent.ai.client import ConfiguredAIClient
+from auroraagent.ai.types import Message
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.smoke import run_http_smoke
+from auroraagent.smoke import _full_verify_client
 
 
 def test_prepare_temp_config_overrides_only_isolated_active_model(tmp_path: Path) -> None:
@@ -177,7 +177,7 @@ def test_real_ai_smoke_persists_inner_failure_before_isolation_cleanup(monkeypat
         encoding="utf-8",
     )
     report_dir = tmp_path / "report"
-    monkeypatch.setenv("OFFERPILOT_FULL_VERIFY_REPORT_DIR", str(report_dir))
+    monkeypatch.setenv("AURORA_AGENT_FULL_VERIFY_REPORT_DIR", str(report_dir))
 
     observed: dict[str, Path] = {}
 
@@ -185,7 +185,7 @@ def test_real_ai_smoke_persists_inner_failure_before_isolation_cleanup(monkeypat
         observed["data_dir"] = data_dir
         raise RuntimeError("provider response failed after private prompt")
 
-    monkeypatch.setattr("offerpilot.smoke._run_http_smoke", fail_http_smoke)
+    monkeypatch.setattr("auroraagent.smoke._run_http_smoke", fail_http_smoke)
 
     try:
         run_http_smoke(source_data, real_ai=True)
@@ -237,10 +237,10 @@ def test_run_full_verify_records_actual_child_environment_and_exit(monkeypatch, 
 
     def fake_popen(args, **kwargs):
         env = kwargs["env"]
-        assert env["OFFERPILOT_DATA"] != str(source_data)
-        assert env["OFFERPILOT_FULL_VERIFY_REPORT_DIR"] == str(report_dir)
-        assert env["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"].startswith(str(report_dir))
-        Path(env["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"]).write_text(
+        assert env["AURORA_AGENT_DATA"] != str(source_data)
+        assert env["AURORA_AGENT_FULL_VERIFY_REPORT_DIR"] == str(report_dir)
+        assert env["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"].startswith(str(report_dir))
+        Path(env["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"]).write_text(
             json.dumps(
                 {
                     "kind": "provider_request_metadata",
@@ -336,8 +336,8 @@ def test_build_summary_identifies_the_first_failed_operation(tmp_path: Path) -> 
 
 def test_provider_result_audit_records_operation_duration_and_request_hash(monkeypatch, tmp_path: Path) -> None:
     audit_path = tmp_path / "operations.jsonl"
-    monkeypatch.setenv("OFFERPILOT_FULL_VERIFY_OPERATION_AUDIT_FILE", str(audit_path))
-    monkeypatch.setenv("OFFERPILOT_FULL_VERIFY_OPERATION", "interview_preparation")
+    monkeypatch.setenv("AURORA_AGENT_FULL_VERIFY_OPERATION_AUDIT_FILE", str(audit_path))
+    monkeypatch.setenv("AURORA_AGENT_FULL_VERIFY_OPERATION", "interview_preparation")
 
     def fake_completion(**kwargs):
         return {"id": "provider-request-123", "choices": [{"message": {"content": "ok"}}]}
@@ -388,7 +388,7 @@ def test_full_verify_client_accepts_an_explicit_real_ai_timeout(monkeypatch) -> 
         def __exit__(self, *_args):
             return None
 
-    monkeypatch.setattr("offerpilot.smoke.httpx.Client", FakeClient)
+    monkeypatch.setattr("auroraagent.smoke.httpx.Client", FakeClient)
 
     with _full_verify_client("http://127.0.0.1:12345", timeout_seconds=180):
         pass

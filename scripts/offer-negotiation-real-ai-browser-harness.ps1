@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
 $cdpUrl = $env:OFFER_NEGOTIATION_CDP_URL
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-offer-negotiation-' + [Guid]::NewGuid().ToString('N'))
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-offer-negotiation-' + [Guid]::NewGuid().ToString('N'))
 $httpAudit = Join-Path $tempData 'http-audit.jsonl'
 $providerAudit = Join-Path $tempData 'provider-audit.jsonl'
 $browserAudit = Join-Path $tempData 'browser-network.jsonl'
@@ -16,8 +16,8 @@ $baseUrl = $null
 $offerIds = @()
 $dimensionIds = @()
 $baselineCounts = $null
-$previousData = $env:OFFERPILOT_DATA
-$previousHttpAudit = $env:OFFERPILOT_HTTP_AUDIT_FILE
+$previousData = $env:AURORA_AGENT_DATA
+$previousHttpAudit = $env:AURORA_AGENT_HTTP_AUDIT_FILE
 $previousHttpsProxy = $env:HTTPS_PROXY
 $previousHttpProxy = $env:HTTP_PROXY
 $previousNoProxy = $env:NO_PROXY
@@ -234,8 +234,8 @@ try {
   $port = Get-FreePort
   $proxyPort = Get-FreePort
   $baseUrl = "http://127.0.0.1:$port"
-  $env:OFFERPILOT_DATA = $tempData
-  $env:OFFERPILOT_HTTP_AUDIT_FILE = $httpAudit
+  $env:AURORA_AGENT_DATA = $tempData
+  $env:AURORA_AGENT_HTTP_AUDIT_FILE = $httpAudit
   $env:HTTPS_PROXY = "http://127.0.0.1:$proxyPort"
   $env:HTTP_PROXY = "http://127.0.0.1:$proxyPort"
   $env:NO_PROXY = '127.0.0.1,localhost'
@@ -335,8 +335,8 @@ try {
   Stop-Tree $browserAuditor
   Stop-Tree $server
   Stop-Tree $proxy
-  if ($previousData) { $env:OFFERPILOT_DATA = $previousData } else { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-  if ($previousHttpAudit) { $env:OFFERPILOT_HTTP_AUDIT_FILE = $previousHttpAudit } else { Remove-Item Env:OFFERPILOT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue }
+  if ($previousData) { $env:AURORA_AGENT_DATA = $previousData } else { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+  if ($previousHttpAudit) { $env:AURORA_AGENT_HTTP_AUDIT_FILE = $previousHttpAudit } else { Remove-Item Env:AURORA_AGENT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue }
   if ($previousHttpsProxy) { $env:HTTPS_PROXY = $previousHttpsProxy } else { Remove-Item Env:HTTPS_PROXY -ErrorAction SilentlyContinue }
   if ($previousHttpProxy) { $env:HTTP_PROXY = $previousHttpProxy } else { Remove-Item Env:HTTP_PROXY -ErrorAction SilentlyContinue }
   if ($previousNoProxy) { $env:NO_PROXY = $previousNoProxy } else { Remove-Item Env:NO_PROXY -ErrorAction SilentlyContinue }

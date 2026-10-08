@@ -1,8 +1,8 @@
-# OfferPilot v0.1 Closeout Design
+# AuroraAgent v0.1 Closeout Design
 
 Date: 2026-07-10
 Status: Approved in conversation; awaiting written-spec review
-Canonical product source: [OfferPilot 开源 MVP 版本 Wiki](https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf)
+Canonical product source: [AuroraAgent 开源 MVP 版本 Wiki](https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf)
 
 ## 1. Context
 

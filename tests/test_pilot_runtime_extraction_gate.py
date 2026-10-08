@@ -11,7 +11,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 API = SRC / "api.py"
 TRANSPORT = SRC / "chat_transport.py"
 RUNTIME = SRC / "pilot_runtime"
@@ -648,7 +648,7 @@ def _task12_chat_haru_cross_source_query(sources: dict[str, str]) -> bool:
                         )
 
     def target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for module in trees:
             dotted = (
@@ -1877,7 +1877,7 @@ def _task12_readiness_runtime_violations(sources: dict[str, str]) -> list[str]:
             )
 
         if _task12_runtime_boundary_path(name) and (
-            "offerpilot.review_readiness.contributor" in imports
+            "auroraagent.review_readiness.contributor" in imports
             or "ConfirmedReadinessContributorPort" in resolved_names
         ):
             findings.append(f"confirmed-memory:registered:{name}")
@@ -2191,7 +2191,7 @@ def _task12_readiness_runtime_violations(sources: dict[str, str]) -> list[str]:
 
 def test_future_readiness_contributor_is_absent_from_agent_runtime_call_graph() -> None:
     future_symbol = "ConfirmedReadinessContributorPort"
-    future_module = "offerpilot.review_readiness.contributor"
+    future_module = "auroraagent.review_readiness.contributor"
     paths = (
         SRC / "ai" / "agent_loop.py",
         SRC / "context_projector" / "projector.py",
@@ -2285,7 +2285,7 @@ def build():
     ]
     aliased_ready_spread = {
         "ai/agent_loop.py": '''
-from offerpilot.context_projector.contracts import ContributorResult as Result
+from auroraagent.context_projector.contracts import ContributorResult as Result
 def build():
     values = {"name": "confirmed_memory", "status": "ready", "messages": ()}
     return Result(**values)
@@ -2296,7 +2296,7 @@ def build():
     ]
     helper_ready_spread = {
         "pilot_runtime/new_adapter.py": '''
-from offerpilot.context_projector.contracts import ContributorResult as Result
+from auroraagent.context_projector.contracts import ContributorResult as Result
 def values():
     return dict(name="confirmed_memory", status="ready", messages=())
 def factory():
@@ -2322,7 +2322,7 @@ def build():
 
     registered = {
         "pilot_runtime/composition.py": """
-from offerpilot.review_readiness.contributor import ConfirmedReadinessContributorPort as Port
+from auroraagent.review_readiness.contributor import ConfirmedReadinessContributorPort as Port
 def compose(registry):
     registry.register("confirmed_memory", Port)
 """
@@ -2341,7 +2341,7 @@ def _load_chat_source_messages(session):
 
     signal_query_any_chat_function = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def send_chat(session):
     statement = select(Signal)
     return session.execute(statement)
@@ -2353,7 +2353,7 @@ def send_chat(session):
 
     signal_query_haru_route = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 @app.post("/api/pilot/context")
 def prepare_context(session):
     return session.scalars(select(Signal))
@@ -2379,13 +2379,13 @@ def unrelated_name(session):
     ]
     cross_source_signal_query = {
         "api.py": '''
-from offerpilot.services.context import load_context
+from auroraagent.services.context import load_context
 @app.post("/api/chat/context")
 def route(session):
     return load_context(session)
 ''',
         "services/context.py": '''
-from offerpilot.models import InterviewReadinessSignal as S
+from auroraagent.models import InterviewReadinessSignal as S
 def load_context(session):
     return session.scalars(select(S))
 ''',
@@ -2476,9 +2476,9 @@ def test_task12_readiness_runtime_production_gate() -> None:
 def test_task12_confirmed_memory_policy_budget_and_confirmation_proof() -> None:
     from pydantic import ValidationError
 
-    from offerpilot.confirmed_memory.repository import MemoryMutation
-    from offerpilot.context_sources.contracts import ContributorPolicy
-    from offerpilot.context_sources.loader import _contributor
+    from auroraagent.confirmed_memory.repository import MemoryMutation
+    from auroraagent.context_sources.contracts import ContributorPolicy
+    from auroraagent.context_sources.loader import _contributor
 
     payload = {
         "mutation_id": "00000000-0000-4000-8000-000000000001",
@@ -3191,9 +3191,9 @@ def _validate_unbounded_queue(tree: ast.AST) -> None:
 def _validate_execution_host_boundary(tree: ast.AST) -> None:
     imports = _imports(tree)
     forbidden_modules = {
-        "offerpilot.repositories",
-        "offerpilot.agent_runtime.journal",
-        "offerpilot.ai.write_operations",
+        "auroraagent.repositories",
+        "auroraagent.agent_runtime.journal",
+        "auroraagent.ai.write_operations",
     }
     assert not any(
         module in forbidden_modules
@@ -4075,7 +4075,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_routes_are_runtime_only,
     )
     _expect_rejected(
-        "from offerpilot.legacy import run_turn as execute\n"
+        "from auroraagent.legacy import run_turn as execute\n"
         "def send_chat():\n    return execute()\n"
         "def send_chat_stream():\n    return None\n"
         "def confirm_chat():\n    return None\n"
@@ -4083,7 +4083,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_routes_are_runtime_only,
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import SyncAgentExecutionHost as Host\n"
+        "from auroraagent.chat_transport import SyncAgentExecutionHost as Host\n"
         "def send_chat():\n    return Host()\n"
         "def send_chat_stream():\n    return None\n"
         "def confirm_chat():\n    return None\n"
@@ -4102,7 +4102,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_stream_primitive_in_api,
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import encode_sse_event as Emit\nEmit({}, seq=1)",
+        "from auroraagent.chat_transport import encode_sse_event as Emit\nEmit({}, seq=1)",
         _validate_no_stream_primitive_in_api,
     )
     _expect_rejected(
@@ -4110,7 +4110,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_stream_primitive_in_api,
     )
     _expect_rejected(
-        "from offerpilot.repositories.chat import ChatRepository", _validate_execution_host_boundary
+        "from auroraagent.repositories.chat import ChatRepository", _validate_execution_host_boundary
     )
     _expect_rejected(
         "class SyncAgentExecutionHost:\n"
@@ -4118,7 +4118,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_execution_host_boundary,
     )
     _expect_rejected(
-        "from offerpilot.models import Pending as P\n"
+        "from auroraagent.models import Pending as P\n"
         "class SseAgentExecutionHost:\n"
         "    def __init__(self):\n        self.pending_store = P\n",
         _validate_execution_host_boundary,
@@ -4160,7 +4160,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_legacy_switch_tree,
     )
     _expect_rejected(
-        "from offerpilot.models import Journal as J\n"
+        "from auroraagent.models import Journal as J\n"
         "def send_chat():\n    return J()\n"
         "def send_chat_stream():\n    return None\n"
         "def confirm_chat():\n    return None\n"
@@ -4194,12 +4194,12 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
     )
     _expect_rejected(
         "from dataclasses import asdict\n"
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "asdict(RuntimeFailureOutcome(...))",
         _validate_no_generic_asdict_boundary,
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
         "def send_chat_stream(runtime):\n"
         "    first = runtime.prepare_stream()\n"
         "    second = runtime.prepare_stream()\n"
@@ -4238,13 +4238,13 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_routes_are_runtime_only,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome as Failure\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome as Failure\n"
         "def persist(value):\n"
         "    return getattr(value, 'RuntimeFailureOutcome')\n",
         _validate_boundary_names_absent,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "from dataclasses import asdict\n"
         "outcome = RuntimeFailureOutcome(...)\n"
         "alias = outcome\n"
@@ -4252,20 +4252,20 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_generic_asdict_boundary,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "from dataclasses import asdict\n"
         "outcome: RuntimeFailureOutcome\n"
         "asdict(outcome)",
         _validate_no_generic_asdict_boundary,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "outcome = RuntimeFailureOutcome(...)\n"
         "getattr(dataclasses, 'asdict')(outcome)",
         _validate_no_generic_asdict_boundary,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "from dataclasses import asdict\n"
         "def dump(value):\n"
         "    return asdict(value)\n"
@@ -4274,7 +4274,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_generic_asdict_boundary,
     )
     _expect_rejected(
-        "from offerpilot.pilot_runtime import RuntimeFailureOutcome\n"
+        "from auroraagent.pilot_runtime import RuntimeFailureOutcome\n"
         "from dataclasses import asdict\n"
         "def dump(value):\n"
         "    alias = value\n"
@@ -4284,8 +4284,8 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
         _validate_no_generic_asdict_boundary,
     )
     positional_guard_source = (
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    prepared = runtime.prepare_stream()\n"
         "    guard = Guard(prepared, on_execute=lambda: None)\n"
@@ -4326,7 +4326,7 @@ def test_negative_source_fixtures_prove_mechanical_validators_reject_forbidden_p
 def test_runtime_event_dtos_do_not_accept_framework_values() -> None:
     from fastapi import Request
 
-    from offerpilot.pilot_runtime import ImmediateHttpOutcome, StartTurnRequest
+    from auroraagent.pilot_runtime import ImmediateHttpOutcome, StartTurnRequest
 
     with pytest.raises(TypeError):
         StartTurnRequest(message="ok", page_context=MappingProxyType({"request": Request}))
@@ -4338,7 +4338,7 @@ def test_runtime_event_dtos_do_not_accept_framework_values() -> None:
 
 
 def test_prepared_execution_rejects_generic_serialization() -> None:
-    from offerpilot.pilot_runtime import (
+    from auroraagent.pilot_runtime import (
         PreparedStreamExecution,
         PreparationKind,
         StreamExecutionMode,
@@ -4534,8 +4534,8 @@ def test_task11_negative_fixtures_cover_dynamic_and_reachability_bypasses() -> N
         _validate_no_asdict_in_extraction_scope,
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    prepared = runtime.prepare_stream()\n"
         "    if condition:\n"
@@ -4550,8 +4550,8 @@ def test_task11_negative_fixtures_cover_dynamic_and_reachability_bypasses() -> N
         ),
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    prepared = runtime.prepare_stream()\n"
         "    guard = Guard(prepared)\n"
@@ -4565,8 +4565,8 @@ def test_task11_negative_fixtures_cover_dynamic_and_reachability_bypasses() -> N
         ),
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    prepared = runtime.prepare_stream()\n"
         "    guard = Guard(prepared)\n"
@@ -4579,8 +4579,8 @@ def test_task11_negative_fixtures_cover_dynamic_and_reachability_bypasses() -> N
         ),
     )
     _expect_rejected(
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    truth = False\n"
         "    prepared = runtime.prepare_stream()\n"
@@ -4616,8 +4616,8 @@ def test_task11_positive_fixtures_keep_dynamic_helpers_scoped() -> None:
         ast.parse("# asdict(values[0])\nvalue = {'public': 1}\n")
     )
     dynamic_prepare_source = (
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    method_name = 'prepare_stream'\n"
         "    prepared = getattr(runtime, method_name)()\n"
@@ -4637,8 +4637,8 @@ def test_task11_prepared_gate_rejects_dynamic_prepare_aliases() -> None:
         "PreparedStreamExecution('id', PreparationKind.REPLAY, StreamExecutionMode.DIRECT, {})"
     )
     valid_then_dynamic = (
-        "from offerpilot.chat_transport import PreparedStreamGuard as Guard\n"
-        "from offerpilot.chat_transport import build_guarded_streaming_response\n"
+        "from auroraagent.chat_transport import PreparedStreamGuard as Guard\n"
+        "from auroraagent.chat_transport import build_guarded_streaming_response\n"
         "def send_chat_stream(runtime):\n"
         "    prepared = runtime.prepare_stream()\n"
         "    guard = Guard(prepared)\n"
@@ -4700,7 +4700,7 @@ def test_transient_container_does_not_escape_generic_serializer_gate() -> None:
 
 
 def test_runtime_outcomes_and_events_are_safe_json_shapes() -> None:
-    from offerpilot.pilot_runtime import (
+    from auroraagent.pilot_runtime import (
         AssistantMessageEvent,
         CompletedEvent,
         MessageOutcome,
@@ -4709,7 +4709,7 @@ def test_runtime_outcomes_and_events_are_safe_json_shapes() -> None:
         RuntimeFailureOutcome,
         UserMessageSavedEvent,
     )
-    from offerpilot.pilot_runtime.event_sink import runtime_event_payload, runtime_outcome_payload
+    from auroraagent.pilot_runtime.event_sink import runtime_event_payload, runtime_outcome_payload
 
     outcome = MessageOutcome(message="safe-message", conversation_id=7)
     failure = RuntimeFailureOutcome(
@@ -4772,25 +4772,25 @@ def test_canary_private_values_do_not_enter_journal_trace_sse_or_error_log_paylo
     from types import SimpleNamespace
     from uuid import uuid4
 
-    from offerpilot.agent_runtime.events import JournalEventValidationError, prepare_event
-    from offerpilot.agent_runtime.journal import (
+    from auroraagent.agent_runtime.events import JournalEventValidationError, prepare_event
+    from auroraagent.agent_runtime.journal import (
         EventInput,
         RunRecorderFactory,
         TerminalDisposition,
     )
-    from offerpilot.agent_runtime.keyring import JournalKeyDomain
-    from offerpilot.ai.agent_contracts import PendingAction
-    from offerpilot.ai.write_operations import LedgerKeyDomain, WriteOperationRepository
-    from offerpilot.chat_transport import (
+    from auroraagent.agent_runtime.keyring import JournalKeyDomain
+    from auroraagent.ai.agent_contracts import PendingAction
+    from auroraagent.ai.write_operations import LedgerKeyDomain, WriteOperationRepository
+    from auroraagent.chat_transport import (
         SyncAgentExecutionHost,
         prepared_stream_metadata,
         runtime_sse_content,
         runtime_sse_envelope,
     )
-    from offerpilot.db import init_database
-    from offerpilot.diagnostics import read_recent_log_entries
-    from offerpilot.models import ChatMessage, Conversation
-    from offerpilot.pilot_runtime import (
+    from auroraagent.db import init_database
+    from auroraagent.diagnostics import read_recent_log_entries
+    from auroraagent.models import ChatMessage, Conversation
+    from auroraagent.pilot_runtime import (
         CompletedEvent,
         MessageOutcome,
         PreparationKind,
@@ -4803,22 +4803,22 @@ def test_canary_private_values_do_not_enter_journal_trace_sse_or_error_log_paylo
         ToolCallEvent,
         ToolResultEvent,
     )
-    from offerpilot.pilot_runtime.errors import RuntimeTransportAborted
-    from offerpilot.pilot_runtime.event_sink import (
+    from auroraagent.pilot_runtime.errors import RuntimeTransportAborted
+    from auroraagent.pilot_runtime.event_sink import (
         CallableRuntimeEventSink,
         InMemoryRuntimeInvocationControl,
         runtime_event_payload,
         runtime_outcome_payload,
     )
-    from offerpilot.repositories.agent_runs import AgentRunRepository, StartRunCommand
-    from offerpilot.repositories.chat import ChatRepository
+    from auroraagent.repositories.agent_runs import AgentRunRepository, StartRunCommand
+    from auroraagent.repositories.chat import ChatRepository
     from sqlalchemy.exc import SQLAlchemyError
 
     sentinel = "pilot-runtime-private-canary-6f4b"
 
-    import offerpilot.agent_runtime.trace as trace_module
-    import offerpilot.chat_transport as transport_module
-    import offerpilot.diagnostics as diagnostics_module
+    import auroraagent.agent_runtime.trace as trace_module
+    import auroraagent.chat_transport as transport_module
+    import auroraagent.diagnostics as diagnostics_module
 
     captured_sse: list[tuple[object, str]] = []
     original_encode_sse_event = transport_module.encode_sse_event
@@ -4880,7 +4880,7 @@ def test_canary_private_values_do_not_enter_journal_trace_sse_or_error_log_paylo
             message="public failure",
             pending_action=_PrivateCanary(),  # type: ignore[arg-type]
         )
-    from offerpilot.pilot_runtime import PendingActionPayload
+    from auroraagent.pilot_runtime import PendingActionPayload
 
     with pytest.raises(TypeError):
         PendingActionPayload(
@@ -5060,8 +5060,8 @@ def test_canary_private_values_do_not_enter_journal_trace_sse_or_error_log_paylo
         # prepared handle is allowed to exist in Runtime state, but each
         # domain surface either rejects it or receives only its public string
         # projection.
-        from offerpilot.ai.agent_contracts import AgentAssistantDelta
-        from offerpilot.ai.write_operations import WriteOperationError
+        from auroraagent.ai.agent_contracts import AgentAssistantDelta
+        from auroraagent.ai.write_operations import WriteOperationError
         from tests.tool_authority.test_pending_claim import (
             create_primary_with_typed_route,
         )
@@ -5231,7 +5231,7 @@ def test_canary_private_values_do_not_enter_journal_trace_sse_or_error_log_paylo
         )
         trace_blob = json.dumps(asdict(trace), ensure_ascii=False, default=str)
 
-        import offerpilot.pilot_runtime.composition as composition_module
+        import auroraagent.pilot_runtime.composition as composition_module
 
         composition_module._append_log(
             tmp_path,
@@ -5295,16 +5295,16 @@ def build(enabled):
 
     cross_source = {
         "api.py": '''
-from offerpilot.services import Loader
+from auroraagent.services import Loader
 CHAT_ROUTE = "/api/chat/context"
 @app.post(CHAT_ROUTE)
 def route(session):
     loader = Loader(session)
     return loader.load()
 ''',
-        "services/__init__.py": "from offerpilot.services.loader import Loader\n",
+        "services/__init__.py": "from auroraagent.services.loader import Loader\n",
         "services/loader.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 class Loader:
     def __init__(self, session): self.session = session
     def load(self): return self.session.scalars(select(Signal))
@@ -5411,16 +5411,16 @@ def _validate_contributors(contributors, other):
 
     imported_route = {
         "api.py": '''
-from offerpilot.routes import CHAT_ROUTE as CONTEXT_ROUTE
-from offerpilot.services import load_context
+from auroraagent.routes import CHAT_ROUTE as CONTEXT_ROUTE
+from auroraagent.services import load_context
 @app.post(CONTEXT_ROUTE)
 def context(session): return load_context(session)
 ''',
-        "routes/__init__.py": "from offerpilot.routes.paths import CHAT_ROUTE\n",
+        "routes/__init__.py": "from auroraagent.routes.paths import CHAT_ROUTE\n",
         "routes/paths.py": "CHAT_ROUTE = '/api/chat/context'\n",
-        "services/__init__.py": "from offerpilot.services.context import load_context\n",
+        "services/__init__.py": "from auroraagent.services.context import load_context\n",
         "services/context.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load_context(session): return session.scalars(select(Signal))
 ''',
     }
@@ -5443,13 +5443,13 @@ def build():
     direct_route = {
         "api.py": '''
 CHAT_ROUTE = "/api/chat/context"
-from offerpilot.services import load_context
+from auroraagent.services import load_context
 @app.post(CHAT_ROUTE)
 def context(session): return load_context(session)
 ''',
-        "services/__init__.py": "from offerpilot.services.context import load_context\n",
+        "services/__init__.py": "from auroraagent.services.context import load_context\n",
         "services/context.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load_context(session): return session.scalars(select(Signal))
 ''',
     }
@@ -5493,7 +5493,7 @@ def build(enabled):
 
     direct_chat_route = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 CHAT_ROUTE = "/api/chat/context"
 @app.post(CHAT_ROUTE)
 def neutral(session):
@@ -5504,7 +5504,7 @@ def neutral(session):
 
     non_chat_route = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 PUBLIC_ROUTE = "/api/public/context"
 @app.post(PUBLIC_ROUTE)
 def neutral(session):
@@ -5517,7 +5517,7 @@ def neutral(session):
 def test_task12_eighth_review_keyword_route_and_factory_loader_probes() -> None:
     keyword_route = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 CHAT_ROUTE = "/api/chat/context"
 @app.post(path=CHAT_ROUTE)
 def route(session): return session.scalars(select(Signal))
@@ -5526,12 +5526,12 @@ def route(session): return session.scalars(select(Signal))
     assert _task12_chat_haru_cross_source_query(keyword_route)
     factory_loader = {
         "api.py": '''
-from offerpilot.services import make_loader
+from auroraagent.services import make_loader
 @app.post(path="/api/haru/context")
 def route(session): return make_loader(session).load()
 ''',
         "services.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 class Loader:
     def __init__(self, session): self.session = session
     def load(self): return self.session.scalars(select(Signal))
@@ -5541,7 +5541,7 @@ def make_loader(session): return Loader(session)
     assert _task12_chat_haru_cross_source_query(factory_loader)
     dead_query = {
         "api.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 @app.post(path="/api/chat/context")
 def route(session):
     if False: return session.scalars(select(Signal))
@@ -5579,15 +5579,15 @@ def build():
 def test_task12_ninth_review_route_factory_and_confirmed_helper_probes() -> None:
     routes = {
         "api.py": '''
-from offerpilot.routes import router
+from auroraagent.routes import router
 app.include_router(router)
 ''',
         "routes.py": '''
-from offerpilot.services import make
+from auroraagent.services import make
 router.add_api_route("/api/chat/context", lambda s: make(s).load(), methods=["POST"])
 ''',
         "services.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 class Loader:
     async def load(self): return self.session.scalars(select(Signal))
 def make(session):
@@ -5598,14 +5598,14 @@ def make(session):
     }
     assert _task12_chat_haru_cross_source_query(routes)
     decorated_routes = {
-        "api.py": "from offerpilot.routes import router\napp.include_router(router)\n",
+        "api.py": "from auroraagent.routes import router\napp.include_router(router)\n",
         "routes.py": '''
-from offerpilot.services import load
+from auroraagent.services import load
 @router.api_route(path="/api/chat/context", methods=["POST"])
 def chat(session): return load(session)
 ''',
         "services.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 ''',
     }
@@ -5632,7 +5632,7 @@ def build():
         _task12_readiness_runtime_violations(safe_confirmed)
     )
     safe_route = {
-        "api.py": "from offerpilot.routes import router\napp.include_router(router)\n",
+        "api.py": "from auroraagent.routes import router\napp.include_router(router)\n",
         "routes.py": 'router.add_api_route("/api/public", lambda: None, methods=["GET"])\n',
     }
     assert not _task12_chat_haru_cross_source_query(safe_route)
@@ -5677,17 +5677,17 @@ def build():
 
     callback = {
         "api.py": '''
-from offerpilot.routes import router
+from auroraagent.routes import router
 app.include_router(router, prefix="/api")
 ''',
         "routes.py": '''
-from offerpilot.services import load_context, run
+from auroraagent.services import load_context, run
 router = APIRouter(prefix="/chat")
 @router.post("/context")
 def context(session): return run(load_context, session)
 ''',
         "services.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load_context(session): return session.scalars(select(Signal))
 def run(callback, session): return callback(session)
 ''',
@@ -5791,13 +5791,13 @@ def test_task12_twelfth_review_chat_returned_callable_dispatch_probes() -> None:
     for body in route_bodies:
         sources = {
             "api.py": f'''
-from offerpilot.shared import choices, factory
+from auroraagent.shared import choices, factory
 @app.post("/api/chat/context")
 def chat_context(session):
     {body}
 ''',
             "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def factory(): return load
 def choices(): return {"load": load}
@@ -5823,13 +5823,13 @@ def test_task12_thirteenth_review_chat_conditional_callable_union_probes() -> No
     for body in route_bodies:
         sources = {
             "api.py": f'''
-from offerpilot.shared import choices, factory
+from auroraagent.shared import choices, factory
 @app.post("/api/chat/context")
 def chat_context(session, enabled):
     {body}
 ''',
             "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def factory(enabled):
@@ -5891,13 +5891,13 @@ def test_task12_fourteenth_review_chat_return_expression_callable_union_probes()
     for returned in return_expressions:
         sources = {
             "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 @app.post("/api/chat/context")
 def chat_context(session, enabled):
     return factory(enabled)(session)
 ''',
             "shared.py": f'''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def factory(enabled): {returned}
@@ -5952,13 +5952,13 @@ def factory(enabled): return {"load": load, "public": public}[KEY]
     for factory_source, safe_factory_source in factories:
         sources = {
             "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 @app.post("/api/chat/context")
 def chat_context(session, enabled):
     return factory(enabled)(session)
 ''',
             "shared.py": f'''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 {factory_source}''',
@@ -5983,14 +5983,14 @@ def test_task12_sixteenth_review_chat_caller_mapping_dispatch_probes() -> None:
     for expression in route_expressions:
         sources = {
             "api.py": f'''
-from offerpilot.shared import handlers, public
+from auroraagent.shared import handlers, public
 KEY = "load"
 @app.post("/api/chat/context")
 def chat_context(session):
     return {expression}
 ''',
             "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {"load": load, "public": public}
@@ -6008,13 +6008,13 @@ def handlers(): return {"load": load, "public": public}
 
     missing_default = {
         "api.py": '''
-from offerpilot.shared import handlers, public
+from auroraagent.shared import handlers, public
 @app.post("/api/chat/context")
 def chat_context(session):
     return handlers().pop("missing", public)(session)
 ''',
         "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {"load": load}
@@ -6034,13 +6034,13 @@ def test_task12_seventeenth_review_chat_mapping_value_iteration_probes() -> None
     for expression in route_expressions:
         sources = {
             "api.py": f'''
-from offerpilot.shared import handlers
+from auroraagent.shared import handlers
 @app.post("/api/chat/context")
 def chat_context(session):
     return {expression}
 ''',
             "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {"load": load, "public": public}
@@ -6075,13 +6075,13 @@ def test_task12_eighteenth_review_chat_mapping_parameter_propagation_probes() ->
     for expression, picker in cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import handlers, pick
+from auroraagent.shared import handlers, pick
 @app.post("/api/chat/context")
 def chat_context(session):
     return {expression}
 ''',
             "shared.py": f'''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {{"load": load, "public": public}}
@@ -6117,13 +6117,13 @@ def test_task12_nineteenth_review_chat_constructor_and_closure_mapping_probes() 
     for expression, picker in cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 @app.post("/api/chat/context")
 def chat_context(session):
     return {expression}
 ''',
             "shared.py": f'''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {{"load": load, "public": public}}
@@ -6161,13 +6161,13 @@ def test_task12_twentieth_review_chat_post_init_and_closure_alias_probes() -> No
     for route_body, implementation in cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 @app.post("/api/chat/context")
 def chat_context(session):
     {route_body}
 ''',
             "shared.py": f'''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {{"load": load}}
@@ -6186,7 +6186,7 @@ def handlers(): return {{"load": load}}
 
     safe_rebind = {
         "api.py": '''
-from offerpilot.shared import Picker, factory, handlers, public_handlers
+from auroraagent.shared import Picker, factory, handlers, public_handlers
 @app.post("/api/chat/context")
 def chat_context(session):
     picker = Picker()
@@ -6196,7 +6196,7 @@ def chat_context(session):
     return factory(handlers())(session)
 ''',
         "shared.py": '''
-from offerpilot.models import InterviewReadinessSignal as Signal
+from auroraagent.models import InterviewReadinessSignal as Signal
 def load(session): return session.scalars(select(Signal))
 def public(session): return session.get(PublicRow, 1)
 def handlers(): return {"load": load}

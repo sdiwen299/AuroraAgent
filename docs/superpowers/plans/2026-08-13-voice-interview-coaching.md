@@ -12,7 +12,7 @@
 
 ## 0. 固定基线与文件边界
 
-实施基线固定为最后一次修改本计划的提交。开始实施时写入系统临时文件 `offerpilot-voice-interview-coaching-baseline.txt`；后续独立 PowerShell 进程只读取该文件，不重新计算。
+实施基线固定为最后一次修改本计划的提交。开始实施时写入系统临时文件 `auroraagent-voice-interview-coaching-baseline.txt`；后续独立 PowerShell 进程只读取该文件，不重新计算。
 
 允许新增或修改：
 
@@ -49,7 +49,7 @@ docs/reports/2026-08-13-voice-interview-coaching-browser-acceptance.md
 禁止修改：
 
 ```text
-src/offerpilot/**
+src/auroraagent/**
 tests/**
 web/src/services/**
 web/src/types/**
@@ -62,7 +62,7 @@ README.md
 ```powershell
 $plan = 'docs/superpowers/plans/2026-08-13-voice-interview-coaching.md'
 $baseline = (git log -1 --format=%H -- $plan).Trim()
-$locator = Join-Path $env:TEMP 'offerpilot-voice-interview-coaching-baseline.txt'
+$locator = Join-Path $env:TEMP 'auroraagent-voice-interview-coaching-baseline.txt'
 Set-Content -LiteralPath $locator -Value $baseline -Encoding ascii
 git cat-file -e "$baseline^{commit}"
 ```
@@ -72,7 +72,7 @@ git cat-file -e "$baseline^{commit}"
 - [ ] **Step 2: 每次提交前执行范围检查**
 
 ```powershell
-$baseline = (Get-Content (Join-Path $env:TEMP 'offerpilot-voice-interview-coaching-baseline.txt') -Raw).Trim()
+$baseline = (Get-Content (Join-Path $env:TEMP 'auroraagent-voice-interview-coaching-baseline.txt') -Raw).Trim()
 $changed = @(
   git diff --name-only "$baseline..HEAD"
   git diff --name-only --cached
@@ -395,7 +395,7 @@ git commit -m "docs: AI record voice coaching acceptance"
 - [ ] **Step 6: 最终范围与工作区检查**
 
 ```powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-voice-interview-coaching-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-voice-interview-coaching-baseline.txt'
 $baseline = (Get-Content $baselineFile -Raw).Trim()
 git cat-file -e "$baseline^{commit}"
 git diff --check "$baseline..HEAD"

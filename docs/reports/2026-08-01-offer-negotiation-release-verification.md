@@ -151,7 +151,7 @@ real-AI 首次复跑在面试准备请求出现一次 `ReadTimeout`；未修改�
 
 ## 2026-08-05 当前 HEAD 后端五组门禁重跑
 
-本次重跑起始 commit：`f6b633c4ac247131f3d92ca882a2489981426a1c`。新增的 lease replay 回归测试已纳入同一份完整 manifest；结果目录保留于系统 Temp：`D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-offer-negotiation-backend-20260805-113702`。
+本次重跑起始 commit：`f6b633c4ac247131f3d92ca882a2489981426a1c`。新增的 lease replay 回归测试已纳入同一份完整 manifest；结果目录保留于系统 Temp：`D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-offer-negotiation-backend-20260805-113702`。
 
 执行命令：
 

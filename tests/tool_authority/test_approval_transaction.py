@@ -16,24 +16,24 @@ from sqlalchemy import delete, update
 import test_write_operations as support
 import tests.test_write_operation_acceptance_matrix as legacy_support
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_authority import AuthorityFactory, AuthorityUse, TrustedContextScope
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.contracts import ConfirmationRequired
-from offerpilot.ai.tool_runtime.pipeline import Rejected, prepare_call
-from offerpilot.ai.tool_runtime.legacy_proof import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_authority import AuthorityFactory, AuthorityUse, TrustedContextScope
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.contracts import ConfirmationRequired
+from auroraagent.ai.tool_runtime.pipeline import Rejected, prepare_call
+from auroraagent.ai.tool_runtime.legacy_proof import (
     LegacyApprovedConfirmationInput,
     LegacyConfirmationLookupIdentity,
 )
-from offerpilot.ai.tool_specs import legacy as legacy_specs
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.types import ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_specs import legacy as legacy_specs
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.types import ToolCall
+from auroraagent.ai.write_operations import (
     OperationCommitted,
     OperationUnknown,
     WriteOperationCoordinator,
@@ -42,15 +42,15 @@ from offerpilot.ai.write_operations import (
     load_or_create_ledger_key,
     operation_request_fingerprint,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Conversation, InterviewNote, WriteOperation
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.db import init_database
+from auroraagent.models import Conversation, InterviewNote, WriteOperation
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_metadata.factories import compose_synthetic_bundle
 from tests.tool_authority.test_pending_claim import create_primary_with_typed_route
 

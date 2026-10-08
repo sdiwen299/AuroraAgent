@@ -5,15 +5,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.models import InterviewNote
-from offerpilot.repositories.application_events import (
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.models import InterviewNote
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
 
 
 def test_offset_event_api_roundtrip_matches_local_confirmation(tmp_path):

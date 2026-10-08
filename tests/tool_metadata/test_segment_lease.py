@@ -9,9 +9,9 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_runtime import catalog as catalog_module
-from offerpilot.ai.tool_runtime import metadata as metadata_module
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime import catalog as catalog_module
+from auroraagent.ai.tool_runtime import metadata as metadata_module
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     forbid_call,

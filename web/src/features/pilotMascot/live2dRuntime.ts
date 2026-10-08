@@ -70,7 +70,7 @@ export function serializePilotMascotRuntime(runtime: PilotMascotRuntime): PilotM
 
 const MODEL_URL = '/live2d/haru-receptionist/haru_greeter_t03.model3.json';
 const CUBISM_CORE_URL = '/live2d/live2dcubismcore.min.js';
-const CUBISM_CORE_SCRIPT_ID = 'offerpilot-live2d-cubism-core';
+const CUBISM_CORE_SCRIPT_ID = 'auroraagent-live2d-cubism-core';
 const TRANSIENT_EXPRESSION_DURATION_MS = 1_000;
 
 interface Live2dApplication {

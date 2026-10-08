@@ -12,14 +12,14 @@ that generation. A focused repository regression test simulates the exact
 interleaving while existing stale and replay tests prove real conflicts remain
 protected.
 
-**Tech Stack:** Python 3.10, SQLAlchemy, SQLite, pytest, Ruff, mypy, OfferPilot
+**Tech Stack:** Python 3.10, SQLAlchemy, SQLite, pytest, Ruff, mypy, AuroraAgent
 CLI verification with the configured OpenAI-compatible provider.
 
 ---
 
 ## File Structure
 
-- `src/offerpilot/repositories/chat.py` owns repository-level conversation
+- `src/auroraagent/repositories/chat.py` owns repository-level conversation
   persistence and the `updated_at` optimistic-concurrency generation.
 - `tests/test_chat_repository.py` verifies repository atomicity and
   confirmation-continuation behavior without relying on model timing.
@@ -30,7 +30,7 @@ CLI verification with the configured OpenAI-compatible provider.
 
 **Files:**
 - Modify: `tests/test_chat_repository.py:211-244`
-- Modify: `src/offerpilot/repositories/chat.py:80-97`
+- Modify: `src/auroraagent/repositories/chat.py:80-97`
 
 - [x] **Step 1: Write the failing repository regression test**
 
@@ -111,15 +111,15 @@ CLI verification with the configured OpenAI-compatible provider.
   Run these commands separately:
 
   ```powershell
-  git add src/offerpilot/repositories/chat.py tests/test_chat_repository.py
+  git add src/auroraagent/repositories/chat.py tests/test_chat_repository.py
   git commit -m "fix: AI prevent confirmation title race"
   ```
 
 ### Task 2: Validate the user-visible confirmation flow with the real provider
 
 **Files:**
-- Verify: `src/offerpilot/api.py:1556-1812`
-- Verify: `src/offerpilot/repositories/chat.py:245-380`
+- Verify: `src/auroraagent/api.py:1556-1812`
+- Verify: `src/auroraagent/repositories/chat.py:245-380`
 
 - [x] **Step 1: Run chat API coverage**
 
@@ -137,8 +137,8 @@ CLI verification with the configured OpenAI-compatible provider.
   Run:
 
   ```powershell
-  uv run ruff check src/offerpilot/repositories/chat.py tests/test_chat_repository.py
-  uv run mypy src/offerpilot/repositories/chat.py
+  uv run ruff check src/auroraagent/repositories/chat.py tests/test_chat_repository.py
+  uv run mypy src/auroraagent/repositories/chat.py
   ```
 
   Expected: both commands exit with code 0.

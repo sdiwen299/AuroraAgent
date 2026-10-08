@@ -10,24 +10,24 @@ from unittest.mock import patch
 import pytest
 from sqlalchemy import event
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     ApplicationScopeConstraint,
     AuthorityFactory,
     AuthorityPhaseError,
     SegmentExecutionAuthority,
     TrustedContextScope,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Application
-from offerpilot.repositories.application_events import (
+from auroraagent.db import init_database
+from auroraagent.models import Application
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.repositories.session_binding import (
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.repositories.session_binding import (
     ScopeAccessDenied,
     ScopedRepositoryBinding,
     _SCOPED_BINDING_SEAL,
@@ -200,11 +200,11 @@ def test_scoped_ports_require_caller_owned_session_and_registered_constraint(see
 @pytest.mark.parametrize(
     ("module_name", "symbol"),
     (
-        ("offerpilot.repositories.applications", "ApplicationsRepository"),
-        ("offerpilot.repositories.application_events", "ApplicationEventsRepository"),
-        ("offerpilot.repositories.notes", "NotesRepository"),
-        ("offerpilot.repositories.offers", "OffersRepository"),
-        ("offerpilot.repositories.jd", "JDAnalysesRepository"),
+        ("auroraagent.repositories.applications", "ApplicationsRepository"),
+        ("auroraagent.repositories.application_events", "ApplicationEventsRepository"),
+        ("auroraagent.repositories.notes", "NotesRepository"),
+        ("auroraagent.repositories.offers", "OffersRepository"),
+        ("auroraagent.repositories.jd", "JDAnalysesRepository"),
     ),
 )
 def test_repository_cold_import_does_not_initialize_composition_cycle(
@@ -220,7 +220,7 @@ def test_repository_cold_import_does_not_initialize_composition_cycle(
 
 
 def test_repository_modules_do_not_import_authority_aggregate_at_module_scope() -> None:
-    repository_root = Path(__file__).parents[2] / "src" / "offerpilot" / "repositories"
+    repository_root = Path(__file__).parents[2] / "src" / "auroraagent" / "repositories"
     for module_name in (
         "applications.py",
         "application_events.py",
@@ -234,7 +234,7 @@ def test_repository_modules_do_not_import_authority_aggregate_at_module_scope() 
             node
             for node in ast.walk(tree)
             if isinstance(node, ast.ImportFrom)
-            and node.module == "offerpilot.ai.tool_authority"
+            and node.module == "auroraagent.ai.tool_authority"
         ]
         assert aggregate_imports == [], module_name
 

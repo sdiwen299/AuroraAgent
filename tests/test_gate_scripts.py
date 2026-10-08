@@ -39,7 +39,7 @@ def gate(request, tmp_path):
     log = repo / "commands.log"
     log.touch()
     env = os.environ.copy()
-    env.update(GATE_LOG=str(log), GATE_FAIL="", OFFERPILOT_DATA="caller-data")
+    env.update(GATE_LOG=str(log), GATE_FAIL="", AURORA_AGENT_DATA="caller-data")
     env["PATH"] = str(bin_dir) + os.pathsep + env["PATH"]
 
     if shell == "bash":
@@ -121,7 +121,7 @@ foreach ($key in $PSBoundParameters.Keys) {
     if ($key -ne 'Target') { $targetArgs[$key] = $PSBoundParameters[$key] }
 }
 try { & $Target @targetArgs }
-finally { Set-Content $env:GATE_RESTORED_DATA $env:OFFERPILOT_DATA }
+finally { Set-Content $env:GATE_RESTORED_DATA $env:AURORA_AGENT_DATA }
 """,
             encoding="utf-8",
         )
@@ -272,10 +272,10 @@ def test_powershell_smoke_cleanup_failure_cannot_report_success(gate):
         ("Install", "uv run oc --help"),
         ("Install", "uv tool install --force ."),
         ("Install", "oc --help"),
-        ("Docker", "docker build -t offerpilot:smoke ."),
+        ("Docker", "docker build -t auroraagent:smoke ."),
         (
             "Docker",
-            "docker run --rm -e OFFERPILOT_DATA=/tmp/offerpilot-smoke offerpilot:smoke smoke --static-dir /app/web/dist",
+            "docker run --rm -e AURORA_AGENT_DATA=/tmp/auroraagent-smoke auroraagent:smoke smoke --static-dir /app/web/dist",
         ),
     ],
 )

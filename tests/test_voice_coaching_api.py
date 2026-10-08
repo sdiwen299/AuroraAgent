@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Application, ApplicationEvent, MockInterviewAttempt, MockInterviewTurn
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Application, ApplicationEvent, MockInterviewAttempt, MockInterviewTurn
 
 
 class ForbiddenModel:

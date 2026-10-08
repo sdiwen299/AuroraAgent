@@ -8,12 +8,12 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.tool_authority import AuthorityPhaseError
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.types import ToolCall
+from auroraagent.ai.tool_authority import AuthorityPhaseError
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.types import ToolCall
 from tests.tool_pipeline.test_pipeline import Recorder, Runtime, _runtime, _spec
 from tests.tool_metadata.factories import compose_synthetic_bundle
 
@@ -234,11 +234,11 @@ def test_read_execute_rejects_mutated_typed_args_before_executor(tmp_path: Path)
 @pytest.mark.parametrize(
     "statement",
     (
-        "import offerpilot.ai.tool_authority",
-        "import offerpilot.ai.tool_authority.composition",
-        "import offerpilot.ai.tool_runtime.context",
-        "import offerpilot.ai.tool_runtime.pipeline",
-        "from offerpilot.ai.tool_runtime import Rejected, execute_prepared, prepare_call",
+        "import auroraagent.ai.tool_authority",
+        "import auroraagent.ai.tool_authority.composition",
+        "import auroraagent.ai.tool_runtime.context",
+        "import auroraagent.ai.tool_runtime.pipeline",
+        "from auroraagent.ai.tool_runtime import Rejected, execute_prepared, prepare_call",
     ),
 )
 def test_authority_and_runtime_modules_support_cold_imports(statement: str) -> None:

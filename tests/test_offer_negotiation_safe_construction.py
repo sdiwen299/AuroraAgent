@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import json
 
-from offerpilot.ai.offer_negotiation import (
+from auroraagent.ai.offer_negotiation import (
     build_offer_negotiation_snapshot,
     generate_offer_negotiation_proposal,
 )
-from offerpilot.ai.types import Assistant
+from auroraagent.ai.types import Assistant
 
 
 class FakeModel:

@@ -4,11 +4,11 @@
 
 1. 固定当前基线 `95f48a4`，保存到系统临时 locator，后续范围检查只读取该值。
 2. 允许修改：
-   - `src/offerpilot/models.py`
-   - `src/offerpilot/db.py`
-   - `src/offerpilot/schemas.py`
-   - `src/offerpilot/api.py`
-   - `src/offerpilot/repositories/adaptive_interview_practice.py`
+   - `src/auroraagent/models.py`
+   - `src/auroraagent/db.py`
+   - `src/auroraagent/schemas.py`
+   - `src/auroraagent/api.py`
+   - `src/auroraagent/repositories/adaptive_interview_practice.py`
    - `tests/test_adaptive_interview_practice*.py`
    - `web/src/types/adaptiveInterviewPractice.ts`
    - `web/src/services/adaptiveInterviewPractice.ts`

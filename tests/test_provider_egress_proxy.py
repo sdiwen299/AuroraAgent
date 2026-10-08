@@ -7,7 +7,7 @@ from types import ModuleType
 
 def _load_proxy_module() -> ModuleType:
     path = Path(__file__).parents[1] / "scripts" / "provider-egress-proxy.py"
-    spec = importlib.util.spec_from_file_location("offerpilot_provider_egress_proxy", path)
+    spec = importlib.util.spec_from_file_location("auroraagent_provider_egress_proxy", path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

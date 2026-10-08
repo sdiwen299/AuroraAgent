@@ -12,28 +12,28 @@ import pytest
 from sqlalchemy import event, func, select, text
 from sqlalchemy.exc import DataError, IntegrityError
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     ApplicationScopeConstraint,
     AuthorityFactory,
     AuthorityPhaseError,
     SegmentExecutionAuthority,
     TrustedContextScope,
 )
-from offerpilot.db import init_database
-from offerpilot.models import Application, ApplicationEvent, InterviewNote, Offer
-from offerpilot.repositories.application_events import (
+from auroraagent.db import init_database
+from auroraagent.models import Application, ApplicationEvent, InterviewNote, Offer
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.notes import (
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.notes import (
     NoteBindingError,
     NoteCreate,
     NoteUpdate,
     NotesRepository,
 )
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.repositories.session_binding import ScopeAccessDenied
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.repositories.session_binding import ScopeAccessDenied
 
 
 _DIGEST = "sha256:" + "a" * 64

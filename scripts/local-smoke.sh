@@ -41,8 +41,8 @@ if [[ ! -f "$ROOT/web/dist/index.html" ]]; then
 fi
 
 cd "$ROOT"
-DATA_DIR="${OFFERPILOT_SMOKE_DATA:-$(mktemp -d)}"
-OFFERPILOT_DATA="$DATA_DIR" uv run oc start --port "$PORT" &
+DATA_DIR="${AURORA_AGENT_SMOKE_DATA:-$(mktemp -d)}"
+AURORA_AGENT_DATA="$DATA_DIR" uv run oc start --port "$PORT" &
 SERVER_PID="$!"
 
 for _ in $(seq 1 40); do
@@ -54,6 +54,6 @@ done
 
 curl -fsS "http://127.0.0.1:$PORT/api/health" | grep -q '"status":"ok"'
 curl -fsS "http://127.0.0.1:$PORT/applications/smoke" | grep -q 'root'
-OFFERPILOT_DATA="$DATA_DIR" uv run oc smoke --static-dir web/dist
+AURORA_AGENT_DATA="$DATA_DIR" uv run oc smoke --static-dir web/dist
 
 echo "Local smoke passed at http://127.0.0.1:$PORT"

@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def test_offer_api_crud_and_total_cash(tmp_path):

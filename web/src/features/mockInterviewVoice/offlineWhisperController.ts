@@ -30,7 +30,7 @@ type PendingTranscription = {
 };
 
 function createDefaultWorker(): OfflineWhisperWorkerLike {
-  return new Worker(new URL('./offlineWhisper.worker.ts', import.meta.url), { type: 'module', name: 'offerpilot-offline-whisper' });
+  return new Worker(new URL('./offlineWhisper.worker.ts', import.meta.url), { type: 'module', name: 'auroraagent-offline-whisper' });
 }
 
 export class OfflineWhisperControllerImpl implements OfflineWhisperController {

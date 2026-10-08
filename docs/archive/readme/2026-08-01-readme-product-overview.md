@@ -4,7 +4,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace the technical, duplicated README with a concise Chinese-first product overview that accurately presents OfferPilot through five real, bright, wide-screen screenshots.
+**Goal:** Replace the technical, duplicated README with a concise Chinese-first product overview that accurately presents AuroraAgent through five real, bright, wide-screen screenshots.
 
 **Architecture:** This is a documentation-only change. A narrow public README becomes the canonical entry point; a small pytest module verifies its product claims, local startup paths, screenshot references, and image dimensions. Five versioned PNG files are generated from an isolated local deployment using a Chinese synthetic candidate and are referenced by relative Markdown paths.
 
@@ -40,7 +40,7 @@
 
       assert "uv sync" in readme
       assert "uv run oc start" in readme
-      assert "docker build -t offerpilot ." in readme
+      assert "docker build -t auroraagent ." in readme
       assert "go build" not in readme
       assert "Go 1.22" not in readme
   ```
@@ -52,7 +52,7 @@
       readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
       for text in [
-          "# OfferPilot — 本地优先的 AI 求职工作台",
+          "# AuroraAgent — 本地优先的 AI 求职工作台",
           "管理简历与投递",
           "评估岗位匹配、准备投递材料",
           "准备面试、进行文本模拟与复盘",
@@ -146,13 +146,13 @@
 
 - [ ] **Step 1: Start an isolated local deployment without touching user data**
 
-  Use a temporary directory outside the repository. Copy only the existing `~/.offerpilot/config.json` into the temporary data directory when it exists; do not print, edit, commit, or screenshot its contents. Build the SPA and start the application against the temporary directory on an unused loopback port.
+  Use a temporary directory outside the repository. Copy only the existing `~/.auroraagent/config.json` into the temporary data directory when it exists; do not print, edit, commit, or screenshot its contents. Build the SPA and start the application against the temporary directory on an unused loopback port.
 
   ```powershell
   $repo = (Get-Location).Path
-  $tempData = Join-Path ([IO.Path]::GetTempPath()) ("offerpilot-readme-" + [guid]::NewGuid())
+  $tempData = Join-Path ([IO.Path]::GetTempPath()) ("auroraagent-readme-" + [guid]::NewGuid())
   New-Item -ItemType Directory -Force -Path $tempData | Out-Null
-  $sourceConfig = Join-Path $HOME ".offerpilot\config.json"
+  $sourceConfig = Join-Path $HOME ".auroraagent\config.json"
   if (Test-Path -LiteralPath $sourceConfig) {
     Copy-Item -LiteralPath $sourceConfig -Destination (Join-Path $tempData "config.json")
   }
@@ -160,12 +160,12 @@
   npm.cmd run build
   Set-Location $repo
   $port = 18080
-  $previousOfferpilotData = $env:OFFERPILOT_DATA
-  $env:OFFERPILOT_DATA = $tempData
+  $previousAuroraAgentData = $env:AURORA_AGENT_DATA
+  $env:AURORA_AGENT_DATA = $tempData
   $server = Start-Process -FilePath "uv" -ArgumentList @("run", "oc", "start", "--port", "$port") -PassThru -WindowStyle Hidden
   ```
 
-  Poll `http://127.0.0.1:$port/api/health` until it returns HTTP 200 before opening the in-app browser. If port 18080 is occupied, choose another currently unused loopback port and use that single port consistently. Restore the previous `OFFERPILOT_DATA` value and remove `$tempData` in a `finally` block after all captures and checks.
+  Poll `http://127.0.0.1:$port/api/health` until it returns HTTP 200 before opening the in-app browser. If port 18080 is occupied, choose another currently unused loopback port and use that single port consistently. Restore the previous `AURORA_AGENT_DATA` value and remove `$tempData` in a `finally` block after all captures and checks.
 
 - [ ] **Step 2: Create only the synthetic Chinese scenario through the running product**
 
@@ -210,15 +210,15 @@
 
   ```powershell
   if ($server -and -not $server.HasExited) { Stop-Process -Id $server.Id -Force }
-  if ($null -eq $previousOfferpilotData) {
-    Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue
+  if ($null -eq $previousAuroraAgentData) {
+    Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue
   } else {
-    $env:OFFERPILOT_DATA = $previousOfferpilotData
+    $env:AURORA_AGENT_DATA = $previousAuroraAgentData
   }
   Remove-Item -LiteralPath $tempData -Recurse -Force
   ```
 
-  Verify no `offerpilot-readme-*` temporary directory remains and that the screenshots are the only retained demonstration artifacts.
+  Verify no `auroraagent-readme-*` temporary directory remains and that the screenshots are the only retained demonstration artifacts.
 
 ### Task 3: Rewrite the public README around the approved product narrative
 
@@ -233,7 +233,7 @@
   Replace `README.md` in full. Use precisely these top-level Chinese sections, in order:
 
   ```markdown
-  # OfferPilot — 本地优先的 AI 求职工作台
+  # AuroraAgent — 本地优先的 AI 求职工作台
 
   > 把简历、投递、面试与 Offer 放在一个由你掌控的本地工作台；AI 提供建议，你决定下一步。
 
@@ -269,15 +269,15 @@
   Under `快速开始`, provide a Docker route that builds the repository image and runs it locally:
 
   ```bash
-  docker build -t offerpilot .
-  docker run --rm -p 8080:8080 -v offerpilot-data:/data offerpilot
+  docker build -t auroraagent .
+  docker run --rm -p 8080:8080 -v auroraagent-data:/data auroraagent
   ```
 
   Follow it with the source route:
 
   ```bash
-  git clone https://github.com/offercontext/offerpilot.git
-  cd offerpilot
+  git clone https://github.com/offercontext/auroraagent.git
+  cd auroraagent
   uv sync
   cd web && npm ci && npm run build
   cd ..

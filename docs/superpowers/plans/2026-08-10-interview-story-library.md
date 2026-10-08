@@ -16,11 +16,11 @@
 
 ### 0.1 开始前固定一次 implementation baseline
 
-实施只能在 `D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260810-interview-story-library`、分支 `feat/20260810-interview-story-library` 中进行；不得触碰根工作树、`feat/20260805-application-jd-versions` 或其未提交改动。开始写第一行产品代码前运行一次：
+实施只能在 `D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260810-interview-story-library`、分支 `feat/20260810-interview-story-library` 中进行；不得触碰根工作树、`feat/20260805-application-jd-versions` 或其未提交改动。开始写第一行产品代码前运行一次：
 
 ```powershell
 $planPath = 'docs/superpowers/plans/2026-08-10-interview-story-library.md'
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-story-library-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-story-library-baseline.txt'
 $implementationBase = (git log -1 --format=%H -- $planPath).Trim()
 if (-not $implementationBase) { throw 'Cannot resolve approved plan baseline' }
 if (@(git status --short).Count -gt 0) { throw 'Worktree must be clean before capturing implementation baseline' }
@@ -32,7 +32,7 @@ $implementationBase | Set-Content -LiteralPath $baselineFile -Encoding ascii
 每一个后续独立 PowerShell 进程在运行 allowlist、diff 或 gate 前都先恢复同一个值，绝不在实施中途重新 `git log`：
 
 ```powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-story-library-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-story-library-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
@@ -51,7 +51,7 @@ $storyFiles = @(git diff --name-only "$storyBase..$implementationBase" | Sort-Ob
 $jdFiles = @(git diff --name-only "$jdBase..feat/20260805-application-jd-versions" | Sort-Object -Unique)
 $intersection = @($storyFiles | Where-Object { $_ -in $jdFiles })
 [pscustomobject]@{ story_base = $storyBase; jd_base = $jdBase; intersection = $intersection } |
-  ConvertTo-Json -Depth 3 | Set-Content -LiteralPath (Join-Path $env:TEMP 'offerpilot-story-jd-overlap.json') -Encoding utf8
+  ConvertTo-Json -Depth 3 | Set-Content -LiteralPath (Join-Path $env:TEMP 'auroraagent-story-jd-overlap.json') -Encoding utf8
 ```
 
 中心文件出现交集是预期风险，不能因此宣称无冲突：Story 路由须在独立连续块注册；模型只追加 Story 表；AppShell 只接入独立 feature state；合并前必须逐文件人工重放并回归两个分支。Story 第一期不接入 JD Version、Opportunity Fit、Material、Interview Preparation 或 Mock 的写路径。
@@ -62,16 +62,16 @@ $intersection = @($storyFiles | Where-Object { $_ -in $jdFiles })
 
 | 层 | 文件 |
 | --- | --- |
-| 模型与迁移 | Modify `src/offerpilot/models.py`, `src/offerpilot/db.py`; Create `tests/test_interview_stories_migrations.py` |
-| Story 领域 | Create `src/offerpilot/repositories/interview_stories.py`, `src/offerpilot/ai/interview_stories.py`, `tests/test_interview_stories_repository.py`, `tests/test_interview_stories_ai.py` |
-| HTTP/契约 | Modify `src/offerpilot/api.py`, `src/offerpilot/schemas.py`, `src/offerpilot/cli.py`, `src/offerpilot/smoke.py`; Create `tests/test_interview_stories_api.py`, `tests/test_interview_stories_smoke.py` |
+| 模型与迁移 | Modify `src/auroraagent/models.py`, `src/auroraagent/db.py`; Create `tests/test_interview_stories_migrations.py` |
+| Story 领域 | Create `src/auroraagent/repositories/interview_stories.py`, `src/auroraagent/ai/interview_stories.py`, `tests/test_interview_stories_repository.py`, `tests/test_interview_stories_ai.py` |
+| HTTP/契约 | Modify `src/auroraagent/api.py`, `src/auroraagent/schemas.py`, `src/auroraagent/cli.py`, `src/auroraagent/smoke.py`; Create `tests/test_interview_stories_api.py`, `tests/test_interview_stories_smoke.py` |
 | Pilot 接线 | Modify `web/src/layout/AppShell.tsx`, `web/src/components/ChatPanel/index.tsx`, `web/src/components/ChatPanel/ContextPanel.tsx`; Create `web/src/components/ChatPanel/InterviewStoryPilotEntry.test.tsx` |
 | 前端类型与服务 | Create `web/src/types/interviewStory.ts`, `web/src/services/interviewStories.ts`, `web/src/services/interviewStories.test.ts` |
 | 面试 Story UI | Modify `web/src/components/InterviewV01View.tsx`; Create `web/src/components/InterviewStoryLibraryView.tsx`, `web/src/components/InterviewStoryLibraryView.module.css`, `web/src/components/InterviewStoryLibraryView.test.tsx`, `web/src/components/InterviewStoryLibraryView.interaction.test.tsx`, `web/src/components/InterviewStoryDrawer.tsx`, `web/src/components/InterviewStoryDrawer.module.css`, `web/src/components/InterviewStoryDrawer.interaction.test.tsx`, `web/src/layout/AppShell.interviewStories.test.tsx` |
 | 真实验收 | Create `scripts/interview-story-real-ai-browser-harness.ps1`, `tests/test_interview_story_browser_harness.py` |
 | 验收记录 | Create `docs/reports/2026-08-10-interview-story-library-release-verification.md`，最终用 `git add -f` 暂存 |
 
-明确禁止：修改 `src/offerpilot/knowledge/**`、`src/offerpilot/ai/tools.py`、现有 Interview/Mock/Knowledge 领域语义、JD Version 文件、任何外部招聘平台代码；新增 `StoryUsage` 表、usage 字段、usage API、自动练习或自动写入入口。
+明确禁止：修改 `src/auroraagent/knowledge/**`、`src/auroraagent/ai/tools.py`、现有 Interview/Mock/Knowledge 领域语义、JD Version 文件、任何外部招聘平台代码；新增 `StoryUsage` 表、usage 字段、usage API、自动练习或自动写入入口。
 
 #### Post-review allowlist correction
 
@@ -132,7 +132,7 @@ IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9_-]{16,128}$")
 
 ## Task 1: 建立 Story 模型和可重入 SQLite 迁移
 
-**Files:** Modify `src/offerpilot/models.py`, `src/offerpilot/db.py`; Create `tests/test_interview_stories_migrations.py`.
+**Files:** Modify `src/auroraagent/models.py`, `src/auroraagent/db.py`; Create `tests/test_interview_stories_migrations.py`.
 
 - [ ] **Step 1: 写失败的 fresh/legacy migration 测试。**
 
@@ -171,13 +171,13 @@ uv run pytest tests/test_interview_stories_migrations.py -q
 
 ```powershell
 uv run pytest tests/test_interview_stories_migrations.py -q
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_interview_stories_migrations.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_interview_stories_migrations.py
 git commit -m "feat: AI add interview story schema"
 ```
 
 ## Task 2: 实现确定性 Story 内容、来源和手动 Version 写入
 
-**Files:** Create `src/offerpilot/repositories/interview_stories.py`, `tests/test_interview_stories_repository.py`.
+**Files:** Create `src/auroraagent/repositories/interview_stories.py`, `tests/test_interview_stories_repository.py`.
 
 - [ ] **Step 1: 写失败的 content/evidence/source resolver 测试。**
 
@@ -222,13 +222,13 @@ def story_request_fingerprint(*, target_story_id: int | None, expected_current_v
 
 ```powershell
 uv run pytest tests/test_interview_stories_repository.py -q -k "source or evidence or manual or archive or version"
-git add src/offerpilot/repositories/interview_stories.py tests/test_interview_stories_repository.py
+git add src/auroraagent/repositories/interview_stories.py tests/test_interview_stories_repository.py
 git commit -m "feat: AI add versioned interview stories"
 ```
 
 ## Task 3: 用失败测试固定严格 Proposal JSON、一次修复和安全空结果
 
-**Files:** Create `src/offerpilot/ai/interview_stories.py`, `tests/test_interview_stories_ai.py`; Modify `src/offerpilot/repositories/interview_stories.py`.
+**Files:** Create `src/auroraagent/ai/interview_stories.py`, `tests/test_interview_stories_ai.py`; Modify `src/auroraagent/repositories/interview_stories.py`.
 
 - [ ] **Step 1: 写失败的 AI contract 测试。**
 
@@ -269,13 +269,13 @@ uv run pytest tests/test_interview_stories_ai.py -q
 
 ```powershell
 uv run pytest tests/test_interview_stories_ai.py -q
-git add src/offerpilot/ai/interview_stories.py src/offerpilot/repositories/interview_stories.py tests/test_interview_stories_ai.py tests/test_interview_stories_repository.py
+git add src/auroraagent/ai/interview_stories.py src/auroraagent/repositories/interview_stories.py tests/test_interview_stories_ai.py tests/test_interview_stories_repository.py
 git commit -m "feat: AI validate evidence gated story proposals"
 ```
 
 ## Task 4: 实现 Attempt lifecycle、心跳 fencing、确认原子性和恢复
 
-**Files:** Modify `src/offerpilot/repositories/interview_stories.py`, `tests/test_interview_stories_repository.py`.
+**Files:** Modify `src/auroraagent/repositories/interview_stories.py`, `tests/test_interview_stories_repository.py`.
 
 - [ ] **Step 1: 写失败的 Attempt/lease/CAS 测试。**
 
@@ -305,13 +305,13 @@ heartbeat 条件更新只写 `provider_lease_until`，约束 Attempt id、`gener
 
 ```powershell
 uv run pytest tests/test_interview_stories_repository.py tests/test_interview_stories_ai.py -q
-git add src/offerpilot/repositories/interview_stories.py tests/test_interview_stories_repository.py tests/test_interview_stories_ai.py
+git add src/auroraagent/repositories/interview_stories.py tests/test_interview_stories_repository.py tests/test_interview_stories_ai.py
 git commit -m "feat: AI add story proposal recovery and confirmation"
 ```
 
 ## Task 5: 固定 HTTP schema、路由和安全错误映射
 
-**Files:** Modify `src/offerpilot/schemas.py`, `src/offerpilot/api.py`; Create `tests/test_interview_stories_api.py`.
+**Files:** Modify `src/auroraagent/schemas.py`, `src/auroraagent/api.py`; Create `tests/test_interview_stories_api.py`.
 
 - [ ] **Step 1: 写失败 API contract 测试。**
 
@@ -344,7 +344,7 @@ uv run pytest tests/test_interview_stories_api.py -q
 
 ```powershell
 uv run pytest tests/test_interview_stories_api.py tests/test_interview_stories_repository.py -q
-git add src/offerpilot/schemas.py src/offerpilot/api.py tests/test_interview_stories_api.py
+git add src/auroraagent/schemas.py src/auroraagent/api.py tests/test_interview_stories_api.py
 git commit -m "feat: AI expose interview story APIs"
 ```
 
@@ -460,7 +460,7 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
 
 ## Task 9: Add isolated Story verification, browser/CDP audit, and real-AI acceptance harness
 
-**Files:** Modify `src/offerpilot/cli.py`, `src/offerpilot/smoke.py`; Create `tests/test_interview_stories_smoke.py`, `tests/test_interview_story_browser_harness.py`, `scripts/interview-story-real-ai-browser-harness.ps1`.
+**Files:** Modify `src/auroraagent/cli.py`, `src/auroraagent/smoke.py`; Create `tests/test_interview_stories_smoke.py`, `tests/test_interview_story_browser_harness.py`, `scripts/interview-story-real-ai-browser-harness.ps1`.
 
 - [ ] **Step 1: Write failing isolated-verification and fake-CDP tests.**
 
@@ -499,7 +499,7 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
 
   ```powershell
   uv run pytest tests/test_interview_stories_smoke.py tests/test_interview_story_browser_harness.py -q
-  git add src/offerpilot/cli.py src/offerpilot/smoke.py tests/test_interview_stories_smoke.py tests/test_interview_story_browser_harness.py scripts/interview-story-real-ai-browser-harness.ps1
+  git add src/auroraagent/cli.py src/auroraagent/smoke.py tests/test_interview_stories_smoke.py tests/test_interview_story_browser_harness.py scripts/interview-story-real-ai-browser-harness.ps1
   git commit -m "test: AI add interview story acceptance harness"
   ```
 
@@ -512,14 +512,14 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
   Every PowerShell process that needs the baseline must read the stable file written in Task 0; it must not recalculate it from the current plan history:
 
   ```powershell
-  Set-Location 'D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260810-interview-story-library'
-  $baselineFile = Join-Path $env:TEMP 'offerpilot-interview-story-library-baseline.txt'
+  Set-Location 'D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260810-interview-story-library'
+  $baselineFile = Join-Path $env:TEMP 'auroraagent-interview-story-library-baseline.txt'
   $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
   git cat-file -e "$implementationBase^{commit}"
   if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
   ```
 
-  Machine-check every changed path against the single Task 0 allowlist, rather than merely printing paths.  Read the allowlist from this plan into an explicit PowerShell array (one exact repository-relative path per item); normalize separators; reject any `git diff --name-only "$implementationBase..HEAD"` result not in the array.  The final report is the sole exception after it is created.  Reject any StoryUsage table/API/field, `knowledge/**` edit, `src/offerpilot/ai/tools.py` edit, unrelated ApplicationDetail redesign, or migration beyond `0019_interview_story_library` even if it is otherwise in a broad path prefix.
+  Machine-check every changed path against the single Task 0 allowlist, rather than merely printing paths.  Read the allowlist from this plan into an explicit PowerShell array (one exact repository-relative path per item); normalize separators; reject any `git diff --name-only "$implementationBase..HEAD"` result not in the array.  The final report is the sole exception after it is created.  Reject any StoryUsage table/API/field, `knowledge/**` edit, `src/auroraagent/ai/tools.py` edit, unrelated ApplicationDetail redesign, or migration beyond `0019_interview_story_library` even if it is otherwise in a broad path prefix.
 
 - [ ] **Step 2: Run changed-domain tests before independent review.**
 
@@ -545,7 +545,7 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
   `windows-pytest-groups.ps1` has no `-Collect` switch. Generate its `full-manifest.txt` from a fresh all-test collection, then invoke exactly its supported groups with the same mandatory `-ResultDir`.
 
   ```powershell
-  $backendResultDir = Join-Path $env:TEMP 'offerpilot-interview-story-library-pytest'
+  $backendResultDir = Join-Path $env:TEMP 'auroraagent-interview-story-library-pytest'
   Remove-Item -LiteralPath $backendResultDir -Recurse -Force -ErrorAction SilentlyContinue
   New-Item -ItemType Directory -Force -Path $backendResultDir | Out-Null
   $allCollect = @(& uv run pytest --collect-only -q --disable-warnings 2>&1)
@@ -579,7 +579,7 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
   The Vitest gate uses named groups and requires `-ResultDir`; it must not reuse an aggregate from another source fingerprint.
 
   ```powershell
-  $frontendResultDir = Join-Path $env:TEMP 'offerpilot-interview-story-library-vitest'
+  $frontendResultDir = Join-Path $env:TEMP 'auroraagent-interview-story-library-vitest'
   Remove-Item -LiteralPath $frontendResultDir -Recurse -Force -ErrorAction SilentlyContinue
   New-Item -ItemType Directory -Force -Path $frontendResultDir | Out-Null
   & powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-vitest-groups.ps1 -Collect -ResultDir $frontendResultDir
@@ -669,7 +669,7 @@ git commit -m "feat: AI connect story proposal recovery and Pilot"
   No code review occurs after the report commit: Step 3 review completion is a prerequisite for the fresh release gates and report. Only after the report accurately records successful results, run this final check. Preserve each command’s exit status before issuing another command; remove the baseline only at the end.
 
   ```powershell
-  $baselineFile = Join-Path $env:TEMP 'offerpilot-interview-story-library-baseline.txt'
+  $baselineFile = Join-Path $env:TEMP 'auroraagent-interview-story-library-baseline.txt'
   $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
   git diff --check "$implementationBase..HEAD"
   $diffCheckExit = $LASTEXITCODE

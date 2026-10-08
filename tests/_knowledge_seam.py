@@ -21,17 +21,17 @@ from typing import Any, Optional, TYPE_CHECKING
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.config import Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import (
+from auroraagent.config import Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_REPAIR_PATCH_VERSION,
     BRIEF_SCHEMA_VERSION,
     build_section_coverage_plan,
 )
-from offerpilot.knowledge.repository import EvidenceRecord, KnowledgeRepository
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.knowledge.worker import (
+from auroraagent.knowledge.repository import EvidenceRecord, KnowledgeRepository
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.knowledge.worker import (
     BriefWorker,
     ExtractionWorker,
     JobExecutionResult,
@@ -39,7 +39,7 @@ from offerpilot.knowledge.worker import (
 )
 
 if TYPE_CHECKING:
-    from offerpilot.knowledge.repository import BriefAttemptRecord, SourceBriefRecord, SourceRecord
+    from auroraagent.knowledge.repository import BriefAttemptRecord, SourceBriefRecord, SourceRecord
 
 
 # KBR-06：空 repair patch。应用后候选不变，复验产生同样问题 → brief_quality_failed，
@@ -340,7 +340,7 @@ def build_supported_brief_json(evidence_items: list[EvidenceRecord]) -> str:
         "schema_version": BRIEF_SCHEMA_VERSION,
         "language": BRIEF_LANGUAGE,
         "overview": [
-            {"statement": "Source 涉及 OfferPilot 架构。", "evidence_ids": [ov1]},
+            {"statement": "Source 涉及 AuroraAgent 架构。", "evidence_ids": [ov1]},
             {"statement": "Source 给出引用依据。", "evidence_ids": [ov2]},
         ],
         "key_points": key_points,
@@ -348,7 +348,7 @@ def build_supported_brief_json(evidence_items: list[EvidenceRecord]) -> str:
             {
                 "section_key": first.section_key,
                 "heading_path": list(first.heading_path),
-                "summary": "该章节介绍 OfferPilot 整体方向。",
+                "summary": "该章节介绍 AuroraAgent 整体方向。",
                 "evidence_ids": [first_eid],
             }
         ],

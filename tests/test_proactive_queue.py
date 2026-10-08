@@ -4,11 +4,11 @@ from datetime import datetime, timezone
 import pytest
 from sqlalchemy import select
 
-from offerpilot.db import init_database
-from offerpilot.models import Application, ApplicationEvent, Conversation
-from offerpilot.proactive.contracts import ProactivePolicy, ProactivePolicyUpdate
-from offerpilot.proactive.models import ProactiveJob
-from offerpilot.proactive.repository import ProactiveConflict, ProactiveRepository, quiet
+from auroraagent.db import init_database
+from auroraagent.models import Application, ApplicationEvent, Conversation
+from auroraagent.proactive.contracts import ProactivePolicy, ProactivePolicyUpdate
+from auroraagent.proactive.models import ProactiveJob
+from auroraagent.proactive.repository import ProactiveConflict, ProactiveRepository, quiet
 
 NOW = datetime(2026, 9, 9, 4, tzinfo=timezone.utc).timestamp()
 
@@ -125,7 +125,7 @@ def test_completed_job_cannot_be_cancelled_or_erase_result(queue):
 
 
 def test_source_change_is_persisted_before_runtime_cancel_request(queue):
-    from offerpilot.proactive.runtime import ProactiveRuntime
+    from auroraagent.proactive.runtime import ProactiveRuntime
 
     sessions, repo, (app_id, event_id) = queue
     enable(repo, app_id, draft=True)
@@ -245,8 +245,8 @@ def test_quiet_hours_follow_timezone_and_dst():
 
 def test_shared_runtime_draft_is_single_call_and_cancel_fences_late_result(queue):
     from threading import Event
-    from offerpilot.pilot_runtime.managed_execution import RuntimeExecutionManager
-    from offerpilot.proactive.runtime import ProactiveRuntime
+    from auroraagent.pilot_runtime.managed_execution import RuntimeExecutionManager
+    from auroraagent.proactive.runtime import ProactiveRuntime
     _, repo, (app_id, _) = queue
     enable(repo, app_id, draft=True)
     entered, release, finished = Event(), Event(), Event()
@@ -281,16 +281,16 @@ def test_shared_runtime_draft_is_single_call_and_cancel_fences_late_result(queue
 
 
 def test_configured_draft_provider_has_one_attempt_no_tools_and_output_cap(monkeypatch):
-    from offerpilot.ai.client import ConfiguredAIClient
-    from offerpilot.ai.types import Message
-    from offerpilot.config import Config
+    from auroraagent.ai.client import ConfiguredAIClient
+    from auroraagent.ai.types import Message
+    from auroraagent.config import Config
     captured = []
 
     def completion(**payload):
         captured.append(payload)
         return {"choices": [{"message": {"content": "准备清单"}}]}
 
-    monkeypatch.setattr("offerpilot.ai.client.completion", completion)
+    monkeypatch.setattr("auroraagent.ai.client.completion", completion)
     client = ConfiguredAIClient(Config(api_key="test-key"))
     assert client.complete_readonly_draft([Message(role="user", content="自动准备来源")], timeout_seconds=5).content == "准备清单"
     assert len(captured) == 1

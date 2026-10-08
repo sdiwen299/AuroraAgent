@@ -12,36 +12,36 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai import write_operations as write_operations_module
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_authority import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai import write_operations as write_operations_module
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_authority import (
     AuthorityFactory,
     AuthorityPhaseError,
     AuthorityUse,
     ExecutionClaim,
     TrustedContextScope,
 )
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability, UndoPolicy
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability, UndoPolicy
+from auroraagent.ai.tool_runtime.contracts import (
     ConfirmationRequired,
     ProviderToolContract,
     ToolExceptionMapping,
     ToolSpec,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     EditableFieldMetadataV1,
     ToolMetadataBundleV1,
     ToolPresentationBindingV1,
     UndoBuilderBinding,
     WriteOperationMetadataV1,
 )
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.types import ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.types import ToolCall
+from auroraagent.ai.write_operations import (
     LEDGER_KEY_FILENAME,
     DeliveryHeartbeat,
     DeliveryOwnership,
@@ -57,15 +57,15 @@ from offerpilot.ai.write_operations import (
     load_or_create_ledger_key,
     operation_request_fingerprint,
 )
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
-from offerpilot.models import Conversation, WriteOperation, WriteOperationTransition
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
+from auroraagent.models import Conversation, WriteOperation, WriteOperationTransition
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,
@@ -258,7 +258,7 @@ def test_compensation_operation_id_matches_design_golden(kind: str, expected: st
 
 
 def test_ledger_key_is_independent_and_missing_key_fails_closed(tmp_path) -> None:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -281,7 +281,7 @@ def test_ledger_key_is_independent_and_missing_key_fails_closed(tmp_path) -> Non
 def test_ledger_key_creation_rechecks_after_winning_lock(tmp_path, monkeypatch) -> None:
     seed_dir = tmp_path / "seed"
     target_dir = tmp_path / "target"
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     seed = load_or_create_ledger_key(seed_dir, sessions)
     seed_payload = (seed_dir / LEDGER_KEY_FILENAME).read_bytes()
     target_key = target_dir / LEDGER_KEY_FILENAME
@@ -301,7 +301,7 @@ def test_ledger_key_creation_rechecks_after_winning_lock(tmp_path, monkeypatch) 
 
 
 def test_delivery_heartbeat_renews_until_fenced(monkeypatch) -> None:
-    import offerpilot.ai.write_operations as ledger_module
+    import auroraagent.ai.write_operations as ledger_module
 
     monkeypatch.setattr(ledger_module, "monotonic", lambda: 10_000, raising=False)
     calls: list[int] = []
@@ -343,7 +343,7 @@ def test_delivery_owner_has_only_fingerprint_public_serialization() -> None:
 
 
 def test_bound_chat_operation_uses_caller_transaction(tmp_path) -> None:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -367,7 +367,7 @@ def test_bound_chat_operation_uses_caller_transaction(tmp_path) -> None:
 
 
 def test_transition_trigger_rejects_out_of_order_state(tmp_path) -> None:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -392,7 +392,7 @@ def test_transition_trigger_rejects_out_of_order_state(tmp_path) -> None:
 
 
 def test_primary_operation_rejects_empty_tool_call_id(tmp_path) -> None:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -410,7 +410,7 @@ def test_primary_operation_rejects_empty_tool_call_id(tmp_path) -> None:
 
 
 def test_mapped_domain_failure_rolls_back_executor_savepoint(tmp_path) -> None:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -615,7 +615,7 @@ def _primary_execution_harness(
     editable_field_names: tuple[str, ...] | None = None,
     schema_field_names: tuple[str, ...] | None = None,
 ):
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -1067,7 +1067,7 @@ def test_post_executor_projection_failure_terminalizes_without_rerun(
     )
     if failure_site == "transport":
         monkeypatch.setattr(
-            "offerpilot.ai.write_operations.project_transport_event",
+            "auroraagent.ai.write_operations.project_transport_event",
             lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("transport failed")),
         )
     arguments = dict(

@@ -7,7 +7,7 @@
 - 固定 baseline：`c5a020cbedd8ff64f6188f51c10d8f4daa7c7dff`
 - 实现与最终 Code Review HEAD：`97db2c332acc3ca15ec7b67b4bb34f5de8763868`
 - Branch：`feat/20260830-review-readiness-feedback-loop`
-- Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260830-review-readiness-feedback-loop`
+- Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260830-review-readiness-feedback-loop`
 - 实现范围：Interview Note revision、Interview Review Proposal V2、Readiness candidate/Evidence/Signal、独立 Product Action 2/2、Story confirm cutover、required Undo、Adaptive Practice V2、Interview Preparation Input V2、四个 canonical Core Task owner，以及 `0029_review_to_readiness_feedback` migration。
 - 同一分支补充修复 Haru Live2D 表情状态泄漏，并加固 Vitest 子进程诊断和 Interview Story 浏览器门禁的 Chromium 启动恢复。
 

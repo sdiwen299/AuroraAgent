@@ -14,8 +14,8 @@ from typing import Any, cast
 import pytest
 from sqlalchemy.orm import Session, SessionTransaction
 
-import offerpilot.ai.tool_authority.composition as authority_composition
-from offerpilot.ai.tool_authority import (
+import auroraagent.ai.tool_authority.composition as authority_composition
+from auroraagent.ai.tool_authority import (
     AuthorityFactory,
     AuthorityPhaseError,
     AuthorityUse,
@@ -26,7 +26,7 @@ from offerpilot.ai.tool_authority import (
     TrustedLedgerOmittedTokenProof,
     execution_scope,
 )
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ProviderToolContract,
@@ -34,12 +34,12 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.metadata import (
     EditableFieldMetadataV1,
     ToolMetadataBundleV1,
     ToolPresentationBindingV1,
 )
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     SegmentToolSpecHandle,
     ToolCatalog,

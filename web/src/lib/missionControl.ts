@@ -334,7 +334,7 @@ export function selectDefaultFocusApplicationId(readiness: ApplicationReadiness[
 
 function buildHeadline(metrics: MissionMetric[], actions: PipelineInsight[], readiness: ApplicationReadiness[]): string {
   if (metrics.find((metric) => metric.kind === 'applications')?.current === 0 && readiness.length === 0) {
-    return '添加第一条投递，OfferPilot 会开始组织你的求职节奏。';
+    return '添加第一条投递，曙光会开始组织你的求职节奏。';
   }
 
   const urgent = actions.find((item) => item.priority === 'p0');

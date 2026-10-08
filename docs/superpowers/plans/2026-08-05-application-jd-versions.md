@@ -19,11 +19,11 @@
 
 - [ ] **Step 1: Verify the worktree and capture a stable baseline.**
 
-Run from D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260805-application-jd-versions before changing code. The plan commit, not a hard-coded hash, is the implementation baseline:
+Run from D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260805-application-jd-versions before changing code. The plan commit, not a hard-coded hash, is the implementation baseline:
 
 ~~~powershell
 $planPath = 'docs/superpowers/plans/2026-08-05-application-jd-versions.md'
-$baselineFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-baseline.txt'
 $implementationBase = (git log -1 --format=%H -- $planPath).Trim()
 if (-not $implementationBase) { throw 'Cannot resolve approved plan baseline' }
 if (@(git status --short).Count -ne 0) { throw 'Worktree must be clean before implementation' }
@@ -35,7 +35,7 @@ $implementationBase | Set-Content -LiteralPath $baselineFile -Encoding ascii
 The plan and design become read-only after this step. Every subsequent PowerShell process must load and validate the same file before running an allowlist or diff check:
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
@@ -46,22 +46,22 @@ if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
 Only these product files may change in the implementation slice:
 
 ~~~powershell
-$allowlistFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-allowlist.txt'
+$allowlistFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-allowlist.txt'
 @'
-src/offerpilot/db.py
-src/offerpilot/models.py
-src/offerpilot/repositories/application_jd_versions.py
-src/offerpilot/repositories/jd.py
-src/offerpilot/repositories/opportunity_fit_reviews.py
-src/offerpilot/repositories/material_kits.py
-src/offerpilot/repositories/material_revision_proposals.py
-src/offerpilot/repositories/interview_preparation_proposals.py
-src/offerpilot/repositories/mock_interviews.py
-src/offerpilot/api.py
-src/offerpilot/cli.py
-src/offerpilot/ai/tools.py
-src/offerpilot/ai/agent.py
-src/offerpilot/smoke.py
+src/auroraagent/db.py
+src/auroraagent/models.py
+src/auroraagent/repositories/application_jd_versions.py
+src/auroraagent/repositories/jd.py
+src/auroraagent/repositories/opportunity_fit_reviews.py
+src/auroraagent/repositories/material_kits.py
+src/auroraagent/repositories/material_revision_proposals.py
+src/auroraagent/repositories/interview_preparation_proposals.py
+src/auroraagent/repositories/mock_interviews.py
+src/auroraagent/api.py
+src/auroraagent/cli.py
+src/auroraagent/ai/tools.py
+src/auroraagent/ai/agent.py
+src/auroraagent/smoke.py
 tests/test_applications_repository.py
 tests/test_api_contract.py
 tests/test_ai_tools.py
@@ -144,8 +144,8 @@ Any other changed path fails the implementation gate. Do not touch the root work
 
 **Files:**
 - Create: tests/test_application_jd_versions_migrations.py
-- Modify: src/offerpilot/models.py
-- Modify: src/offerpilot/db.py
+- Modify: src/auroraagent/models.py
+- Modify: src/auroraagent/db.py
 - Modify: tests/test_applications_repository.py for the model registration and deletion regression.
 
 - [ ] **Step 1: Add failing migration tests from real prior DDL.**
@@ -179,7 +179,7 @@ Expected before implementation: FAIL because the table, columns, and migration d
 
 - [ ] **Step 2: Add the SQLAlchemy model and migration.**
 
-Add ApplicationJDVersion to src/offerpilot/models.py with these constraints:
+Add ApplicationJDVersion to src/auroraagent/models.py with these constraints:
 
 ~~~python
 __table_args__ = (
@@ -191,7 +191,7 @@ __table_args__ = (
 
 Use Text for jd_text, String for hashes and metadata, and a nullable source URL. Add nullable Integer columns named jd_version_id to the exact tables in the approved design without ForeignKey declarations. Add JDAnalysis.jd_version_id and ResumeMatch.jd_version_id as nullable ordinary integers too.
 
-Extend src/offerpilot/db.py with 0018_application_jd_versions: create the new table and use the existing migration helpers to add missing columns idempotently. Preserve old rows as NULL; do not infer a version from any existing jd_text, jd_snapshot, or Proposal snapshot. Keep Application deletion behavior exactly as the existing parent tables define it.
+Extend src/auroraagent/db.py with 0018_application_jd_versions: create the new table and use the existing migration helpers to add missing columns idempotently. Preserve old rows as NULL; do not infer a version from any existing jd_text, jd_snapshot, or Proposal snapshot. Keep Application deletion behavior exactly as the existing parent tables define it.
 
 - [ ] **Step 3: Run migration and model tests.**
 
@@ -205,14 +205,14 @@ Expected result: all new migration tests and existing application repository tes
 - [ ] **Step 4: Commit the migration slice.**
 
 ~~~powershell
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_application_jd_versions_migrations.py tests/test_applications_repository.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_application_jd_versions_migrations.py tests/test_applications_repository.py
 git commit -m "feat: AI add application JD version storage"
 ~~~
 
 ## 2. JD version service, repository, and deterministic validation
 
 **Files:**
-- Create: src/offerpilot/repositories/application_jd_versions.py
+- Create: src/auroraagent/repositories/application_jd_versions.py
 - Create: tests/test_application_jd_versions_repository.py
 
 - [ ] **Step 1: Add failing repository tests for validation and fingerprinting.**
@@ -302,7 +302,7 @@ Expected result: all validation, fingerprint, CAS, replay, ordering, and preview
 - [ ] **Step 5: Commit the repository slice.**
 
 ~~~powershell
-git add src/offerpilot/repositories/application_jd_versions.py tests/test_application_jd_versions_repository.py
+git add src/auroraagent/repositories/application_jd_versions.py tests/test_application_jd_versions_repository.py
 git commit -m "feat: AI enforce application JD version CAS"
 ~~~
 
@@ -310,7 +310,7 @@ git commit -m "feat: AI enforce application JD version CAS"
 
 **Files:**
 - Create: tests/test_application_jd_versions_api.py
-- Modify: src/offerpilot/api.py
+- Modify: src/auroraagent/api.py
 - Create: web/src/types/applicationJdVersion.ts
 - Create: web/src/services/applicationJdVersions.ts
 - Create: web/src/services/applicationJdVersions.test.ts
@@ -368,20 +368,20 @@ Expected result: API and client contract tests pass; no existing endpoint respon
 - [ ] **Step 4: Commit the API contract slice.**
 
 ~~~powershell
-git add src/offerpilot/api.py tests/test_application_jd_versions_api.py web/src/types/applicationJdVersion.ts web/src/services/applicationJdVersions.ts web/src/services/applicationJdVersions.test.ts
+git add src/auroraagent/api.py tests/test_application_jd_versions_api.py web/src/types/applicationJdVersion.ts web/src/services/applicationJdVersions.ts web/src/services/applicationJdVersions.test.ts
 git commit -m "feat: AI expose application JD version API"
 ~~~
 
 ## 4. Application-bound domain handoff and legacy write closure
 
 **Files:**
-- Modify: src/offerpilot/api.py
-- Modify: src/offerpilot/repositories/opportunity_fit_reviews.py
-- Modify: src/offerpilot/repositories/material_kits.py
-- Modify: src/offerpilot/repositories/material_revision_proposals.py
-- Modify: src/offerpilot/repositories/interview_preparation_proposals.py
-- Modify: src/offerpilot/repositories/mock_interviews.py
-- Modify: src/offerpilot/repositories/jd.py
+- Modify: src/auroraagent/api.py
+- Modify: src/auroraagent/repositories/opportunity_fit_reviews.py
+- Modify: src/auroraagent/repositories/material_kits.py
+- Modify: src/auroraagent/repositories/material_revision_proposals.py
+- Modify: src/auroraagent/repositories/interview_preparation_proposals.py
+- Modify: src/auroraagent/repositories/mock_interviews.py
+- Modify: src/auroraagent/repositories/jd.py
 - Modify: tests/test_jd_resume_ai_api.py
 - Modify: tests/test_material_kits_api.py
 - Modify: tests/test_material_revision_proposals_api.py
@@ -393,7 +393,7 @@ git commit -m "feat: AI expose application JD version API"
 - Modify: tests/test_interview_preparation_repository.py
 - Modify: tests/test_mock_interview_repository.py
 - Modify: tests/test_cli.py
-- Modify: src/offerpilot/cli.py
+- Modify: src/auroraagent/cli.py
 - Modify: web/src/components/MaterialKitDrawer.tsx
 - Modify: web/src/components/MaterialKitDrawer.module.css
 - Modify: web/src/components/MaterialKitDrawer.evidenceBundles.test.tsx
@@ -482,7 +482,7 @@ The first-claim adapters (Opportunity Fit Triage, Material Kit, Interview Prepar
 
 Every Provider-backed adapter uses this explicit lifecycle: a short transaction validates the requested current version and persists the immutable frozen snapshot; it commits and closes its Session before any Provider call; the final write opens a new short transaction and performs a source/revision CAS against the frozen identity. Add Provider barrier tests for Triage, Material Kit, and Interview Preparation: update the Application JD while the Provider is blocked, then assert the final source CAS returns the stable conflict and no ready result is written. The Mock exception is intentional: after a successful Attempt claim, a later JD update marks history `source_changed` but does not invalidate the Attempt or prevent its remaining frozen-context turns.
 
-Update `src/offerpilot/cli.py` only for the explicitly specified standalone-versus-Application-bound behavior and cover that behavior in `tests/test_cli.py`; do not add a CLI JD write path. Remove application-bound use of free jd_text while preserving standalone JD analysis and Resume Match.
+Update `src/auroraagent/cli.py` only for the explicitly specified standalone-versus-Application-bound behavior and cover that behavior in `tests/test_cli.py`; do not add a CLI JD write path. Remove application-bound use of free jd_text while preserving standalone JD analysis and Resume Match.
 
 - [ ] **Step 5: Run the handoff, legacy, and frontend suites.**
 
@@ -498,7 +498,7 @@ Expected result: new handoff tests pass, all old v1 write tests are updated to t
 - [ ] **Step 6: Commit the domain handoff slice.**
 
 ~~~powershell
-git add src/offerpilot/api.py src/offerpilot/cli.py src/offerpilot/repositories/jd.py src/offerpilot/repositories/opportunity_fit_reviews.py src/offerpilot/repositories/material_kits.py src/offerpilot/repositories/material_revision_proposals.py src/offerpilot/repositories/interview_preparation_proposals.py src/offerpilot/repositories/mock_interviews.py tests/test_cli.py tests/test_jd_resume_ai_api.py tests/test_material_kits_api.py tests/test_material_revision_proposals_api.py tests/test_opportunity_fit_reviews_api.py tests/test_interview_preparation_api.py tests/test_mock_interview_api.py tests/test_opportunity_fit_reviews_repository.py tests/test_material_revision_proposals_repository.py tests/test_interview_preparation_repository.py tests/test_mock_interview_repository.py web/src/components/MaterialKitDrawer.tsx web/src/components/MaterialKitDrawer.module.css web/src/components/MaterialKitDrawer.evidenceBundles.test.tsx web/src/components/OpportunityFitReviewDrawer.tsx web/src/components/OpportunityFitReviewDrawer.test.tsx web/src/components/InterviewPreparationProposalDrawer.tsx web/src/components/InterviewPreparationProposalDrawer.test.tsx web/src/components/InterviewPreparationProposalDrawer.interaction.test.tsx web/src/components/MockInterviewDrawer.tsx web/src/components/MockInterviewDrawer.safety.test.ts web/src/components/MockInterviewDrawer.cleanup.interaction.test.tsx web/src/services/materialKits.ts web/src/services/materialKits.test.ts web/src/services/materialRevisionProposals.ts web/src/services/materialRevisionProposals.test.ts web/src/services/opportunityFitReviews.ts web/src/services/opportunityFitReviews.test.ts web/src/services/interviewPreparationProposals.ts web/src/services/interviewPreparationProposals.test.ts web/src/services/mockInterviews.ts web/src/services/mockInterviews.test.ts web/src/types/materialKit.ts web/src/types/materialRevisionProposal.ts web/src/types/opportunityFitReview.ts web/src/types/interviewPreparationProposal.ts web/src/types/mockInterview.ts web/src/features/pilot/PilotOpportunityFitV2Card.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.ts web/src/features/pilot/materialKitHandoff.ts web/src/features/pilot/PilotOpportunityFitV2Card.test.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.test.ts web/src/features/pilot/materialKitHandoff.test.ts
+git add src/auroraagent/api.py src/auroraagent/cli.py src/auroraagent/repositories/jd.py src/auroraagent/repositories/opportunity_fit_reviews.py src/auroraagent/repositories/material_kits.py src/auroraagent/repositories/material_revision_proposals.py src/auroraagent/repositories/interview_preparation_proposals.py src/auroraagent/repositories/mock_interviews.py tests/test_cli.py tests/test_jd_resume_ai_api.py tests/test_material_kits_api.py tests/test_material_revision_proposals_api.py tests/test_opportunity_fit_reviews_api.py tests/test_interview_preparation_api.py tests/test_mock_interview_api.py tests/test_opportunity_fit_reviews_repository.py tests/test_material_revision_proposals_repository.py tests/test_interview_preparation_repository.py tests/test_mock_interview_repository.py web/src/components/MaterialKitDrawer.tsx web/src/components/MaterialKitDrawer.module.css web/src/components/MaterialKitDrawer.evidenceBundles.test.tsx web/src/components/OpportunityFitReviewDrawer.tsx web/src/components/OpportunityFitReviewDrawer.test.tsx web/src/components/InterviewPreparationProposalDrawer.tsx web/src/components/InterviewPreparationProposalDrawer.test.tsx web/src/components/InterviewPreparationProposalDrawer.interaction.test.tsx web/src/components/MockInterviewDrawer.tsx web/src/components/MockInterviewDrawer.safety.test.ts web/src/components/MockInterviewDrawer.cleanup.interaction.test.tsx web/src/services/materialKits.ts web/src/services/materialKits.test.ts web/src/services/materialRevisionProposals.ts web/src/services/materialRevisionProposals.test.ts web/src/services/opportunityFitReviews.ts web/src/services/opportunityFitReviews.test.ts web/src/services/interviewPreparationProposals.ts web/src/services/interviewPreparationProposals.test.ts web/src/services/mockInterviews.ts web/src/services/mockInterviews.test.ts web/src/types/materialKit.ts web/src/types/materialRevisionProposal.ts web/src/types/opportunityFitReview.ts web/src/types/interviewPreparationProposal.ts web/src/types/mockInterview.ts web/src/features/pilot/PilotOpportunityFitV2Card.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.ts web/src/features/pilot/materialKitHandoff.ts web/src/features/pilot/PilotOpportunityFitV2Card.test.tsx web/src/features/pilot/pilotOpportunityFitLifecycle.test.ts web/src/features/pilot/materialKitHandoff.test.ts
 git commit -m "feat: AI hand off current JD to application workflows"
 ~~~
 
@@ -574,9 +574,9 @@ git commit -m "feat: AI add application JD history UI"
 ## 6. Pilot confirmation and shared write path
 
 **Files:**
-- Modify: src/offerpilot/ai/tools.py
-- Modify: src/offerpilot/ai/agent.py
-- Modify: src/offerpilot/api.py
+- Modify: src/auroraagent/ai/tools.py
+- Modify: src/auroraagent/ai/agent.py
+- Modify: src/auroraagent/api.py
 - Modify: web/src/components/ChatPanel/PilotTaskCard.tsx
 - Modify: web/src/components/ChatPanel/MessageBubble.tsx
 - Modify: web/src/components/ChatPanel/model.ts
@@ -619,7 +619,7 @@ Expected result: UI and Pilot use the same save service contract, only explicit 
 - [ ] **Step 4: Commit the Pilot slice.**
 
 ~~~powershell
-git add src/offerpilot/ai/tools.py src/offerpilot/ai/agent.py src/offerpilot/api.py web/src/components/ChatPanel/PilotTaskCard.tsx web/src/components/ChatPanel/MessageBubble.tsx web/src/components/ChatPanel/model.ts web/src/features/pilot/applicationJdVersion.ts web/src/features/pilot/applicationJdVersion.test.ts web/src/components/ChatPanel/PilotApplicationJdCard.test.tsx tests/test_api_contract.py tests/test_ai_tools.py tests/test_chat_api.py
+git add src/auroraagent/ai/tools.py src/auroraagent/ai/agent.py src/auroraagent/api.py web/src/components/ChatPanel/PilotTaskCard.tsx web/src/components/ChatPanel/MessageBubble.tsx web/src/components/ChatPanel/model.ts web/src/features/pilot/applicationJdVersion.ts web/src/features/pilot/applicationJdVersion.test.ts web/src/components/ChatPanel/PilotApplicationJdCard.test.tsx tests/test_api_contract.py tests/test_ai_tools.py tests/test_chat_api.py
 git commit -m "feat: AI add Pilot JD confirmation"
 ~~~
 
@@ -628,7 +628,7 @@ git commit -m "feat: AI add Pilot JD confirmation"
 **Files:**
 - Create: scripts/application-jd-real-ai-browser-harness.ps1
 - Modify: scripts/browser-network-audit.py to record the existing CDP request method, target/session identity, URL, status, and stable response code needed by this harness; do not add domain logic.
-- Modify: src/offerpilot/smoke.py only for the isolated JD smoke flow and cleanup assertions.
+- Modify: src/auroraagent/smoke.py only for the isolated JD smoke flow and cleanup assertions.
 - Create: tests/test_application_jd_browser_harness.py
 - Create: tests/test_application_jd_smoke.py
 
@@ -677,7 +677,7 @@ A Provider failure is reported as a failure category; it is never converted into
 - [ ] **Step 5: Commit the isolated verification slice.**
 
 ~~~powershell
-git add scripts/application-jd-real-ai-browser-harness.ps1 scripts/browser-network-audit.py src/offerpilot/smoke.py tests/test_application_jd_browser_harness.py tests/test_application_jd_smoke.py
+git add scripts/application-jd-real-ai-browser-harness.ps1 scripts/browser-network-audit.py src/auroraagent/smoke.py tests/test_application_jd_browser_harness.py tests/test_application_jd_smoke.py
 git commit -m "test: AI verify application JD isolation"
 ~~~
 
@@ -736,13 +736,13 @@ Use the repository's `requesting-code-review` workflow to start an independent s
 Update the report only after all tests, both browser stages, and the independent review finish. The report must include commands, exit codes, test counts, migration result, CAS/idempotency evidence, per-stage browser request sequence, allowed-write deltas, zero-network result, cleanup result, and remaining Provider risk. It must not include secrets, JD/resume text, model output, or raw request IDs. Because docs/* is ignored, stage it explicitly. Before staging, run this from the repository root; it must compare the actual changed set, not just print it:
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
 git add -f docs/reports/2026-08-05-application-jd-versions-release-verification.md
 
-$allowlistFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-allowlist.txt'
+$allowlistFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-allowlist.txt'
 $allowedExact = @(Get-Content -LiteralPath $allowlistFile | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $changed = @(
   (git diff --name-only "$implementationBase..HEAD")
@@ -765,8 +765,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Release report commit failed' }
 After the report commit, repeat the same allowlist comparison and save the diff-check exit code before any status command. Delete the baseline only if that final comparison, `git diff --check`, and clean status all succeed; otherwise retain it for repair and rerun:
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-baseline.txt'
-$allowlistFile = Join-Path $env:TEMP 'offerpilot-application-jd-versions-allowlist.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-baseline.txt'
+$allowlistFile = Join-Path $env:TEMP 'auroraagent-application-jd-versions-allowlist.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }

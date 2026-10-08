@@ -579,7 +579,7 @@ describe('InterviewStudio continuous voice integration', () => {
   });
 
   it('restores a business result-unknown with the original attempt and turn key', async () => {
-    window.sessionStorage.setItem('offerpilot:interview-studio:business-recovery:real:7:8', JSON.stringify({
+    window.sessionStorage.setItem('auroraagent:interview-studio:business-recovery:real:7:8', JSON.stringify({
       attemptKey: 'attempt-original',
       attemptId: 41,
       state: {
@@ -625,7 +625,7 @@ describe('InterviewStudio continuous voice integration', () => {
       turnKey: 'turn-original',
       answerText: 'I located the logs and completed a rollback.',
     }));
-    expect(window.sessionStorage.getItem('offerpilot:interview-studio:business-recovery:real:7:8')).toBeNull();
+    expect(window.sessionStorage.getItem('auroraagent:interview-studio:business-recovery:real:7:8')).toBeNull();
   });
 
   it('persists an initial result-unknown attempt key until the user retries it', async () => {
@@ -641,7 +641,7 @@ describe('InterviewStudio continuous voice integration', () => {
     });
     await act(async () => { await Promise.resolve(); });
 
-    const stored = JSON.parse(window.sessionStorage.getItem('offerpilot:interview-studio:start-recovery:real:7:8') ?? 'null') as { attemptKey: string; questionKey: string };
+    const stored = JSON.parse(window.sessionStorage.getItem('auroraagent:interview-studio:start-recovery:real:7:8') ?? 'null') as { attemptKey: string; questionKey: string };
     expect(stored.attemptKey).toMatch(/^attempt-/);
     expect(stored.questionKey).toMatch(/^question-/);
 
@@ -665,7 +665,7 @@ describe('InterviewStudio continuous voice integration', () => {
     await act(async () => { button('使用原尝试恢复').click(); await Promise.resolve(); });
     await act(async () => { await Promise.resolve(); });
     expect(serviceSpies.start).toHaveBeenCalledWith(expect.objectContaining({ attemptKey: stored.attemptKey, questionKey: stored.questionKey }));
-    expect(window.sessionStorage.getItem('offerpilot:interview-studio:start-recovery:real:7:8')).toBeNull();
+    expect(window.sessionStorage.getItem('auroraagent:interview-studio:start-recovery:real:7:8')).toBeNull();
   });
 
   it('does not start two attempts during a React StrictMode effect probe', async () => {
@@ -730,10 +730,10 @@ describe('InterviewStudio continuous voice integration', () => {
 
     expect(serviceSpies.answer).toHaveBeenCalledTimes(1);
     expect(serviceSpies.nextQuestion).toHaveBeenCalledTimes(1);
-    expect(window.sessionStorage.getItem('offerpilot:interview-studio:voice-recovery:real:7:8')).not.toBeNull();
+    expect(window.sessionStorage.getItem('auroraagent:interview-studio:voice-recovery:real:7:8')).not.toBeNull();
     releaseReview({ ok: true });
     await act(async () => { await Promise.resolve(); });
-    expect(window.sessionStorage.getItem('offerpilot:interview-studio:voice-recovery:real:7:8')).toBeNull();
+    expect(window.sessionStorage.getItem('auroraagent:interview-studio:voice-recovery:real:7:8')).toBeNull();
   });
 
   it('keeps deterministic voice review validation failures distinct from unknown results', async () => {

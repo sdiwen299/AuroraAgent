@@ -15,9 +15,9 @@
 ### Task 1: 增量数据库结构与模型
 
 **Files:**
-- Modify: `src/offerpilot/models.py:101-120, 333-361`
-- Modify: `src/offerpilot/db.py:55-230`
-- Modify: `src/offerpilot/schemas.py:80-105`
+- Modify: `src/auroraagent/models.py:101-120, 333-361`
+- Modify: `src/auroraagent/db.py:55-230`
+- Modify: `src/auroraagent/schemas.py:80-105`
 - Create: `tests/test_interview_review_migrations.py`
 
 - [ ] **Step 1: Write the failing migration tests**
@@ -98,15 +98,15 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/models.py src/offerpilot/db.py src/offerpilot/schemas.py tests/test_interview_review_migrations.py
+git add src/auroraagent/models.py src/auroraagent/db.py src/auroraagent/schemas.py tests/test_interview_review_migrations.py
 git commit -m "feat: AI add interview review proposal schema"
 ~~~
 
 ### Task 2: 复盘绑定、更新字段所有权与软删除边界
 
 **Files:**
-- Modify: `src/offerpilot/repositories/notes.py`
-- Modify: `src/offerpilot/api.py:630, 5720-5800`
+- Modify: `src/auroraagent/repositories/notes.py`
+- Modify: `src/auroraagent/api.py:630, 5720-5800`
 - Modify: `tests/test_notes_api.py`
 - Create: `tests/test_notes_repository_visibility.py`
 
@@ -163,14 +163,14 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/repositories/notes.py src/offerpilot/api.py tests/test_notes_api.py tests/test_notes_repository_visibility.py
+git add src/auroraagent/repositories/notes.py src/auroraagent/api.py tests/test_notes_api.py tests/test_notes_repository_visibility.py
 git commit -m "fix: AI preserve interview note ownership"
 ~~~
 
 ### Task 3: 严格 AI 输入快照、输出契约与安全重试
 
 **Files:**
-- Create: `src/offerpilot/ai/interview_review_proposals.py`
+- Create: `src/auroraagent/ai/interview_review_proposals.py`
 - Create: `tests/test_interview_review_proposals_ai.py`
 
 - [ ] **Step 1: Write failing contract tests**
@@ -221,14 +221,14 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/ai/interview_review_proposals.py tests/test_interview_review_proposals_ai.py
+git add src/auroraagent/ai/interview_review_proposals.py tests/test_interview_review_proposals_ai.py
 git commit -m "feat: AI add evidence-gated interview review contract"
 ~~~
 
 ### Task 4: 不可变建议仓储、历史来源状态与幂等生命周期
 
 **Files:**
-- Create: `src/offerpilot/repositories/interview_review_proposals.py`
+- Create: `src/auroraagent/repositories/interview_review_proposals.py`
 - Create: `tests/test_interview_review_proposals_repository.py`
 
 - [ ] **Step 1: Write failing repository tests**
@@ -281,15 +281,15 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/repositories/interview_review_proposals.py tests/test_interview_review_proposals_repository.py
+git add src/auroraagent/repositories/interview_review_proposals.py tests/test_interview_review_proposals_repository.py
 git commit -m "feat: AI persist interview review proposals safely"
 ~~~
 
 ### Task 5: API 路由、错误码与安全响应
 
 **Files:**
-- Modify: `src/offerpilot/api.py:35-110, 620-650, 1570-1685`
-- Modify: `src/offerpilot/schemas.py`
+- Modify: `src/auroraagent/api.py:35-110, 620-650, 1570-1685`
+- Modify: `src/auroraagent/schemas.py`
 - Create: `tests/test_interview_review_proposals_api.py`
 
 - [ ] **Step 1: Write failing API tests**
@@ -338,7 +338,7 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/api.py src/offerpilot/schemas.py tests/test_interview_review_proposals_api.py
+git add src/auroraagent/api.py src/auroraagent/schemas.py tests/test_interview_review_proposals_api.py
 git commit -m "feat: AI expose interview review proposal API"
 ~~~
 
@@ -494,7 +494,7 @@ git commit -m "feat: AI open interview review from Pilot"
 ### Task 9: 隔离真实 AI smoke 与浏览器闭环
 
 **Files:**
-- Modify: `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/smoke.py`
 - Modify: `tests/test_smoke.py`
 - Modify: `scripts/pilot-real-ai-browser-harness.ps1`
 
@@ -528,7 +528,7 @@ Expected: PASS. Real provider browser run is executed separately only with confi
 - [ ] **Step 5: Commit**
 
 ~~~powershell
-git add src/offerpilot/smoke.py tests/test_smoke.py scripts/pilot-real-ai-browser-harness.ps1
+git add src/auroraagent/smoke.py tests/test_smoke.py scripts/pilot-real-ai-browser-harness.ps1
 git commit -m "test: AI add interview review real AI smoke"
 ~~~
 

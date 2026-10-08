@@ -2,7 +2,7 @@ import { useState, type DragEvent, type ReactNode } from 'react';
 import type { PilotContextAttachment, PilotAttachmentKind } from '@/types/chat';
 import styles from './ChatPanel.module.css';
 
-const NATIVE_ATTACHMENT_TYPE = 'application/x-offerpilot-context-attachment';
+const NATIVE_ATTACHMENT_TYPE = 'application/x-auroraagent-context-attachment';
 
 interface Props {
   children: ReactNode;

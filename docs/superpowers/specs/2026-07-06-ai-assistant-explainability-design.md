@@ -2,7 +2,7 @@
 
 ## Goal
 
-Improve the OfferPilot AI assistant workbench so users can quickly understand what the assistant did, which local data it used, and why a write action needs confirmation.
+Improve the AuroraAgent AI assistant workbench so users can quickly understand what the assistant did, which local data it used, and why a write action needs confirmation.
 
 ## Product Principle
 
@@ -37,7 +37,7 @@ This layer stays short and scannable. It answers "what happened" without requiri
 
 ### Layer 2: Evidence Details
 
-Each process step can expand to show evidence that came from local OfferPilot data. Evidence should be concrete and user-verifiable:
+Each process step can expand to show evidence that came from local AuroraAgent data. Evidence should be concrete and user-verifiable:
 
 - Application: company, role, status, source, applied date.
 - Event: type, title, scheduled time, linked application.
@@ -138,7 +138,7 @@ Add a current-thread evidence section. It should aggregate evidence from visible
 
 ## Visual Direction
 
-Use a quiet, dense SaaS workbench style aligned with the current OfferPilot UI:
+Use a quiet, dense SaaS workbench style aligned with the current AuroraAgent UI:
 
 - No decorative chatbot-heavy treatment.
 - Clear typographic hierarchy.

@@ -11,18 +11,18 @@ import pytest
 from sqlalchemy.exc import IntegrityError
 
 from conftest import symlink_or_skip, wait_for_extraction
-from offerpilot import api
-from offerpilot.config import Config
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.knowledge.repository import KnowledgeRepository
-from offerpilot.knowledge.repository import (
+from auroraagent import api
+from auroraagent.config import Config
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.knowledge.repository import KnowledgeRepository
+from auroraagent.knowledge.repository import (
     EvidenceDraftInput,
     SnapshotCreateInput,
     commit_extraction,
 )
-from offerpilot.knowledge.service import _safe_cleanup
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.models import (
+from auroraagent.knowledge.service import _safe_cleanup
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.models import (
     KnowledgeBriefAttempt,
     KnowledgeEvidence,
     KnowledgeExtractionSnapshot,
@@ -44,7 +44,7 @@ def test_commit_failure_cleans_final_directory(tmp_path, monkeypatch) -> None:
     def fail_commit(*_args: object, **_kwargs: object) -> None:
         raise IntegrityError("forced commit failure", {}, RuntimeError("forced"))
 
-    monkeypatch.setattr("offerpilot.knowledge.worker.commit_extraction", fail_commit)
+    monkeypatch.setattr("auroraagent.knowledge.worker.commit_extraction", fail_commit)
     with TestClient(api.create_app(data_dir=tmp_path)) as client:
         response = client.post(
             "/api/knowledge/sources",
@@ -95,7 +95,7 @@ def test_brief_enqueue_failure_is_persisted_after_extraction(tmp_path, monkeypat
         IngestRequest(filename="queue.md", content_bytes=b"# Queue\n\nbody\n")
     )
     # 显式驱动 extraction；callback enqueue_or_block_brief 被 monkeypatch 失败 → brief_failed。
-    from offerpilot.knowledge.worker import ExtractionWorker, KnowledgeJobRunner
+    from auroraagent.knowledge.worker import ExtractionWorker, KnowledgeJobRunner
     KnowledgeJobRunner(
         repository,
         ExtractionWorker(repository, tmp_path, session_factory,

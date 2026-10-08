@@ -224,7 +224,7 @@ export default function DashboardView({
             从第一条投递开始建立求职节奏
           </div>
           <div style={{ color: 'var(--op-muted)', marginBottom: 16 }}>
-            添加投递后，OfferPilot 会自动生成跟进提醒、面试准备和 Offer 截止期行动。
+            添加投递后，曙光会自动生成跟进提醒、面试准备和 Offer 截止期行动。
           </div>
           <Button onClick={onAddApplication}>
             添加第一个投递

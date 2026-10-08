@@ -230,14 +230,14 @@ describe('diffResumeContent', () => {
     expect(added.items).toHaveLength(1);
     expect(added.items[0].path).toBe('/projects');
     expect(added.items[0].after?.valueType).toBe('array');
-    expect(added.items[0].after?.text.full).toContain('__offerpilot_unsupported__');
+    expect(added.items[0].after?.text.full).toContain('__auroraagent_unsupported__');
     expect(added.items[0].after?.text.full).not.toContain('no raw function text');
     expect(added.items[0].after?.text.full).not.toContain('no raw symbol text');
 
     const removed = diffResumeContent({ projects: [container] }, {});
     expect(removed.items).toHaveLength(1);
     expect(removed.items[0].path).toBe('/projects');
-    expect(removed.items[0].before?.text.full).toContain('__offerpilot_unsupported__');
+    expect(removed.items[0].before?.text.full).toContain('__auroraagent_unsupported__');
     expect(removed.items[0].before?.text.full).not.toContain('no raw function text');
     expect(getterCalls).toBe(0);
   });

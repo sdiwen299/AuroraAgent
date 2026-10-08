@@ -8,8 +8,8 @@ from types import SimpleNamespace
 
 import pytest
 
-import offerpilot.pilot_runtime.service as service_module
-from offerpilot.pilot_runtime.contracts import (
+import auroraagent.pilot_runtime.service as service_module
+from auroraagent.pilot_runtime.contracts import (
     AssistantMessageEvent,
     CancelReason,
     InvocationState,
@@ -18,16 +18,16 @@ from offerpilot.pilot_runtime.contracts import (
     RuntimeTransportContext,
     StartTurnRequest,
 )
-from offerpilot.pilot_runtime.errors import (
+from auroraagent.pilot_runtime.errors import (
     RuntimeAgentTimedOut,
     RuntimeCancelled,
     RuntimeFailureCode,
     ModelUnconfiguredError,
     RuntimeTransportAborted,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.chat_transport import SyncAgentExecutionHost
-from offerpilot.pilot_runtime.service import (
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.chat_transport import SyncAgentExecutionHost
+from auroraagent.pilot_runtime.service import (
     PilotRuntime,
     ResolvedPolicyCatalog,
     ResolvedModel,
@@ -35,47 +35,47 @@ from offerpilot.pilot_runtime.service import (
     RuntimeDependencies,
     _result_persisted,
 )
-from offerpilot.pilot_runtime.service import _normalize_agent_result
-from offerpilot.pilot_runtime.composition import _ContextAdapter
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.ai.agent_loop import _LoopServices
-from offerpilot.ai.agent_contracts import AgentTurnResult, PendingAction
-from offerpilot.ai.agent_loop import NewTurnSeed, SegmentSurfaceGate, build_segment_surface_gate
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_authority.contracts import SegmentExecutionAuthority
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.pilot_runtime.service import _normalize_agent_result
+from auroraagent.pilot_runtime.composition import _ContextAdapter
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.ai.agent_loop import _LoopServices
+from auroraagent.ai.agent_contracts import AgentTurnResult, PendingAction
+from auroraagent.ai.agent_loop import NewTurnSeed, SegmentSurfaceGate, build_segment_surface_gate
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_authority.contracts import SegmentExecutionAuthority
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
 )
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ToolExecutionRecord,
     ToolFailure,
 )
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.api import _confirmation_token as baseline_confirmation_token
-from offerpilot.pilot_runtime.service import _confirmation_token
-from offerpilot.agent_runtime.journal import SuspendedDisposition, TerminalDisposition
-from offerpilot.agent_runtime.keyring import JournalKeyDomain
-from offerpilot.agent_runtime.journal import RunRecorderFactory
-from offerpilot.db import init_database
-from offerpilot.pilot_runtime.persistence import (
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.api import _confirmation_token as baseline_confirmation_token
+from auroraagent.pilot_runtime.service import _confirmation_token
+from auroraagent.agent_runtime.journal import SuspendedDisposition, TerminalDisposition
+from auroraagent.agent_runtime.keyring import JournalKeyDomain
+from auroraagent.agent_runtime.journal import RunRecorderFactory
+from auroraagent.db import init_database
+from auroraagent.pilot_runtime.persistence import (
     ChatPersistenceCoordinator,
     PersistenceResult,
     PersistenceStatus,
 )
-from offerpilot.repositories.agent_runs import AgentRunRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.agent_runs import StartRunCommand
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.repositories.agent_runs import AgentRunRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.agent_runs import StartRunCommand
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_metadata.test_production_bundle import _production_components
 
 
@@ -83,7 +83,7 @@ _METADATA_COMPONENTS = _production_components()
 _METADATA_BUNDLE = _METADATA_COMPONENTS.bundle
 _TEST_TOOL_CATALOG = _METADATA_COMPONENTS.typed_catalog
 _AUTHORITY_SESSIONS = init_database(
-    Path(tempfile.mkdtemp(prefix="offerpilot-pilot-authority-")) / "authority.db"
+    Path(tempfile.mkdtemp(prefix="auroraagent-pilot-authority-")) / "authority.db"
 )
 _AUTHORITY_POLICY = validate_startup_policy(_TEST_TOOL_CATALOG.authority_manifest)
 
@@ -969,7 +969,7 @@ def test_real_run_recorder_factory_accepts_runtime_builder_and_records_terminal_
 ) -> None:
     phases = _Phases()
     data_dir = tmp_path
-    sessions = init_database(data_dir / "offerpilot.db")
+    sessions = init_database(data_dir / "auroraagent.db")
     chat = ChatRepository(sessions)
     conversation = chat.create_conversation("real journal")
     coordinator = ChatPersistenceCoordinator(chat)

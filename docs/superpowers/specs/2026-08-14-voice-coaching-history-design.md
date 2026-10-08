@@ -6,7 +6,7 @@
 
 ## 1. 背景与目标
 
-OfferPilot 的语音模拟面试已经完成三层能力：浏览器录音与朗读、按需离线 Whisper 转写、实时 VAD 与单次表达节奏复盘。当前复盘只存在于已挂载的练习会话；关闭 Drawer 后，用户无法回看历史变化，也无法从已确认结果进入下一次针对性练习。
+AuroraAgent 的语音模拟面试已经完成三层能力：浏览器录音与朗读、按需离线 Whisper 转写、实时 VAD 与单次表达节奏复盘。当前复盘只存在于已挂载的练习会话；关闭 Drawer 后，用户无法回看历史变化，也无法从已确认结果进入下一次针对性练习。
 
 第四期新增“语音面试成长档案”：用户在确认回答并完成原有回答提交后，可再次确认保存一条不可变的表达快照；系统只使用这些已确认记录计算可解释趋势，并允许用户返回原投递、原面试事件，带着一个明确训练重点重新开始模拟面试。
 
@@ -236,11 +236,11 @@ Pilot 第一期只增加一个只读快捷入口“查看表达成长”，执�
 优先新增独立 repository、趋势纯函数、前端 service/types/view；中心文件只做模型、路由和导航注册。预计修改范围包括：
 
 ```text
-src/offerpilot/db.py
-src/offerpilot/models.py
-src/offerpilot/schemas.py
-src/offerpilot/api.py
-src/offerpilot/repositories/voice_coaching.py
+src/auroraagent/db.py
+src/auroraagent/models.py
+src/auroraagent/schemas.py
+src/auroraagent/api.py
+src/auroraagent/repositories/voice_coaching.py
 tests/test_voice_coaching_*.py
 web/src/types/voiceCoaching.ts
 web/src/services/voiceCoaching.ts

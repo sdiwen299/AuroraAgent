@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from offerpilot.ai.mock_interview import (
+from auroraagent.ai.mock_interview import (
     MOCK_INTERVIEW_FEEDBACK_SCHEMA,
     SAFE_EMPTY_FEEDBACK,
     MockInterviewContractError,
@@ -15,7 +15,7 @@ from offerpilot.ai.mock_interview import (
     should_retry_mock_interview_format,
     validate_feedback,
 )
-from offerpilot.ai.types import Assistant
+from auroraagent.ai.types import Assistant
 
 
 def _snapshot():

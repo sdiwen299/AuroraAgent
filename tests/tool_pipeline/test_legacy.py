@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import inspect
 
-from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicCatalog
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_specs.legacy import build_static_adapter_catalog
+from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicCatalog
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_specs.legacy import build_static_adapter_catalog
 
 
 def test_legacy_catalog_is_exact_and_never_model_visible() -> None:

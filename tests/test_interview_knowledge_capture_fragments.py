@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from offerpilot.knowledge.interview_capture import (
+from auroraagent.knowledge.interview_capture import (
     FragmentValidationError,
     canonicalize_fragments,
     parse_capture_snapshot,

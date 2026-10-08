@@ -15,7 +15,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260824-scoped-tool-authority
+D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260824-scoped-tool-authority
 ```
 
 Branch and baselines:
@@ -55,59 +55,59 @@ All Application-owned final reads and writes require an exact authority-bound sc
 ### File responsibilities
 
 ```text
-src/offerpilot/ai/tool_authority/contracts.py
+src/auroraagent/ai/tool_authority/contracts.py
   Leaf enums, immutable transient DTOs, opaque tokens, call identities, authority types,
   Binding contracts/resolutions, constraints, Pending/Execution/Reject proofs.
 
-src/offerpilot/ai/tool_authority/policy.py
+src/auroraagent/ai/tool_authority/policy.py
   agent_typed_v1 profile, six version constants, binding aggregation/decision,
   manifest validation, canonical public fingerprints.
 
-src/offerpilot/ai/tool_authority/composition.py
+src/auroraagent/ai/tool_authority/composition.py
   Registry-backed factories for Segment/Approval authorities, contexts, constraints,
   Prepared/Pending/Execution claims, and lifecycle revocation.
 
-src/offerpilot/ai/tool_authority/fingerprint.py
+src/auroraagent/ai/tool_authority/fingerprint.py
   Canonical Conversation scope envelope and write-operation-authorization-scope-v1 HMAC.
 
-src/offerpilot/ai/tool_authority/visibility.py
+src/auroraagent/ai/tool_authority/visibility.py
   One active-Application visibility query with raw sqlite and SQLAlchemy Session adapters.
 
-src/offerpilot/context_projector/authority_surface.py
+src/auroraagent/context_projector/authority_surface.py
   Capability/scope intersection over the complete 25-tool catalog.
 
-src/offerpilot/ai/tool_runtime/contracts.py
-src/offerpilot/ai/tool_runtime/context.py
-src/offerpilot/ai/tool_runtime/catalog.py
-src/offerpilot/ai/tool_runtime/pipeline.py
+src/auroraagent/ai/tool_runtime/contracts.py
+src/auroraagent/ai/tool_runtime/context.py
+src/auroraagent/ai/tool_runtime/catalog.py
+src/auroraagent/ai/tool_runtime/pipeline.py
   Authority-bound ToolSpec preparation, read UoW, sealed write execution, and safe outcomes.
 
-src/offerpilot/ai/tool_specs/{applications,application_events,notes,offers,resumes,jd_analyses}.py
-src/offerpilot/ai/tool_specs/catalog.py
+src/auroraagent/ai/tool_specs/{applications,application_events,notes,offers,resumes,jd_analyses}.py
+src/auroraagent/ai/tool_specs/catalog.py
   Frozen 25-tool capability/binding/resolver metadata; unchanged Provider contracts.
 
-src/offerpilot/repositories/{applications,application_events,notes,offers,jd}.py
+src/auroraagent/repositories/{applications,application_events,notes,offers,jd}.py
   Caller-session scoped collection/point/mutation SQL with exact constraint guards.
 
-src/offerpilot/repositories/chat.py
+src/auroraagent/repositories/chat.py
   Atomic scope create/patch, read-only Pending identity preheader, Typed Pending claim port,
   Legacy Pending port, and no read-time writes.
 
-src/offerpilot/models.py
-src/offerpilot/db.py
+src/auroraagent/models.py
+src/auroraagent/db.py
   scope_revision, authorization_scope_fingerprint, migration 0028, checks and triggers.
 
-src/offerpilot/ai/write_operations.py
-src/offerpilot/pilot_runtime/continuation.py
+src/auroraagent/ai/write_operations.py
+src/auroraagent/pilot_runtime/continuation.py
   Ledger preheader, locked approval recheck/claim, reject proof, strict chained replay.
 
-src/offerpilot/context_projector/{selector,projector,loader}.py
-src/offerpilot/ai/agent_loop.py
-src/offerpilot/ai/agent_contracts.py
+src/auroraagent/context_projector/{selector,projector,loader}.py
+src/auroraagent/ai/agent_loop.py
+src/auroraagent/ai/agent_contracts.py
   DependencyPolicyV1, authority surface, seed ownership, read/write dispatch boundaries.
 
-src/offerpilot/pilot_runtime/{composition,service,persistence}.py
-src/offerpilot/api.py
+src/auroraagent/pilot_runtime/{composition,service,persistence}.py
+src/auroraagent/api.py
   Source-before-authority runtime assembly, split policy/model resolvers, four sync/stream paths.
 
 tests/fixtures/tool_authority/*.json
@@ -202,12 +202,12 @@ git commit -m "test: AI 固化作用域授权基线行为"
 ### Task 2: Define opaque Authority contracts and object-identity registries
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_authority/__init__.py`
-- Create: `src/offerpilot/ai/tool_authority/contracts.py`
-- Create: `src/offerpilot/ai/tool_authority/composition.py`
+- Create: `src/auroraagent/ai/tool_authority/__init__.py`
+- Create: `src/auroraagent/ai/tool_authority/contracts.py`
+- Create: `src/auroraagent/ai/tool_authority/composition.py`
 - Create: `tests/tool_authority/test_contracts.py`
 - Create: `tests/tool_authority/test_serialization.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
 
 - [ ] **Step 1: Write failing contract tests**
 
@@ -238,7 +238,7 @@ Prove that same-field reconstructed dataclasses, `copy`, `deepcopy`, `pickle`, `
 uv run pytest tests/tool_authority/test_contracts.py tests/tool_authority/test_serialization.py -q
 ```
 
-Expected: import failure because `offerpilot.ai.tool_authority` does not exist.
+Expected: import failure because `auroraagent.ai.tool_authority` does not exist.
 
 - [ ] **Step 3: Implement leaf contracts without repository/runtime imports**
 
@@ -293,7 +293,7 @@ Every exception, rollback, cancellation, and normal exit revokes or consumes the
 
 ```powershell
 uv run pytest tests/tool_authority/test_contracts.py tests/tool_authority/test_serialization.py -q
-uv run mypy src/offerpilot/ai/tool_authority src/offerpilot/ai/tool_runtime/contracts.py
+uv run mypy src/auroraagent/ai/tool_authority src/auroraagent/ai/tool_runtime/contracts.py
 ```
 
 Expected: all pass.
@@ -301,15 +301,15 @@ Expected: all pass.
 - [ ] **Step 6: Commit the contracts**
 
 ```powershell
-git add src/offerpilot/ai/tool_authority src/offerpilot/ai/tool_runtime/contracts.py tests/tool_authority
+git add src/auroraagent/ai/tool_authority src/auroraagent/ai/tool_runtime/contracts.py tests/tool_authority
 git commit -m "feat: AI 建立密封作用域授权契约"
 ```
 
 ### Task 3: Freeze Capability Profile, Binding policy, and six versioned policy identifiers
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_authority/policy.py`
-- Create: `src/offerpilot/ai/tool_authority/fingerprint.py`
+- Create: `src/auroraagent/ai/tool_authority/policy.py`
+- Create: `src/auroraagent/ai/tool_authority/fingerprint.py`
 - Create: `tests/tool_authority/test_policy.py`
 - Create: `tests/tool_authority/test_fingerprint.py`
 - Create: `tests/fixtures/tool_authority/capability_profile_agent_typed_v1.json`
@@ -386,22 +386,22 @@ Expected: all pass; changing a version or manifest item without changing its pin
 - [ ] **Step 6: Commit the policy**
 
 ```powershell
-git add src/offerpilot/ai/tool_authority/policy.py src/offerpilot/ai/tool_authority/fingerprint.py tests/tool_authority tests/fixtures/tool_authority
+git add src/auroraagent/ai/tool_authority/policy.py src/auroraagent/ai/tool_authority/fingerprint.py tests/tool_authority tests/fixtures/tool_authority
 git commit -m "feat: AI 冻结能力与绑定授权策略"
 ```
 
 ### Task 4: Encode the exact 25-Tool authority matrix in ToolSpec and Catalog
 
 **Files:**
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Modify: `src/offerpilot/ai/tool_runtime/catalog.py`
-- Modify: `src/offerpilot/ai/tool_specs/catalog.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/offers.py`
-- Modify: `src/offerpilot/ai/tool_specs/resumes.py`
-- Modify: `src/offerpilot/ai/tool_specs/jd_analyses.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/catalog.py`
+- Modify: `src/auroraagent/ai/tool_specs/catalog.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/offers.py`
+- Modify: `src/auroraagent/ai/tool_specs/resumes.py`
+- Modify: `src/auroraagent/ai/tool_specs/jd_analyses.py`
 - Create: `tests/tool_authority/test_matrix.py`
 - Read: `tests/fixtures/tool_authority/authority_manifest_v1.json`
 - Modify: `tests/tool_pipeline/test_catalog.py`
@@ -482,17 +482,17 @@ Expected: all pass; the existing Provider manifest remains unchanged.
 - [ ] **Step 6: Commit the ToolSpec matrix**
 
 ```powershell
-git add src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_specs tests/tool_authority tests/tool_pipeline/test_catalog.py tests/fixtures/tool_authority
+git add src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_specs tests/tool_authority tests/tool_pipeline/test_catalog.py tests/fixtures/tool_authority
 git commit -m "feat: AI 固化二十五项工具授权矩阵"
 ```
 
 ### Task 5: Add migration 0028 and atomic Conversation scope mutation
 
 **Files:**
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
-- Modify: `src/offerpilot/repositories/chat.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
+- Modify: `src/auroraagent/repositories/chat.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/tool_authority/test_migration_0028.py`
 - Create: `tests/tool_authority/test_scope_mutation.py`
 - Modify: `tests/test_chat_repository.py`
@@ -575,16 +575,16 @@ Expected: all pass with public Conversation JSON unchanged and no `scope_revisio
 - [ ] **Step 8: Commit schema and scope mutation**
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/db.py src/offerpilot/repositories/chat.py src/offerpilot/api.py tests/tool_authority tests/test_chat_repository.py tests/test_chat_api.py
+git add src/auroraagent/models.py src/auroraagent/db.py src/auroraagent/repositories/chat.py src/auroraagent/api.py tests/tool_authority tests/test_chat_repository.py tests/test_chat_api.py
 git commit -m "feat: AI 增加会话作用域版本与原子变更"
 ```
 
 ### Task 6: Unify active-Application visibility with Context Source
 
 **Files:**
-- Create: `src/offerpilot/ai/tool_authority/visibility.py`
-- Modify: `src/offerpilot/context_projector/loader.py`
-- Modify: `src/offerpilot/api.py`
+- Create: `src/auroraagent/ai/tool_authority/visibility.py`
+- Modify: `src/auroraagent/context_projector/loader.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/tool_authority/test_visibility.py`
 - Modify: `tests/test_context_projector.py`
 - Modify: `tests/test_chat_api.py`
@@ -627,24 +627,24 @@ Expected: all pass; Source failure remains the existing safe 503 mapping.
 - [ ] **Step 6: Commit visibility**
 
 ```powershell
-git add src/offerpilot/ai/tool_authority/visibility.py src/offerpilot/context_projector/loader.py src/offerpilot/api.py tests/tool_authority/test_visibility.py tests/test_context_projector.py tests/test_chat_api.py
+git add src/auroraagent/ai/tool_authority/visibility.py src/auroraagent/context_projector/loader.py src/auroraagent/api.py tests/tool_authority/test_visibility.py tests/test_context_projector.py tests/test_chat_api.py
 git commit -m "feat: AI 统一会话与应用可见性快照"
 ```
 
 ### Task 7: Implement authority-bound scoped collection and point-read repositories
 
 **Files:**
-- Modify: `src/offerpilot/repositories/applications.py`
-- Modify: `src/offerpilot/repositories/application_events.py`
-- Modify: `src/offerpilot/repositories/notes.py`
-- Modify: `src/offerpilot/repositories/offers.py`
-- Modify: `src/offerpilot/repositories/jd.py`
-- Modify: `src/offerpilot/repositories/session_binding.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/offers.py`
-- Modify: `src/offerpilot/ai/tool_specs/jd_analyses.py`
+- Modify: `src/auroraagent/repositories/applications.py`
+- Modify: `src/auroraagent/repositories/application_events.py`
+- Modify: `src/auroraagent/repositories/notes.py`
+- Modify: `src/auroraagent/repositories/offers.py`
+- Modify: `src/auroraagent/repositories/jd.py`
+- Modify: `src/auroraagent/repositories/session_binding.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/offers.py`
+- Modify: `src/auroraagent/ai/tool_specs/jd_analyses.py`
 - Create: `tests/tool_authority/test_scoped_reads.py`
 - Modify: `tests/test_applications_repository.py`
 - Create: `tests/test_application_events_repository.py`
@@ -700,21 +700,21 @@ Expected: all pass; each final collection/point query count is exactly 1.
 - [ ] **Step 7: Commit scoped reads**
 
 ```powershell
-git add src/offerpilot/repositories src/offerpilot/ai/tool_specs tests/tool_authority/test_scoped_reads.py tests/test_applications_repository.py tests/test_application_events_repository.py tests/test_jd_analyses_repository.py tests/tool_pipeline
+git add src/auroraagent/repositories src/auroraagent/ai/tool_specs tests/tool_authority/test_scoped_reads.py tests/test_applications_repository.py tests/test_application_events_repository.py tests/test_jd_analyses_repository.py tests/tool_pipeline
 git commit -m "feat: AI 强制应用作用域只读查询"
 ```
 
 ### Task 8: Implement the nine scoped Application-owned mutation ports
 
 **Files:**
-- Modify: `src/offerpilot/repositories/applications.py`
-- Modify: `src/offerpilot/repositories/application_events.py`
-- Modify: `src/offerpilot/repositories/notes.py`
-- Modify: `src/offerpilot/repositories/offers.py`
-- Modify: `src/offerpilot/ai/tool_specs/applications.py`
-- Modify: `src/offerpilot/ai/tool_specs/application_events.py`
-- Modify: `src/offerpilot/ai/tool_specs/notes.py`
-- Modify: `src/offerpilot/ai/tool_specs/offers.py`
+- Modify: `src/auroraagent/repositories/applications.py`
+- Modify: `src/auroraagent/repositories/application_events.py`
+- Modify: `src/auroraagent/repositories/notes.py`
+- Modify: `src/auroraagent/repositories/offers.py`
+- Modify: `src/auroraagent/ai/tool_specs/applications.py`
+- Modify: `src/auroraagent/ai/tool_specs/application_events.py`
+- Modify: `src/auroraagent/ai/tool_specs/notes.py`
+- Modify: `src/auroraagent/ai/tool_specs/offers.py`
 - Create: `tests/tool_authority/test_scoped_writes.py`
 - Modify: `tests/tool_pipeline/test_applications.py`
 - Modify: `tests/tool_pipeline/test_application_events.py`
@@ -764,16 +764,16 @@ Expected: all pass; unauthorized paths have side-effect count 0.
 - [ ] **Step 6: Commit scoped writes**
 
 ```powershell
-git add src/offerpilot/repositories src/offerpilot/ai/tool_specs tests/tool_authority/test_scoped_writes.py tests/tool_pipeline
+git add src/auroraagent/repositories src/auroraagent/ai/tool_specs tests/tool_authority/test_scoped_writes.py tests/tool_pipeline
 git commit -m "feat: AI 强制应用作用域写入约束"
 ```
 
 ### Task 9: Make ToolExecutionContext authority-bound and enforce prepare/read Pipeline phases
 
 **Files:**
-- Modify: `src/offerpilot/ai/tool_runtime/context.py`
-- Modify: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/context.py`
+- Modify: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
 - Modify: `tests/tool_pipeline/domain_harness.py`
 - Modify: `tests/tool_pipeline/test_context.py`
 - Modify: `tests/tool_pipeline/test_pipeline.py`
@@ -845,17 +845,17 @@ Expected: all pass.
 - [ ] **Step 8: Commit Pipeline read enforcement**
 
 ```powershell
-git add src/offerpilot/ai/tool_runtime tests/tool_pipeline tests/tool_authority/test_read_uow.py
+git add src/auroraagent/ai/tool_runtime tests/tool_pipeline tests/tool_authority/test_read_uow.py
 git commit -m "feat: AI 强制工具准备与只读授权阶段"
 ```
 
 ### Task 10: Replace ExecutionAuthorization with a sealed one-shot ExecutionClaim
 
 **Files:**
-- Modify: `src/offerpilot/ai/tool_runtime/contracts.py`
-- Modify: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/ai/tool_runtime/contracts.py`
+- Modify: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
 - Modify: `tests/tool_pipeline/test_confirmation_claim_schema.py`
 - Modify: `tests/test_write_operations.py`
 - Create: `tests/tool_authority/test_execution_claim.py`
@@ -896,17 +896,17 @@ Expected: tests pass; source search has no production `ExecutionAuthorization` o
 - [ ] **Step 7: Commit sealed write execution**
 
 ```powershell
-git add src/offerpilot/ai/tool_runtime src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/continuation.py tests/tool_authority/test_execution_claim.py tests/tool_pipeline/test_confirmation_claim_schema.py tests/test_write_operations.py
+git add src/auroraagent/ai/tool_runtime src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/continuation.py tests/tool_authority/test_execution_claim.py tests/tool_pipeline/test_confirmation_claim_schema.py tests/test_write_operations.py
 git commit -m "feat: AI 使用一次性执行声明保护写入"
 ```
 
 ### Task 11: Bind every new Typed Pending proposal to trusted scope HMAC
 
 **Files:**
-- Modify: `src/offerpilot/repositories/chat.py`
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/persistence.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/repositories/chat.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/persistence.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
 - Create: `tests/tool_authority/test_pending_claim.py`
 - Modify: `tests/pilot_runtime/test_persistence.py`
 - Modify: `tests/test_chat_repository.py`
@@ -957,16 +957,16 @@ Expected: all pass.
 - [ ] **Step 7: Commit scope-bound proposals**
 
 ```powershell
-git add src/offerpilot/repositories/chat.py src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/persistence.py src/offerpilot/pilot_runtime/continuation.py tests/tool_authority/test_pending_claim.py tests/pilot_runtime/test_persistence.py tests/test_chat_repository.py
+git add src/auroraagent/repositories/chat.py src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/persistence.py src/auroraagent/pilot_runtime/continuation.py tests/tool_authority/test_pending_claim.py tests/pilot_runtime/test_persistence.py tests/test_chat_repository.py
 git commit -m "feat: AI 将待确认写入绑定可信作用域"
 ```
 
 ### Task 12: Add LedgerOperationPreheader and parameter-free reject proof
 
 **Files:**
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Create: `tests/tool_authority/test_ledger_preheader.py`
 - Create: `tests/tool_authority/test_reject_privacy.py`
 - Modify: `tests/agent_loop/test_confirmation.py`
@@ -1007,17 +1007,17 @@ Expected: all pass; reject Provider/Tool/executor/args-decoder counts are 0.
 - [ ] **Step 7: Commit Ledger-first reject**
 
 ```powershell
-git add src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/continuation.py src/offerpilot/pilot_runtime/service.py tests/tool_authority tests/agent_loop/test_confirmation.py tests/pilot_runtime/test_confirmation.py
+git add src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/continuation.py src/auroraagent/pilot_runtime/service.py tests/tool_authority tests/agent_loop/test_confirmation.py tests/pilot_runtime/test_confirmation.py
 git commit -m "feat: AI 实现账本优先无参数拒绝"
 ```
 
 ### Task 13: Revalidate approve/modify inside the locked Ledger transaction
 
 **Files:**
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/ai/tool_runtime/pipeline.py`
-- Modify: `src/offerpilot/ai/tool_authority/composition.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/ai/tool_runtime/pipeline.py`
+- Modify: `src/auroraagent/ai/tool_authority/composition.py`
 - Create: `tests/tool_authority/test_approval_transaction.py`
 - Create: `tests/tool_authority/test_approval_authority_resolver.py`
 - Modify: `tests/test_write_operations.py`
@@ -1086,16 +1086,16 @@ Expected: all pass; authorization denial never terminalizes or clears Pending.
 - [ ] **Step 7: Commit locked approval**
 
 ```powershell
-git add src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/continuation.py src/offerpilot/ai/tool_runtime/pipeline.py src/offerpilot/ai/tool_authority/composition.py tests/tool_authority/test_approval_transaction.py tests/tool_authority/test_approval_authority_resolver.py tests/test_write_operations.py tests/pilot_runtime/test_confirmation.py
+git add src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/continuation.py src/auroraagent/ai/tool_runtime/pipeline.py src/auroraagent/ai/tool_authority/composition.py tests/tool_authority/test_approval_transaction.py tests/tool_authority/test_approval_authority_resolver.py tests/test_write_operations.py tests/pilot_runtime/test_confirmation.py
 git commit -m "feat: AI 在账本事务内复核批准授权"
 ```
 
 ### Task 14: Harden terminal/chained replay without creating Authority
 
 **Files:**
-- Modify: `src/offerpilot/ai/write_operations.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Create: `src/offerpilot/ai/pending_replay.py`
+- Modify: `src/auroraagent/ai/write_operations.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Create: `src/auroraagent/ai/pending_replay.py`
 - Create: `tests/tool_authority/test_pending_replay_decoder.py`
 - Create: `tests/tool_authority/test_replay_topology.py`
 - Modify: `tests/agent_loop/test_confirmation.py`
@@ -1132,20 +1132,20 @@ Expected: all pass with sync/SSE status, code, message, and retryable flag ident
 - [ ] **Step 6: Commit replay hardening**
 
 ```powershell
-git add src/offerpilot/ai/pending_replay.py src/offerpilot/ai/write_operations.py src/offerpilot/pilot_runtime/continuation.py tests/tool_authority tests/agent_loop/test_confirmation.py tests/test_chat_api.py
+git add src/auroraagent/ai/pending_replay.py src/auroraagent/ai/write_operations.py src/auroraagent/pilot_runtime/continuation.py tests/tool_authority tests/agent_loop/test_confirmation.py tests/test_chat_api.py
 git commit -m "feat: AI 强化待确认链式重放完整性"
 ```
 
 ### Task 15: Intersect Provider Surface with Segment Authority and freeze dependencies
 
 **Files:**
-- Create: `src/offerpilot/context_projector/authority_surface.py`
-- Modify: `src/offerpilot/context_projector/selector.py`
-- Modify: `src/offerpilot/context_projector/projector.py`
-- Modify: `src/offerpilot/context_projector/contracts.py`
-- Modify: `src/offerpilot/context_projector/binding.py`
-- Modify: `src/offerpilot/context_projector/gateway.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
+- Create: `src/auroraagent/context_projector/authority_surface.py`
+- Modify: `src/auroraagent/context_projector/selector.py`
+- Modify: `src/auroraagent/context_projector/projector.py`
+- Modify: `src/auroraagent/context_projector/contracts.py`
+- Modify: `src/auroraagent/context_projector/binding.py`
+- Modify: `src/auroraagent/context_projector/gateway.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
 - Create: `tests/tool_authority/test_authority_surface.py`
 - Create: `tests/tool_authority/test_dependency_policy.py`
 - Create: `tests/fixtures/tool_authority/dependency_policy_v1.json`
@@ -1187,19 +1187,19 @@ Expected: tests pass; search returns no production fallback.
 - [ ] **Step 7: Commit authority surface**
 
 ```powershell
-git add src/offerpilot/context_projector src/offerpilot/ai/agent_loop.py tests/tool_authority tests/test_context_projector.py tests/fixtures/tool_authority
+git add src/auroraagent/context_projector src/auroraagent/ai/agent_loop.py tests/tool_authority tests/test_context_projector.py tests/fixtures/tool_authority
 git commit -m "feat: AI 按执行授权收敛模型工具面"
 ```
 
 ### Task 16: Split Runtime policy/model composition and cut over new-turn sync/stream
 
 **Files:**
-- Modify: `src/offerpilot/pilot_runtime/contracts.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/ai/agent_contracts.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/pilot_runtime/contracts.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/ai/agent_contracts.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/pilot_runtime/test_contracts.py`
 - Modify: `tests/pilot_runtime/test_start_turn.py`
 - Modify: `tests/pilot_runtime/test_stream_preparation.py`
@@ -1255,17 +1255,17 @@ Expected: all pass.
 - [ ] **Step 7: Commit new-turn cutover**
 
 ```powershell
-git add src/offerpilot/pilot_runtime src/offerpilot/ai/agent_contracts.py src/offerpilot/ai/agent_loop.py src/offerpilot/api.py tests/pilot_runtime tests/agent_loop
+git add src/auroraagent/pilot_runtime src/auroraagent/ai/agent_contracts.py src/auroraagent/ai/agent_loop.py src/auroraagent/api.py tests/pilot_runtime tests/agent_loop
 git commit -m "refactor: AI 切换新运行作用域授权组装"
 ```
 
 ### Task 17: Cut over approve/modify continuation sync/stream and preserve provider-free routes
 
 **Files:**
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/ai/agent_loop.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
 - Modify: `tests/pilot_runtime/test_confirmation.py`
 - Modify: `tests/pilot_runtime/test_stream_preparation.py`
 - Modify: `tests/agent_loop/test_confirmation.py`
@@ -1319,7 +1319,7 @@ Expected: all pass with provider-free counters and old HTTP/SSE goldens unchange
 - [ ] **Step 7: Commit confirmation cutover**
 
 ```powershell
-git add src/offerpilot/pilot_runtime src/offerpilot/ai/agent_loop.py tests/pilot_runtime tests/agent_loop/test_confirmation.py tests/test_chat_api.py
+git add src/auroraagent/pilot_runtime src/auroraagent/ai/agent_loop.py tests/pilot_runtime tests/agent_loop/test_confirmation.py tests/test_chat_api.py
 git commit -m "refactor: AI 切换确认续跑授权事务"
 ```
 
@@ -1383,7 +1383,7 @@ Expected: all pass.
 - [ ] **Step 5: Run formatting/static checks on changed Python**
 
 ```powershell
-uv run ruff check src/offerpilot/ai/tool_authority src/offerpilot/ai/tool_runtime src/offerpilot/ai/tool_specs src/offerpilot/context_projector src/offerpilot/pilot_runtime src/offerpilot/repositories tests/tool_authority
+uv run ruff check src/auroraagent/ai/tool_authority src/auroraagent/ai/tool_runtime src/auroraagent/ai/tool_specs src/auroraagent/context_projector src/auroraagent/pilot_runtime src/auroraagent/repositories tests/tool_authority
 uv run mypy src
 git diff --check
 ```
@@ -1432,7 +1432,7 @@ Expected: all pass.
 Then run the Windows manifest/union/node-ID/skip/aggregate gates with an isolated result directory:
 
 ```powershell
-$gateRoot = Join-Path ([System.IO.Path]::GetTempPath()) "offerpilot-scoped-authority-gates"
+$gateRoot = Join-Path ([System.IO.Path]::GetTempPath()) "auroraagent-scoped-authority-gates"
 New-Item -ItemType Directory -Force -Path $gateRoot | Out-Null
 $backendResults = Join-Path $gateRoot "backend"
 New-Item -ItemType Directory -Force -Path $backendResults | Out-Null
@@ -1538,7 +1538,7 @@ Expected: all available gates pass on the final tree.
 Recreate and rerun the final Windows manifest/union/node-ID/skip/aggregate evidence after the last review fix:
 
 ```powershell
-$finalGateRoot = Join-Path ([System.IO.Path]::GetTempPath()) "offerpilot-scoped-authority-final-gates"
+$finalGateRoot = Join-Path ([System.IO.Path]::GetTempPath()) "auroraagent-scoped-authority-final-gates"
 $finalBackend = Join-Path $finalGateRoot "backend"
 New-Item -ItemType Directory -Force -Path $finalBackend | Out-Null
 $finalManifest = @(& uv run pytest --collect-only -q --disable-warnings tests)

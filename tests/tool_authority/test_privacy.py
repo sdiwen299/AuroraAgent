@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from sqlalchemy.orm import Session
 
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.tool_authority import (
     AuthorityCallIdentity,
     AuthorityFactory,
     AuthorityPhaseError,
@@ -24,7 +24,7 @@ from offerpilot.ai.tool_authority import (
     TrustedLedgerOmittedTokenProof,
     execution_scope,
 )
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ProviderToolContract,
@@ -32,8 +32,8 @@ from offerpilot.ai.tool_runtime.contracts import (
     TransientToolRuntimeValue,
     materialize_provider_payloads,
 )
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     read_metadata,
@@ -107,8 +107,8 @@ def _segment(factory: AuthorityFactory, *, segment_id: str) -> SegmentExecutionA
 
 
 def _transient_contract_types() -> tuple[type[TransientToolRuntimeValue], ...]:
-    from offerpilot.ai.tool_authority import contracts
-    from offerpilot.ai.tool_runtime.contracts import PreparedToolCall
+    from auroraagent.ai.tool_authority import contracts
+    from auroraagent.ai.tool_runtime.contracts import PreparedToolCall
 
     names = (
         "TrustedContextScope",
@@ -131,10 +131,10 @@ def _transient_contract_types() -> tuple[type[TransientToolRuntimeValue], ...]:
 
 
 def _security_runtime_types() -> tuple[type[TransientToolRuntimeValue], ...]:
-    from offerpilot.ai.agent_loop import SegmentSurfaceGate
-    from offerpilot.ai.tool_authority import contracts
-    from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-    from offerpilot.context_projector.binding import BoundProviderResponse
+    from auroraagent.ai.agent_loop import SegmentSurfaceGate
+    from auroraagent.ai.tool_authority import contracts
+    from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+    from auroraagent.context_projector.binding import BoundProviderResponse
 
     authority_types = tuple(
         value
@@ -682,13 +682,13 @@ def test_scope_exit_revokes_authority_and_call_identity_registry_entries() -> No
 
 
 def test_public_conversation_http_and_sse_contracts_exclude_private_revision_and_hmac() -> None:
-    from offerpilot.schemas import ConversationOut
+    from auroraagent.schemas import ConversationOut
 
     assert set(ConversationOut.model_fields) == _PUBLIC_CONVERSATION_FIELDS
     assert "scope_revision" not in ConversationOut.model_fields
     assert "authorization_scope_fingerprint" not in ConversationOut.model_fields
 
-    api_source = (ROOT / "src" / "offerpilot" / "api.py").read_text(encoding="utf-8")
+    api_source = (ROOT / "src" / "auroraagent" / "api.py").read_text(encoding="utf-8")
     conversation_projection = api_source[
         api_source.index("def _conversation_json(") : api_source.index(
             "def _conversation_context_label(", api_source.index("def _conversation_json(")
@@ -697,7 +697,7 @@ def test_public_conversation_http_and_sse_contracts_exclude_private_revision_and
     assert "scope_revision" not in conversation_projection
     assert "authorization_scope_fingerprint" not in conversation_projection
 
-    transport_source = (ROOT / "src" / "offerpilot" / "chat_transport.py").read_text(
+    transport_source = (ROOT / "src" / "auroraagent" / "chat_transport.py").read_text(
         encoding="utf-8"
     )
     envelope = transport_source[
@@ -714,11 +714,11 @@ def test_public_conversation_http_and_sse_contracts_exclude_private_revision_and
     # boundary.  These private persistence names must not become a supported
     # field in any of them.
     boundary_files = (
-        ROOT / "src" / "offerpilot" / "agent_runtime" / "events.py",
-        ROOT / "src" / "offerpilot" / "agent_runtime" / "trace.py",
-        ROOT / "src" / "offerpilot" / "context_projector" / "contracts.py",
-        ROOT / "src" / "offerpilot" / "context_projector" / "projector.py",
-        ROOT / "src" / "offerpilot" / "pilot_runtime" / "event_sink.py",
+        ROOT / "src" / "auroraagent" / "agent_runtime" / "events.py",
+        ROOT / "src" / "auroraagent" / "agent_runtime" / "trace.py",
+        ROOT / "src" / "auroraagent" / "context_projector" / "contracts.py",
+        ROOT / "src" / "auroraagent" / "context_projector" / "projector.py",
+        ROOT / "src" / "auroraagent" / "pilot_runtime" / "event_sink.py",
     )
     for path in boundary_files:
         source = path.read_text(encoding="utf-8")
@@ -751,15 +751,15 @@ def test_claim_contract_does_not_gain_raw_request_or_provider_payload_fields() -
 
 
 def test_live_authority_graph_is_rejected_by_real_public_boundaries() -> None:
-    from offerpilot.agent_runtime.events import (
+    from auroraagent.agent_runtime.events import (
         JournalEventValidationError,
         prepare_event,
     )
-    from offerpilot.ai.types import Message
-    from offerpilot.context_projector.budget import canonical_messages
-    from offerpilot.context_projector.contracts import FrozenMessage, ProjectionError
-    from offerpilot.pilot_runtime import MessageOutcome
-    from offerpilot.pilot_runtime.event_sink import runtime_event_payload
+    from auroraagent.ai.types import Message
+    from auroraagent.context_projector.budget import canonical_messages
+    from auroraagent.context_projector.contracts import FrozenMessage, ProjectionError
+    from auroraagent.pilot_runtime import MessageOutcome
+    from auroraagent.pilot_runtime.event_sink import runtime_event_payload
 
     with (
         execution_scope() as factory,

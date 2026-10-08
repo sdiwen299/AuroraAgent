@@ -6,9 +6,9 @@ import re
 import pytest
 from sqlalchemy import select
 
-from offerpilot.ai.mock_interview import MockInterviewContractError, SAFE_EMPTY_FEEDBACK, validate_feedback
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.ai.mock_interview import MockInterviewContractError, SAFE_EMPTY_FEEDBACK, validate_feedback
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     MockInterviewAttempt,
@@ -17,7 +17,7 @@ from offerpilot.models import (
     MockInterviewTurn,
     Resume,
 )
-from offerpilot.smoke import (
+from auroraagent.smoke import (
     _assert_mock_interview_failed_attempt_clean,
     _assert_real_ai_smoke_data_clean,
     _capture_real_ai_browser_domain_baseline,
@@ -51,7 +51,7 @@ def test_browser_harness_requires_real_two_turn_draft_and_browser_network_eviden
 def test_browser_harness_allows_three_same_context_attempts_and_selects_success_by_id():
     script = (Path(__file__).parents[1] / "scripts" / "mock-interview-real-ai-browser-harness.ps1").read_text(encoding="utf-8")
     auditor = (Path(__file__).parents[1] / "scripts" / "browser-network-audit.py").read_text(encoding="utf-8")
-    api = (Path(__file__).parents[1] / "src" / "offerpilot" / "api.py").read_text(encoding="utf-8")
+    api = (Path(__file__).parents[1] / "src" / "auroraagent" / "api.py").read_text(encoding="utf-8")
     assert "$maxBrowserAttempts = 3" in script
     assert "flowBase" in script
     assert "createIndexes" in script
@@ -112,7 +112,7 @@ def test_browser_harness_rejects_provider_attempt_with_wrong_retained_state():
 
 
 def test_browser_harness_uses_attempt_scoped_provider_and_contract_diagnostics(tmp_path):
-    log_path = tmp_path / "logs" / "offerpilot.log"
+    log_path = tmp_path / "logs" / "auroraagent.log"
     log_path.parent.mkdir()
     log_path.write_text(
         "\n".join(

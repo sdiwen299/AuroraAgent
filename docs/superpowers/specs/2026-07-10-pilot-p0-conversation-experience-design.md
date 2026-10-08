@@ -28,7 +28,7 @@ The result must let a user:
 4. A user can approve, edit, or reject a proposed write; editing never bypasses validation.
 5. High-risk tools continue to require confirmation even when auto-approve is enabled.
 6. Explanations expose plans, tool facts, evidence, and effects, never hidden chain-of-thought.
-7. Domain facts remain in OfferPilot repositories. Page context is a bounded UI snapshot, not a new source of truth.
+7. Domain facts remain in AuroraAgent repositories. Page context is a bounded UI snapshot, not a new source of truth.
 
 ## Scope
 

@@ -23,9 +23,9 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
-from offerpilot.knowledge.evidence_policy import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
+from auroraagent.knowledge.evidence_policy import (
     ADAPTER_EVERNOTE,
     ADAPTER_OBSIDIAN,
     ADAPTER_WEB_ARTICLE,
@@ -36,7 +36,7 @@ from offerpilot.knowledge.evidence_policy import (
     evaluate_block,
     select_adapters,
 )
-from offerpilot.knowledge.extractor import (
+from auroraagent.knowledge.extractor import (
     EXTRACTOR_VERSION,
     METADATA_EXTRACTION_VERSION,
     MarkdownExtractor,
@@ -70,7 +70,7 @@ def qualified_config() -> Config:  # type: ignore[no-untyped-def]
 def _api_client(tmp_path: Path):  # type: ignore[no-untyped-def]
     from fastapi.testclient import TestClient
 
-    from offerpilot.api import create_app
+    from auroraagent.api import create_app
 
     return TestClient(create_app(data_dir=tmp_path))
 
@@ -341,7 +341,7 @@ def _async_representative_source() -> str:
         f"![[{_OBSIDIAN_TOKEN}.png]]\n\n"
         f'<en-media type="image/png" hash="{_EVERNOTE_TOKEN}"/>\n\n'
         "# 概述\n\n"
-        f"OfferPilot 使用 {_BODY_TERM} 作为单一事实源。\n\n"
+        f"AuroraAgent 使用 {_BODY_TERM} 作为单一事实源。\n\n"
         "## 配置\n\n"
         f"port: {_BODY_NUMBER} 是默认端口。详见 https://{_BODY_URL}/ssot 文档。\n\n"
         "阅读以下章节了解细节。\n\n"
@@ -573,7 +573,7 @@ def test_policy_change_via_version_bump_invalidates_old_brief(
 ) -> None:
     """Evidence 规则变化视为 Extraction 版本变化：新 extractor_version 创建新 Snapshot，
     旧 Brief 被标记 outdated，新旧 Snapshot Evidence 不混用。"""
-    from offerpilot.knowledge.repository import (
+    from auroraagent.knowledge.repository import (
         SnapshotCreateInput,
         commit_extraction,
     )

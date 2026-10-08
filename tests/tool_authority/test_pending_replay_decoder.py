@@ -6,8 +6,8 @@ from typing import Any
 
 import pytest
 
-import offerpilot.ai.pending_replay as pending_replay
-from offerpilot.ai.pending_replay import (
+import auroraagent.ai.pending_replay as pending_replay
+from auroraagent.ai.pending_replay import (
     PendingReplayArgsDecoderV1,
     PendingReplayIntegrityError,
 )

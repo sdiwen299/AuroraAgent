@@ -9,7 +9,7 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 MIGRATION = "0029_review_to_readiness_feedback"
 PRODUCT_ACTIONS = (
     "confirm_interview_story",
@@ -596,7 +596,7 @@ def _application_event_delete_violations(path: Path, tree: ast.Module) -> list[s
         for candidate in nodes:
             if not isinstance(candidate, ast.ImportFrom):
                 continue
-            if candidate.module == "offerpilot.models":
+            if candidate.module == "auroraagent.models":
                 lineage.models.update(
                     alias.asname or alias.name
                     for alias in candidate.names
@@ -1428,7 +1428,7 @@ def _interview_note_mutation_violations(path: Path, tree: ast.Module) -> list[st
         lineage = Lineage(inherited)
         lineage.discard(local_bindings(scope, nodes))
         for candidate in nodes:
-            if isinstance(candidate, ast.ImportFrom) and candidate.module == "offerpilot.models":
+            if isinstance(candidate, ast.ImportFrom) and candidate.module == "auroraagent.models":
                 lineage.models.update(
                     alias.asname or alias.name
                     for alias in candidate.names
@@ -2454,7 +2454,7 @@ def _task12_provider_violations(name: str, tree: ast.Module) -> list[str]:
         return []
     aliases, modules = _task12_import_aliases(tree)
     if any(
-        module == "offerpilot.product_actions" or module.startswith("offerpilot.product_actions.")
+        module == "auroraagent.product_actions" or module.startswith("auroraagent.product_actions.")
         for module in modules
     ):
         return [f"provider:product-action-import:{name}"]
@@ -2774,7 +2774,7 @@ def _task12_provider_cross_module_violation(trees: dict[str, ast.Module]) -> boo
                         )
 
     def target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -3428,7 +3428,7 @@ def _task12_product_action_reachable_domain_violation(
     def imported_target(resolved: str) -> tuple[str, str] | None:
         if resolved in imported_target_cache:
             return imported_target_cache[resolved]
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -4196,7 +4196,7 @@ def _task12_parent_cross_module_violations(
     def imported_target(resolved: str) -> tuple[str, str] | None:
         if resolved in imported_target_cache:
             return imported_target_cache[resolved]
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -4538,7 +4538,7 @@ def _task12_cross_module_string_bindings(
     imports = {module: _task12_module_import_aliases(tree)[0] for module, tree in trees.items()}
 
     def target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -5045,7 +5045,7 @@ def _task12_included_router_routes(
                     router_prefixes[module, target_node.id] = prefix
 
     def imported_target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -5204,7 +5204,7 @@ def _task12_preparation_v1_reaches_v2(
                     bind_raw(module, target, node.value)
 
     def imported_target(module: str, resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in module_trees:
             dotted = (
@@ -5571,7 +5571,7 @@ def _task12_cross_module_compatibility_switch(trees: dict[str, ast.Module]) -> s
                         assignments[module, target.id] = node.value
 
     def imported_target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -6544,7 +6544,7 @@ def _task12_cross_module_taint_findings(
                         owners[module, f"{node.name}.{member.name}"] = node
 
     def imported_target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -7296,7 +7296,7 @@ def _task12_registry_callgraph_counts(
     def imported_target(resolved: str) -> tuple[str, str] | None:
         if resolved in imported_target_cache:
             return imported_target_cache[resolved]
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -8227,7 +8227,7 @@ def _task12_backend_violations(
     }
 
     def registry_import_target(resolved: str) -> tuple[str, str] | None:
-        normalized = resolved.removeprefix("offerpilot.")
+        normalized = resolved.removeprefix("auroraagent.")
         matches: list[tuple[int, str, str]] = []
         for candidate in trees:
             dotted = (
@@ -8247,12 +8247,12 @@ def _task12_backend_violations(
     ) -> str:
         target = registry_import_target(resolved)
         if target is None or target in seen:
-            return resolved.removeprefix("offerpilot.")
+            return resolved.removeprefix("auroraagent.")
         nested = registry_imports[target[0]].get(target[1])
         return (
             registry_symbol(nested, seen | {target})
             if nested is not None
-            else resolved.removeprefix("offerpilot.")
+            else resolved.removeprefix("auroraagent.")
         )
 
     for (module, factory), registries in registry_factories.items():
@@ -8500,8 +8500,8 @@ def test_application_event_delete_owner_detector_rejects_direct_sql_and_orm_path
         "def _delete_application_event_owned(session):\n"
         "    session.execute(delete(ApplicationEvent))\n"
     )
-    arbitrary = ROOT / "src" / "offerpilot" / "other.py"
-    approved = ROOT / "src" / "offerpilot" / "repositories" / "application_events.py"
+    arbitrary = ROOT / "src" / "auroraagent" / "other.py"
+    approved = ROOT / "src" / "auroraagent" / "repositories" / "application_events.py"
 
     assert _application_event_delete_violations(arbitrary, direct)
     assert _application_event_delete_violations(arbitrary, orm)
@@ -8570,7 +8570,7 @@ def test_application_event_delete_owner_detector_keeps_lineage_in_lexical_scope(
         "    for row in scalar_rows.all():\n"
         "        session.delete(row)\n"
     )
-    arbitrary = ROOT / "src" / "offerpilot" / "other.py"
+    arbitrary = ROOT / "src" / "auroraagent" / "other.py"
 
     assert _application_event_delete_violations(arbitrary, cross_function_row) == []
     assert _application_event_delete_violations(arbitrary, unrelated_event_parameter) == []
@@ -8749,9 +8749,9 @@ def test_interview_note_mutation_detector_requires_revisioned_owners() -> None:
         "    )\n"
         "    session.execute(statement)\n"
     )
-    arbitrary = ROOT / "src" / "offerpilot" / "other.py"
-    notes_owner = ROOT / "src" / "offerpilot" / "repositories" / "notes.py"
-    events_owner = ROOT / "src" / "offerpilot" / "repositories" / "application_events.py"
+    arbitrary = ROOT / "src" / "auroraagent" / "other.py"
+    notes_owner = ROOT / "src" / "auroraagent" / "repositories" / "notes.py"
+    events_owner = ROOT / "src" / "auroraagent" / "repositories" / "application_events.py"
 
     assert _interview_note_mutation_violations(arbitrary, direct_content_assignment)
     assert _interview_note_mutation_violations(arbitrary, direct_binding_assignment)
@@ -8842,7 +8842,7 @@ def test_interview_note_mutation_detector_avoids_read_and_unrelated_writes() -> 
         "        event.questions = 'unrelated'\n"
         "    return observed, created\n"
     )
-    arbitrary = ROOT / "src" / "offerpilot" / "other.py"
+    arbitrary = ROOT / "src" / "auroraagent" / "other.py"
 
     assert _interview_note_mutation_violations(arbitrary, safe) == []
 
@@ -9365,7 +9365,7 @@ def _build_v2_snapshot():
 
     provider_import = {
         "ai/tool_specs/catalog.py": (
-            "from offerpilot.product_actions.catalog import ProductActionCatalogV1\n"
+            "from auroraagent.product_actions.catalog import ProductActionCatalogV1\n"
         )
     }
     assert "provider:product-action-import:ai/tool_specs/catalog.py" in (
@@ -9409,7 +9409,7 @@ def product_action_names():
 PROVIDER_TOOL_NAMES = (*product_action_names(),)
 ''',
         "ai/provider_boundaries.py": (
-            "from offerpilot.product_actions.catalog import ProductActionCatalogV1 as Catalog\n"
+            "from auroraagent.product_actions.catalog import ProductActionCatalogV1 as Catalog\n"
         ),
     }
     boundary_findings = _task12_backend_violations(provider_boundary_paths)
@@ -9418,7 +9418,7 @@ PROVIDER_TOOL_NAMES = (*product_action_names(),)
 
     forbidden_domain_write = {
         "product_actions/coordinator.py": """
-from offerpilot.models import Conversation as C
+from auroraagent.models import Conversation as C
 def execute(session):
     pending = C(title="forbidden")
     session.add(pending)
@@ -9429,7 +9429,7 @@ def execute(session):
     )
 
     readonly_conversation_source = '''
-from offerpilot.models import Conversation as C
+from auroraagent.models import Conversation as C
 def read_only(session):
     return session.scalar(select(C).where(C.id == 1))
 '''
@@ -9440,7 +9440,7 @@ def read_only(session):
 
     journal_writes = {
         "product_actions/coordinator.py": '''
-from offerpilot.models import AgentEvent as EventRow, AgentContextSnapshot as SnapshotRow
+from auroraagent.models import AgentEvent as EventRow, AgentContextSnapshot as SnapshotRow
 def write(session):
     event = EventRow(payload_json="{}")
     session.add(event)
@@ -9489,7 +9489,7 @@ def load(repository):
     ) == []
     cross_module_repository_write = {
         "product_actions/coordinator.py": '''
-from offerpilot.review_readiness.bridge import persist
+from auroraagent.review_readiness.bridge import persist
 def execute(chat):
     return persist(chat)
 ''',
@@ -9503,12 +9503,12 @@ def persist(repository):
     )
     cross_module_aliased_model_write = {
         "product_actions/coordinator.py": '''
-from offerpilot.shared.writer import persist
+from auroraagent.shared.writer import persist
 def execute(session):
     return persist(session)
 ''',
         "shared/writer.py": '''
-from offerpilot.models import AgentEvent as E
+from auroraagent.models import AgentEvent as E
 def persist(session):
     row = E(payload_json="{}")
     session.add(row)
@@ -9533,7 +9533,7 @@ class ProductActionProposalRepository:
     )
     core_parent = {
         "other.py": """
-from offerpilot.models import WriteOperation as WO
+from auroraagent.models import WriteOperation as WO
 def publish(session):
     values = {"adapter_kind": "product_action"}
     session.execute(insert(WO).values(**values))
@@ -9583,7 +9583,7 @@ def publish(session):
     )
     renamed_parameter_parent = {
         "other.py": '''
-from offerpilot.models import WriteOperation as Operation
+from auroraagent.models import WriteOperation as Operation
 def publish(session, kind="product_action"):
     payload = {"adapter_kind": kind}
     row = Operation(**payload)
@@ -9595,7 +9595,7 @@ def publish(session, kind="product_action"):
     )
     flowed_parameter_parent = {
         "other.py": '''
-from offerpilot.models import WriteOperation as Operation
+from auroraagent.models import WriteOperation as Operation
 def publish(session, kind):
     payload = {"adapter_kind": kind}
     session.add(Operation(**payload))
@@ -9608,7 +9608,7 @@ def execute(session):
     )
     positional_values_parent = {
         "other.py": '''
-from offerpilot.models import WriteOperation as Operation
+from auroraagent.models import WriteOperation as Operation
 def publish(session):
     kind = "product_action"
     payload = {"adapter_kind": kind}
@@ -9669,7 +9669,7 @@ def _load_selection():
 
     preparation_module_alias = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.review_readiness.preparation_selection import (
+from auroraagent.review_readiness.preparation_selection import (
     PreparationReadinessSelectionLoader as Loader,
 )
 V2 = _build_v2_snapshot
@@ -9688,12 +9688,12 @@ def _build_v2_snapshot():
 
     preparation_cross_module = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.review_readiness.preparation_bridge import build as helper
+from auroraagent.review_readiness.preparation_bridge import build as helper
 def _build_v1_snapshot():
     return helper()
 ''',
         "review_readiness/preparation_bridge.py": '''
-from offerpilot.review_readiness.preparation_selection import PreparationReadinessSelectionLoader
+from auroraagent.review_readiness.preparation_selection import PreparationReadinessSelectionLoader
 class Bridge:
     @staticmethod
     def build():
@@ -9707,12 +9707,12 @@ build = Bridge.build
     )
     preparation_instance_method = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.review_readiness.preparation_bridge import H
+from auroraagent.review_readiness.preparation_bridge import H
 def _build_v1_snapshot():
     return H().load()
 ''',
         "review_readiness/preparation_bridge.py": '''
-from offerpilot.review_readiness.preparation_selection import PreparationReadinessSelectionLoader
+from auroraagent.review_readiness.preparation_selection import PreparationReadinessSelectionLoader
 class H:
     def load(self):
         return PreparationReadinessSelectionLoader().load()
@@ -9784,7 +9784,7 @@ def execute():
 
     double_registry = {
         "api.py": """
-from offerpilot.product_actions.catalog import ProductActionCatalogV1 as Catalog
+from auroraagent.product_actions.catalog import ProductActionCatalogV1 as Catalog
 first = Catalog()
 second = Catalog()
 """,
@@ -10105,10 +10105,10 @@ def test_task12_signal_decision_runtime_keeps_privacy_canary_out_of_public_sinks
     from fastapi.testclient import TestClient
     from sqlalchemy import select
 
-    from offerpilot.api import create_app
-    from offerpilot.db import session_factory_for_data_dir
-    from offerpilot.models import AgentContextSnapshot, AgentEvent, WriteOperation
-    from offerpilot.review_readiness.candidates import project_readiness_candidates
+    from auroraagent.api import create_app
+    from auroraagent.db import session_factory_for_data_dir
+    from auroraagent.models import AgentContextSnapshot, AgentEvent, WriteOperation
+    from auroraagent.review_readiness.candidates import project_readiness_candidates
     from tests.review_readiness_support import seed_review_candidate
 
     canary = _TASK12_PRIVACY_CANARY
@@ -10270,14 +10270,14 @@ def _create_and_confirm_story_proposal(client):
 def test_task12_fourth_review_module_graph_and_parent_probes() -> None:
     reachable_writer = {
         "product_actions/coordinator.py": '''
-from offerpilot.shared import Writer
+from auroraagent.shared import Writer
 def decide(session):
     writer = Writer(session)
     writer.persist()
 ''',
-        "shared/__init__.py": "from offerpilot.shared.writer import Writer\n",
+        "shared/__init__.py": "from auroraagent.shared.writer import Writer\n",
         "shared/writer.py": '''
-from offerpilot.models import AgentEvent as E
+from auroraagent.models import AgentEvent as E
 class Writer:
     def __init__(self, session): self.session = session
     def persist(self): self.session.add(E(kind="decision"))
@@ -10289,7 +10289,7 @@ class Writer:
 
     parent_sources = {
         "mutated.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 payload = {}
 payload["adapter_kind"] = "product_action"
 extra = {}
@@ -10297,7 +10297,7 @@ extra.update(payload)
 row = WriteOperation(**extra)
 ''',
         "destructured.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 Alias, ignored = WriteOperation, object
 row = Alias(adapter_kind="product_action")
 ''',
@@ -10343,13 +10343,13 @@ def inspect(): pass
 
     v1_sources = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.bridge import factory
+from auroraagent.bridge import factory
 def _build_v1_snapshot():
     first, second = factory(), object()
     return first.loader()
 ''',
         "bridge.py": '''
-from offerpilot.v2 import PreparationReadinessSelectionLoader
+from auroraagent.v2 import PreparationReadinessSelectionLoader
 class Holder:
     @property
     def loader(self): return PreparationReadinessSelectionLoader().load
@@ -10401,14 +10401,14 @@ def route():
     assert _privacy_canary_violations(aliased) == ["aliased.py:JSONResponse"]
 
     crossed = {
-        "entry.py": f'''from offerpilot.shared import leak\ndef route(): return leak("{_TASK12_PRIVACY_CANARY}")\n''',
-        "shared/__init__.py": "from offerpilot.shared.sink import leak\n",
+        "entry.py": f'''from auroraagent.shared import leak\ndef route(): return leak("{_TASK12_PRIVACY_CANARY}")\n''',
+        "shared/__init__.py": "from auroraagent.shared.sink import leak\n",
         "shared/sink.py": "def leak(value): return JSONResponse({'error': value})\n",
     }
     assert "entry.py:JSONResponse" in _privacy_canary_violations(crossed)
     cross_safe = {
-        "entry.py": f'''from offerpilot.shared import leak\ndef route():\n    payload = {{"secret": "{_TASK12_PRIVACY_CANARY}", "public": "ok"}}\n    return leak(payload["public"])\n''',
-        "shared/__init__.py": "from offerpilot.shared.sink import leak\n",
+        "entry.py": f'''from auroraagent.shared import leak\ndef route():\n    payload = {{"secret": "{_TASK12_PRIVACY_CANARY}", "public": "ok"}}\n    return leak(payload["public"])\n''',
+        "shared/__init__.py": "from auroraagent.shared.sink import leak\n",
         "shared/sink.py": "def leak(value): return JSONResponse({'result': value})\n",
     }
     assert _privacy_canary_violations(cross_safe) == []
@@ -10418,7 +10418,7 @@ def test_task12_fourth_review_previous_title_alias_and_exact_sink_probes() -> No
     aliased = _task12_tree(
         "stories/repository.py",
         '''
-from offerpilot.models import WriteOperation as Imported
+from auroraagent.models import WriteOperation as Imported
 Alias = Imported
 def write(previous_title):
     row = Alias(adapter_kind="other")
@@ -10430,7 +10430,7 @@ def write(previous_title):
     safe = _task12_tree(
         "stories/repository.py",
         '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(previous_title):
     allowed = WriteOperation(operation_role="primary", adapter_kind="product_action",
         tool_name="confirm_interview_story", undo_json={"previous_title": previous_title})
@@ -10443,8 +10443,8 @@ def write(previous_title):
     )
 
     crossed = {
-        "stories/repository.py": "from offerpilot.shared import publish\ndef write(previous_title): return publish(previous_title)\n",
-        "shared/__init__.py": "from offerpilot.shared.sink import publish\n",
+        "stories/repository.py": "from auroraagent.shared import publish\ndef write(previous_title): return publish(previous_title)\n",
+        "shared/__init__.py": "from auroraagent.shared.sink import publish\n",
         "shared/sink.py": "def publish(value): return JSONResponse({'result': value})\n",
     }
     assert _task12_previous_title_sources_reach_public_sink(crossed)
@@ -10453,16 +10453,16 @@ def write(previous_title):
 def test_task12_fifth_review_higher_order_and_cross_module_writer_probes() -> None:
     higher_order = {
         "product_actions/coordinator.py": '''
-from offerpilot.shared import invoke, persist, writer
+from auroraagent.shared import invoke, persist, writer
 def decide(session):
     writer()(session)
     invoke(persist, session)
 ''',
         "shared/__init__.py": '''
-from offerpilot.shared.writer import invoke, persist, writer
+from auroraagent.shared.writer import invoke, persist, writer
 ''',
         "shared/writer.py": '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 def writer(): return persist
 def invoke(callback, session): return callback(session)
 def persist(session): session.add(AgentEvent(kind="decision"))
@@ -10475,10 +10475,10 @@ def persist(session): session.add(AgentEvent(kind="decision"))
         "product_actions/lexical.py",
         '''
 def forbidden(session):
-    from offerpilot.models import AgentEvent as Model
+    from auroraagent.models import AgentEvent as Model
     session.add(Model(kind="decision"))
 def unrelated():
-    from offerpilot.safe import PublicModel as Model
+    from auroraagent.safe import PublicModel as Model
     return Model()
 ''',
     )
@@ -10488,13 +10488,13 @@ def unrelated():
 
     parent_cross_module = {
         "other.py": '''
-from offerpilot.shared import create_parent
+from auroraagent.shared import create_parent
 def write_keyword(): return create_parent(kind="product_action")
 def write_positional(): return create_parent("product_action")
 ''',
-        "shared/__init__.py": "from offerpilot.shared.parent import create_parent\n",
+        "shared/__init__.py": "from auroraagent.shared.parent import create_parent\n",
         "shared/parent.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def create_parent(kind): return WriteOperation(adapter_kind=kind)
 ''',
     }
@@ -10506,11 +10506,11 @@ def create_parent(kind): return WriteOperation(adapter_kind=kind)
 def test_task12_fifth_review_cross_module_route_v1_and_compat_probes() -> None:
     imported_route = {
         "api.py": '''
-from offerpilot.routes import OPERATION_UNDO as ROUTE
+from auroraagent.routes import OPERATION_UNDO as ROUTE
 @app.post(ROUTE)
 def hidden(): pass
 ''',
-        "routes/__init__.py": "from offerpilot.routes.paths import OPERATION_UNDO\n",
+        "routes/__init__.py": "from auroraagent.routes.paths import OPERATION_UNDO\n",
         "routes/paths.py": '''
 ROOT = "/api/write-operations/"
 OPERATION_UNDO = ROOT + "{operation_id}/undo"
@@ -10520,11 +10520,11 @@ OPERATION_UNDO = ROOT + "{operation_id}/undo"
 
     v1_sources = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.bridge import primary
+from auroraagent.bridge import primary
 def _build_v1_snapshot(): return primary.loader()
 ''',
         "bridge.py": '''
-from offerpilot.v2 import PreparationReadinessSelectionLoader
+from auroraagent.v2 import PreparationReadinessSelectionLoader
 class Holder:
     @property
     def loader(self): return PreparationReadinessSelectionLoader().load
@@ -10539,7 +10539,7 @@ primary, secondary = Holder(), object()
 
     compat_sources = {
         "product_actions/coordinator.py": '''
-from offerpilot.bridge import handlers
+from auroraagent.bridge import handlers
 def choose():
     handler = handlers.current if USE_NEW_ACTION else handlers.previous
     return handler()
@@ -10596,7 +10596,7 @@ def route():
 
     lexical_safe = {
         "scope.py": f'''
-from offerpilot.safe import SafeSink as Sink
+from auroraagent.safe import SafeSink as Sink
 def route(): return Sink("{_TASK12_PRIVACY_CANARY}")
 def unrelated():
     from starlette.responses import JSONResponse as Sink
@@ -10631,12 +10631,12 @@ def write(previous_title): return Box(previous_title).publish()
 def test_task12_sixth_review_recursive_callable_parent_kwargs_and_route_helper() -> None:
     higher_order = {
         "product_actions/coordinator.py": '''
-from offerpilot.shared import choose
+from auroraagent.shared import choose
 def decide(session): return choose(True)(session)
 ''',
-        "shared/__init__.py": "from offerpilot.shared.writer import choose\n",
+        "shared/__init__.py": "from auroraagent.shared.writer import choose\n",
         "shared/writer.py": '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 def choose(enabled):
     alias = persist
     return alias if enabled else choose(enabled)
@@ -10649,12 +10649,12 @@ def persist(session): session.add(AgentEvent(kind="decision"))
 
     parent_kwargs = {
         "entry.py": '''
-from offerpilot.shared import relay
+from auroraagent.shared import relay
 def write(): return relay(kind="product_action")
 ''',
-        "shared/__init__.py": "from offerpilot.shared.parent import relay\n",
+        "shared/__init__.py": "from auroraagent.shared.parent import relay\n",
         "shared/parent.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def create(*, kind): return WriteOperation(adapter_kind=kind)
 def relay(**kwargs): return create(**kwargs)
 ''',
@@ -10665,11 +10665,11 @@ def relay(**kwargs): return create(**kwargs)
 
     helper_route = {
         "api.py": '''
-from offerpilot.routes import operation_undo as route
+from auroraagent.routes import operation_undo as route
 @app.post(route())
 def hidden(): pass
 ''',
-        "routes/__init__.py": "from offerpilot.routes.paths import operation_undo\n",
+        "routes/__init__.py": "from auroraagent.routes.paths import operation_undo\n",
         "routes/paths.py": '''
 ROOT = "/api/write-operations/"
 def operation_undo(): return ROOT + "{operation_id}/undo"
@@ -10681,11 +10681,11 @@ def operation_undo(): return ROOT + "{operation_id}/undo"
 def test_task12_sixth_review_v1_property_and_compat_cycle_probes() -> None:
     v1_sources = {
         "repositories/interview_preparation_proposals.py": '''
-from offerpilot.bridge import holder
+from auroraagent.bridge import holder
 def _build_v1_snapshot(): return holder.loader()
 ''',
         "bridge.py": '''
-from offerpilot.v2 import PreparationReadinessSelectionLoader
+from auroraagent.v2 import PreparationReadinessSelectionLoader
 def execute_loader(): return PreparationReadinessSelectionLoader().load()
 class Holder:
     @property
@@ -10701,7 +10701,7 @@ holder = Holder()
 
     compat = {
         "product_actions/coordinator.py": '''
-from offerpilot.bridge import current, previous
+from auroraagent.bridge import current, previous
 def choose():
     handler = current if USE_NEW_ACTION else previous
     return handler()
@@ -10790,9 +10790,9 @@ def test_task12_sixth_review_lexical_flow_negative_probes() -> None:
     safe_shadow = _task12_tree(
         "product_actions/coordinator.py",
         '''
-from offerpilot.models import AgentEvent as Model
+from auroraagent.models import AgentEvent as Model
 def safe(session):
-    from offerpilot.safe import PublicModel as Model
+    from auroraagent.safe import PublicModel as Model
     session.add(Model())
 ''',
     )
@@ -10802,7 +10802,7 @@ def safe(session):
 
     parent_context = {
         "safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def build(kind): return WriteOperation(adapter_kind=kind)
 def unrelated(kind): return kind
 def route():
@@ -10816,12 +10816,12 @@ def route():
 def test_task12_seventh_review_parent_mapping_and_constant_branch_probes() -> None:
     literal_spread = {
         "entry.py": '''
-from offerpilot.shared import relay
+from auroraagent.shared import relay
 def write(): return relay(**{"kind": "product_action"})
 ''',
-        "shared/__init__.py": "from offerpilot.shared.parent import relay\n",
+        "shared/__init__.py": "from auroraagent.shared.parent import relay\n",
         "shared/parent.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def create(*, kind): return WriteOperation(adapter_kind=kind)
 def relay(**opts): return create(**opts)
 ''',
@@ -10832,12 +10832,12 @@ def relay(**opts): return create(**opts)
 
     conditional = {
         "entry.py": '''
-from offerpilot.shared import create
+from auroraagent.shared import create
 def write(enabled): return create(enabled)
 ''',
-        "shared/__init__.py": "from offerpilot.shared.parent import create\n",
+        "shared/__init__.py": "from auroraagent.shared.parent import create\n",
         "shared/parent.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def create(enabled):
     opts = {}
     if enabled:
@@ -10851,7 +10851,7 @@ def create(enabled):
 
     unreachable = {
         "safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write():
     if False:
         return WriteOperation(adapter_kind="product_action")
@@ -10861,7 +10861,7 @@ def write():
     assert _task12_backend_violations(unreachable) == []
     reachable = {
         "safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write():
     if True:
         return WriteOperation(adapter_kind="product_action")
@@ -10875,7 +10875,7 @@ def write():
 def test_task12_seventh_review_compat_literal_and_pa_lexical_probes() -> None:
     compat = {
         "product_actions/coordinator.py": '''
-from offerpilot.bridge import current, previous
+from auroraagent.bridge import current, previous
 def choose(): return current() if USE_NEW_ACTION else previous()
 ''',
         "bridge.py": '''
@@ -10890,8 +10890,8 @@ def previous(): return confirm_interview_story_proposal()
     safe_shadow = _task12_tree(
         "product_actions/coordinator.py",
         '''
-from offerpilot.models import AgentEvent as Model
-from offerpilot.safe import PublicModel
+from auroraagent.models import AgentEvent as Model
+from auroraagent.safe import PublicModel
 def safe(session, Model=PublicModel):
     callback = lambda Model=PublicModel: Model()
     def inner(Model=PublicModel): return Model()
@@ -10906,7 +10906,7 @@ def safe(session, Model=PublicModel):
     unsafe_capture = _task12_tree(
         "product_actions/coordinator.py",
         '''
-from offerpilot.models import AgentEvent as Model
+from auroraagent.models import AgentEvent as Model
 def unsafe(session):
     def inner(): session.add(Model(kind="decision"))
     return inner()
@@ -10919,7 +10919,7 @@ def unsafe(session):
     false_pa = _task12_tree(
         "product_actions/coordinator.py",
         '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 def safe(session):
     if False:
         session.add(AgentEvent(kind="decision"))
@@ -10931,7 +10931,7 @@ def safe(session):
     true_pa = _task12_tree(
         "product_actions/coordinator.py",
         '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 def unsafe(session):
     if True:
         session.add(AgentEvent(kind="decision"))
@@ -11001,9 +11001,9 @@ def write(previous_title):
 
 def test_task12_eighth_review_parent_cfg_and_positional_sql_probes() -> None:
     branch_join = {
-        "entry.py": "from offerpilot.shared import write\ndef route(enabled): return write(enabled)\n",
+        "entry.py": "from auroraagent.shared import write\ndef route(enabled): return write(enabled)\n",
         "shared.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(enabled):
     opts = {}
     if enabled:
@@ -11018,7 +11018,7 @@ def write(enabled):
     )
     safe_join = {
         "safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(enabled):
     opts = {}
     if enabled:
@@ -11055,11 +11055,11 @@ def write(cursor):
 def test_task12_eighth_review_factory_callgraphs_and_compat_early_return_probes() -> None:
     factory_writer = {
         "product_actions/runner.py": '''
-from offerpilot.shared import make_writer
+from auroraagent.shared import make_writer
 def run(session): return make_writer().persist(session)
 ''',
         "shared.py": '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 class Writer:
     def persist(self, session): session.add(AgentEvent(kind="decision"))
 def make_writer(): return Writer()
@@ -11070,7 +11070,7 @@ def make_writer(): return Writer()
     )
     safe_factory = {
         "product_actions/runner.py": '''
-from offerpilot.shared import make_writer
+from auroraagent.shared import make_writer
 def run(session): return make_writer().persist(session)
 ''',
         "shared.py": '''
@@ -11082,7 +11082,7 @@ def make_writer(): return Writer()
     assert _task12_backend_violations(safe_factory) == []
     early_return = {
         "product_actions/coordinator.py": '''
-from offerpilot.bridge import choose
+from auroraagent.bridge import choose
 def route(enabled): return choose(enabled)
 ''',
         "bridge.py": '''
@@ -11108,7 +11108,7 @@ def test_task12_eighth_review_keyword_routes_registry_and_provider_cfg() -> None
     assert _task12_backend_violations(safe_route) == []
     duplicated_factory = {
         "api.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 first = make()
 second = make()
@@ -11119,7 +11119,7 @@ second = make()
     )
     unreachable_factory = {
         "api.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def unused(): return ProductActionCatalogV1()
 '''
     }
@@ -11134,7 +11134,7 @@ def unused(): return ProductActionCatalogV1()
     provider_shadow = _task12_tree(
         "ai/tool_authority/safe.py",
         '''
-from offerpilot.safe import confirm_interview_story
+from auroraagent.safe import confirm_interview_story
 def build(confirm_interview_story): return register(confirm_interview_story)
 ''',
     )
@@ -11144,7 +11144,7 @@ def build(confirm_interview_story): return register(confirm_interview_story)
     provider_unsafe = _task12_tree(
         "ai/tool_authority/unsafe.py",
         '''
-from offerpilot.safe import confirm_interview_story
+from auroraagent.safe import confirm_interview_story
 def build(): return register(confirm_interview_story)
 ''',
     )
@@ -11173,7 +11173,7 @@ def route():
 
 def test_task12_ninth_review_cfg_sql_factory_provider_registry_privacy_probes() -> None:
     parent_cfg = {"x.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(value):
     match value:
         case 1: kind = "product_action"
@@ -11183,7 +11183,7 @@ def write(value):
 '''}
     assert "ledger:unsealed-parent-writer:x.py" in _task12_backend_violations(parent_cfg)
     parent_mapping_cfg = {"x.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(value):
     opts = {}
     match value:
@@ -11197,7 +11197,7 @@ def write(value):
     )
     partial_sql = {"x.py": '''
 from functools import partial
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 make = partial(WriteOperation, adapter_kind="product_action")
 def rows(): yield ("id", "product_action")
 def write(cursor):
@@ -11207,9 +11207,9 @@ def write(cursor):
     assert "ledger:unsealed-parent-writer:x.py" in _task12_backend_violations(partial_sql)
 
     factories = {
-        "product_actions/run.py": "from offerpilot.shared import make\nasync def run(s): return await make().persist(s)\n",
+        "product_actions/run.py": "from auroraagent.shared import make\nasync def run(s): return await make().persist(s)\n",
         "shared.py": '''
-from offerpilot.models import AgentEvent
+from auroraagent.models import AgentEvent
 class Writer:
     async def persist(self, session): session.add(AgentEvent(kind="x"))
 def make():
@@ -11229,7 +11229,7 @@ def choose(value):
     assert "cutover:compatibility-switch:product_actions/run.py" in _task12_backend_violations(compat)
 
     provider = {
-        "ai/tool_authority/root.py": "from offerpilot.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
+        "ai/tool_authority/root.py": "from auroraagent.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
         "shared.py": 'def expose(): return "confirm_interview_story"\n',
     }
     assert any(item.startswith("provider:") for item in _task12_backend_violations(provider))
@@ -11237,12 +11237,12 @@ def choose(value):
     assert _task12_provider_violations("ai/tool_authority/root.py", provider_dead) == []
 
     imported_factory = {
-        "api.py": "from offerpilot.shared import make\na=make()\nb=make()\n",
-        "shared.py": "from offerpilot.product_actions.catalog import ProductActionCatalogV1\ndef make(): return ProductActionCatalogV1()\n",
+        "api.py": "from auroraagent.shared import make\na=make()\nb=make()\n",
+        "shared.py": "from auroraagent.product_actions.catalog import ProductActionCatalogV1\ndef make(): return ProductActionCatalogV1()\n",
     }
     assert "composition:registry-count:ProductActionCatalogV1" in _task12_backend_violations(imported_factory)
     exclusive = {"api.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 catalog = ProductActionCatalogV1() if enabled else ProductActionCatalogV1()
 '''}
     assert "composition:registry-count:ProductActionCatalogV1" not in _task12_backend_violations(exclusive)
@@ -11281,7 +11281,7 @@ def write(cursor):
     assert _task12_backend_violations(safe_generator) == []
     cross_sql = {
         "entry.py": '''
-from offerpilot.shared import write
+from auroraagent.shared import write
 SQL = "INSERT INTO write_operations (operation_id, adapter_kind) VALUES (?, ?)"
 def route(cursor): return write(cursor, SQL, "product_action")
 ''',
@@ -11298,7 +11298,7 @@ def write(cursor, sql, kind): return cursor.execute(sql, ("id", kind))
     ):
         assert _task12_backend_violations({"api.py": registration})
     included = {
-        "api.py": "from offerpilot.routes import router\napp.include_router(router)\n",
+        "api.py": "from auroraagent.routes import router\napp.include_router(router)\n",
         "routes.py": 'router.add_api_route("/api/stories", handler, methods=["POST"])\n',
     }
     assert "http:stories-alias" in _task12_backend_violations(included)
@@ -11314,7 +11314,7 @@ def write(cursor, sql, kind): return cursor.execute(sql, ("id", kind))
 
 def test_task12_ninth_review_exact_negative_and_container_kill_probes() -> None:
     safe_parent = {"safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(value):
     match value:
         case 1: kind = "typed"
@@ -11324,7 +11324,7 @@ def write(value):
 '''}
     assert _task12_backend_violations(safe_parent) == []
     safe_parent_mapping = {"safe.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write(value):
     opts = {}
     match value:
@@ -11346,7 +11346,7 @@ def choose(value):
         _task12_backend_violations(safe_compat)
     )
     safe_provider = {
-        "ai/tool_authority/root.py": "from offerpilot.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
+        "ai/tool_authority/root.py": "from auroraagent.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
         "shared.py": 'def expose(): return "public_tool"\n',
     }
     assert not any(
@@ -11354,7 +11354,7 @@ def choose(value):
     )
     dead_cross_provider = {
         "ai/tool_authority/root.py": '''
-from offerpilot.shared import expose
+from auroraagent.shared import expose
 def build():
     return None
     expose()
@@ -11366,9 +11366,9 @@ def build():
         for item in _task12_backend_violations(dead_cross_provider)
     )
     referenced_provider = {
-        "ai/tool_authority/root.py": "from offerpilot.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
+        "ai/tool_authority/root.py": "from auroraagent.shared import expose\ndef build(): return expose()\nTOOLS = build()\n",
         "shared.py": '''
-from offerpilot.product_actions import confirm_interview_story
+from auroraagent.product_actions import confirm_interview_story
 def expose(): return confirm_interview_story
 ''',
     }
@@ -11376,9 +11376,9 @@ def expose(): return confirm_interview_story
         _task12_backend_violations(referenced_provider)
     )
     exclusive_imported_factory = {
-        "api.py": "from offerpilot.shared import make\ncatalog = make() if enabled else make()\n",
+        "api.py": "from auroraagent.shared import make\ncatalog = make() if enabled else make()\n",
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 ''',
     }
@@ -11386,9 +11386,9 @@ def make(): return ProductActionCatalogV1()
         _task12_backend_violations(exclusive_imported_factory)
     )
     unused_imported_factory = {
-        "api.py": "from offerpilot.shared import make\ndef unused():\n    make()\n    make()\n",
+        "api.py": "from auroraagent.shared import make\ndef unused():\n    make()\n    make()\n",
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 ''',
     }
@@ -11396,9 +11396,9 @@ def make(): return ProductActionCatalogV1()
         _task12_backend_violations(unused_imported_factory)
     )
     reachable_imported_factory = {
-        "api.py": "from offerpilot.shared import make\ndef build():\n    make()\n    make()\nbuild()\n",
+        "api.py": "from auroraagent.shared import make\ndef build():\n    make()\n    make()\nbuild()\n",
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 ''',
     }
@@ -11452,7 +11452,7 @@ def test_task12_tenth_review_parent_provider_and_compatibility_probes() -> None:
         'base = {}\n    opts = base | {"adapter_kind": "product_action"}',
     ):
         sources = {"x.py": f'''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write():
     {body}
     return WriteOperation(**opts)
@@ -11461,7 +11461,7 @@ def write():
             sources
         )
     safe_parent = {"x.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write():
     opts = {}
     opts |= {"adapter_kind": "typed"}
@@ -11471,7 +11471,7 @@ def write():
 '''}
     assert _task12_backend_violations(safe_parent) == []
     constant_match = {"x.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def write():
     opts = {}
     match 1:
@@ -11493,7 +11493,7 @@ def write():
 
     module_composition = {
         "ai/tool_authority/root.py": '''
-from offerpilot.product_actions import confirm_interview_story
+from auroraagent.product_actions import confirm_interview_story
 TOOLS = compose(confirm_interview_story)
 '''
     }
@@ -11502,9 +11502,9 @@ TOOLS = compose(confirm_interview_story)
         for item in _task12_backend_violations(module_composition)
     )
     class_method = {
-        "ai/tool_authority/root.py": "from offerpilot.shared import Builder\nTOOLS = Builder().tools()\n",
+        "ai/tool_authority/root.py": "from auroraagent.shared import Builder\nTOOLS = Builder().tools()\n",
         "shared.py": '''
-from offerpilot.product_actions import confirm_interview_story
+from auroraagent.product_actions import confirm_interview_story
 class Builder:
     def tools(self): return [confirm_interview_story]
 ''',
@@ -11514,7 +11514,7 @@ class Builder:
     )
     callback = {
         "ai/tool_authority/root.py": '''
-from offerpilot.shared import expose, invoke
+from auroraagent.shared import expose, invoke
 TOOLS = invoke(expose)
 ''',
         "shared.py": '''
@@ -11527,7 +11527,7 @@ def invoke(callback): return callback()
     )
     unused = {
         "ai/tool_authority/root.py": '''
-from offerpilot.shared import expose
+from auroraagent.shared import expose
 def unused(): return expose()
 TOOLS = compose("public_tool")
 ''',
@@ -11563,7 +11563,7 @@ def choose(enabled):
 def test_task12_tenth_review_router_registry_and_privacy_probes() -> None:
     prefixed = {
         "api.py": '''
-from offerpilot.routes import router
+from auroraagent.routes import router
 app.include_router(router, prefix="/api")
 ''',
         "routes.py": '''
@@ -11575,7 +11575,7 @@ def create(): return None
     assert "http:stories-alias" in _task12_backend_violations(prefixed)
     included_only = {
         "api.py": '''
-from offerpilot.good_routes import router
+from auroraagent.good_routes import router
 app.include_router(router)
 ''',
         "good_routes.py": '''
@@ -11593,11 +11593,11 @@ def create(): return None
 
     loop_registry = {
         "api.py": '''
-from offerpilot.shared import make
+from auroraagent.shared import make
 for _ in range(2): make()
 ''',
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 ''',
     }
@@ -11606,16 +11606,16 @@ def make(): return ProductActionCatalogV1()
     )
     comprehension_registry = {
         **loop_registry,
-        "api.py": "from offerpilot.shared import make\nitems = [make() for _ in range(2)]\n",
+        "api.py": "from auroraagent.shared import make\nitems = [make() for _ in range(2)]\n",
     }
     assert "composition:registry-count:ProductActionCatalogV1" in (
         _task12_backend_violations(comprehension_registry)
     )
     reexport_registry = {
-        "api.py": "from offerpilot.registry_pkg import make\nfirst=make()\nsecond=make()\n",
-        "registry_pkg/__init__.py": "from offerpilot.registry_pkg.factory import make\n",
+        "api.py": "from auroraagent.registry_pkg import make\nfirst=make()\nsecond=make()\n",
+        "registry_pkg/__init__.py": "from auroraagent.registry_pkg.factory import make\n",
         "registry_pkg/factory.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 ''',
     }
@@ -11624,7 +11624,7 @@ def make(): return ProductActionCatalogV1()
     )
     single_registry = {
         **loop_registry,
-        "api.py": "from offerpilot.shared import make\nfor _ in range(1): make()\n",
+        "api.py": "from auroraagent.shared import make\nfor _ in range(1): make()\n",
     }
     assert "composition:registry-count:ProductActionCatalogV1" not in (
         _task12_backend_violations(single_registry)
@@ -11670,11 +11670,11 @@ def route():
 def test_task12_eleventh_review_parent_compat_and_route_constant_probes() -> None:
     cross_module_parent = {
         "api.py": '''
-from offerpilot.shared import make, publish
+from auroraagent.shared import make, publish
 publish(make())
 ''',
         "shared.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def make(): return {"adapter_kind": "product_action"}
 def publish(payload): return WriteOperation(**payload)
 ''',
@@ -11684,11 +11684,11 @@ def publish(payload): return WriteOperation(**payload)
     )
     insert_factory_parent = {
         "api.py": '''
-from offerpilot.shared import make, publish
+from auroraagent.shared import make, publish
 publish(session, **make())
 ''',
         "shared.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 from sqlalchemy import insert
 def make(): return {"adapter_kind": "product_action"}
 def publish(session, **kwargs):
@@ -11711,7 +11711,7 @@ def publish(session, **kwargs):
 
     early_return = {
         "product_actions/run.py": '''
-from offerpilot.shared import choose
+from auroraagent.shared import choose
 ACTIVE = choose(ENABLED)
 ''',
         "shared.py": '''
@@ -11756,12 +11756,12 @@ def test_task12_eleventh_review_registry_and_container_copy_taint_probes() -> No
     registry_cases = (
         {
             "api.py": '''
-from offerpilot.shared import invoke, make
+from auroraagent.shared import invoke, make
 invoke(make)
 invoke(make)
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 def invoke(factory): return factory()
 ''',
@@ -11769,7 +11769,7 @@ def invoke(factory): return factory()
         {
             "api.py": '''
 from functools import partial
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 make = partial(ProductActionCatalogV1)
 first = make()
 second = make()
@@ -11777,24 +11777,24 @@ second = make()
         },
         {
             "api.py": '''
-from offerpilot.shared import Builder
+from auroraagent.shared import Builder
 first = Builder().make()
 second = Builder().make()
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class Builder:
     def make(self): return ProductActionCatalogV1()
 ''',
         },
         {
             "api.py": '''
-from offerpilot.shared import Builder
+from auroraagent.shared import Builder
 first = Builder.make()
 second = Builder.make()
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class Builder:
     @classmethod
     def make(cls): return ProductActionCatalogV1()
@@ -11861,23 +11861,23 @@ def route(previous_title):
 def test_task12_twelfth_review_registry_callable_return_and_dispatch_probes() -> None:
     returned_callable = {
         "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 first = factory()()
 second = factory()()
 ''',
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def factory(): return ProductActionCatalogV1
 ''',
     }
     dict_dispatch = {
         "api.py": '''
-from offerpilot.shared import handlers
+from auroraagent.shared import handlers
 first = handlers()["make"]()
 second = handlers()["make"]()
 ''',
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 def make(): return ProductActionCatalogV1()
 def handlers(): return {"make": make}
 ''',
@@ -11910,7 +11910,7 @@ def handlers(): return {"make": make}
     provider_cases = (
         {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 TOOLS = factory()()
 ''',
             "shared.py": '''
@@ -11920,7 +11920,7 @@ def factory(): return action
         },
         {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import handlers
+from auroraagent.shared import handlers
 TOOLS = handlers()["action"]()
 ''',
             "shared.py": '''
@@ -11971,11 +11971,11 @@ def test_task12_twelfth_review_route_constants_parent_union_and_copy_taint() -> 
 
     parent_union = {
         "api.py": '''
-from offerpilot.shared import make, publish
+from auroraagent.shared import make, publish
 publish(**make(enabled))
 ''',
         "shared.py": '''
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 def make(enabled):
     match enabled:
         case True: return {"adapter_kind": "product_action"}
@@ -12038,12 +12038,12 @@ def test_task12_thirteenth_review_conditional_callable_three_domain_probes() -> 
     registry_cases = (
         {
             "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 first = factory(enabled)()
 second = factory(enabled)()
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12052,12 +12052,12 @@ def factory(enabled): return make if enabled else typed
         },
         {
             "api.py": '''
-from offerpilot.shared import choices
+from auroraagent.shared import choices
 first = choices(enabled).get("make")()
 second = choices(enabled).get("make")()
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12092,7 +12092,7 @@ def choices(enabled): return {"make": make if enabled else typed}
     provider_cases = (
         {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 TOOLS = factory(enabled)()
 ''',
             "shared.py": '''
@@ -12105,7 +12105,7 @@ def factory(enabled):
         },
         {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import choices
+from auroraagent.shared import choices
 TOOLS = choices(enabled).get("action")()
 ''',
             "shared.py": '''
@@ -12188,12 +12188,12 @@ def test_task12_fourteenth_review_return_expression_callable_union_probes() -> N
     for returned in registry_return_expressions:
         sources = {
             "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 first = factory(enabled)()
 second = factory(enabled)()
 ''',
             "shared.py": f'''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def fallback(): return TypedCatalog()
@@ -12221,7 +12221,7 @@ def factory(enabled): {returned}
     for returned in provider_return_expressions:
         sources = {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 TOOLS = factory(enabled)()
 ''',
             "shared.py": f'''
@@ -12283,12 +12283,12 @@ def factory(enabled): return {"make": make, "typed": fallback}[KEY]
     for factory_source, safe_factory_source in registry_factories:
         sources = {
             "api.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 first = factory(enabled)()
 second = factory(enabled)()
 ''',
             "shared.py": f'''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def fallback(): return TypedCatalog()
@@ -12345,7 +12345,7 @@ def factory(enabled): return {"action": action, "public": public}[KEY]
     for factory_source, safe_factory_source in provider_factories:
         sources = {
             "ai/tool_authority/root.py": '''
-from offerpilot.shared import factory
+from auroraagent.shared import factory
 TOOLS = factory(enabled)()
 ''',
             "shared.py": f'''
@@ -12405,7 +12405,7 @@ def test_task12_sixteenth_review_provider_caller_mapping_dispatch_probes() -> No
     for root in provider_roots:
         sources = {
             "ai/tool_authority/root.py": f'''
-from offerpilot.shared import handlers, public
+from auroraagent.shared import handlers, public
 {root}
 ''',
             "shared.py": '''
@@ -12431,7 +12431,7 @@ def handlers(): return {"action": action, "public": public}
 
     missing_default = {
         "ai/tool_authority/root.py": '''
-from offerpilot.shared import handlers, public
+from auroraagent.shared import handlers, public
 TOOLS = handlers().pop("missing", public)()
 ''',
         "shared.py": '''
@@ -12457,7 +12457,7 @@ def test_task12_seventeenth_review_mapping_value_iteration_dispatch_probes() -> 
     for expression in provider_expressions:
         sources = {
             "ai/tool_authority/root.py": f'''
-from offerpilot.shared import handlers
+from auroraagent.shared import handlers
 {expression}
 ''',
             "shared.py": '''
@@ -12491,12 +12491,12 @@ def handlers(): return {"action": action, "public": public}
     for expression in registry_expressions:
         sources = {
             "api.py": f'''
-from offerpilot.shared import handlers
+from auroraagent.shared import handlers
 first = {expression}
 second = {expression}
 ''',
             "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12536,7 +12536,7 @@ def test_task12_eighteenth_review_mapping_parameter_propagation_probes() -> None
     for root, picker in provider_cases:
         sources = {
             "ai/tool_authority/root.py": f'''
-from offerpilot.shared import handlers, pick
+from auroraagent.shared import handlers, pick
 {root}
 ''',
             "shared.py": f'''
@@ -12578,12 +12578,12 @@ def handlers(): return {{"action": action, "public": public}}
     for expression, picker in registry_cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import handlers, pick
+from auroraagent.shared import handlers, pick
 first = {expression}
 second = {expression}
 ''',
             "shared.py": f'''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12624,7 +12624,7 @@ def test_task12_nineteenth_review_constructor_and_closure_mapping_probes() -> No
     for expression, picker in provider_cases:
         sources = {
             "ai/tool_authority/root.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 TOOLS = {expression}
 ''',
             "shared.py": f'''
@@ -12666,12 +12666,12 @@ def handlers(): return {{"action": action, "public": public}}
     for expression, picker in registry_cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 first = {expression}
 second = {expression}
 ''',
             "shared.py": f'''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12714,7 +12714,7 @@ TOOLS = picker.pick()()''',
     for root, implementation in provider_cases:
         sources = {
             "ai/tool_authority/root.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 {root}
 ''',
             "shared.py": f'''
@@ -12741,7 +12741,7 @@ def handlers(): return {{"action": action}}
 
     provider_safe_rebind = {
         "ai/tool_authority/root.py": '''
-from offerpilot.shared import Picker, factory, handlers, public_handlers
+from auroraagent.shared import Picker, factory, handlers, public_handlers
 picker = Picker()
 picker.mapping = handlers()
 picker.mapping = public_handlers()
@@ -12788,11 +12788,11 @@ second = factory(handlers())()''',
     for root, implementation in registry_cases:
         sources = {
             "api.py": f'''
-from offerpilot.shared import Picker, factory, handlers
+from auroraagent.shared import Picker, factory, handlers
 {root}
 ''',
             "shared.py": f'''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()
@@ -12816,7 +12816,7 @@ def handlers(): return {{"make": make}}
 
     registry_safe_rebind = {
         "api.py": '''
-from offerpilot.shared import Picker, factory, handlers, typed_handlers
+from auroraagent.shared import Picker, factory, handlers, typed_handlers
 picker = Picker()
 picker.mapping = handlers()
 picker.mapping = typed_handlers()
@@ -12826,7 +12826,7 @@ third = factory(handlers())()
 fourth = factory(handlers())()
 ''',
         "shared.py": '''
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
 class TypedCatalog: pass
 def make(): return ProductActionCatalogV1()
 def typed(): return TypedCatalog()

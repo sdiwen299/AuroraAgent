@@ -15,12 +15,12 @@ from typing import Any
 import httpx
 from sqlalchemy import select
 
-from offerpilot.api import create_app
-from offerpilot.config import Config, load_config, resolve_data_dir, save_config
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.diagnostics import read_recent_log_entries
-from offerpilot.models import InterviewPreparationProposal
-from offerpilot.smoke import _run_real_ai_interview_preparation_smoke, _running_server
+from auroraagent.api import create_app
+from auroraagent.config import Config, load_config, resolve_data_dir, save_config
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.diagnostics import read_recent_log_entries
+from auroraagent.models import InterviewPreparationProposal
+from auroraagent.smoke import _run_real_ai_interview_preparation_smoke, _running_server
 
 
 CONTROLLED_PROPOSAL = {
@@ -319,14 +319,14 @@ def run_diagnostic(source_data: Path, static_dir: Path | None) -> dict[str, Any]
     thread.start()
     started = time.perf_counter()
     previous_no_proxy = os.environ.get("NO_PROXY")
-    previous_request_audit = os.environ.get("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE")
+    previous_request_audit = os.environ.get("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE")
     os.environ["NO_PROXY"] = "127.0.0.1,localhost"
     request_metadata: list[dict[str, Any]] = []
     try:
-        with tempfile.TemporaryDirectory(prefix="offerpilot-interview-preparation-controlled-") as temp_dir:
+        with tempfile.TemporaryDirectory(prefix="auroraagent-interview-preparation-controlled-") as temp_dir:
             data_dir = Path(temp_dir)
             request_audit_path = data_dir / "provider-request-audit.jsonl"
-            os.environ["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"] = str(request_audit_path)
+            os.environ["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"] = str(request_audit_path)
             provider_url = f"http://127.0.0.1:{provider.server_port}/v1"
             save_config(data_dir, _controlled_config(source_data, provider_url))
             app = create_app(data_dir=data_dir, static_dir=static_dir)
@@ -368,9 +368,9 @@ def run_diagnostic(source_data: Path, static_dir: Path | None) -> dict[str, Any]
         else:
             os.environ["NO_PROXY"] = previous_no_proxy
         if previous_request_audit is None:
-            os.environ.pop("OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE", None)
+            os.environ.pop("AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE", None)
         else:
-            os.environ["OFFERPILOT_PROVIDER_REQUEST_AUDIT_FILE"] = previous_request_audit
+            os.environ["AURORA_AGENT_PROVIDER_REQUEST_AUDIT_FILE"] = previous_request_audit
         provider.shutdown()
         provider.server_close()
         thread.join(timeout=5)

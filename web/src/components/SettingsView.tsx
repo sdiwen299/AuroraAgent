@@ -82,7 +82,7 @@ export default function SettingsView({
       const url = URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = `offerpilot-settings-backup-v${backup.version}.json`;
+      anchor.download = `auroraagent-settings-backup-v${backup.version}.json`;
       anchor.click();
       URL.revokeObjectURL(url);
       message.success('设置备份已导出');

@@ -6,28 +6,28 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Literal
 
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolPresentationBindingV1, WriteOperationMetadataV1
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolPresentationBindingV1, WriteOperationMetadataV1
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.contracts import (
     ToolFailure,
 )
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.types import Assistant
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.types import Assistant
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 
 
-_DATA_DIR = Path(tempfile.mkdtemp(prefix="offerpilot-agent-loop-tests-"))
+_DATA_DIR = Path(tempfile.mkdtemp(prefix="auroraagent-agent-loop-tests-"))
 _SESSIONS = init_database(_DATA_DIR / "agent-loop.db")
 _TEST_TOOL_CATALOG = build_model_tool_catalog()
 

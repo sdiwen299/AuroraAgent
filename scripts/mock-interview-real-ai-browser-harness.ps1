@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-mock-interview-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-mock-interview-' + [Guid]::NewGuid().ToString('N'))
 $httpAudit = Join-Path $tempData 'http-audit.jsonl'
 $providerAudit = Join-Path $tempData 'provider-audit.jsonl'
 $browserAudit = Join-Path $tempData 'browser-network.jsonl'
@@ -23,7 +23,7 @@ $browserAuditor = $null
 $applicationId = $null
 $eventId = $null
 $resumeIds = @()
-$previousData = $env:OFFERPILOT_DATA
+$previousData = $env:AURORA_AGENT_DATA
 
 function Get-ProcessTree([int]$processId) {
   $processId
@@ -65,9 +65,9 @@ function Inspect-MockInterviewAttempt([int]$attemptId) {
   Push-Location $repo
   try {
     $env:MOCK_INTERVIEW_HARNESS_ATTEMPT = [string]$attemptId
-    $attemptState = & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _mock_interview_attempt_state; print(_mock_interview_attempt_state(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']), int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT'])))"
+    $attemptState = & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _mock_interview_attempt_state; print(_mock_interview_attempt_state(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']), int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT'])))"
     Assert-ExitCode 'browser Attempt lifecycle inspection'
-    $diagnostic = & uv run python -c "import json, os; from pathlib import Path; from offerpilot.smoke import _latest_mock_interview_failure_diagnostic; value = _latest_mock_interview_failure_diagnostic(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT'])); raise SystemExit(2) if value is None else print(json.dumps(value, ensure_ascii=True, separators=(',', ':')))"
+    $diagnostic = & uv run python -c "import json, os; from pathlib import Path; from auroraagent.smoke import _latest_mock_interview_failure_diagnostic; value = _latest_mock_interview_failure_diagnostic(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT'])); raise SystemExit(2) if value is None else print(json.dumps(value, ensure_ascii=True, separators=(',', ':')))"
     Assert-ExitCode 'browser Attempt failure diagnostic'
     $diagnosticJson = ($diagnostic -join '').Trim() | ConvertFrom-Json
     $kindValue = ([string]$diagnosticJson.kind).Trim()
@@ -77,7 +77,7 @@ function Inspect-MockInterviewAttempt([int]$attemptId) {
     $env:MOCK_INTERVIEW_HARNESS_KIND = $kindValue
     $env:MOCK_INTERVIEW_HARNESS_CATEGORY = $categoryValue
     $env:MOCK_INTERVIEW_HARNESS_STATE = $stateValue
-    & uv run python -c "import os; from offerpilot.smoke import _assert_mock_interview_attempt_restart_state; _assert_mock_interview_attempt_restart_state(os.environ['MOCK_INTERVIEW_HARNESS_KIND'], os.environ['MOCK_INTERVIEW_HARNESS_CATEGORY'], os.environ['MOCK_INTERVIEW_HARNESS_STATE'])"
+    & uv run python -c "import os; from auroraagent.smoke import _assert_mock_interview_attempt_restart_state; _assert_mock_interview_attempt_restart_state(os.environ['MOCK_INTERVIEW_HARNESS_KIND'], os.environ['MOCK_INTERVIEW_HARNESS_CATEGORY'], os.environ['MOCK_INTERVIEW_HARNESS_STATE'])"
     Assert-ExitCode 'browser Attempt lifecycle assertion'
     return "attempt=$attemptId;kind=$kindValue;category=$categoryValue;state=$stateValue"
   } finally { Pop-Location }
@@ -122,8 +122,8 @@ try {
   if (-not $env:MOCK_INTERVIEW_CDP_URL) {
     throw 'Set MOCK_INTERVIEW_CDP_URL to the in-app browser CDP debugging endpoint before running this harness.'
   }
-  $env:OFFERPILOT_DATA = $tempData
-  $env:OFFERPILOT_HTTP_AUDIT_FILE = $httpAudit
+  $env:AURORA_AGENT_DATA = $tempData
+  $env:AURORA_AGENT_HTTP_AUDIT_FILE = $httpAudit
   $proxyServer = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
     "Set-Location '$repo'; uv run python scripts/provider-egress-proxy.py --port $proxyPort --audit '$providerAudit' --expected-scheme $($providerEndpoint.Scheme) --expected-host $($providerEndpoint.Host) --expected-port $($providerEndpoint.Port)"
@@ -136,7 +136,7 @@ try {
   if (-not (Assert-PortOwner ([int]$proxyServer.Id) $proxyPort)) { throw 'Provider egress proxy did not become ready.' }
   $server = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
     '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
-    "Set-Location '$repo'; `$env:OFFERPILOT_DATA = '$tempData'; `$env:HTTPS_PROXY = 'http://127.0.0.1:$proxyPort'; `$env:HTTP_PROXY = 'http://127.0.0.1:$proxyPort'; `$env:NO_PROXY = '127.0.0.1,localhost'; uv run oc start --port $port"
+    "Set-Location '$repo'; `$env:AURORA_AGENT_DATA = '$tempData'; `$env:HTTPS_PROXY = 'http://127.0.0.1:$proxyPort'; `$env:HTTP_PROXY = 'http://127.0.0.1:$proxyPort'; `$env:NO_PROXY = '127.0.0.1,localhost'; uv run oc start --port $port"
   )
   $healthy = $false
   for ($attempt = 0; $attempt -lt 60; $attempt++) {
@@ -192,7 +192,7 @@ try {
     $env:MOCK_INTERVIEW_HARNESS_APPLICATION = [string]$applicationId
     $env:MOCK_INTERVIEW_HARNESS_EVENT = [string]$eventId
     $env:MOCK_INTERVIEW_HARNESS_RESUME = [string]$resumeIds[0]
-    $baseline = & uv run python -c "import json, os; from pathlib import Path; from offerpilot.smoke import _capture_real_ai_browser_domain_baseline; print(json.dumps(_capture_real_ai_browser_domain_baseline(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), [int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT'])], [int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME'])])))"
+    $baseline = & uv run python -c "import json, os; from pathlib import Path; from auroraagent.smoke import _capture_real_ai_browser_domain_baseline; print(json.dumps(_capture_real_ai_browser_domain_baseline(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), [int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT'])], [int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME'])])))"
     Assert-ExitCode 'baseline capture'
     $env:MOCK_INTERVIEW_HARNESS_BASELINE = ($baseline -join '')
   } finally { Pop-Location }
@@ -254,7 +254,7 @@ try {
         }
         Push-Location $repo
         try {
-          $currentAttemptIds = & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _mock_interview_attempt_ids; print(' '.join(str(item) for item in _mock_interview_attempt_ids(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']))))"
+          $currentAttemptIds = & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _mock_interview_attempt_ids; print(' '.join(str(item) for item in _mock_interview_attempt_ids(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']))))"
           Assert-ExitCode 'browser Attempt id inspection'
           foreach ($currentAttemptId in (($currentAttemptIds -join '').Trim() -split '\s+' | Where-Object { $_ })) {
             if ($knownAttemptIds -notcontains [int]$currentAttemptId) { $knownAttemptIds += [int]$currentAttemptId }
@@ -290,7 +290,7 @@ try {
     Push-Location $repo
     try {
       $env:MOCK_INTERVIEW_HARNESS_ATTEMPT = [string]$successfulAttemptId
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _assert_mock_interview_attempt_context; _assert_mock_interview_attempt_context(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']), int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME']))"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _assert_mock_interview_attempt_context; _assert_mock_interview_attempt_context(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_ATTEMPT']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT']), int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME']))"
       Assert-ExitCode 'successful Attempt source context assertion'
     } finally { Pop-Location }
   }
@@ -410,7 +410,7 @@ try {
 
   Push-Location $repo
   try {
-    & uv run python -c "import json, os; from pathlib import Path; from offerpilot.smoke import _assert_real_ai_browser_no_cross_domain_writes; _assert_real_ai_browser_no_cross_domain_writes(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), json.loads(os.environ['MOCK_INTERVIEW_HARNESS_BASELINE']), [int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT'])], [int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME'])])"
+    & uv run python -c "import json, os; from pathlib import Path; from auroraagent.smoke import _assert_real_ai_browser_no_cross_domain_writes; _assert_real_ai_browser_no_cross_domain_writes(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), json.loads(os.environ['MOCK_INTERVIEW_HARNESS_BASELINE']), [int(os.environ['MOCK_INTERVIEW_HARNESS_EVENT'])], [int(os.environ['MOCK_INTERVIEW_HARNESS_RESUME'])])"
     Assert-ExitCode 'cross-domain boundary assertion'
   } finally { Pop-Location }
   if ($browserFlowFailure) { throw 'Real browser flow did not complete a confirmed Attempt after three user attempts.' }
@@ -433,20 +433,20 @@ try {
       $env:MOCK_INTERVIEW_HARNESS_DATA = $tempData
       $env:MOCK_INTERVIEW_HARNESS_APPLICATION = [string]$applicationId
       $env:MOCK_INTERVIEW_HARNESS_RESUME = ($resumeIds -join ',')
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), [int(v) for v in os.environ['MOCK_INTERVIEW_HARNESS_RESUME'].split(',') if v])"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _cleanup_real_ai_browser_records; _cleanup_real_ai_browser_records(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']), int(os.environ['MOCK_INTERVIEW_HARNESS_APPLICATION']), [int(v) for v in os.environ['MOCK_INTERVIEW_HARNESS_RESUME'].split(',') if v])"
       Assert-ExitCode 'isolated cleanup'
-      & uv run python -c "import os; from pathlib import Path; from offerpilot.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']))"
+      & uv run python -c "import os; from pathlib import Path; from auroraagent.smoke import _assert_real_ai_smoke_data_clean; _assert_real_ai_smoke_data_clean(Path(os.environ['MOCK_INTERVIEW_HARNESS_DATA']))"
       Assert-ExitCode 'isolated residual assertion'
     } finally { Pop-Location }
   }
   if (Test-Path -LiteralPath $tempData) { Remove-Item -LiteralPath $tempData -Recurse -Force }
-  if ($null -eq $previousData) { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-  else { $env:OFFERPILOT_DATA = $previousData }
+  if ($null -eq $previousData) { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+  else { $env:AURORA_AGENT_DATA = $previousData }
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_DATA -ErrorAction SilentlyContinue
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_APPLICATION -ErrorAction SilentlyContinue
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_EVENT -ErrorAction SilentlyContinue
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_RESUME -ErrorAction SilentlyContinue
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_ATTEMPT -ErrorAction SilentlyContinue
   Remove-Item Env:MOCK_INTERVIEW_HARNESS_BASELINE -ErrorAction SilentlyContinue
-  Remove-Item Env:OFFERPILOT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue
+  Remove-Item Env:AURORA_AGENT_HTTP_AUDIT_FILE -ErrorAction SilentlyContinue
 }

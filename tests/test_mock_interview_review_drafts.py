@@ -2,11 +2,11 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import MockInterviewFeedbackProposal
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import MockInterviewFeedbackProposal
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 
 class _MockInterviewModel:
@@ -74,7 +74,7 @@ def _setup(tmp_path):
             "next_practice_steps": [],
         }
         attempt_id = started["attempt_id"]
-        attempt = session.get(__import__("offerpilot.models", fromlist=["MockInterviewAttempt"]).MockInterviewAttempt, attempt_id)
+        attempt = session.get(__import__("auroraagent.models", fromlist=["MockInterviewAttempt"]).MockInterviewAttempt, attempt_id)
         assert attempt is not None
         encoded = canonical_json(proposal_json)
         proposal = MockInterviewFeedbackProposal(

@@ -6,7 +6,7 @@ from time import sleep
 
 import pytest
 
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     AssistantDeltaEvent,
     AssistantMessageEvent,
     CancelReason,
@@ -22,12 +22,12 @@ from offerpilot.pilot_runtime.contracts import (
     ToolResultEvent,
     UserMessageSavedEvent,
 )
-from offerpilot.pilot_runtime.errors import (
+from auroraagent.pilot_runtime.errors import (
     RuntimeAgentTimedOut,
     RuntimeCancelled,
     RuntimeTransportAborted,
 )
-from offerpilot.pilot_runtime.event_sink import (
+from auroraagent.pilot_runtime.event_sink import (
     CallableRuntimeEventSink,
     ClosedAgentSignalSink,
     InMemoryRuntimeInvocationControl,
@@ -124,8 +124,8 @@ def test_payload_projection_omits_baseline_absent_optional_fields_and_internal_s
         "changed_entities": [],
     }
 
-    from offerpilot.pilot_runtime.contracts import OperationReplayOutcome
-    from offerpilot.chat_transport import event_sse_payload, outcome_http_payload
+    from auroraagent.pilot_runtime.contracts import OperationReplayOutcome
+    from auroraagent.chat_transport import event_sse_payload, outcome_http_payload
 
     replay = OperationReplayOutcome(
         operation_id="op-1",
@@ -148,7 +148,7 @@ def test_event_and_sse_projection_reject_runtime_event_subclasses() -> None:
         pass
 
     child = ChildStatusEvent(phase="thinking", label="思考")
-    from offerpilot.chat_transport import event_sse_payload
+    from auroraagent.chat_transport import event_sse_payload
 
     with pytest.raises(TypeError):
         runtime_event_payload(child)  # type: ignore[arg-type]
@@ -157,8 +157,8 @@ def test_event_and_sse_projection_reject_runtime_event_subclasses() -> None:
 
 
 def test_outcome_renderers_are_closed_exact_types() -> None:
-    from offerpilot.chat_transport import outcome_http_payload, outcome_http_status
-    from offerpilot.pilot_runtime.contracts import MessageOutcome
+    from auroraagent.chat_transport import outcome_http_payload, outcome_http_status
+    from auroraagent.pilot_runtime.contracts import MessageOutcome
 
     class ChildMessageOutcome(MessageOutcome):
         pass
@@ -333,7 +333,7 @@ def test_closed_agent_signal_sink_preserves_typed_latch_capacity_and_close() -> 
 
 class _DelayedLifecycleRuntime:
     def __init__(self) -> None:
-        from offerpilot.pilot_runtime.contracts import PreparedLifecycle
+        from auroraagent.pilot_runtime.contracts import PreparedLifecycle
 
         self.lifecycle = PreparedLifecycle()
         self.begin_calls = 0
@@ -370,7 +370,7 @@ class _DelayedLifecycleRuntime:
 
 
 def test_guard_transition_callback_is_claimed_once_under_40_thread_race() -> None:
-    from offerpilot.chat_transport import PreparedStreamGuard
+    from auroraagent.chat_transport import PreparedStreamGuard
 
     runtime = _DelayedLifecycleRuntime()
     guard = PreparedStreamGuard(runtime=runtime)

@@ -1,7 +1,7 @@
 import type { DragEvent } from 'react';
 import type { PilotContextAttachment } from '@/types/chat';
 
-export const NATIVE_PILOT_ATTACHMENT_TYPE = 'application/x-offerpilot-context-attachment';
+export const NATIVE_PILOT_ATTACHMENT_TYPE = 'application/x-auroraagent-context-attachment';
 
 export interface PilotAttachmentDragBinding {
   draggable: true;

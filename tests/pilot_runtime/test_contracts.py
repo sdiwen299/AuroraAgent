@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     AssistantDeltaEvent,
     AssistantMessageEvent,
     CancelReason,
@@ -49,13 +49,13 @@ from offerpilot.pilot_runtime.contracts import (
     ToolResultEvent,
     UserMessageSavedEvent,
 )
-from offerpilot.pilot_runtime.errors import RuntimeCancelled, RuntimeTransportAborted
-from offerpilot.pilot_runtime.service import ResolvedModel
+from auroraagent.pilot_runtime.errors import RuntimeCancelled, RuntimeTransportAborted
+from auroraagent.pilot_runtime.service import ResolvedModel
 
 
 def test_freeze_json_mapping_has_stable_contract_exports() -> None:
-    import offerpilot.pilot_runtime as pilot_runtime
-    from offerpilot.pilot_runtime import contracts
+    import auroraagent.pilot_runtime as pilot_runtime
+    from auroraagent.pilot_runtime import contracts
 
     assert "freeze_json_mapping" in contracts.__all__
     assert "freeze_json_mapping" in pilot_runtime.__all__
@@ -415,7 +415,7 @@ def test_confirmation_payload_preserves_complete_pending_action_shape() -> None:
         human="创建投递记录",
         args=_json_object(
             {
-                "company_name": "OfferPilot",
+                "company_name": "AuroraAgent",
                 "status": "applied",
                 "nested": _json_object({"ids": (1, 2)}),
             }
@@ -448,7 +448,7 @@ def test_confirmation_payload_preserves_complete_pending_action_shape() -> None:
             tool_name="create_application",
             operation_id="op-1",
             human="创建投递记录",
-            args={"company_name": "OfferPilot"},  # type: ignore[arg-type]
+            args={"company_name": "AuroraAgent"},  # type: ignore[arg-type]
             confirmation_token="a" * 64,
         )
 
@@ -459,7 +459,7 @@ def test_pending_action_details_cannot_shadow_canonical_fields() -> None:
             tool_name="create_application",
             operation_id="op-1",
             human="创建投递记录",
-            args=_json_object({"company_name": "OfferPilot"}),
+            args=_json_object({"company_name": "AuroraAgent"}),
             confirmation_token="a" * 64,
             details=_json_object({"tool_name": "spoofed"}),
         )
@@ -743,7 +743,7 @@ def test_agent_host_contract_is_generic_and_does_not_use_object_result() -> None
 
 
 def test_chat_route_failure_codes_match_the_closed_baseline_set() -> None:
-    api_path = Path(__file__).parents[2] / "src" / "offerpilot" / "api.py"
+    api_path = Path(__file__).parents[2] / "src" / "auroraagent" / "api.py"
     tree = ast.parse(api_path.read_text(encoding="utf-8"))
     route_names = {"send_chat", "send_chat_stream", "confirm_chat", "confirm_chat_stream"}
     route_nodes = [

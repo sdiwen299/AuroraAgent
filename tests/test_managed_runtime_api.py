@@ -6,10 +6,10 @@ from uuid import uuid4
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant, ToolCall
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Conversation
+from auroraagent.ai.types import Assistant, ToolCall
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Conversation
 
 
 class _CountingModel:

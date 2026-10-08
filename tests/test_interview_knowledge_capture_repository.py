@@ -7,14 +7,14 @@ from threading import Event, Lock
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     InterviewKnowledgeCaptureAttempt,
     InterviewNote,
 )
-from offerpilot.repositories.interview_knowledge_capture import (
+from auroraagent.repositories.interview_knowledge_capture import (
     CaptureAttemptConflict,
     InterviewKnowledgeCaptureRepository,
 )

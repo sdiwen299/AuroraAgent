@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from offerpilot.ai.types import Assistant
-from offerpilot.ai.interview_review_proposals import (
+from auroraagent.ai.types import Assistant
+from auroraagent.ai.interview_review_proposals import (
     INTERVIEW_REVIEW_UNGROUNDED_QUESTIONS_V1,
     INTERVIEW_REVIEW_UNGROUNDED_SUMMARY_V1,
     InterviewReviewModelError,
@@ -13,7 +13,7 @@ from offerpilot.ai.interview_review_proposals import (
     generate_interview_review_proposal,
     validate_interview_review,
 )
-from offerpilot.ai.workflows import parse_json_reply
+from auroraagent.ai.workflows import parse_json_reply
 
 
 def _snapshot(*, empty: bool = False) -> dict[str, object]:
@@ -340,7 +340,7 @@ def test_generate_emits_redacted_diagnostic_for_safe_empty_fallback() -> None:
 
 
 def test_prompt_lists_exact_evidence_candidates_and_safe_output_limits() -> None:
-    from offerpilot.ai.interview_review_proposals import _interview_review_prompt, _interview_review_system
+    from auroraagent.ai.interview_review_proposals import _interview_review_prompt, _interview_review_system
 
     prompt = _interview_review_prompt(_snapshot())
     system = _interview_review_system()

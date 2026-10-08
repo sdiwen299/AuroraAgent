@@ -9,28 +9,28 @@ from typing import Any, cast
 import pytest
 from sqlalchemy import event, update
 
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.contracts import ReadyToExecute, ToolFailure
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
-from offerpilot.ai.tool_runtime.rendering import render_compatibility
-from offerpilot.ai.tool_specs.application_events import application_event_specs
-from offerpilot.ai.tool_specs.offers import offer_specs
-from offerpilot.ai.types import ToolCall
-from offerpilot.db import init_database
-from offerpilot.models import ApplicationEvent, Offer
-from offerpilot.repositories.application_events import (
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.contracts import ReadyToExecute, ToolFailure
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.pipeline import Rejected, execute_prepared, prepare_call
+from auroraagent.ai.tool_runtime.rendering import render_compatibility
+from auroraagent.ai.tool_specs.application_events import application_event_specs
+from auroraagent.ai.tool_specs.offers import offer_specs
+from auroraagent.ai.types import ToolCall
+from auroraagent.db import init_database
+from auroraagent.models import ApplicationEvent, Offer
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OfferCreate, OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
-from offerpilot.repositories.session_binding import ScopeAccessDenied
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OfferCreate, OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
+from auroraagent.repositories.session_binding import ScopeAccessDenied
 from tests.tool_metadata.factories import compose_synthetic_bundle
 
 

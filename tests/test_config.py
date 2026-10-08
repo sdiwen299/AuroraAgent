@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.config import (
+from auroraagent.config import (
     AIProviderProfile,
     Config,
     load_config,
@@ -13,16 +13,16 @@ from offerpilot.config import (
 
 
 def test_resolve_data_dir_prefers_env(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path / "custom"))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path / "custom"))
 
     assert resolve_data_dir() == tmp_path / "custom"
 
 
 def test_resolve_data_dir_defaults_to_home(monkeypatch, tmp_path):
-    monkeypatch.delenv("OFFERPILOT_DATA", raising=False)
+    monkeypatch.delenv("AURORA_AGENT_DATA", raising=False)
     monkeypatch.setattr(Path, "home", lambda: tmp_path)
 
-    assert resolve_data_dir() == tmp_path / ".offerpilot"
+    assert resolve_data_dir() == tmp_path / ".auroraagent"
 
 
 def test_load_missing_config_returns_defaults(tmp_path):

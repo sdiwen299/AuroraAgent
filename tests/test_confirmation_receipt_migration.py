@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-import offerpilot.db as database
+import auroraagent.db as database
 from tests.test_review_to_readiness_migration_0029 import _create_fixed_pre_0029_database
 
 

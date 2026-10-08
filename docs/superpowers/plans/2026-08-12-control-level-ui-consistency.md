@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Unify OfferPilot's forms, actions, lists, histories, evidence blocks, empty states, and feedback states without changing existing layouts or business behavior.
+**Goal:** Unify AuroraAgent's forms, actions, lists, histories, evidence blocks, empty states, and feedback states without changing existing layouts or business behavior.
 
 **Architecture:** Extend the existing theme tokens with a small reusable workflow-surface class layer, then apply those classes and focused CSS Modules to the high-exposure interview/evaluation components and lower-frequency utility surfaces. Preserve every existing prop, callback, service call, request branch, and navigation target; tests assert both the new presentation hooks and the unchanged interaction boundaries.
 
@@ -28,7 +28,7 @@
   - `web/src/layout/CommandPalette.tsx`
 - Allowed test paths: corresponding existing component tests plus `web/src/theme/controlPolish.test.ts`.
 - Allowed documentation paths: this plan and `docs/reports/2026-08-12-control-level-ui-consistency-browser-acceptance.md`.
-- Forbidden: `src/offerpilot/**`, API/service/type files, migrations, AI contracts, navigation definitions, business copy changes unrelated to overflow or state clarity.
+- Forbidden: `src/auroraagent/**`, API/service/type files, migrations, AI contracts, navigation definitions, business copy changes unrelated to overflow or state clarity.
 
 ### Task 1: Establish the reusable workflow-surface contract
 

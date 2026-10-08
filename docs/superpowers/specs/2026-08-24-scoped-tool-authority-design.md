@@ -10,13 +10,13 @@
 
 **建议实施分支：`feat/20260824-scoped-tool-authority`**
 
-**建议实施 Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260824-scoped-tool-authority`**
+**建议实施 Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260824-scoped-tool-authority`**
 
 > 本文可以在 Agent Loop 开发期间复审，但不得以开发中的 Agent Loop 工作树作为实施基线。实施前必须用 Agent Loop 最终合并提交重新捕获工具、调用路径和测试清单；若最终接口与本文假设不同，应先修订本文，不得用兼容层掩盖差异。
 
 ## 1. 背景与问题
 
-OfferPilot 已经完成或正在完成：
+AuroraAgent 已经完成或正在完成：
 
 ```text
 Durable Execution Journal
@@ -1450,29 +1450,29 @@ SQLite trigger 无法区分 FK action 产生的 `conversation_id=NULL` 与直接
 建议结构：
 
 ```text
-src/offerpilot/ai/tool_authority/
+src/auroraagent/ai/tool_authority/
   contracts.py       纯 dataclass / enum / transient contracts
   policy.py          Capability Profile 与 Binding decision 纯函数
   composition.py     从 Frozen Source DTO 构造 Authority
   fingerprint.py     Ledger scope HMAC canonical envelope
   visibility.py      单一 Application visibility query + sqlite/Session adapters
 
-src/offerpilot/ai/tool_runtime/
+src/auroraagent/ai/tool_runtime/
   contracts.py       ToolSpec 引用最小 BindingContract
   context.py         ToolExecutionContext 持有 Authority
   pipeline.py        capability/binding gate、read UoW snapshot boundary 与 recheck
 
-src/offerpilot/ai/tool_specs/
+src/auroraagent/ai/tool_specs/
   six domain specs   声明 25 个 BindingContract
 
-src/offerpilot/context_projector/
+src/auroraagent/context_projector/
   authority_surface.py  只消费 safe AuthoritySurfaceView
   selector.py           暴露现有 DependencyPolicyV1 窄 Port
 
-src/offerpilot/ai/write_operations.py
+src/auroraagent/ai/write_operations.py
   scope fingerprint 持久化与事务内 recheck
 
-src/offerpilot/pilot_runtime/
+src/auroraagent/pilot_runtime/
   composition.py     policy resolver 与 continuation Model resolver 分离
   service.py         四个 sync/stream 入口按 Source/Authority/terminal 顺序组装
 ```

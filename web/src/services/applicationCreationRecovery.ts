@@ -8,7 +8,7 @@ const prefix = (scope: string) => {
   if (typeof scope !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(scope)) {
     throw new Error('恢复记录工作区无效');
   }
-  return `offerpilot.application-create.${scope}.`;
+  return `auroraagent.application-create.${scope}.`;
 };
 
 // ADR-0006 permits this one bounded, credential-free recovery envelope, not

@@ -4,10 +4,10 @@ import ast
 import json
 from pathlib import Path
 
-from offerpilot.ai.tool_runtime.contracts import ToolFailure
-from offerpilot.ai.tool_runtime.pipeline import Rejected, prepare_call
-from offerpilot.ai.types import ToolCall
-from offerpilot.product_actions.contracts import (
+from auroraagent.ai.tool_runtime.contracts import ToolFailure
+from auroraagent.ai.tool_runtime.pipeline import Rejected, prepare_call
+from auroraagent.ai.types import ToolCall
+from auroraagent.product_actions.contracts import (
     PRODUCT_ACTION_COMPENSATION_NAMES,
     PRODUCT_ACTION_NAMES,
 )
@@ -15,7 +15,7 @@ from tests.tool_pipeline.test_pipeline import Recorder, _lease, _runtime, _spec
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PRODUCT_ROOT = ROOT / "src" / "offerpilot" / "product_actions"
+PRODUCT_ROOT = ROOT / "src" / "auroraagent" / "product_actions"
 
 
 def _imports(path: Path) -> set[str]:
@@ -136,7 +136,7 @@ def _function(path: Path, class_name: str, method_name: str) -> ast.FunctionDef:
 
 
 def test_all_three_chat_delivery_ownership_paths_explicitly_exclude_product_actions() -> None:
-    path = ROOT / "src" / "offerpilot" / "ai" / "write_operations.py"
+    path = ROOT / "src" / "auroraagent" / "ai" / "write_operations.py"
     for method_name in ("complete_delivery", "heartbeat", "converge_expired_delivery"):
         method = _function(path, "WriteOperationRepository", method_name)
         source = ast.get_source_segment(path.read_text(encoding="utf-8"), method) or ""

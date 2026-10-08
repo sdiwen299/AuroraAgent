@@ -23,8 +23,8 @@ from typing import Any
 
 import pytest
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.knowledge.acceptance import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.knowledge.acceptance import (
     AcceptanceGateConfig,
     AcceptanceReport,
     QuerySpec,
@@ -32,7 +32,7 @@ from offerpilot.knowledge.acceptance import (
     run_acceptance,
     validate_acceptance_contract,
 )
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW
 
 REPO_FIXTURES = Path(__file__).parent / "fixtures" / "knowledge"
 
@@ -302,7 +302,7 @@ def test_ki11_report_excludes_raw_content_api_key_prompt_and_response(
         assert phrase not in blob, f"报告泄露原文：{phrase}"
     # 完整 Prompt / Provider 原始响应关键词不写入
     assert "Knowledge Brief Generator" not in blob
-    assert "你是 OfferPilot" not in blob
+    assert "你是 AuroraAgent" not in blob
 
 
 # ---------------------------------------------------------------------------

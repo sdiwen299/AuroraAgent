@@ -2,8 +2,8 @@ import json
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
 
 
 class JSONModel:
@@ -95,12 +95,12 @@ def test_question_generate_from_notes_persists_questions(tmp_path):
     client = TestClient(create_app(data_dir=tmp_path, chat_model=model))
     application = client.post(
         "/api/applications",
-        json={"company_name": "OfferPilot", "position_name": "Backend", "status": "interview"},
+        json={"company_name": "AuroraAgent", "position_name": "Backend", "status": "interview"},
     ).json()
     client.post(
         f"/api/applications/{application['id']}/notes",
         json={
-            "company": "OfferPilot",
+            "company": "AuroraAgent",
             "position": "Backend",
             "round": "技术一面",
             "date": "2026-07-11",

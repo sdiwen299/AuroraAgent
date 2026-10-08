@@ -9,9 +9,9 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_runtime.legacy import LegacyRouteSourceV1
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_runtime.legacy import LegacyRouteSourceV1
+from auroraagent.ai.write_operations import (
     LedgerOperationPreheader,
     LedgerPendingPointer,
     OperationReplay,
@@ -20,13 +20,13 @@ from offerpilot.ai.write_operations import (
     WriteOperationError,
     ledger_fingerprint,
 )
-from offerpilot.pilot_runtime import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.pilot_runtime import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.continuation import (
     ConfirmationCoordinator,
     ConfirmationDependencies,
     _confirmation_token,
 )
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     ConfirmationRequest,
     ConfirmationRequiredOutcome,
     ImmediateHttpOutcome,
@@ -36,10 +36,10 @@ from offerpilot.pilot_runtime.contracts import (
     RuntimeTransportContext,
     RuntimeFailureOutcome,
 )
-from offerpilot.pilot_runtime.errors import RuntimeCancelled
-from offerpilot.pilot_runtime.errors import RuntimeFailureCode
-from offerpilot.pilot_runtime.service import PilotRuntime, RuntimeDependencies
-from offerpilot.pilot_runtime.deterministic import (
+from auroraagent.pilot_runtime.errors import RuntimeCancelled
+from auroraagent.pilot_runtime.errors import RuntimeFailureCode
+from auroraagent.pilot_runtime.service import PilotRuntime, RuntimeDependencies
+from auroraagent.pilot_runtime.deterministic import (
     DeterministicDependencies,
     DeterministicPilotAdapter,
 )
@@ -184,7 +184,7 @@ def _deterministic_adapter(operations: _LegacyTerminalOperations) -> Determinist
 
 
 def test_confirmation_catalog_exposes_only_the_one_shot_legacy_route_proof() -> None:
-    from offerpilot.ai.tool_runtime import legacy as legacy_runtime
+    from auroraagent.ai.tool_runtime import legacy as legacy_runtime
 
     assert not hasattr(legacy_runtime, "ServerLoadedPending")
     signature = inspect.signature(legacy_runtime.LegacyDeterministicCatalog.resolve_server_loaded)
@@ -196,9 +196,9 @@ def test_confirmation_catalog_exposes_only_the_one_shot_legacy_route_proof() -> 
 def test_terminal_legacy_replay_bypasses_all_live_route_surfaces(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicCatalog
-    from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-    from offerpilot.pilot_runtime.legacy_route import LegacyRouteProofIssuer
+    from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicCatalog
+    from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+    from auroraagent.pilot_runtime.legacy_route import LegacyRouteProofIssuer
 
     operations = _LegacyTerminalOperations(chained=False)
     counters = {

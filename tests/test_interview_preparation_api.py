@@ -9,15 +9,15 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from offerpilot.ai.interview_preparation_proposals import safe_empty_interview_preparation_proposal
-from offerpilot.ai.types import Assistant
-from offerpilot.api import (
+from auroraagent.ai.interview_preparation_proposals import safe_empty_interview_preparation_proposal
+from auroraagent.ai.types import Assistant
+from auroraagent.api import (
     _decode_interview_preparation_request,
     _interview_preparation_diagnostic_message,
     create_app,
 )
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     ApplicationEvent,
     InterviewPreparationProposal,
     InterviewReadinessSignal,

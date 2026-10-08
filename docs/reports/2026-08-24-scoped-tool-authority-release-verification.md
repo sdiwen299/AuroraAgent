@@ -172,7 +172,7 @@ agent 组首次与完整 suite 并发时有一条 active-budget timing case 瞬�
 7. SSE start 事件为 `meta → user_message_saved → status → tool_call → status → confirmation_required → completed`；approve continuation 为 `meta → status → tool_call → tool_result → assistant_message → completed`，最终 response 与 sync 同为 `message`。
 8. workspace Resume 查询返回正常空列表，保持已知 explicit `unbound` 边界；global collection 可见两条合成 application。
 
-隔离服务已停止；只包含合成数据的临时目录已移入 Windows 回收站，没有写入正常 OfferPilot 数据库。浏览器验收未传输真实用户数据或 secret。
+隔离服务已停止；只包含合成数据的临时目录已移入 Windows 回收站，没有写入正常 AuroraAgent 数据库。浏览器验收未传输真实用户数据或 secret。
 
 ## 独立 Code Review
 

@@ -4,8 +4,8 @@ import json
 
 from sqlalchemy import inspect, select, text
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     InterviewReviewProposal,
     KnowledgeCapturedSourceMetadata,
     KnowledgeSource,

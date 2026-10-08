@@ -102,7 +102,7 @@ def test_harness_uses_nullable_diagnostic_presence_and_active_provider_order() -
 
 
 def test_offer_real_ai_smoke_previews_before_generation() -> None:
-    smoke = (Path(__file__).parents[1] / "src" / "offerpilot" / "smoke.py").read_text(encoding="utf-8")
+    smoke = (Path(__file__).parents[1] / "src" / "auroraagent" / "smoke.py").read_text(encoding="utf-8")
     start = smoke.index("def run_offer_negotiation_real_ai_smoke")
     section = smoke[start:]
     assert "/negotiation/preview" in section

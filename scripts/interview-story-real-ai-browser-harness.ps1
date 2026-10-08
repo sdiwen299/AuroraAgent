@@ -58,8 +58,8 @@ if ($ChromiumStartupDeadlineMillisecondsForTest -gt 0 -and $ForceChromiumStartup
 }
 
 $repo = Split-Path -Parent $PSScriptRoot
-$sourceData = if ($env:OFFERPILOT_DATA) { $env:OFFERPILOT_DATA } else { Join-Path $HOME '.offerpilot' }
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-interview-story-' + [Guid]::NewGuid().ToString('N'))
+$sourceData = if ($env:AURORA_AGENT_DATA) { $env:AURORA_AGENT_DATA } else { Join-Path $HOME '.auroraagent' }
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-interview-story-' + [Guid]::NewGuid().ToString('N'))
 $browserProfile = $null
 $browserAudit = Join-Path $tempData 'browser-network.jsonl'
 $browserStop = Join-Path $tempData 'browser-network.stop'
@@ -73,7 +73,7 @@ $proxy = $null
 $browser = $null
 $browserStartupAttempt = $null
 $auditor = $null
-$previousData = $env:OFFERPILOT_DATA
+$previousData = $env:AURORA_AGENT_DATA
 $previousHttpProxy = $env:HTTP_PROXY
 $previousHttpsProxy = $env:HTTPS_PROXY
 $previousNoProxy = $env:NO_PROXY
@@ -605,8 +605,8 @@ function Seed-StoryContext {
 import json, os
 from datetime import datetime, timezone
 from pathlib import Path
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import Application, ApplicationEvent, InterviewNote, Resume, MockInterviewAttempt, MockInterviewTurn
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import Application, ApplicationEvent, InterviewNote, Resume, MockInterviewAttempt, MockInterviewTurn
 data_dir = Path(os.environ["INTERVIEW_STORY_HARNESS_DB"]).parent
 factory = session_factory_for_data_dir(data_dir)
 try:
@@ -1117,11 +1117,11 @@ try {
   $port = Get-FreePort
   $proxyPort = Get-FreePort
   $baseUrl = "http://127.0.0.1:$port"
-  $env:OFFERPILOT_DATA = $tempData
+  $env:AURORA_AGENT_DATA = $tempData
   $env:HTTP_PROXY = "http://127.0.0.1:$proxyPort"
   $env:HTTPS_PROXY = "http://127.0.0.1:$proxyPort"
   $env:NO_PROXY = '127.0.0.1,localhost'
-  if (-not (Test-Path -LiteralPath $projectOc)) { throw 'Project OfferPilot CLI runtime is missing.' }
+  if (-not (Test-Path -LiteralPath $projectOc)) { throw 'Project AuroraAgent CLI runtime is missing.' }
   $proxy = Start-Process -FilePath $projectPython -WorkingDirectory $repo -WindowStyle Hidden -PassThru -ArgumentList @('scripts/provider-egress-proxy.py', '--port', $proxyPort, '--audit', $providerAudit, '--expected-endpoints-file', $providerAllowlist)
   $server = Start-Process -FilePath $projectOc -WorkingDirectory $repo -WindowStyle Hidden -PassThru -ArgumentList @('start', '--port', $port)
   Wait-ForHttpReady $server "$baseUrl/api/health" 'Isolated service' | Out-Null
@@ -1236,7 +1236,7 @@ finally {
     })
   }
   try {
-    $env:OFFERPILOT_DATA = $previousData
+    $env:AURORA_AGENT_DATA = $previousData
     $env:HTTP_PROXY = $previousHttpProxy
     $env:HTTPS_PROXY = $previousHttpsProxy
     $env:NO_PROXY = $previousNoProxy

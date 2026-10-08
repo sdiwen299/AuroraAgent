@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def test_legacy_mock_collection_and_item_routes_are_unavailable(tmp_path):

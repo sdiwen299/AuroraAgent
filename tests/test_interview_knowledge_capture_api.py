@@ -5,9 +5,9 @@ from datetime import datetime, timedelta, timezone
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.models import (
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.models import (
     InterviewKnowledgeCaptureAttempt,
     KnowledgeEvidence,
     KnowledgeExtractionSnapshot,
@@ -245,7 +245,7 @@ def test_editing_preview_marks_content_origin_as_user_edited(tmp_path) -> None:
     )
     assert response.status_code == 201
     factory = session_factory_for_data_dir(tmp_path)
-    from offerpilot.models import KnowledgeNoteVersion
+    from auroraagent.models import KnowledgeNoteVersion
 
     with factory() as session:
         version = session.scalar(select(KnowledgeNoteVersion))

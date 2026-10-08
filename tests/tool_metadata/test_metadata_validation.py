@@ -9,8 +9,8 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_runtime.contracts import UndoPolicy as RuntimeUndoPolicy
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.contracts import UndoPolicy as RuntimeUndoPolicy
+from auroraagent.ai.tool_runtime.metadata import (
     BindingResolverDescriptorV1,
     EditableFieldMetadataV1,
     ResolverImplementationBinding,
@@ -20,7 +20,7 @@ from offerpilot.ai.tool_runtime.metadata import (
     WriteOperationMetadataV1,
     validate_tool_spec_components,
 )
-from offerpilot.ai.tool_runtime.policy_types import (
+from auroraagent.ai.tool_runtime.policy_types import (
     ToolCapability,
     ToolDomain,
     UndoPolicy,

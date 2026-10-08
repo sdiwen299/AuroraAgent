@@ -1,4 +1,4 @@
-# OfferPilot Python Cutover Verification
+# AuroraAgent Python Cutover Verification
 
 > 历史快照：记录 2026-07-06 的 Python 切换验收，不代表当前测试数量或发布状态。当前发布要求见 [P0 发布清单](../p0-release-checklist.md)。
 
@@ -7,13 +7,13 @@ Branch: `feature/20260705-python-rewrite`
 
 ## Cutover Summary
 
-OfferPilot has been cut over to a Python-first backend and CLI:
+AuroraAgent has been cut over to a Python-first backend and CLI:
 
-- Backend/API: FastAPI under `src/offerpilot/api.py`
-- CLI: Typer `oc` console script under `src/offerpilot/cli.py`
-- Persistence: SQLite + SQLAlchemy models/repositories under `src/offerpilot`
+- Backend/API: FastAPI under `src/auroraagent/api.py`
+- CLI: Typer `oc` console script under `src/auroraagent/cli.py`
+- Persistence: SQLite + SQLAlchemy models/repositories under `src/auroraagent`
 - AI: provider adapters, tool-loop safety, and reusable workflows under
-  `src/offerpilot/ai`
+  `src/auroraagent/ai`
 - Frontend: existing React/Vite SPA served by the Python process from `web/dist`
 - Packaging: `pyproject.toml`, `uv.lock`, Python Dockerfile, and `uv tool install`
 - Legacy Go runtime: removed from the active source tree after user-approved
@@ -57,4 +57,4 @@ None found in the verified local cutover path.
 - Add CI jobs for Python tests, frontend tests/build, and Docker build.
 - Add browser smoke automation as a scripted test once the project chooses a
   standard browser runner.
-- Consolidate remaining API-only AI helper functions into `offerpilot.ai.workflows`.
+- Consolidate remaining API-only AI helper functions into `auroraagent.ai.workflows`.

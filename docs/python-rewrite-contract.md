@@ -1,6 +1,6 @@
 <!-- 超限原因: 本文冻结 Python rewrite 的跨模块兼容面，并保留 Go/旧 Knowledge 历史基线。 -->
 
-# OfferPilot Python Rewrite Contract
+# AuroraAgent Python Rewrite Contract
 
 > Status: Python cutover completed; see the [2026-07-06 verification snapshot](archive/python-cutover-verification.md).
 > 本文保留迁移兼容契约与历史 Go 基线，不是当前 API 全量清单，也不是待执行迁移计划。下文的 Current、Phase、测试数量与 Go 路径按其历史基线阅读；后续明确修订以 [AGENTS.md](../AGENTS.md) 的领域红线、相关实施契约和当前代码／测试为准，未被修订的安全约束继续保留。
@@ -8,7 +8,7 @@
 > Source baseline: Go backend at `443c933` from `main`.
 > **[KR] Knowledge 历史基线**：旧 knowledge API / 表 / AI tool / CLI 条目（标记 `[KR-deprecated]`）不得作为长期兼容要求重新引入。当前方向见末尾 [Knowledge System](#knowledge-system) 及其链接的唯一架构事实源。
 
-This document freezes the compatibility surface for rewriting OfferPilot from Go
+This document freezes the compatibility surface for rewriting AuroraAgent from Go
 to Python. The Python backend may improve internal structure, but it must keep
 the REST API, SQLite data, CLI behavior, and AI write-confirmation semantics
 listed here unless a later contract revision explicitly says otherwise.
@@ -28,11 +28,11 @@ Run from the worktree root unless noted:
 
 | Surface | Current behavior | Python rewrite requirement |
 |---|---|---|
-| Data directory | `cmd/oc/main.go` uses `OFFERPILOT_DATA`; otherwise `~/.offerpilot`; creates directory `0755` | Keep the same environment variable and default directory |
+| Data directory | `cmd/oc/main.go` uses `AURORA_AGENT_DATA`; otherwise `~/.auroraagent`; creates directory `0755` | Keep the same environment variable and default directory |
 | Database path | CLI and server use `data.db` under the data directory | Keep `data.db`; never create a parallel default path |
 | Config path | `config.json` under the data directory | Keep JSON field names and defaults |
 | Config defaults | `base_url=https://api.openai.com/v1`, `model=gpt-4o`, `local_port=8080`, `chat_auto_approve_writes=false`, `fallback_provider_id=""` | Preserve defaults and missing-file behavior |
-| Docker data | Docker image sets `OFFERPILOT_DATA=/data` and declares `/data` as a volume | Keep a first-class Docker data path in the final cutover image |
+| Docker data | Docker image sets `AURORA_AGENT_DATA=/data` and declares `/data` as a volume | Keep a first-class Docker data path in the final cutover image |
 | HTTP prefix | All JSON APIs live under `/api`; frontend assets are served from root | Keep `/api` prefix so current React services work |
 | JSON casing | API and DB structs expose snake_case JSON fields | Keep snake_case field names |
 | CORS | Allows all origins, methods `GET, POST, PUT, DELETE, OPTIONS`, headers `Content-Type, Authorization` | Preserve for local frontend development |
@@ -67,11 +67,11 @@ API invariants:
 
 | Endpoint | Request | Response | Source | Migration priority |
 |---|---|---|---|---|
-| `GET /api/application-events` | Optional month/application/event_type filters | `ApplicationEvent[]` | `src/offerpilot/api.py`, `web/src/services/events.ts` | v0.1 |
-| `POST /api/application-events` | Application event request body | `201 ApplicationEvent` | `src/offerpilot/api.py` | v0.1 |
-| `GET /api/application-events/{id}` | Path id | `ApplicationEvent` | `src/offerpilot/api.py` | v0.1 |
-| `PUT /api/application-events/{id}` | Application event request body | `ApplicationEvent` | `src/offerpilot/api.py` | v0.1 |
-| `DELETE /api/application-events/{id}` | Path id | status JSON | `src/offerpilot/api.py` | v0.1 |
+| `GET /api/application-events` | Optional month/application/event_type filters | `ApplicationEvent[]` | `src/auroraagent/api.py`, `web/src/services/events.ts` | v0.1 |
+| `POST /api/application-events` | Application event request body | `201 ApplicationEvent` | `src/auroraagent/api.py` | v0.1 |
+| `GET /api/application-events/{id}` | Path id | `ApplicationEvent` | `src/auroraagent/api.py` | v0.1 |
+| `PUT /api/application-events/{id}` | Application event request body | `ApplicationEvent` | `src/auroraagent/api.py` | v0.1 |
+| `DELETE /api/application-events/{id}` | Path id | status JSON | `src/auroraagent/api.py` | v0.1 |
 | `GET /api/calendar` | Query filters | `CalendarEntry[]` | `internal/api/calendar.go`, `web/src/services/calendar.ts` | Phase 5 |
 | `GET /api/applications/{id}/notes` | Path app id | `InterviewNote[]` | `internal/api/notes.go` | Phase 5 |
 | `POST /api/applications/{id}/notes` | Note body | `InterviewNote` | `internal/api/notes.go` | Phase 5 |
@@ -101,20 +101,20 @@ Compatibility footnotes:
 | `POST /api/jd/analyze` | `jd_text` or `jd_url`, optional `application_id` | JD analysis result and saved row | `internal/api/jd.go`, `web/src/services/ai.ts` | Phase 5 after AI minimum |
 | `GET /api/jd/analyses` | Optional `application_id` | `JDAnalysis[]` | `internal/api/jd.go` | Phase 5 |
 | `GET /api/jd/analyses/{id}` | Path id | `JDAnalysis` | `internal/api/jd.go` | Phase 5 |
-| `POST /api/resumes` | v0.1 structured resume body: `title`, `source`, `content_json` | `Resume` with completion metadata | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `GET /api/resumes` | None | Active `Resume[]` | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `POST /api/resumes/upload` | Multipart PDF upload, one file <= 10 MB | Resume row with `source=upload`, file path, text parse status | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `POST /api/resumes/from-sample` | Optional sample id/title | Structured sample resume | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `GET /api/resumes/{id}` | Path id | `Resume` | `src/offerpilot/api.py` | v0.1 complete |
-| `PATCH /api/resumes/{id}` | Partial v0.1 fields: `title`, `content_json`, `career_intent`, `is_master`, `source` | Updated `Resume` | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `POST /api/resumes/{id}/copy` | Optional title | Copied non-master resume | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `DELETE /api/resumes/{id}` | Path id | status JSON | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
-| `POST /api/resumes/{id}/match` | JD text/url and optional app id | Match result | `src/offerpilot/api.py`, `web/src/services/resumes.ts` | v0.2/deep JD flow deferred; compatibility endpoint present |
-| `GET /api/resumes/{id}/matches` | Path id | `ResumeMatch[]` | `src/offerpilot/api.py` | v0.2/deep JD flow deferred; compatibility endpoint present |
-| `PUT /api/resumes/{id}/text` | Text body | status JSON | `src/offerpilot/api.py` | compatibility endpoint present |
-| `GET /api/resumes/{id}/file` | Path id | File download | `src/offerpilot/api.py` | compatibility endpoint present |
-| `GET /api/knowledge-documents` | Optional query filter | `KnowledgeDocument[]` | `src/offerpilot/api.py` | v0.1 **[KR-deprecated]** |
-| `POST /api/knowledge-documents` | Document body, no knowledge base id | `KnowledgeDocument` | `src/offerpilot/api.py` | v0.1 **[KR-deprecated]** |
+| `POST /api/resumes` | v0.1 structured resume body: `title`, `source`, `content_json` | `Resume` with completion metadata | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `GET /api/resumes` | None | Active `Resume[]` | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `POST /api/resumes/upload` | Multipart PDF upload, one file <= 10 MB | Resume row with `source=upload`, file path, text parse status | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `POST /api/resumes/from-sample` | Optional sample id/title | Structured sample resume | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `GET /api/resumes/{id}` | Path id | `Resume` | `src/auroraagent/api.py` | v0.1 complete |
+| `PATCH /api/resumes/{id}` | Partial v0.1 fields: `title`, `content_json`, `career_intent`, `is_master`, `source` | Updated `Resume` | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `POST /api/resumes/{id}/copy` | Optional title | Copied non-master resume | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `DELETE /api/resumes/{id}` | Path id | status JSON | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.1 complete |
+| `POST /api/resumes/{id}/match` | JD text/url and optional app id | Match result | `src/auroraagent/api.py`, `web/src/services/resumes.ts` | v0.2/deep JD flow deferred; compatibility endpoint present |
+| `GET /api/resumes/{id}/matches` | Path id | `ResumeMatch[]` | `src/auroraagent/api.py` | v0.2/deep JD flow deferred; compatibility endpoint present |
+| `PUT /api/resumes/{id}/text` | Text body | status JSON | `src/auroraagent/api.py` | compatibility endpoint present |
+| `GET /api/resumes/{id}/file` | Path id | File download | `src/auroraagent/api.py` | compatibility endpoint present |
+| `GET /api/knowledge-documents` | Optional query filter | `KnowledgeDocument[]` | `src/auroraagent/api.py` | v0.1 **[KR-deprecated]** |
+| `POST /api/knowledge-documents` | Document body, no knowledge base id | `KnowledgeDocument` | `src/auroraagent/api.py` | v0.1 **[KR-deprecated]** |
 | `POST /api/knowledge-documents/import` | Import body | `KnowledgeDocument` | `internal/api/knowledge.go` | Phase 5 **[KR-deprecated]** |
 | `GET /api/knowledge-documents/{id}` | Path id | `KnowledgeDocument` | `internal/api/knowledge.go` | Phase 5 **[KR-deprecated]** |
 | `PUT /api/knowledge-documents/{id}` | Document body | `KnowledgeDocument` | `internal/api/knowledge.go` | Phase 5 **[KR-deprecated]** |
@@ -243,7 +243,7 @@ CLI compatibility details:
   version does not set Cobra `SilenceUsage` or `SilenceErrors`.
 - Commands return non-zero by printing `Error: ...` from `cmd/oc/main.go`.
 - Python should add CLI golden tests around stdout, stderr, exit codes, and
-  temp `OFFERPILOT_DATA`; the Go tree currently has no `internal/cli/*_test.go`.
+  temp `AURORA_AGENT_DATA`; the Go tree currently has no `internal/cli/*_test.go`.
 
 ## AI Tool Contract
 

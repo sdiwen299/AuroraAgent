@@ -30,7 +30,7 @@ def test_readme_describes_python_first_runtime():
 
     assert "uv sync" in readme
     assert "uv run oc start" in readme
-    assert "docker build -t offerpilot ." in readme
+    assert "docker build -t auroraagent ." in readme
     assert "go build" not in readme
     assert "Go 1.22" not in readme
 
@@ -39,7 +39,7 @@ def test_readme_states_the_product_boundary_and_core_capabilities():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
     for text in [
-        "# OfferPilot — 开源、本地优先的 AI 求职与投递管理工具",
+        "# AuroraAgent — 开源、本地优先的 AI 求职与投递管理工具",
         "| 投递管理 |",
         "| 简历与材料准备 |",
         "| 面试准备与模拟 |",

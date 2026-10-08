@@ -297,7 +297,7 @@ describe('AppShell Pilot mascot integration', () => {
     act(() => host.querySelector<HTMLButtonElement>('[data-testid="zoom-mascot"]')?.click());
     await flush();
     expect(host.querySelector('[data-testid="pilot-mascot"]')?.getAttribute('data-zoom')).toBe('1.2');
-    expect(localStorage.getItem('offerpilot:pilot-mascot-zoom')).toBe('1.2');
+    expect(localStorage.getItem('auroraagent:pilot-mascot-zoom')).toBe('1.2');
 
     act(() => host.querySelector<HTMLButtonElement>('[data-testid="toggle-mascot-pilot"]')?.click());
     await flush();
@@ -319,13 +319,13 @@ describe('AppShell Pilot mascot integration', () => {
 
     act(() => host.querySelector<HTMLButtonElement>('[data-testid="minimal-animation"]')?.click());
     await flush();
-    expect(localStorage.getItem('offerpilot:pilot-mascot-animation')).toBe('minimal');
+    expect(localStorage.getItem('auroraagent:pilot-mascot-animation')).toBe('minimal');
     expect(host.querySelector('[data-testid="pilot-mascot"]')?.getAttribute('data-animation-level')).toBe('minimal');
 
     act(() => host.querySelector<HTMLButtonElement>('[data-testid="reset-position"]')?.click());
     await flush();
     expect(host.querySelector('[data-testid="pilot-mascot"]')?.getAttribute('data-position-reset-token')).toBe('1');
-    expect(JSON.parse(localStorage.getItem('offerpilot:pilot-mascot-position') ?? '{}').normal).toEqual({
+    expect(JSON.parse(localStorage.getItem('auroraagent:pilot-mascot-position') ?? '{}').normal).toEqual({
       xRatio: 0.96,
       yRatio: 0.9,
     });

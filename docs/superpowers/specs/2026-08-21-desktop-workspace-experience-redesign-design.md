@@ -2,7 +2,7 @@
 
 ## 目标与边界
 
-本阶段把 OfferPilot 桌面端从功能目录收敛为围绕求职过程的工作台：今日、投递、面试、资料，以及独立弱入口设置。第二阶段固定基线为 `2f6e895e02b86f33052a2e507e9b0404bb82f4b5`，只修改 `web/**` 和本任务的规格、计划、报告；不修改后端、领域模型、API、SSE、Agent、Pending/HITL 或 Journal 语义。
+本阶段把 AuroraAgent 桌面端从功能目录收敛为围绕求职过程的工作台：今日、投递、面试、资料，以及独立弱入口设置。第二阶段固定基线为 `2f6e895e02b86f33052a2e507e9b0404bb82f4b5`，只修改 `web/**` 和本任务的规格、计划、报告；不修改后端、领域模型、API、SSE、Agent、Pending/HITL 或 Journal 语义。
 
 验收覆盖主要桌面 `>=1180px` 与紧凑桌面 `768-1179px`。保留现有移动 fallback，但不新增移动产品形态。继续使用 React 18、Ant Design、CSS Modules、React Query、现有服务与 `AssistantSurfaceProvider`。
 

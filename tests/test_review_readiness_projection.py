@@ -10,8 +10,8 @@ from sqlalchemy import event, func, select, update
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     AdaptivePracticePlan,
     Application,
     ApplicationEvent,
@@ -21,22 +21,22 @@ from offerpilot.models import (
     InterviewReadinessSignalVersion,
     InterviewReviewProposal,
 )
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
-from offerpilot.product_actions.contracts import ProductActionProofRegistryV1
-from offerpilot.product_actions.coordinator import ProductActionCoordinator
-from offerpilot.product_actions.issuer import LedgerKeyProfileStoreV1, ReviewReadinessActionIssuer
-from offerpilot.product_actions.repository import ProductActionProposalRepository
-from offerpilot.review_readiness.candidates import (
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.contracts import ProductActionProofRegistryV1
+from auroraagent.product_actions.coordinator import ProductActionCoordinator
+from auroraagent.product_actions.issuer import LedgerKeyProfileStoreV1, ReviewReadinessActionIssuer
+from auroraagent.product_actions.repository import ProductActionProposalRepository
+from auroraagent.review_readiness.candidates import (
     project_readiness_candidates,
     resolve_readiness_candidates,
 )
-from offerpilot.review_readiness.projection import (
+from auroraagent.review_readiness.projection import (
     compute_practice_target_fingerprint_v1,
     load_canonical_readiness_signal,
     project_practice_focus,
 )
-from offerpilot.review_readiness.repository import ReadinessSignalRepository
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.review_readiness.repository import ReadinessSignalRepository
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
 
 from tests.product_actions.conftest import KEY_ONE, KEY_TWO
 from tests.review_readiness_support import seed_review_candidate
@@ -1316,9 +1316,9 @@ def test_database_read_failure_is_explicitly_unavailable(tmp_path, monkeypatch) 
 def test_baseline_interview_readiness_module_has_no_signal_dependency() -> None:
     """The baseline projector remains orthogonal to the additive Signal projection."""
 
-    from offerpilot.repositories import interview_index
-    from offerpilot.review_readiness import projection as readiness_projection
-    from offerpilot.review_readiness import repository as readiness_repository
+    from auroraagent.repositories import interview_index
+    from auroraagent.review_readiness import projection as readiness_projection
+    from auroraagent.review_readiness import repository as readiness_repository
 
     inspect = __import__("inspect")
     baseline_source = inspect.getsource(interview_index)

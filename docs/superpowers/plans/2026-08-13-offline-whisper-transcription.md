@@ -33,7 +33,7 @@
    - 必要的 Haru 状态文案测试
    - `README.md`
    - 本设计、计划、第三方 notice、验收报告与 `artifacts/2026-08-13-offline-whisper-transcription/**`
-3. 明确禁止修改 `src/offerpilot/**`、`tests/**`、迁移、API、共享后端类型和业务 service。
+3. 明确禁止修改 `src/auroraagent/**`、`tests/**`、迁移、API、共享后端类型和业务 service。
 4. 每次提交前收集已提交、暂存、未暂存及未跟踪文件，与 allowlist 机器化比较。
 
 ## Task 1：模型 manifest、状态与本地元数据（TDD）
@@ -67,7 +67,7 @@
 
 - manifest 是只读常量；
 - metadata 只保存 schema、revision、cachedBytes、verifiedAt 和 ready；
-- 缓存键带 OfferPilot 专属前缀，不清其他站点缓存；
+- 缓存键带 AuroraAgent 专属前缀，不清其他站点缓存；
 - 所有公开入口 fail-safe，不将 IndexedDB/Cache 异常抛到 React render。
 
 ## Task 2：Worker 协议、generation fencing 与音频解码（TDD）

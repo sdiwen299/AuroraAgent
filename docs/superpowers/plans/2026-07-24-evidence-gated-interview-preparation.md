@@ -27,12 +27,12 @@ Design source: docs/superpowers/specs/2026-07-24-evidence-gated-interview-prepar
 
 | 文件 | 责任 |
 | --- | --- |
-| src/offerpilot/models.py | 新增 Proposal attempt 字段和约束 |
-| src/offerpilot/db.py | 新库建表、旧库兼容、0012_interview_preparation_proposals 迁移记录 |
-| src/offerpilot/ai/interview_preparation_proposals.py | 快照输入、JSON Schema、严格验证、一次修复、安全空 Proposal、诊断 |
-| src/offerpilot/repositories/interview_preparation_proposals.py | 资格读取、幂等行、lease、CAS、来源漂移、历史读取 |
-| src/offerpilot/schemas.py | 新接口的请求、201/200、202 和历史响应模型 |
-| src/offerpilot/api.py | Application-scoped 列表、详情、生成路由和安全错误映射 |
+| src/auroraagent/models.py | 新增 Proposal attempt 字段和约束 |
+| src/auroraagent/db.py | 新库建表、旧库兼容、0012_interview_preparation_proposals 迁移记录 |
+| src/auroraagent/ai/interview_preparation_proposals.py | 快照输入、JSON Schema、严格验证、一次修复、安全空 Proposal、诊断 |
+| src/auroraagent/repositories/interview_preparation_proposals.py | 资格读取、幂等行、lease、CAS、来源漂移、历史读取 |
+| src/auroraagent/schemas.py | 新接口的请求、201/200、202 和历史响应模型 |
+| src/auroraagent/api.py | Application-scoped 列表、详情、生成路由和安全错误映射 |
 | tests/test_interview_preparation_migrations.py | 新库/旧库迁移和表约束 |
 | tests/test_interview_preparation_ai.py | 严格 JSON、Evidence 引用、Provider 能力与安全空结果 |
 | tests/test_interview_preparation_repository.py | 快照、幂等、双连接 lease/CAS、来源漂移和历史 |
@@ -45,7 +45,7 @@ Design source: docs/superpowers/specs/2026-07-24-evidence-gated-interview-prepar
 | web/src/layout/AppShell.tsx | 按 applicationId、eventId 持有完整草稿和 key |
 | web/src/components/ApplicationDetail.tsx | 面试事件入口和 Drawer 挂载 |
 | web/src/features/pilot/PilotOpportunityFitCard.tsx | Pilot Application-context 入口，不复制表单 |
-| src/offerpilot/smoke.py / tests/test_smoke.py | HTTP real-AI 合成数据、证据校验、清理和泄漏断言 |
+| src/auroraagent/smoke.py / tests/test_smoke.py | HTTP real-AI 合成数据、证据校验、清理和泄漏断言 |
 | scripts/interview-preparation-real-ai-browser-harness.ps1 | 临时数据目录、端口/进程归属、浏览器闭环和失败传播 |
 
 ---
@@ -53,8 +53,8 @@ Design source: docs/superpowers/specs/2026-07-24-evidence-gated-interview-prepar
 ### Task 1: 新增 Proposal 模型与 0012 增量迁移
 
 Files:
-- Modify: src/offerpilot/models.py
-- Modify: src/offerpilot/db.py
+- Modify: src/auroraagent/models.py
+- Modify: src/auroraagent/db.py
 - Create: tests/test_interview_preparation_migrations.py
 
 - [ ] Step 1: 写迁移失败测试
@@ -86,15 +86,15 @@ application_id、application_event_id 和 resume_id 使用不可变普通整数�
 预期：全部通过。
 
 提交：
-    git add src/offerpilot/models.py src/offerpilot/db.py tests/test_interview_preparation_migrations.py
+    git add src/auroraagent/models.py src/auroraagent/db.py tests/test_interview_preparation_migrations.py
     git commit -m "feat: AI add interview preparation proposal schema"
 
 ### Task 2: 实现严格 AI 契约和安全空 Proposal
 
 Files:
-- Create: src/offerpilot/ai/interview_preparation_proposals.py
+- Create: src/auroraagent/ai/interview_preparation_proposals.py
 - Create: tests/test_interview_preparation_ai.py
-- Reference: src/offerpilot/ai/interview_review_proposals.py、src/offerpilot/ai/workflows.py、src/offerpilot/repositories/json_contract.py
+- Reference: src/auroraagent/ai/interview_review_proposals.py、src/auroraagent/ai/workflows.py、src/auroraagent/repositories/json_contract.py
 
 - [ ] Step 1: 写 AI 契约 RED 测试
 
@@ -128,15 +128,15 @@ Files:
 预期：全部通过，且已有 AI client 测试不回归。
 
 提交：
-    git add src/offerpilot/ai/interview_preparation_proposals.py tests/test_interview_preparation_ai.py
+    git add src/auroraagent/ai/interview_preparation_proposals.py tests/test_interview_preparation_ai.py
     git commit -m "feat: AI enforce interview preparation evidence contract"
 
 ### Task 3: 实现两段式 Repository、首次 lease 和到期接管 CAS
 
 Files:
-- Create: src/offerpilot/repositories/interview_preparation_proposals.py
+- Create: src/auroraagent/repositories/interview_preparation_proposals.py
 - Create: tests/test_interview_preparation_repository.py
-- Reference: src/offerpilot/repositories/interview_review_proposals.py、src/offerpilot/models.py
+- Reference: src/auroraagent/repositories/interview_review_proposals.py、src/auroraagent/models.py
 
 - [ ] Step 1: 写 Repository RED 测试
 
@@ -178,14 +178,14 @@ Files:
 预期：全部通过，特别是无旧行双连接首请求和到期双连接接管测试。
 
 提交：
-    git add src/offerpilot/repositories/interview_preparation_proposals.py tests/test_interview_preparation_repository.py
+    git add src/auroraagent/repositories/interview_preparation_proposals.py tests/test_interview_preparation_repository.py
     git commit -m "feat: AI add interview preparation lease lifecycle"
 
 ### Task 4: 增加 schema、API 路由和安全错误映射
 
 Files:
-- Modify: src/offerpilot/schemas.py
-- Modify: src/offerpilot/api.py
+- Modify: src/auroraagent/schemas.py
+- Modify: src/auroraagent/api.py
 - Create: tests/test_interview_preparation_api.py
 
 - [ ] Step 1: 写 API RED 测试
@@ -226,7 +226,7 @@ Files:
 预期：新 API 和既有 Interview Review API 均通过。
 
 提交：
-    git add src/offerpilot/schemas.py src/offerpilot/api.py tests/test_interview_preparation_api.py
+    git add src/auroraagent/schemas.py src/auroraagent/api.py tests/test_interview_preparation_api.py
     git commit -m "feat: AI expose interview preparation proposal API"
 
 ### Task 5: 前端类型、服务层和结构化 Proposal Drawer
@@ -324,7 +324,7 @@ ApplicationDetail 仅在当前 Application 的 interview 事件上显示入口�
 ### Task 7: real-AI HTTP smoke、隔离浏览器 harness 和清理
 
 Files:
-- Modify: src/offerpilot/smoke.py
+- Modify: src/auroraagent/smoke.py
 - Modify: tests/test_smoke.py
 - Create: scripts/interview-preparation-real-ai-browser-harness.ps1
 
@@ -350,7 +350,7 @@ HTTP smoke 创建临时 Application、一个 interview event、一个非空 Resu
 
 - [ ] Step 4: 实现浏览器 harness
 
-脚本创建临时数据目录、仅复制现有 config.json，确认端口未被占用，启动 OFFERPILOT_DATA=<temp> 服务；启动后验证监听 PID 属于本次进程树，未通过则停止本次服务并禁止打开浏览器。浏览器从根页面进入投递详情，定位合成面试事件，打开“面试准备建议”，完成选择简历/JD/Knowledge、确认生成、查看 Proposal 和历史；断言没有自动写入任何跨领域对象。每个 uv/原生命令后检查 LASTEXITCODE 并 throw，外层 finally 停止精确进程树、删除合成记录和临时目录、恢复环境变量。
+脚本创建临时数据目录、仅复制现有 config.json，确认端口未被占用，启动 AURORA_AGENT_DATA=<temp> 服务；启动后验证监听 PID 属于本次进程树，未通过则停止本次服务并禁止打开浏览器。浏览器从根页面进入投递详情，定位合成面试事件，打开“面试准备建议”，完成选择简历/JD/Knowledge、确认生成、查看 Proposal 和历史；断言没有自动写入任何跨领域对象。每个 uv/原生命令后检查 LASTEXITCODE 并 throw，外层 finally 停止精确进程树、删除合成记录和临时目录、恢复环境变量。
 
 - [ ] Step 5: 运行 smoke GREEN 测试并提交
 
@@ -359,7 +359,7 @@ HTTP smoke 创建临时 Application、一个 interview event、一个非空 Resu
 预期：全部通过。
 
 提交：
-    git add src/offerpilot/smoke.py tests/test_smoke.py scripts/interview-preparation-real-ai-browser-harness.ps1
+    git add src/auroraagent/smoke.py tests/test_smoke.py scripts/interview-preparation-real-ai-browser-harness.ps1
     git commit -m "test: AI add interview preparation real AI smoke"
 
 ### Task 8: 全量回归、构建和独立 CR

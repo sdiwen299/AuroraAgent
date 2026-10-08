@@ -1,6 +1,6 @@
-from offerpilot.db import init_database
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
+from auroraagent.db import init_database
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository, JDAnalysisCreate
 
 
 def test_bind_keeps_jd_reads_on_caller_owned_session(tmp_path):

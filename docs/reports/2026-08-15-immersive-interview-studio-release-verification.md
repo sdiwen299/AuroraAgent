@@ -46,7 +46,7 @@
 - `uv run ruff check .` 通过；`uv run mypy src` 通过（73 files）；`git diff --check` 通过。
 - 完整仓库没有再使用单次全量命令；采用分组门禁避免超时。
 
-已知前置条件：`tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked` 在 main 与本分支均需要外部提供 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` 与 `OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE`。README cutover 检查已在本分支及合入后的 main 通过；此前的文案差异已恢复为契约要求并保留语音说明。
+已知前置条件：`tests/test_application_jd_browser_harness.py::test_application_jd_implementation_scope_is_machine_checked` 在 main 与本分支均需要外部提供 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` 与 `AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE`。README cutover 检查已在本分支及合入后的 main 通过；此前的文案差异已恢复为契约要求并保留语音说明。
 
 ## 破坏性变化与剩余风险
 

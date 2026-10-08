@@ -9,24 +9,24 @@ from queue import Queue as StdQueue
 
 import pytest
 
-from offerpilot.chat_transport import (
+from auroraagent.chat_transport import (
     CHAT_AGENT_TIMEOUT_SECONDS,
     SSE_POLL_SECONDS,
     SseAgentExecutionHost,
     SyncAgentExecutionHost,
 )
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     AssistantDeltaEvent,
     CancelReason,
     InvocationState,
     RuntimeEventSink,
 )
-from offerpilot.pilot_runtime.errors import (
+from auroraagent.pilot_runtime.errors import (
     RuntimeAgentTimedOut,
     RuntimeCancelled,
     RuntimeTransportAborted,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
 
 
 def _collect(stream: Iterator[object]) -> tuple[list[object], object | None]:
@@ -224,7 +224,7 @@ def test_sse_worker_exception_keeps_baseline_shutdown_flag_false() -> None:
 
 
 def test_sse_queued_events_crossing_deadline_follow_baseline_queue_order(monkeypatch) -> None:
-    import offerpilot.chat_transport as transport
+    import auroraagent.chat_transport as transport
 
     class ScriptedQueue:
         maxsize = 0
@@ -274,7 +274,7 @@ def test_sse_queued_events_crossing_deadline_follow_baseline_queue_order(monkeyp
 
 
 def test_sse_empty_queue_after_deadline_times_out(monkeypatch) -> None:
-    import offerpilot.chat_transport as transport
+    import auroraagent.chat_transport as transport
 
     class ScriptedQueue:
         maxsize = 0

@@ -22,7 +22,7 @@ from fastapi.testclient import TestClient
 from conftest import wait_for_extraction, wait_for_source_deleted
 from PIL import Image
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 
@@ -526,7 +526,7 @@ def test_ki06_startup_recovery_completes_deleting_source(tmp_path):
     """Spec §6 / §12：``begin_delete`` 标记 lifecycle=deleting 后崩溃,重启时
     `_recover_knowledge_deletions` 必须完成事务清理 + quarantine 清理。
     """
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     content = "# Recovery\n\n正文。\n".encode("utf-8")
     with TestClient(create_app(data_dir=tmp_path)) as client:
@@ -563,7 +563,7 @@ def test_ki06_startup_recovery_completes_deleting_source(tmp_path):
 
 def test_ki06_startup_recovery_clears_orphan_quarantine(tmp_path):
     """Spec §6：commit 后崩溃 quarantine 残留(Source 行已不存在)→ 启动时清理。"""
-    from offerpilot.db import init_database
+    from auroraagent.db import init_database
 
     init_database(tmp_path / "data.db")
     quarantine_root = tmp_path / "knowledge" / "quarantine"
@@ -625,10 +625,10 @@ def test_ki06_begin_delete_cancels_active_extract_jobs(tmp_path):
     ``running`` Extract / Brief Job 都被标记 ``canceled=True, status=canceled,
     stage=canceled_by_delete``,并写入 ``kind=delete, status=running`` Delete Job。
     """
-    from offerpilot.api import create_app as _create_app
-    from offerpilot.db import session_factory_for_data_dir
-    from offerpilot.knowledge.repository import KnowledgeRepository
-    from offerpilot.models import KnowledgeJob, KnowledgeSource
+    from auroraagent.api import create_app as _create_app
+    from auroraagent.db import session_factory_for_data_dir
+    from auroraagent.knowledge.repository import KnowledgeRepository
+    from auroraagent.models import KnowledgeJob, KnowledgeSource
 
     with TestClient(_create_app(data_dir=tmp_path)) as client:
         upload = _upload_file(client, "doc.md", "# Title\n\n正文。\n".encode("utf-8"))
@@ -674,9 +674,9 @@ def test_ki06_begin_delete_cancels_active_extract_jobs(tmp_path):
 
 def test_ki06_begin_delete_rejects_already_deleting_source(tmp_path):
     """Spec §5.4：``begin_delete`` 重复调用必须返回 None,避免重复扣费或重复 IO。"""
-    from offerpilot.api import create_app as _create_app
-    from offerpilot.db import session_factory_for_data_dir
-    from offerpilot.knowledge.repository import KnowledgeRepository
+    from auroraagent.api import create_app as _create_app
+    from auroraagent.db import session_factory_for_data_dir
+    from auroraagent.knowledge.repository import KnowledgeRepository
 
     with TestClient(_create_app(data_dir=tmp_path)) as client:
         upload = _upload_file(client, "doc.md", "# Title\n\n正文。\n".encode("utf-8"))

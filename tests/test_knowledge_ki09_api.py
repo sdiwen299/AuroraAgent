@@ -8,21 +8,21 @@ from typing import Any
 from fastapi.testclient import TestClient
 from conftest import wait_for_extraction
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_MIN_CONTEXT_WINDOW,
     BRIEF_PROMPT_VERSION,
     BRIEF_SCHEMA_VERSION,
 )
-from offerpilot.knowledge.repository import (
+from auroraagent.knowledge.repository import (
     BriefAttemptCreateInput,
     JobCreateInput,
     KnowledgeRepository,
 )
-from offerpilot.api import create_app
-from offerpilot.knowledge.worker import BriefWorker, KnowledgeJobRunner, ExtractionWorker
+from auroraagent.api import create_app
+from auroraagent.knowledge.worker import BriefWorker, KnowledgeJobRunner, ExtractionWorker
 
 
 
@@ -67,7 +67,7 @@ def _valid_payload(evidence_items: list, plan: Any) -> dict[str, Any]:
         "schema_version": 2,
         "language": "zh-CN",
         "overview": [
-            {"statement": "Source 描述 OfferPilot。", "evidence_ids": [ov1]},
+            {"statement": "Source 描述 AuroraAgent。", "evidence_ids": [ov1]},
             {"statement": "Source 涉及 SQLite。", "evidence_ids": [ov2]},
         ],
         "key_points": (
@@ -78,7 +78,7 @@ def _valid_payload(evidence_items: list, plan: Any) -> dict[str, Any]:
             {
                 "section_key": first.section_key,
                 "heading_path": list(first.heading_path),
-                "summary": "介绍 OfferPilot。",
+                "summary": "介绍 AuroraAgent。",
                 "evidence_ids": [first_eid],
             }
         ],
@@ -145,7 +145,7 @@ def test_ki09_brief_endpoint_exposes_committed_brief_payload(
     assert len(evidence_ids) >= 2
 
     # 使用 endpoint client 的同一个进程内 repository 提交一次成功 Brief
-    from offerpilot.knowledge.brief import build_section_coverage_plan
+    from auroraagent.knowledge.brief import build_section_coverage_plan
 
     plan = build_section_coverage_plan(evidence_page.items)
     payload_dict = _valid_payload(evidence_page.items, plan)
@@ -264,7 +264,7 @@ def test_ki09_brief_worker_processes_real_queue_with_stub_provider(
         active_provider_id="default",
     )
     evidence_page = repository.list_evidence(source_id, limit=50)
-    from offerpilot.knowledge.brief import build_section_coverage_plan
+    from auroraagent.knowledge.brief import build_section_coverage_plan
 
     plan = build_section_coverage_plan(evidence_page.items)
     valid_payload = _valid_payload(evidence_page.items, plan)

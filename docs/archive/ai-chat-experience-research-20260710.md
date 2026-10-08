@@ -1,4 +1,4 @@
-# OfferPilot AI 对话体验优化调研
+# AuroraAgent AI 对话体验优化调研
 
 日期：2026-07-10
 
@@ -6,13 +6,13 @@
 
 代码基线：`origin/main@6ad35d9`
 
-飞书事实源：OfferPilot 主 Wiki，revision `763`
+飞书事实源：AuroraAgent 主 Wiki，revision `763`
 
 外部样例基线：`Shubhamsaboo/awesome-llm-apps@2892e8d`
 
 ## 结论摘要
 
-OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双形态 Pilot、真实 token 流、工具过程、证据、持久化会话、写入审批、停止/重试、会话管理和最近一次写入撤销，基础可信度明显高于常见的 LLM demo。
+AuroraAgent 当前已经不是“缺一个聊天框”的阶段。主线具备双形态 Pilot、真实 token 流、工具过程、证据、持久化会话、写入审批、停止/重试、会话管理和最近一次写入撤销，基础可信度明显高于常见的 LLM demo。
 
 下一阶段最值得做的不是增加更多装饰或暴露推理过程，而是把 Pilot 从“能聊天、能调工具”升级成“可控地完成求职任务”：
 
@@ -41,7 +41,7 @@ OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双
 
 ### 1.2 六个必须保证的性质
 
-| 性质 | 用户需要回答的问题 | OfferPilot 应保证什么 |
+| 性质 | 用户需要回答的问题 | AuroraAgent 应保证什么 |
 | --- | --- | --- |
 | 定向 | Pilot 现在在帮我处理什么？ | 当前 tab、实体、筛选和能力边界可见、可移除 |
 | 可见 | 它进行到哪里了？ | 展示任务级进度、工具状态和失败点，不展示隐藏思维链 |
@@ -58,7 +58,7 @@ OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双
 - AI 是否使用了正确上下文和可核验依据。
 - 写操作是否在用户理解影响后执行。
 - 失败后是否能继续，而不是重头再来。
-- 输出是否进入 OfferPilot 的业务闭环，而不是停留在聊天记录里。
+- 输出是否进入 AuroraAgent 的业务闭环，而不是停留在聊天记录里。
 
 ## 2. 当前能力基线
 
@@ -97,7 +97,7 @@ OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双
 
 `generative_ui_agents/ai-deep-research-agent` 将聊天放在左侧，把 plan、files、sources 放在独立 workspace；工具调用同时渲染为 live status card，并更新并行的产物区。
 
-对 OfferPilot 的启发不是复制 38/62 布局，而是：
+对 AuroraAgent 的启发不是复制 38/62 布局，而是：
 
 - 对话流负责意图、确认和叙述。
 - 右侧上下文区负责当前任务状态、来源和产物。
@@ -107,7 +107,7 @@ OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双
 
 `research_agent_gemini_interaction_api` 把复杂任务拆成 plan → select → research → synthesize；用户可以选择哪些子任务进入执行。
 
-对 OfferPilot 更适合做成“仅复杂任务触发”的轻量 plan card，例如：
+对 AuroraAgent 更适合做成“仅复杂任务触发”的轻量 plan card，例如：
 
 - “为下周三面试做准备”先列出资料检查、JD/简历差距、题目练习和日程更新。
 - 用户勾选执行范围，再进入读工具或逐步审批写工具。
@@ -117,7 +117,7 @@ OfferPilot 当前已经不是“缺一个聊天框”的阶段。主线具备双
 
 `multi_llm_memory` 把跨模型共享记忆放在独立侧栏，并允许用户查看。它证明了“检索到的记忆应成为 UI 对象”这一实现方向，但样例直接存 assistant answer，不适合原样采用。
 
-OfferPilot 应区分：
+AuroraAgent 应区分：
 
 - 会话短期上下文：当前 thread 的消息和 checkpoint。
 - 领域事实：简历、投递、事件、复盘、知识库，继续以数据库为事实源。
@@ -125,13 +125,13 @@ OfferPilot 应区分：
 
 ### 3.4 逐条反馈连接评测闭环
 
-`agentic_rag_math_agent` 在每条 answer 后收集 👍/👎 并保留问题、答案和反馈。样例实现很简单，但揭示了当前 OfferPilot 的明显空白：没有消息级质量信号，无法判断优化是否真的有效。
+`agentic_rag_math_agent` 在每条 answer 后收集 👍/👎 并保留问题、答案和反馈。样例实现很简单，但揭示了当前 AuroraAgent 的明显空白：没有消息级质量信号，无法判断优化是否真的有效。
 
-OfferPilot 应优先收集“是否帮助推进任务”，负反馈再选原因：上下文错误、事实错误、没按要求操作、表达问题、过慢。默认本地保存，是否上传由用户明确选择。
+AuroraAgent 应优先收集“是否帮助推进任务”，负反馈再选原因：上下文错误、事实错误、没按要求操作、表达问题、过慢。默认本地保存，是否上传由用户明确选择。
 
 ### 3.5 输出要可下载或进入业务对象
 
-`resume_job_matcher` 将匹配报告保存在 session 并提供 Markdown 下载。OfferPilot 已有更完整的数据模型，应进一步做到：
+`resume_job_matcher` 将匹配报告保存在 session 并提供 Markdown 下载。AuroraAgent 已有更完整的数据模型，应进一步做到：
 
 - “保存为简历定向版本”“保存为复盘草稿”“创建行动项”“打开对应实体”。
 - 导出是兜底，不应替代结构化落库和 HITL。
@@ -170,7 +170,7 @@ OfferPilot 应优先收集“是否帮助推进任务”，负反馈再选原因
 
 - 优点：先解决用户最痛的控制问题，同时为 P1 能力建立稳定边界。
 - 缺点：需要一次后端 schema、API、SSE、前端 type 和存量消息兼容设计。
-- 适合：OfferPilot 当前成熟度和 v0.1 → v0.2 节奏。
+- 适合：AuroraAgent 当前成熟度和 v0.1 → v0.2 节奏。
 
 ### 方案 C：直接升级为完整 Deep Agent 工作区
 
@@ -263,7 +263,7 @@ OfferPilot 应优先收集“是否帮助推进任务”，负反馈再选原因
 
 ## 10. 资料来源
 
-- [OfferPilot 主 Wiki](https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf)，本次回读 revision `763`。
+- [AuroraAgent 主 Wiki](https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf)，本次回读 revision `763`。
 - [Awesome LLM Apps](https://github.com/Shubhamsaboo/awesome-llm-apps/tree/2892e8dc9049e1d71d18079dc22c5b9b72fadbfe)。
 - [AI Deep Research Agent：tool cards + workspace](https://github.com/Shubhamsaboo/awesome-llm-apps/tree/2892e8dc9049e1d71d18079dc22c5b9b72fadbfe/generative_ui_agents/ai-deep-research-agent)。
 - [Research Planner：plan → select → execute](https://github.com/Shubhamsaboo/awesome-llm-apps/blob/2892e8dc9049e1d71d18079dc22c5b9b72fadbfe/advanced_ai_agents/single_agent_apps/research_agent_gemini_interaction_api/research_planner_executor_agent.py)。

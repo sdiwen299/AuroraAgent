@@ -16,14 +16,14 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import (
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import (
     ToolMetadataBundleV1,
     canonical_json_bytes,
     freeze_json,
 )
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.models import Application, ApplicationEvent, Base, InterviewNote
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.models import Application, ApplicationEvent, Base, InterviewNote
 from tests.tool_metadata.golden import load_asset
 
 
@@ -61,7 +61,7 @@ class _LegacyIssuerProbe:
 
 
 def _components_bundle_registry() -> tuple[object, ToolMetadataBundleV1, object]:
-    module = _required_module("offerpilot.pilot_runtime.compensation")
+    module = _required_module("auroraagent.pilot_runtime.compensation")
     components = _required_api(module, "prepare_compensation_handler_components")()
     manifest = compile_tool_metadata_manifest(_TEST_TOOL_CATALOG.specs)
     projection = manifest.to_dict()
@@ -76,7 +76,7 @@ def _components_bundle_registry() -> tuple[object, ToolMetadataBundleV1, object]
 
 
 def _operation_port(bundle: ToolMetadataBundleV1, registry: object) -> object:
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     port_type = _required_api(metadata_module, "ToolOperationMetadataPort")
     return port_type(
         operation_view=bundle.operation_view(),
@@ -91,7 +91,7 @@ def _committed_parent(
     primary_tool: str = "update_application_status",
     ordinal: int = 1,
 ) -> object:
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     parent_type = _required_api(
         metadata_module,
         "CommittedPrimaryOperationIdentityV1",
@@ -207,7 +207,7 @@ def test_compensation_registry_has_the_exact_five_sealed_handler_specs() -> None
 
 def test_compensation_registry_rejects_missing_duplicate_reordered_and_copied_specs() -> None:
     components, _, _ = _components_bundle_registry()
-    module = _required_module("offerpilot.pilot_runtime.compensation")
+    module = _required_module("auroraagent.pilot_runtime.compensation")
     components_type = _required_api(module, "CompensationHandlerComponents")
     registry_type = _required_api(module, "CompensationHandlerRegistry")
     specs = _private_specs(components)
@@ -246,7 +246,7 @@ def test_static_components_only_become_a_final_registry_after_exact_bundle_bindi
 
 def test_components_registry_and_handler_handles_fail_closed_after_identity_mutation() -> None:
     components = _required_api(
-        _required_module("offerpilot.pilot_runtime.compensation"),
+        _required_module("auroraagent.pilot_runtime.compensation"),
         "prepare_compensation_handler_components",
     )()
     object.__setattr__(components, "_ordered_specs", tuple(reversed(_private_specs(components))))
@@ -305,7 +305,7 @@ def test_handler_handle_requires_the_exact_bundle_view_registry_and_binding_iden
     with pytest.raises((TypeError, ValueError)):
         other_registry.resolve(compensation_handle)
 
-    module = _required_module("offerpilot.pilot_runtime.compensation")
+    module = _required_module("auroraagent.pilot_runtime.compensation")
     handle_type = _required_api(module, "CompensationHandlerHandle")
     with pytest.raises(TypeError):
         handle_type()
@@ -864,7 +864,7 @@ def test_all_handlers_accept_the_canonical_ledger_round_trip_payload_shape() -> 
 
 
 def test_compensation_module_has_no_implicit_session_or_bare_name_dispatch() -> None:
-    module = _required_module("offerpilot.pilot_runtime.compensation")
+    module = _required_module("auroraagent.pilot_runtime.compensation")
     source = Path(cast(str, module.__file__)).read_text(encoding="utf-8")
 
     assert "sessionmaker(" not in source

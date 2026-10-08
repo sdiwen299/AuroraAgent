@@ -58,4 +58,4 @@
 
 ## File boundary
 
-Allowed product files are the five frontend files listed above plus the two existing outcome drawer files and documentation/artifacts. Forbidden: `src/offerpilot/**`, `tests/**`, `web/src/services/**`, `web/src/types/**`, database migrations, Provider settings, Pilot tools and external delivery integrations.
+Allowed product files are the five frontend files listed above plus the two existing outcome drawer files and documentation/artifacts. Forbidden: `src/auroraagent/**`, `tests/**`, `web/src/services/**`, `web/src/types/**`, database migrations, Provider settings, Pilot tools and external delivery integrations.

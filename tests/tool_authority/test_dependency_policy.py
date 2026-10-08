@@ -5,21 +5,21 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.ai.tool_authority.policy import (
+from auroraagent.ai.tool_authority.policy import (
     AGENT_TYPED_V1_PROFILE,
     CAPABILITY_POLICY_VERSION,
     DEPENDENCY_POLICY_VERSION,
 )
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.context_projector.authority_surface import (
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.context_projector.authority_surface import (
     AuthoritySurfaceView,
     intersect_authority_surface,
 )
-from offerpilot.context_projector.contracts import ProjectionError, canonical_json, sha256_hex
-from offerpilot.context_projector.selector import ToolSelectionSignals, select_tools
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.context_projector.contracts import ProjectionError, canonical_json, sha256_hex
+from auroraagent.context_projector.selector import ToolSelectionSignals, select_tools
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
 
 
 FIXTURE = Path(__file__).parents[1] / "fixtures" / "tool_authority" / "dependency_policy_v1.json"

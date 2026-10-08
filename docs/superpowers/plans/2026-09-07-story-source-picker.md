@@ -42,6 +42,6 @@ expect(proposal).not.toHaveBeenCalled(); // 搜索、展开、选择不是模型
 - Story / ReviewReadiness 关联矩阵：12 files / 284 tests；首次 283 passed，性能门禁在并行构建时 35.17s 超过 30s。
 - 停止构建后独立复跑完整 `reviewReadinessNegativeFixtures.test.ts`：133 passed，性能检查 20.98s；阈值与测试代码未修改。关联用例全部覆盖通过，不宣称首次全绿。
 - `npm run build`（包含 `tsc -b`）：通过；保留现有大 chunk warning（主包约 1658 kB）。最后文案改动由目标测试复验。
-- 浏览器截图：仓库外 `D:/Users/yuqi.chen/.offerpilot/verification/story-source-picker-20260907/01-material-groups.png` 与 `02-selected-answer-confirmation.png`。
+- 浏览器截图：仓库外 `D:/Users/yuqi.chen/.auroraagent/verification/story-source-picker-20260907/01-material-groups.png` 与 `02-selected-answer-confirmation.png`。
 - 只读走查材料分组、搜索保留选择、已选内容、预览展开、键盘 Space、暗色及固定 footer；未点击最终生成/保存。独立端口 5175 已停止，8080 未替换。
 - 无后端/API/Schema 变更，未跑后端全量或真实 AI。本次不新增 Provider 路径，生成、保存与 unknown recovery 由现有自动化覆盖。

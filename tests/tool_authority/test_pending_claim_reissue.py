@@ -8,8 +8,8 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_authority import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_authority import (
     AuthorityFactory,
     AuthorityPhaseError,
     PendingAuthorityClaim,
@@ -41,7 +41,7 @@ def _isolate_hardening_helper_state():
 
 
 def test_operation_pending_repository_ports_require_one_exact_route_handle() -> None:
-    from offerpilot.repositories.chat import ChatRepository
+    from auroraagent.repositories.chat import ChatRepository
 
     required_routes = (
         "set_pending_action",

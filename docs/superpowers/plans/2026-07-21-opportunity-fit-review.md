@@ -21,7 +21,7 @@
 
 ```powershell
 git fetch origin main
-git worktree add D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260721-opportunity-fit-review -b feat/20260721-opportunity-fit-review origin/main
+git worktree add D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260721-opportunity-fit-review -b feat/20260721-opportunity-fit-review origin/main
 ```
 
 - [x] **Step 2: 验证基线**
@@ -42,9 +42,9 @@ git commit -m "docs: AI define opportunity fit review"
 ### Task 2: 先写严格 AI 契约失败测试
 
 **Files:**
-- Create: `src/offerpilot/ai/opportunity_fit_reviews.py`
+- Create: `src/auroraagent/ai/opportunity_fit_reviews.py`
 - Create: `tests/test_opportunity_fit_reviews_ai.py`
-- Reference: `src/offerpilot/ai/workflows.py`, `src/offerpilot/ai/material_proposals.py`, `src/offerpilot/repositories/json_contract.py`
+- Reference: `src/auroraagent/ai/workflows.py`, `src/auroraagent/ai/material_proposals.py`, `src/auroraagent/repositories/json_contract.py`
 
 - [ ] **Step 1: 写 RED 测试**
 
@@ -87,15 +87,15 @@ Expected: FAIL because the module and validators do not exist yet。
 
 ```powershell
 uv run pytest tests/test_opportunity_fit_reviews_ai.py -q
-uv run ruff check src/offerpilot/ai/opportunity_fit_reviews.py tests/test_opportunity_fit_reviews_ai.py
+uv run ruff check src/auroraagent/ai/opportunity_fit_reviews.py tests/test_opportunity_fit_reviews_ai.py
 ```
 
 ### Task 3: 模型、迁移与不可变快照 repository
 
 **Files:**
-- Modify: `src/offerpilot/models.py`
-- Modify: `src/offerpilot/db.py`
-- Create: `src/offerpilot/repositories/opportunity_fit_reviews.py`
+- Modify: `src/auroraagent/models.py`
+- Modify: `src/auroraagent/db.py`
+- Create: `src/auroraagent/repositories/opportunity_fit_reviews.py`
 - Create: `tests/test_opportunity_fit_reviews_repository.py`
 
 - [ ] **Step 1: 写 repository RED 测试**
@@ -125,8 +125,8 @@ uv run pytest tests/test_opportunity_fit_reviews_repository.py -q
 ### Task 4: API、稳定错误码与后端回归
 
 **Files:**
-- Modify: `src/offerpilot/schemas.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/schemas.py`
+- Modify: `src/auroraagent/api.py`
 - Create: `tests/test_opportunity_fit_reviews_api.py`
 
 - [ ] **Step 1: 写 API RED 测试**
@@ -199,7 +199,7 @@ Set-Location ..
 ### Task 7: Smoke、真实 AI、浏览器与完整 gate
 
 **Files:**
-- Modify: `src/offerpilot/smoke.py`
+- Modify: `src/auroraagent/smoke.py`
 - Modify: `tests/test_smoke.py`
 - Possibly modify: web test fixtures only when required by actual UI contract
 

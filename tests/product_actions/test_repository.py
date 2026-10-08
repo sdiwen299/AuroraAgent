@@ -11,29 +11,29 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import DatabaseError, OperationalError
 from sqlalchemy.orm import Session
 
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.write_operations import (
     LedgerKeyDomain,
     build_terminal_payload,
     ledger_fingerprint,
 )
-from offerpilot.models import (
+from auroraagent.models import (
     InterviewStoryProposalAttempt,
     ProductActionProposal,
     WriteOperation,
     WriteOperationTransition,
 )
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
-from offerpilot.product_actions.contracts import (
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.contracts import (
     ProductActionContractError,
     ProductActionIntegrityError,
     ProductActionProofRegistryV1,
 )
-from offerpilot.product_actions.issuer import (
+from auroraagent.product_actions.issuer import (
     InterviewStoryActionIssuer,
     LedgerKeyProfileStoreV1,
     ReviewReadinessActionIssuer,
 )
-from offerpilot.product_actions.repository import (
+from auroraagent.product_actions.repository import (
     ProductActionProposalRepository,
     ProductActionPublicationUoWV1,
 )

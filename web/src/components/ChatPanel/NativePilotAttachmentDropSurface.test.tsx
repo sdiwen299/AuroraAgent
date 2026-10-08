@@ -25,7 +25,7 @@ function drop(target: Element, payload: unknown) {
   const event = new Event('drop', { bubbles: true, cancelable: true });
   Object.defineProperty(event, 'dataTransfer', {
     value: {
-      types: ['application/x-offerpilot-context-attachment'],
+      types: ['application/x-auroraagent-context-attachment'],
       getData: () => JSON.stringify(payload),
     },
   });
@@ -37,7 +37,7 @@ function dragOver(target: Element, payload: unknown) {
   const event = new Event('dragover', { bubbles: true, cancelable: true });
   Object.defineProperty(event, 'dataTransfer', {
     value: {
-      types: ['application/x-offerpilot-context-attachment'],
+      types: ['application/x-auroraagent-context-attachment'],
       getData: () => JSON.stringify(payload),
     },
   });
@@ -49,7 +49,7 @@ function dragEnter(target: Element, payload: string) {
   const event = new Event('dragenter', { bubbles: true, cancelable: true });
   Object.defineProperty(event, 'dataTransfer', {
     value: {
-      types: ['application/x-offerpilot-context-attachment'],
+      types: ['application/x-auroraagent-context-attachment'],
       getData: () => payload,
     },
   });

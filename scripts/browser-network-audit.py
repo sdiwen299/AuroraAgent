@@ -113,11 +113,11 @@ _STORY_INTERACTION_ACTIONS = frozenset(
 _STORY_INTERACTION_OBSERVER = """
 (() => {
   const actions = new Set(%s);
-  window.__offerpilotStoryAuditSteps = [];
+  window.__auroraagentStoryAuditSteps = [];
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target.closest('[data-story-audit]') : null;
     const action = target?.getAttribute('data-story-audit');
-    if (action && actions.has(action)) window.__offerpilotStoryAuditSteps.push(action);
+    if (action && actions.has(action)) window.__auroraagentStoryAuditSteps.push(action);
   }, true);
 })();
 """ % json.dumps(sorted(_STORY_INTERACTION_ACTIONS))
@@ -395,7 +395,7 @@ class BrowserAudit:
         response = await self.send(
             "Runtime.evaluate",
             {
-                "expression": "JSON.stringify(window.__offerpilotStoryAuditSteps || [])",
+                "expression": "JSON.stringify(window.__auroraagentStoryAuditSteps || [])",
                 "returnByValue": True,
             },
             self.main_session_id,
@@ -515,7 +515,7 @@ class BrowserAudit:
                     headers = request.get("headers") if isinstance(request, dict) else None
                     entrypoint = None
                     if isinstance(headers, dict):
-                        entrypoint = headers.get("X-OfferPilot-Entrypoint", headers.get("x-offerpilot-entrypoint"))
+                        entrypoint = headers.get("X-AuroraAgent-Entrypoint", headers.get("x-auroraagent-entrypoint"))
                     if isinstance(entrypoint, str) and entrypoint in {"ui", "pilot"}:
                         request_context["entrypoint"] = entrypoint
                     elif url.endswith("/api/interview-story-proposals"):

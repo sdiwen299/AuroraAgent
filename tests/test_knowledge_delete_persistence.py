@@ -7,10 +7,10 @@ import sqlite3
 from fastapi.testclient import TestClient
 
 from conftest import wait_for_extraction, wait_for_source_deleted
-from offerpilot.api import create_app
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.repository import KnowledgeRepository
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.api import create_app
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.repository import KnowledgeRepository
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
 
 
 def _upload(client: TestClient, name: str, content: bytes) -> int:
@@ -43,7 +43,7 @@ def test_purge_does_not_delete_db_when_quarantine_move_fails(tmp_path, monkeypat
     # 异步：purge_source 入队 delete job（返回 PurgeResult，非 None）；移动在 worker。
     assert service.purge_source(source_id) is not None
     # 驱动 worker tick：replace 失败 → delete 未完成（quarantine_retry），source 保留 deleting。
-    from offerpilot.knowledge.worker import ExtractionWorker, KnowledgeJobRunner
+    from auroraagent.knowledge.worker import ExtractionWorker, KnowledgeJobRunner
     KnowledgeJobRunner(
         repository, ExtractionWorker(repository, tmp_path, session_factory)
     ).tick_extraction(lease_owner="test")

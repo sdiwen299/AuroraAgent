@@ -8,16 +8,16 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.models import Application, Conversation
-from offerpilot.repositories.chat import (
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.models import Application, Conversation
+from auroraagent.repositories.chat import (
     ChatRepository,
     ConversationScopeError,
     ConversationScopeMutationSnapshot,
     ConversationScopeVisibilityFailure,
 )
-from offerpilot.ai.tool_authority.visibility import (
+from auroraagent.ai.tool_authority.visibility import (
     AuthorityApplicationVisibilityError,
     AuthorityApplicationVisibilityQuery,
 )
@@ -25,7 +25,7 @@ from offerpilot.ai.tool_authority.visibility import (
 
 @pytest.fixture
 def repo(tmp_path: Path) -> ChatRepository:
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     return ChatRepository(sessions)
 
 

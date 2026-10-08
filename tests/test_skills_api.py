@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
-from offerpilot.config import Config, SkillPackage, load_config, save_config
+from auroraagent.api import create_app
+from auroraagent.config import Config, SkillPackage, load_config, save_config
 
 
 def test_skills_api_registers_untrusted_package(tmp_path):

@@ -108,7 +108,7 @@ compensation。
 ### 2.1 目标模块
 
 ```text
-src/offerpilot/pilot_runtime/
+src/auroraagent/pilot_runtime/
 ├── contracts.py       # 请求、Outcome、Event、取消与 Transport 上下文
 ├── service.py         # 唯一 Chat Runtime 状态机
 ├── continuation.py    # Pending/Ledger confirmation coordination
@@ -118,7 +118,7 @@ src/offerpilot/pilot_runtime/
 ├── composition.py     # 依赖装配；不读取 FastAPI 请求
 └── errors.py          # 封闭 Runtime failure 分类
 
-src/offerpilot/chat_transport.py
+src/auroraagent/chat_transport.py
 └── FastAPI HTTP/SSE renderer、AgentExecutionHost、PreparedStreamGuard
 ```
 

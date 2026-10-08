@@ -8,7 +8,7 @@
 
 ## 1. 背景与问题
 
-OfferPilot 已具备事件绑定的文本模拟面试、浏览器本地录音、按需离线转写、实时语音节奏复盘、表达成长档案和 Haru Pilot 角色，但当前体验仍是多个能力的拼接，而不是一个完整的“进入面试—连续作答—结束复盘”流程。
+AuroraAgent 已具备事件绑定的文本模拟面试、浏览器本地录音、按需离线转写、实时语音节奏复盘、表达成长档案和 Haru Pilot 角色，但当前体验仍是多个能力的拼接，而不是一个完整的“进入面试—连续作答—结束复盘”流程。
 
 当前基线中可观察到以下问题：
 
@@ -96,7 +96,7 @@ OfferPilot 已具备事件绑定的文本模拟面试、浏览器本地录音、
 
 ### 4.1 页面形态
 
-采用独立全屏工作台，而不是扩大 Drawer 或在当前页面上叠加 Modal。进入后隐藏 OfferPilot 左侧导航、普通页面头部和 Pilot 侧栏，保留浏览器自身导航能力。
+采用独立全屏工作台，而不是扩大 Drawer 或在当前页面上叠加 Modal。进入后隐藏 AuroraAgent 左侧导航、普通页面头部和 Pilot 侧栏，保留浏览器自身导航能力。
 
 工作台由四层组成：
 
@@ -419,8 +419,8 @@ error
 推荐新增独立模块：
 
 ```text
-src/offerpilot/repositories/interview_practice_cases.py
-src/offerpilot/services/interview_contexts.py
+src/auroraagent/repositories/interview_practice_cases.py
+src/auroraagent/services/interview_contexts.py
 web/src/features/interviewStudio/**
 web/src/features/interviewReadiness/**
 web/src/types/interviewPracticeCase.ts
@@ -430,12 +430,12 @@ web/src/services/interviewPracticeCases.ts
 预计显式冲突面：
 
 ```text
-src/offerpilot/db.py
-src/offerpilot/models.py
-src/offerpilot/schemas.py
-src/offerpilot/api.py
-src/offerpilot/repositories/mock_interviews.py
-src/offerpilot/repositories/voice_coaching.py
+src/auroraagent/db.py
+src/auroraagent/models.py
+src/auroraagent/schemas.py
+src/auroraagent/api.py
+src/auroraagent/repositories/mock_interviews.py
+src/auroraagent/repositories/voice_coaching.py
 web/src/layout/AppShell.tsx
 web/src/components/InterviewV01View.tsx
 web/src/components/MockInterviewDrawer.tsx

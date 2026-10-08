@@ -7,23 +7,23 @@ from uuid import uuid4
 
 import pytest
 
-from offerpilot.agent_runtime.journal import NullRunRecorder
-from offerpilot.ai.agent_contracts import AgentTurnResult, PendingAction
-from offerpilot.ai.agent_loop import AgentLoopInvocation, ApprovedWriteSeed
-from offerpilot.ai.tool_authority import (
+from auroraagent.agent_runtime.journal import NullRunRecorder
+from auroraagent.ai.agent_contracts import AgentTurnResult, PendingAction
+from auroraagent.ai.agent_loop import AgentLoopInvocation, ApprovedWriteSeed
+from auroraagent.ai.tool_authority import (
     ApprovalExecutionAuthority,
     AuthorityFactory,
     AuthorityPhaseError,
     AuthorityUse,
 )
-from offerpilot.ai.tool_authority.fingerprint import authorization_scope_fingerprint
-from offerpilot.ai.tool_authority.visibility import AuthorityApplicationVisibilityQuery
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.policy_types import ToolCapability
-from offerpilot.ai.tool_runtime.contracts import ConfirmationRequired
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.types import Message, ToolCall
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_authority.fingerprint import authorization_scope_fingerprint
+from auroraagent.ai.tool_authority.visibility import AuthorityApplicationVisibilityQuery
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.policy_types import ToolCapability
+from auroraagent.ai.tool_runtime.contracts import ConfirmationRequired
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.types import Message, ToolCall
+from auroraagent.ai.write_operations import (
     OperationCommitted,
     OperationReplay,
     TerminalPayload,
@@ -33,31 +33,31 @@ from offerpilot.ai.write_operations import (
     load_or_create_ledger_key,
     operation_request_fingerprint,
 )
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.pilot_runtime.continuation import (
     ApprovalAuthorityResolver,
     ConfirmationApprovedWritePort,
     ConfirmationCoordinator,
     ConfirmationDependencies,
     ConfirmationReplayError,
 )
-from offerpilot.pilot_runtime.composition import _AgentDriver
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.composition import _AgentDriver
+from auroraagent.pilot_runtime.contracts import (
     ConfirmationRequest,
     PreparedStreamExecution,
     RuntimeTransportContext,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.persistence import ChatPersistenceCoordinator
-from offerpilot.pilot_runtime.service import PilotRuntime, RuntimeDependencies
-from offerpilot.db import init_database
-from offerpilot.models import Conversation
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.persistence import ChatPersistenceCoordinator
+from auroraagent.pilot_runtime.service import PilotRuntime, RuntimeDependencies
+from auroraagent.db import init_database
+from auroraagent.models import Conversation
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
 from tests.tool_authority.test_pending_claim import create_primary_with_typed_route
 from tests.tool_metadata.test_production_bundle import _production_components
 

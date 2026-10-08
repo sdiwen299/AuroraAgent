@@ -9,10 +9,10 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import event, select
 
-import offerpilot.ai.write_operations as write_operations
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.write_operations import (
+import auroraagent.ai.write_operations as write_operations
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.write_operations import (
     OperationReplay,
     WriteOperationError,
     WriteOperationRepository,
@@ -22,21 +22,21 @@ from offerpilot.ai.write_operations import (
     operation_request_fingerprint,
     require_chained_pending_transition,
 )
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation, WriteOperation
-from offerpilot.pilot_runtime import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation, WriteOperation
+from auroraagent.pilot_runtime import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.continuation import (
     ConfirmationCoordinator,
     ConfirmationDependencies,
 )
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.pilot_runtime.contracts import (
     ConfirmationRequest,
     ConfirmationRequiredOutcome,
     RuntimeFailureOutcome,
 )
-from offerpilot.pilot_runtime.errors import RuntimeFailureCode
-from offerpilot.pilot_runtime.service import PilotRuntime, RuntimeDependencies
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.pilot_runtime.errors import RuntimeFailureCode
+from auroraagent.pilot_runtime.service import PilotRuntime, RuntimeDependencies
+from auroraagent.repositories.chat import ChatRepository
 from tests.tool_metadata.test_pending_routes import (
     _production_components as _pending_route_components,
     issued_legacy_pending_route,
@@ -93,7 +93,7 @@ def _seed_completed_origin(
     delivery_should_fail: bool = False,
     historical_delivery_manifest_v1: bool = False,
 ):
-    sessions = init_database(tmp_path / "offerpilot.db")
+    sessions = init_database(tmp_path / "auroraagent.db")
     key = load_or_create_ledger_key(tmp_path, sessions)
     repository = WriteOperationRepository(sessions, key)
     chat = ChatRepository(sessions, repository)
@@ -120,7 +120,7 @@ def _seed_completed_origin(
         origin_id,
     )
     child_token = __import__(
-        "offerpilot.pilot_runtime.continuation", fromlist=["_confirmation_token"]
+        "auroraagent.pilot_runtime.continuation", fromlist=["_confirmation_token"]
     )._confirmation_token(child_pending)
     now = datetime.now(timezone.utc)
     payload = build_terminal_payload(
@@ -586,11 +586,11 @@ def test_terminal_chained_replay_uses_only_persisted_ledger_projections(
     monkeypatch: pytest.MonkeyPatch,
     manifest_version: str,
 ) -> None:
-    from offerpilot.ai.tool_runtime.catalog import ToolCatalog
-    from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicCatalog
-    from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-    from offerpilot.pilot_runtime.deterministic import DeterministicPilotAdapter
-    from offerpilot.pilot_runtime.legacy_route import LegacyRouteProofIssuer
+    from auroraagent.ai.tool_runtime.catalog import ToolCatalog
+    from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicCatalog
+    from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+    from auroraagent.pilot_runtime.deterministic import DeterministicPilotAdapter
+    from auroraagent.pilot_runtime.legacy_route import LegacyRouteProofIssuer
 
     _sessions, repository, origin_id, _child_id, conversation_id = _seed_completed_origin(
         tmp_path,
@@ -1077,7 +1077,7 @@ def test_only_jd_save_legacy_child_is_delivery_reachable(tmp_path, child_name: s
 
 
 def test_new_typed_proposal_uses_strict_replay_codec() -> None:
-    from offerpilot.repositories import chat as chat_module
+    from auroraagent.repositories import chat as chat_module
 
     with pytest.raises(Exception, match="canonical JSON"):
         chat_module._canonical_pending_arguments('{"id":1,"id":2}')

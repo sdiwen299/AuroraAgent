@@ -7,19 +7,19 @@ import httpx
 import pytest
 from typer.testing import CliRunner
 
-from offerpilot.cli import app
-from offerpilot.smoke import SmokeReport, SmokeStep, run_interview_story_smoke
+from auroraagent.cli import app
+from auroraagent.smoke import SmokeReport, SmokeStep, run_interview_story_smoke
 
 
 def test_verify_interview_stories_cli_is_explicitly_isolated(monkeypatch, tmp_path: Path) -> None:
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     observed: dict[str, object] = {}
 
     def fake_verify(data_dir: Path, static_dir: Path | None, *, real_ai: bool) -> SmokeReport:
         observed.update({"data_dir": data_dir, "static_dir": static_dir, "real_ai": real_ai})
         return SmokeReport(ok=True, steps=[SmokeStep("story", "isolated flow")])
 
-    monkeypatch.setattr("offerpilot.cli.run_interview_story_smoke", fake_verify)
+    monkeypatch.setattr("auroraagent.cli.run_interview_story_smoke", fake_verify)
     result = CliRunner().invoke(app, ["verify-interview-stories", "--profile", "local"])
 
     assert result.exit_code == 0
@@ -47,7 +47,7 @@ def test_local_interview_story_smoke_exercises_ui_and_pilot_without_chat_writes(
 def test_full_http_smoke_uses_a_longer_client_timeout_only_for_real_ai(
     monkeypatch, tmp_path: Path, real_ai: bool, expected_timeout: float
 ) -> None:
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     captured_timeouts: list[float] = []
 
@@ -77,7 +77,7 @@ def test_full_http_smoke_uses_a_longer_client_timeout_only_for_real_ai(
 
 
 def test_real_ai_stage_diagnostic_names_the_failed_operation() -> None:
-    import offerpilot.smoke as smoke
+    import auroraagent.smoke as smoke
 
     def fail() -> None:
         raise httpx.ReadTimeout("provider response exceeded the client boundary")

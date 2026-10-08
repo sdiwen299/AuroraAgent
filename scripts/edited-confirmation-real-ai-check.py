@@ -22,11 +22,11 @@ os.environ.setdefault("LITELLM_LOCAL_MODEL_COST_MAP", "True")
 from fastapi.testclient import TestClient  # noqa: E402
 from sqlalchemy import select  # noqa: E402
 
-import offerpilot.ai.client as provider_module  # noqa: E402
-from offerpilot.api import create_app  # noqa: E402
-from offerpilot.config import load_config, resolve_data_dir, save_config  # noqa: E402
-from offerpilot.db import session_factory_for_data_dir  # noqa: E402
-from offerpilot.models import ChatMessage, WriteOperation  # noqa: E402
+import auroraagent.ai.client as provider_module  # noqa: E402
+from auroraagent.api import create_app  # noqa: E402
+from auroraagent.config import load_config, resolve_data_dir, save_config  # noqa: E402
+from auroraagent.db import session_factory_for_data_dir  # noqa: E402
+from auroraagent.models import ChatMessage, WriteOperation  # noqa: E402
 
 
 def redact(value: Any) -> Any:
@@ -64,7 +64,7 @@ def main() -> int:
     if not source_config.is_file():
         print("No source config.json; no provider calls made.")
         return 2
-    output = Path(tempfile.mkdtemp(prefix="offerpilot-edited-confirmation-"))
+    output = Path(tempfile.mkdtemp(prefix="auroraagent-edited-confirmation-"))
     report: dict[str, Any] = {"provider_limit": 8, "provider_calls": 0, "scenarios": []}
     real_completion = provider_module.completion
     phase = "proposal"

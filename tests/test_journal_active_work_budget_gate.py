@@ -14,8 +14,8 @@ def _expect_rejected(source: str, validator: Callable[[ast.AST], None]) -> None:
 
 
 ROOT = Path(__file__).resolve().parents[1]
-JOURNAL_PATH = ROOT / "src/offerpilot/agent_runtime/journal.py"
-REPOSITORY_PATH = ROOT / "src/offerpilot/repositories/agent_runs.py"
+JOURNAL_PATH = ROOT / "src/auroraagent/agent_runtime/journal.py"
+REPOSITORY_PATH = ROOT / "src/auroraagent/repositories/agent_runs.py"
 
 JOURNAL_REPOSITORY_API = frozenset(
     {
@@ -59,18 +59,18 @@ STALE_JOURNAL_NAMES = frozenset(
 # Journal's active-work budget implementation.  Keep this list explicit so a
 # new runtime module cannot silently become part of the contract by filename.
 ARCHITECTURE_BOUNDARY_FILES = (
-    ROOT / "src/offerpilot/ai/agent_contracts.py",  # Agent Loop contracts
-    ROOT / "src/offerpilot/ai/agent_loop.py",  # Agent Loop execution
-    ROOT / "src/offerpilot/ai/deterministic_actions.py",  # Pending action parser
-    ROOT / "src/offerpilot/ai/write_operations.py",  # write-operation ledger
-    ROOT / "src/offerpilot/ai/tool_runtime/contracts.py",  # tool/API contracts
-    ROOT / "src/offerpilot/ai/tool_runtime/rendering.py",  # API serialization
-    ROOT / "src/offerpilot/ai/tool_runtime/transport.py",  # transport serialization
-    ROOT / "src/offerpilot/repositories/chat.py",  # chat + pending state
-    ROOT / "src/offerpilot/models.py",
-    ROOT / "src/offerpilot/schemas.py",
-    ROOT / "src/offerpilot/api.py",
-    ROOT / "src/offerpilot/repositories/json_contract.py",  # API serialization
+    ROOT / "src/auroraagent/ai/agent_contracts.py",  # Agent Loop contracts
+    ROOT / "src/auroraagent/ai/agent_loop.py",  # Agent Loop execution
+    ROOT / "src/auroraagent/ai/deterministic_actions.py",  # Pending action parser
+    ROOT / "src/auroraagent/ai/write_operations.py",  # write-operation ledger
+    ROOT / "src/auroraagent/ai/tool_runtime/contracts.py",  # tool/API contracts
+    ROOT / "src/auroraagent/ai/tool_runtime/rendering.py",  # API serialization
+    ROOT / "src/auroraagent/ai/tool_runtime/transport.py",  # transport serialization
+    ROOT / "src/auroraagent/repositories/chat.py",  # chat + pending state
+    ROOT / "src/auroraagent/models.py",
+    ROOT / "src/auroraagent/schemas.py",
+    ROOT / "src/auroraagent/api.py",
+    ROOT / "src/auroraagent/repositories/json_contract.py",  # API serialization
 )
 
 
@@ -1161,11 +1161,11 @@ def _validate_protected_symbol_scopes(tree: ast.AST) -> None:
             return False
         module = node.module or ""
         if imported_symbol in PUBLIC_BUDGET_API:
-            return (node.level == 0 and module == "offerpilot.agent_runtime.budget") or (
+            return (node.level == 0 and module == "auroraagent.agent_runtime.budget") or (
                 node.level > 0 and module in {"budget", "agent_runtime.budget"}
             )
         if imported_symbol == "AgentRunRepository":
-            return (node.level == 0 and module == "offerpilot.repositories.agent_runs") or (
+            return (node.level == 0 and module == "auroraagent.repositories.agent_runs") or (
                 node.level > 0 and module in {"repositories.agent_runs", "agent_runs"}
             )
         return False
@@ -1290,7 +1290,7 @@ def test_boundary_gate_allows_runtime_budget_mapping_keys() -> None:
     '__import__("budget")',
     'module_name = "budget"\nimport_module(module_name)',
     'from .budget import hidden',
-    'status = {"budget": "offerpilot.agent_runtime.budget"}',
+    'status = {"budget": "auroraagent.agent_runtime.budget"}',
 ))
 def test_boundary_gate_still_rejects_budget_module_references(source: str) -> None:
     _expect_rejected(source, _validate_boundary_module)
@@ -1761,7 +1761,7 @@ def test_mutations_reject_protected_symbol_scope_rebinding(source: str) -> None:
 def test_approved_module_level_protected_bindings_are_accepted() -> None:
     _validate_protected_symbol_scopes(
         ast.parse(
-            "from offerpilot.agent_runtime.budget import ActiveWorkBudget\n"
+            "from auroraagent.agent_runtime.budget import ActiveWorkBudget\n"
             "class SafeRunRecorder:\n"
             "    pass\n"
         )
@@ -2071,16 +2071,16 @@ def test_mutations_reject_bound_signature_clock_posonly_deadline_and_varargs(sou
 @pytest.mark.parametrize(
     "source",
     (
-        "from offerpilot.agent_runtime.budget import ActiveWorkBudget as Budget\n",
-        "from offerpilot.agent_runtime.budget import *\n",
-        "from offerpilot.agent_runtime import budget as budget\n",
-        "import offerpilot.agent_runtime.budget as budget\n",
-        "import offerpilot.agent_runtime as runtime\nruntime.budget\n",
-        "import offerpilot\nofferpilot.agent_runtime.budget\n",
-        "import offerpilot.agent_runtime\nofferpilot.agent_runtime.budget\n",
+        "from auroraagent.agent_runtime.budget import ActiveWorkBudget as Budget\n",
+        "from auroraagent.agent_runtime.budget import *\n",
+        "from auroraagent.agent_runtime import budget as budget\n",
+        "import auroraagent.agent_runtime.budget as budget\n",
+        "import auroraagent.agent_runtime as runtime\nruntime.budget\n",
+        "import auroraagent\nauroraagent.agent_runtime.budget\n",
+        "import auroraagent.agent_runtime\nauroraagent.agent_runtime.budget\n",
         "from .. import agent_runtime as runtime\nruntime.budget\n",
-        "from offerpilot import agent_runtime as runtime\nruntime.budget\n",
-        "import importlib\nimportlib.import_module('offerpilot.agent_runtime.budget')\n",
+        "from auroraagent import agent_runtime as runtime\nruntime.budget\n",
+        "import importlib\nimportlib.import_module('auroraagent.agent_runtime.budget')\n",
     ),
 )
 def test_mutations_reject_budget_import_alias_star_and_dynamic_import(source: str) -> None:

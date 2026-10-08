@@ -9,7 +9,7 @@
 - Full `uv run oc verify --profile real-ai --static-dir web/dist` passed using the existing `deepseek-v4-flash` configuration. The run completed Interview Preparation, Material Proposal, Opportunity Fit Triage and Deep Review, Interview Review, Knowledge Capture, bounded Mock Interview, confirmation writes, cleanup, and cross-domain-write checks.
 - The complete isolated browser `Stage all` harness passed in a light Chinese `1440×1200` browser. Stage A proved UI JD v1 and deterministic Pilot JD v2 with one confirmation and zero Provider calls. Triage, Material Kit, and Interview Preparation then each used JD v2 and passed request/response identity, allowed-write, cleanup, and local-only browser-network checks. To make this browser evidence deterministic and free of external cost, the three consumer responses came from an ephemeral loopback controlled Provider; the preceding full API gate supplies the separate real-Provider evidence.
 - Browser acceptance also found and fixed two integration defects: the direct Material Kit entry now receives the current frozen JD text/version, and long audited Provider tunnels no longer inherit a 30-second idle cutoff. Opportunity Fit’s browser client timeout is aligned to the 180-second release client boundary.
-- Evidence screenshots are stored outside the repository at `D:\Users\yuqi.chen\.offerpilot\verification\application-jd-release-20260812`. The relevant files are `03-pilot-confirmation.png`, `04-jd-version-history.png`, `05-triage-controlled-result.png`, `06-material-kit-controlled.png`, and `07-interview-preparation-controlled.png`.
+- Evidence screenshots are stored outside the repository at `D:\Users\yuqi.chen\.auroraagent\verification\application-jd-release-20260812`. The relevant files are `03-pilot-confirmation.png`, `04-jd-version-history.png`, `05-triage-controlled-result.png`, `06-material-kit-controlled.png`, and `07-interview-preparation-controlled.png`.
 - All temporary service, browser, audit proxy, loopback Provider, ports, and isolated application data were stopped or removed. No formal Provider configuration or secret was changed.
 
 Status: release gates are satisfied for local integration. No push is performed by this report.
@@ -51,7 +51,7 @@ The grouped release gates below were completed before the later diagnostic-only 
 | --- | --- |
 | `uv run pytest -q tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py` | 31 passed; existing framework deprecation warnings only |
 | `uv run pytest -q tests/test_litellm_client.py tests/test_interview_preparation_controlled_diagnostic.py tests/test_full_real_ai_verify.py tests/test_interview_preparation_ai.py tests/test_interview_preparation_api.py` | 62 passed; existing framework deprecation warnings only |
-| `uv run ruff check src/offerpilot/api.py tests/test_interview_preparation_api.py scripts/interview-preparation-controlled-provider-diagnostic.py src/offerpilot/ai/interview_preparation_proposals.py` | passed |
+| `uv run ruff check src/auroraagent/api.py tests/test_interview_preparation_api.py scripts/interview-preparation-controlled-provider-diagnostic.py src/auroraagent/ai/interview_preparation_proposals.py` | passed |
 | `uv run mypy src` | passed, 65 files |
 | PowerShell parser check for `scripts/application-jd-real-ai-browser-harness.ps1` | passed |
 | `git diff --check` | passed |
@@ -90,7 +90,7 @@ The full real-AI verification was then rerun once with the request metadata audi
 
 ### Full versus controlled Provider metadata
 
-The comparison used the same `_run_real_ai_interview_preparation_smoke` path and the same current product code. The full run used the silently read existing configuration file `D:\Users\yuqi.chen\.offerpilot\config.json`: active provider `default`, type `openai_compatible`, model `deepseek-v4-flash`, endpoint `https://api.deepseek.com:443`, `supports_json_schema=false`, and no configured fallback. The controlled run silently copied that configuration shape into an isolated temporary directory, replacing only the active endpoint with an ephemeral loopback server and the model with `controlled-interview-preparation`.
+The comparison used the same `_run_real_ai_interview_preparation_smoke` path and the same current product code. The full run used the silently read existing configuration file `D:\Users\yuqi.chen\.auroraagent\config.json`: active provider `default`, type `openai_compatible`, model `deepseek-v4-flash`, endpoint `https://api.deepseek.com:443`, `supports_json_schema=false`, and no configured fallback. The controlled run silently copied that configuration shape into an isolated temporary directory, replacing only the active endpoint with an ephemeral loopback server and the model with `controlled-interview-preparation`.
 
 | Redacted request metadata | Full real-AI | Controlled local | Comparison |
 | --- | --- | --- | --- |
@@ -135,8 +135,8 @@ The persisted browser audit proves the following boundary:
 
 The temporary application data was removed by the harness; the token-row state cannot be queried after cleanup. The network audit is therefore the retained fail-closed evidence for the unconsumed-token/no-v2-write classification:
 
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-browser-audit-20260808223208.jsonl`
-- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-provider-egress-20260808223208.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-browser-audit-20260808223208.jsonl`
+- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-provider-egress-20260808223208.jsonl`
 
 The controlled lease/fencing tests were rerun with `4 passed`, covering live-lease same-key replay, expired-lease takeover, provider-error heartbeat cleanup, and two-connection single-owner behavior. No lease, CAS, idempotency, evidence-contract, or JD-version code change was made for this boundary.
 
@@ -144,7 +144,7 @@ The release remains blocked. The only next release condition is a successful Dee
 
 ### Isolated Ark Provider attempt (2026-08-08)
 
-At the user's request, the harness was run once with an isolated Provider override using the Ark endpoint and `doubao-seed-2.1-turbo`. The formal OfferPilot configuration was not changed, and the API key was read only from a local secret file; it was not written to source, reports, or audit output.
+At the user's request, the harness was run once with an isolated Provider override using the Ark endpoint and `doubao-seed-2.1-turbo`. The formal AuroraAgent configuration was not changed, and the API key was read only from a local secret file; it was not written to source, reports, or audit output.
 
 - UI JD v1 save returned `201`.
 - The Pilot `/api/chat/stream` request reached `ark.cn-beijing.volces.com:443` and the application received `litellm.NotFoundError` / HTTP `404` before a confirmation card was produced.
@@ -154,8 +154,8 @@ At the user's request, the harness was run once with an isolated Provider overri
 
 Retained diagnostics:
 
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-browser-audit-20260808231829.jsonl`
-- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-provider-egress-20260808231829.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-browser-audit-20260808231829.jsonl`
+- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-provider-egress-20260808231829.jsonl`
 
 This result is an Ark endpoint/model compatibility failure, not evidence of a JD-version, token-consistency, CAS, lease, or evidence-contract defect. No further Provider retry was made.
 
@@ -172,9 +172,9 @@ The Ark base URL was corrected to include `/api/coding/v1`; the client then appe
 
 Retained diagnostics:
 
-- Stage diagnostics: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\stage-all-20260808-233439898-75f3322024f64c14b94fcd022264041b.jsonl`
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-browser-audit-20260808234417.jsonl`
-- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-provider-egress-20260808234417.jsonl`
+- Stage diagnostics: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\stage-all-20260808-233439898-75f3322024f64c14b94fcd022264041b.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-browser-audit-20260808234417.jsonl`
+- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-provider-egress-20260808234417.jsonl`
 
 This run proves that the corrected Ark endpoint can complete Pilot JD proposal/confirmation and create the Pilot JD version, but it does not satisfy complete `Stage all` release evidence.
 
@@ -191,7 +191,7 @@ One final isolated real-Provider `Stage all` attempt was made from HEAD `bac4194
 
 Retained diagnostic:
 
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-browser-audit-20260809144402.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-browser-audit-20260809144402.jsonl`
 
 The temporary service, browser, Provider proxy, and isolated data were cleaned. The branch remains paused and must not be merged or pushed. Recovery requires either new external DeepSeek stability evidence with explicit authorization for one new acceptance attempt, or an explicitly approved change to another formal Provider configuration.
 
@@ -206,9 +206,9 @@ At the user's request, one valid isolated browser acceptance was run with an Ark
 
 Retained diagnostics:
 
-- Stage diagnostics: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\stage-all-20260809-151006076-981de1fa82a74e48b46c96454957e576.jsonl`
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-browser-audit-20260809151916.jsonl`
-- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-stage-diagnostics\failed-provider-egress-20260809151916.jsonl`
+- Stage diagnostics: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\stage-all-20260809-151006076-981de1fa82a74e48b46c96454957e576.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-browser-audit-20260809151916.jsonl`
+- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-stage-diagnostics\failed-provider-egress-20260809151916.jsonl`
 
 This is an external Ark Triage stability failure, not evidence of a JD-version, CAS, lease, or evidence-contract defect. The isolated service, browser, Provider proxy, and data directory were cleaned. No further Ark retry was made; the branch remains blocked and must not be merged or pushed.
 
@@ -222,7 +222,7 @@ To distinguish a shared local 90-second boundary from an external Provider or ne
 - An exact same-key replay returned `200 ready` in `7 ms` and the Provider call count remained `1`.
 - A deliberately changed same-key payload returned `409` in `6 ms` with the precise `error_code=opportunity_fit_idempotency_conflict`; its canonical payload fingerprint differed (`25a137ca...346580b`). It made no Provider call.
 
-This controlled result does not reproduce a local 90-second timeout: the local OfferPilot/LiteLLM path accepted a valid response beyond 100 seconds. The exact same-input replay also did not reproduce the historical 409; the captured 409 is the deterministic source/idempotency-conflict path. Therefore the historical Ark/DeepSeek failures near 91–92 seconds remain attributable to an external Provider, VPN/proxy, or upstream gateway boundary until new evidence distinguishes those layers. No timeout, retry, lease, CAS, or evidence contract was changed. The temporary controlled service, database, and audit files were cleaned.
+This controlled result does not reproduce a local 90-second timeout: the local AuroraAgent/LiteLLM path accepted a valid response beyond 100 seconds. The exact same-input replay also did not reproduce the historical 409; the captured 409 is the deterministic source/idempotency-conflict path. Therefore the historical Ark/DeepSeek failures near 91–92 seconds remain attributable to an external Provider, VPN/proxy, or upstream gateway boundary until new evidence distinguishes those layers. No timeout, retry, lease, CAS, or evidence contract was changed. The temporary controlled service, database, and audit files were cleaned.
 
 ### No-cost network boundary probes (2026-08-09)
 
@@ -236,13 +236,13 @@ The probes confirm basic DNS/TCP/TLS/provider-host reachability but do not yet i
 
 ### Ark Doubao-Seed-2.0-lite targeted Triage (2026-08-09)
 
-At the user's request, the existing isolated Ark configuration was used with model `doubao-seed-2.0-lite`. The formal `D:\Users\yuqi.chen\.offerpilot\config.json` was not modified; the API key was held only in a temporary configuration and is not recorded here.
+At the user's request, the existing isolated Ark configuration was used with model `doubao-seed-2.0-lite`. The formal `D:\Users\yuqi.chen\.auroraagent\config.json` was not modified; the API key was held only in a temporary configuration and is not recorded here.
 
 - The isolated Triage API returned `201` with `stage_status=ready` after `24,672 ms`.
 - Ark Provider call count was `1`; Provider elapsed time was `24,637 ms`; HTTP status was successful, with no failure category, repair, or retry.
 - Source fingerprint and proposal fingerprint both matched; all response contract checks passed.
 - Redacted input fingerprint: `77d98d6f...672e79a3`; schema fingerprint: `12ae32cb...3d82e126`; Provider request-id hash: `e3ecdb7acae2`.
-- Diagnostic output was retained at `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-ark-lite-diagnostic-20260809-200158`.
+- Diagnostic output was retained at `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-ark-lite-diagnostic-20260809-200158`.
 
 This proves that `doubao-seed-2.0-lite` can complete a valid, evidence-checked Triage request through the Ark endpoint. It is not full release evidence: Material Kit, Interview Preparation, browser network isolation, and complete `Stage all` remain unverified. No product code or formal Provider configuration was changed.
 
@@ -258,14 +258,14 @@ One isolated browser `Stage all` attempt was run from the unchanged current HEAD
 
 Retained diagnostics:
 
-- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-ark-lite-final-diagnostics\failed-browser-audit-20260809203503.jsonl`
-- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-ark-lite-final-diagnostics\failed-provider-egress-20260809203503.jsonl`
+- Browser audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-ark-lite-final-diagnostics\failed-browser-audit-20260809203503.jsonl`
+- Provider egress audit: `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-ark-lite-final-diagnostics\failed-provider-egress-20260809203503.jsonl`
 
 The harness removed the isolated service, browser profile, temporary data, Provider proxy, and completion directory. No formal Provider setting, product code, evidence contract, or business retry policy was changed. This result does not satisfy release evidence and remains a Provider/model Pilot tool-call/confirmation compatibility blocker; no further real-Provider retry was made.
 
 ### Ark Doubao-Seed-2.0-lite Pilot tool-call diagnostic (2026-08-09)
 
-The first instrumentation attempt made one Provider request but failed after the response during local bookkeeping; its output was discarded and is not evidence. After correcting that local harness error, one valid API-boundary diagnostic was run against the Ark Lite endpoint using the same application-context system prompt and the full OfferPilot tool registry. Neither attempt called the confirmation endpoint, executed a tool handler, created a Pilot JD version, or ran any downstream stage. The formal Provider configuration remained unchanged.
+The first instrumentation attempt made one Provider request but failed after the response during local bookkeeping; its output was discarded and is not evidence. After correcting that local harness error, one valid API-boundary diagnostic was run against the Ark Lite endpoint using the same application-context system prompt and the full AuroraAgent tool registry. Neither attempt called the confirmation endpoint, executed a tool handler, created a Pilot JD version, or ran any downstream stage. The formal Provider configuration remained unchanged.
 
 - Tool Schema was sent: `true`; 26 function schemas were included, including `save_application_jd_version`.
 - The streamed Provider response had `tool_calls=0` and `finish_reason=stop`.
@@ -296,7 +296,7 @@ All ten requests sent the 26-tool Schema and completed without Provider errors. 
 
 ### Ark candidate Agent-loop Pilot check (2026-08-09)
 
-The two candidates were then tested with the real OfferPilot Agent loop, `auto_approve=false`, the same synthetic application context, prompt, and 26-tool Schema. Read-only tools were allowed to run against temporary data; write handlers were never executed.
+The two candidates were then tested with the real AuroraAgent Agent loop, `auto_approve=false`, the same synthetic application context, prompt, and 26-tool Schema. Read-only tools were allowed to run against temporary data; write handlers were never executed.
 
 - `glm-5.2`: 3 Provider calls in `21,524 ms`; it called `get_application`, `list_resumes`, `list_jd_analyses`, and `list_resume_matches`, then returned ordinary text. No `pending_action` was produced.
 - `deepseek-v4-pro`: 1 Provider call in `22,506 ms`; it directly called `save_application_jd_version` and produced `pending_tool_name=save_application_jd_version`. The write was held for confirmation and not executed.
@@ -332,7 +332,7 @@ No push or merge is authorized by this plan.
 
 - No push or merge was performed.
 - All gate subprocesses exited; no Provider proxy or browser process was retained. Isolated real-AI data directories were cleaned by the verifier.
-- The recorded implementation baseline remains at `D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-application-jd-versions-baseline.txt` because release gates are incomplete.
+- The recorded implementation baseline remains at `D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-application-jd-versions-baseline.txt` because release gates are incomplete.
 - Remaining release blockers: DeepSeek Pilot transport instability, Ark Lite Pilot confirmation not materializing a pending action, and the absence of a complete real-Provider `Stage all`. The branch is paused; do not claim release readiness until a formally approved unified Provider produces a complete successful browser acceptance.
 
 ### Final real-Provider CDP Stage all attempt (2026-08-10)
@@ -340,7 +340,7 @@ No push or merge is authorized by this plan.
 One final isolated CDP `Stage all` attempt was run from current HEAD `4a02bde` with the formal temporary DeepSeek configuration (`deepseek-v4-flash`). The run used synthetic Chinese JD/resume data, a dedicated wide light-mode browser, local-only browser auditing, and the existing at-most-one same-input replay boundary. No push or merge was performed.
 
 - Stage A passed: UI JD v1 and deterministic Pilot JD v2 were created and read back; the confirmation card was approved exactly once; v2 was read from history and detail; `jd_version_id=2` and `source_kind=pilot` were observed. The Stage A Provider window contained `0` Provider calls.
-- The retained light Chinese wide-screen screenshots are [Pilot confirmation](/D:/Users/yuqi.chen/Desktop/offerpilot-stage-all-pilot-confirmation-20260810.png) and [Pilot success/history](/D:/Users/yuqi.chen/Desktop/offerpilot-stage-all-pilot-success-20260810.png).
+- The retained light Chinese wide-screen screenshots are [Pilot confirmation](/D:/Users/yuqi.chen/Desktop/auroraagent-stage-all-pilot-confirmation-20260810.png) and [Pilot success/history](/D:/Users/yuqi.chen/Desktop/auroraagent-stage-all-pilot-success-20260810.png).
 - Triage sent one Provider request using model `deepseek-v4-flash`; the input fingerprint was `bad8747c...054689`, and the result was HTTP `500` after `93,097 ms` with `failure_category=provider_http_5xx`. Evidence counts were JD `1`, resume `1`, and user assertions `0`.
 - The UI's same-key retry did not create another Provider call while the original lease was unresolved. After the lease boundary, the harness performed its single permitted exact-input replay: the frozen input was verified, but the local API returned HTTP `409` before a Provider call (`provider_request_count=0`), so the replay did not satisfy the release gate. The response error code was not exposed by that replay audit.
 - A zero-cost controlled API reproduction classified the boundary: first call returned `502 opportunity_fit_provider_error`; after forcing only the lease expiry, the exact same payload/key returned `200` with `stage_status=ready` and Provider call count `2`; changing only `jd_source_label` returned `409 opportunity_fit_idempotency_conflict`. This confirms `409` is the correct contract for a changed payload and that exact-key takeover is valid in the backend.
@@ -354,7 +354,7 @@ The isolated service, browser, proxy, process tree, temporary database, and temp
 
 The one newly authorized final isolated `Stage all` was then run with the corrected harness and the unchanged formal `deepseek-v4-flash` configuration. No further Provider attempt is authorized by this report.
 
-- Stage A passed again with UI JD v1 → deterministic Pilot JD v2, one confirmation approval, history/detail readback, `jd_version_id=2`, `source_kind=pilot`, and `0` Provider calls in the Stage A window. The final screenshots are [Pilot confirmation](/D:/Users/yuqi.chen/Desktop/offerpilot-stage-all-pilot-confirmation-20260810-final.png) and [Pilot success/history](/D:/Users/yuqi.chen/Desktop/offerpilot-stage-all-pilot-success-20260810-final.png).
+- Stage A passed again with UI JD v1 → deterministic Pilot JD v2, one confirmation approval, history/detail readback, `jd_version_id=2`, `source_kind=pilot`, and `0` Provider calls in the Stage A window. The final screenshots are [Pilot confirmation](/D:/Users/yuqi.chen/Desktop/auroraagent-stage-all-pilot-confirmation-20260810-final.png) and [Pilot success/history](/D:/Users/yuqi.chen/Desktop/auroraagent-stage-all-pilot-success-20260810-final.png).
 - Triage first returned HTTP `500` after `93,461 ms`; the frozen input contained JD `1`, resume `1`, and user assertion `1`, with input fingerprint `7ad9577...4ea6d39` and `failure_category=provider_http_5xx`.
 - The single permitted exact-input replay now verified `provider_input_fingerprint_match=true`, retained the same idempotency key and model, and made exactly one new Provider call. It returned HTTP `502` after `91,817 ms`, with no local `409`; the browser response was `opportunity_fit_provider_error`.
 - Material Kit and Interview Preparation were not executed because Triage remained `provider_unknown`. The final browser audit remained local-only, and no downstream or cross-domain write claim is made.

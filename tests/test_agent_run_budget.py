@@ -5,7 +5,7 @@ import math
 
 import pytest
 
-from offerpilot.agent_runtime.budget import (
+from auroraagent.agent_runtime.budget import (
     JOURNAL_DEFAULT_BUSY_TIMEOUT_MS,
     JOURNAL_DISPOSITION_BUDGET_SECONDS,
     JOURNAL_OPERATION_CLEANUP_RESERVE_SECONDS,

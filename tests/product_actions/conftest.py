@@ -7,11 +7,11 @@ from typing import Any
 
 import pytest
 
-from offerpilot.ai.write_operations import LedgerKeyDomain
-from offerpilot.db import init_database
-from offerpilot.product_actions.catalog import ProductActionCatalogV1
-from offerpilot.product_actions.contracts import ProductActionProofRegistryV1
-from offerpilot.product_actions.issuer import (
+from auroraagent.ai.write_operations import LedgerKeyDomain
+from auroraagent.db import init_database
+from auroraagent.product_actions.catalog import ProductActionCatalogV1
+from auroraagent.product_actions.contracts import ProductActionProofRegistryV1
+from auroraagent.product_actions.issuer import (
     InterviewStoryActionIssuer,
     LedgerKeyProfileStoreV1,
     ReviewReadinessActionIssuer,

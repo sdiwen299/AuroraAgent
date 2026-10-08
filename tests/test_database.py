@@ -1,5 +1,5 @@
-from offerpilot.db import init_database
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.db import init_database
+from auroraagent.repositories.chat import ChatRepository
 
 
 def test_generated_title_cannot_overwrite_manual_rename(tmp_path):

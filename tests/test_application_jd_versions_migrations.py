@@ -1,8 +1,8 @@
 import sqlite3
 
-from offerpilot.db import init_database
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.db import init_database
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 def _table_columns(db_path, table):

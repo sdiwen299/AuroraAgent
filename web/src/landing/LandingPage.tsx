@@ -143,7 +143,7 @@ export default function LandingPage({ onLogin, onRegister, onEnterInterview }: P
       <nav className={styles.nav}>
         <div className={styles.brand}>
           <div className={styles.brandMark}>OP</div>
-          <span>OfferPilot</span>
+          <span>曙光</span>
         </div>
         <div className={styles.links}>
           <a

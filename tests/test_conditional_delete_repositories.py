@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     APPLICATION_FOREIGN_KEY_MODELS,
     ApplicationEvent,
     ApplicationEvidenceBundle,
@@ -24,12 +24,12 @@ from offerpilot.models import (
     Resume,
     ResumeMatch,
 )
-from offerpilot.repositories.application_events import (
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
 
 
 def _application_dependency(model, application_id):

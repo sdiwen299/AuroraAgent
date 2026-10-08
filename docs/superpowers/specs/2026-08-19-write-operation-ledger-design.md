@@ -121,7 +121,7 @@ undo:add_note
 
 Conversation / ChatMessage / Pending Action 的控制状态持久化不是“领域业务写入”，不单独建立 Operation。它们仍参与 proposal、claim 和 delivery 的 CAS。手工表单、普通 REST CRUD、Knowledge、Interview、Offer Negotiation 等非 Agent Tool 写入维持各自既有幂等契约。
 
-“本期全部写入”特指上述 Agent Runtime 15 个主写入口和 4 个既有补偿入口，不表示 OfferPilot 所有 API 写端点。
+“本期全部写入”特指上述 Agent Runtime 15 个主写入口和 4 个既有补偿入口，不表示 AuroraAgent 所有 API 写端点。
 
 ## 5. 方案比较
 

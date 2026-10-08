@@ -6,23 +6,23 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_authority import AuthorityPhaseError
-from offerpilot.ai.tool_runtime import catalog as catalog_module
-from offerpilot.ai.tool_runtime import pipeline as pipeline_module
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.tool_authority import AuthorityPhaseError
+from auroraagent.ai.tool_runtime import catalog as catalog_module
+from auroraagent.ai.tool_runtime import pipeline as pipeline_module
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
     ToolCatalog,
 )
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingContract,
     ConfirmationRequired,
     ReadyToExecute,
     ToolFailure,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.pipeline import execute_prepared, prepare_call
-from offerpilot.ai.types import ToolCall
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.pipeline import execute_prepared, prepare_call
+from auroraagent.ai.types import ToolCall
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     write_metadata,

@@ -3,10 +3,10 @@ from datetime import datetime, timezone
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.models import InterviewNote
-from offerpilot.repositories.notes import NoteCreate, NoteUpdate, NotesRepository
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.models import InterviewNote
+from auroraagent.repositories.notes import NoteCreate, NoteUpdate, NotesRepository
 
 
 def test_create_note_for_application_backfills_company_and_position(tmp_path):

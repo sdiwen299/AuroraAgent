@@ -2,7 +2,7 @@
 
 - 日期：2026-08-21
 - 分支：`refactor/20260821-assistant-surface-shell`
-- Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260821-assistant-surface-shell`
+- Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260821-assistant-surface-shell`
 - 基线：`b05d915bbb52b2740f6801b4ec46ee8f4ccda2e2`
 
 ## 验证结果

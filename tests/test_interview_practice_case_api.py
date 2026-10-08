@@ -3,10 +3,10 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
-from offerpilot.db import init_database
-from offerpilot.models import Resume
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
+from auroraagent.db import init_database
+from auroraagent.models import Resume
 
 
 class _QuickPracticeModel:

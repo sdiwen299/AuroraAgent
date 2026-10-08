@@ -1,5 +1,5 @@
 param(
-    [string]$Image = "offerpilot:smoke"
+    [string]$Image = "auroraagent:smoke"
 )
 
 $ErrorActionPreference = "Stop"
@@ -9,7 +9,7 @@ if ($LASTEXITCODE -ne 0) { throw "Docker build failed (exit $LASTEXITCODE)." }
 
 # Run the same command the image exposes through ENTRYPOINT: oc smoke.
 docker run --rm `
-    -e OFFERPILOT_DATA=/tmp/offerpilot-smoke `
+    -e AURORA_AGENT_DATA=/tmp/auroraagent-smoke `
     $Image `
     smoke --static-dir /app/web/dist
 if ($LASTEXITCODE -ne 0) { throw "Docker smoke failed (exit $LASTEXITCODE)." }

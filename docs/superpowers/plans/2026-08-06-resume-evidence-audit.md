@@ -29,7 +29,7 @@ docs/superpowers/plans/*resume-evidence-audit*
 docs/reports/*resume-evidence-audit*
 ~~~
 
-Do not modify src/offerpilot/**, tests/**, web/src/services/**, web/src/types/**, web/src/layout/AppShell.tsx, web/src/components/ApplicationDetail.tsx, material/Opportunity Fit/interview/mock-interview files, or JD-version files. If a type or service change appears necessary, stop and return to design review.
+Do not modify src/auroraagent/**, tests/**, web/src/services/**, web/src/types/**, web/src/layout/AppShell.tsx, web/src/components/ApplicationDetail.tsx, material/Opportunity Fit/interview/mock-interview files, or JD-version files. If a type or service change appears necessary, stop and return to design review.
 
 Use the persisted `b4363b0` as the fixed allowlist baseline. Compare the target branch file set and the JD-version branch file set separately against this same SHA, then intersect those two sets. Do not use a direct `git diff JD-branch...HEAD` comparison: that compares the branches' tips and can include unrelated changes from either side.
 

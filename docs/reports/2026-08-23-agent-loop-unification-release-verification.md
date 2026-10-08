@@ -43,7 +43,7 @@ Characterization / plan 提交：`888011e`
 
 ## 内部破坏性变化
 
-- `offerpilot.ai.agent` 及其 `run_turn` / `resume_after_confirm` / LangGraph API 被删除。
+- `auroraagent.ai.agent` 及其 `run_turn` / `resume_after_confirm` / LangGraph API 被删除。
 - `AgentDriver` 只保留 `execute(AgentLoopInvocation) -> AgentTurnResult`。
 - Agent Runtime event sink 只接受 closed event union，不再接受任意 dict。
 - Provider surface 调用必须经过 Frozen Surface/Gateway/Binding，并提供 request-scoped active check；伪造或跨 Session attempt 会 fail-closed。
@@ -66,7 +66,7 @@ Characterization / plan 提交：`888011e`
 | --- | --- |
 | Agent Loop / Context Projector / Pipeline affected suite | `196 passed` |
 | 最终完整后端（排除外置 Application-JD scope gate） | `3314 passed, 4 skipped, 1 deselected, 4099 warnings`；42:29 |
-| Application-JD scope gate | 外置前置条件未提供；单独运行如预期失败于缺少 `OFFERPILOT_APPLICATION_JD_BASELINE_FILE`，未伪造 baseline/allowlist |
+| Application-JD scope gate | 外置前置条件未提供；单独运行如预期失败于缺少 `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE`，未伪造 baseline/allowlist |
 | `uv run ruff check .` | 通过 |
 | `uv run mypy src` | 通过，132 个源文件 |
 | `uv lock --check` | 通过，82 个包 |
@@ -96,7 +96,7 @@ Characterization / plan 提交：`888011e`
 4. API/Repository 回读确认状态为 `offer`、Pending 已清空。
 5. 服务日志证明恰好一次 `POST /api/chat/stream` 与一次 `POST /api/chat/confirm/stream`；浏览器控制台 error 为 0。
 
-隔离服务已停止；仅含浏览器合成验收数据的临时目录已移入 Windows 回收站，浏览器验收本身没有写入用户正常 OfferPilot 数据库。
+隔离服务已停止；仅含浏览器合成验收数据的临时目录已移入 Windows 回收站，浏览器验收本身没有写入用户正常 AuroraAgent 数据库。
 
 `oc smoke` 的既有 CLI 行为会使用正常数据目录。本次运行产生的 3 条 `Smoke Co` 申请与 9 个 smoke 会话已按精确 ID、时间和消息标记核验后通过公开 API 清理；申请均已软删除，会话、消息和 Journal 已移除，外键检查为 0。9 条 Write Operation Ledger 审计记录依照既有不可变约束解除 Conversation 关联后保留。
 

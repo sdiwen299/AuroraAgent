@@ -5,14 +5,14 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import func, select
 
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation
-from offerpilot.pilot_timeline import (
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation
+from auroraagent.pilot_timeline import (
     AdmissionConflict,
     AdmissionGone,
     PilotTimelineRepository,
 )
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.repositories.chat import ChatRepository
 
 
 def test_concurrent_admission_has_one_turn_one_user_and_one_execution_claim(tmp_path):

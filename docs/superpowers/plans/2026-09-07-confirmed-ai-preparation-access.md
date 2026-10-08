@@ -16,7 +16,7 @@
 
 ## Task 2：只读来源资格
 
-- 新建 `src/offerpilot/repositories/application_preparation_access.py`，接口 `can_prepare_application(session, application) -> bool`。
+- 新建 `src/auroraagent/repositories/application_preparation_access.py`，接口 `can_prepare_application(session, application) -> bool`。
 - deleted拒绝；cli/manual/web允许；其他来源除ai均拒绝。
 - ai只接受唯一的primary/typed/create_application/committed记录，JSON目标id精确关联；复用 `payload_from_operation` 验证终态payload摘要，校验结果的record_type/source/id/application_id/created_at，拒绝失败字段与缺失授权指纹。
 - transitions必须按seq严格为proposed/approved/claimed/committed；不读取/记录原始参数或密钥，不从可见回复解析ID，不调用Provider，不新增表/字段。

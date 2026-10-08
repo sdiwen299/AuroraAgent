@@ -21,8 +21,8 @@ import pytest
 from sqlalchemy import create_engine, text
 from typer.testing import CliRunner
 
-from offerpilot.config import Config
-from offerpilot.knowledge.acceptance import AcceptanceReport, run_acceptance
+from auroraagent.config import Config
+from auroraagent.knowledge.acceptance import AcceptanceReport, run_acceptance
 
 REPO_FIXTURES = Path(__file__).parent / "fixtures" / "knowledge"
 
@@ -80,9 +80,9 @@ def test_kv1_03_cli_v1_profile_exits_zero_on_success(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """oc knowledge-acceptance --profile v1 成功时退出码 0，报告 mode=v1-no-provider。"""
-    from offerpilot.cli import app
+    from auroraagent.cli import app
 
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     result = CliRunner().invoke(app, ["knowledge-acceptance", "--profile", "v1"])
     assert result.exit_code == 0, result.output[-1000:]
     payload = json.loads(result.stdout)
@@ -96,9 +96,9 @@ def test_kv1_03_cli_unknown_profile_exits_nonzero(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """未知 profile 退出非 0（参数错误，不运行验收）。"""
-    from offerpilot.cli import app
+    from auroraagent.cli import app
 
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     result = CliRunner().invoke(app, ["knowledge-acceptance", "--profile", "bogus"])
     assert result.exit_code != 0
 
@@ -107,9 +107,9 @@ def test_kv1_03_cli_fixtures_missing_exits_nonzero(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """fixtures 目录缺失退出非 0（fixture 失败场景，可定位）。"""
-    from offerpilot.cli import app
+    from auroraagent.cli import app
 
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     result = CliRunner().invoke(
         app,
         [
@@ -127,9 +127,9 @@ def test_kv1_03_cli_v1_real_ai_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """--profile v1 --real-ai 退出非 0：V1 不接受真实 Provider。"""
-    from offerpilot.cli import app
+    from auroraagent.cli import app
 
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     result = CliRunner().invoke(
         app, ["knowledge-acceptance", "--profile", "v1", "--real-ai"]
     )

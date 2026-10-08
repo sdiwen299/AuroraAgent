@@ -16,7 +16,7 @@ Implementation starts by resolving and recording one immutable baseline from the
 
 ~~~powershell
 $planPath = 'docs/superpowers/plans/2026-08-04-interview-preparation-lease-heartbeat.md'
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-preparation-lease-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-preparation-lease-baseline.txt'
 $implementationBase = (git log -1 --format=%H -- $planPath).Trim()
 if (-not $implementationBase) { throw 'Cannot resolve approved plan baseline' }
 $status = @(git status --short)
@@ -29,17 +29,17 @@ if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
 Use the value in this stable baseline file for every subsequent diff, allowlist, and diff-check command. Each later PowerShell process must load and validate it before using it:
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-preparation-lease-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-preparation-lease-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
 ~~~
 
-Do not recompute the baseline with git log after implementation begins. After capture, do not modify this plan or the design document; any verification report is the only documentation file allowed by the file allowlist. Work only in D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260801-offer-negotiation and do not touch the repository root or its existing uncommitted work.
+Do not recompute the baseline with git log after implementation begins. After capture, do not modify this plan or the design document; any verification report is the only documentation file allowed by the file allowlist. Work only in D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260801-offer-negotiation and do not touch the repository root or its existing uncommitted work.
 
 The implementation is limited to these files:
 
-- Modify: src/offerpilot/repositories/interview_preparation_proposals.py
+- Modify: src/auroraagent/repositories/interview_preparation_proposals.py
   - Add interview-preparation-only timing seams and the private heartbeat owner.
   - Keep the existing repository/API method names and request behavior.
   - Change only lease renewal, owner lifecycle, and final CAS conditions.
@@ -49,7 +49,7 @@ The implementation is limited to these files:
   - Add API-level pending/ready and same-key behavior checks where repository results are mapped to HTTP responses.
 - Modify: tests/test_smoke.py
   - Add only the local smoke regression needed to prove a pending response can complete with the same request; do not alter smoke product scope.
-- Do not modify: src/offerpilot/models.py, src/offerpilot/db.py, API route definitions, frontend files, Offer files, or AI schema/validation files. No migration is required.
+- Do not modify: src/auroraagent/models.py, src/auroraagent/db.py, API route definitions, frontend files, Offer files, or AI schema/validation files. No migration is required.
 - Do not create a generic lease framework or extend this behavior to another Proposal repository.
 
 No step may add a new HTTP field, database field, state, business retry, Provider call, or evidence exception.
@@ -58,7 +58,7 @@ No step may add a new HTTP field, database field, state, business retry, Provide
 
 **Files:**
 - Modify: tests/test_interview_preparation_repository.py
-- Modify: src/offerpilot/repositories/interview_preparation_proposals.py
+- Modify: src/auroraagent/repositories/interview_preparation_proposals.py
 
 - [ ] Step 1: Add a failing constructor/timing regression.
 
@@ -103,7 +103,7 @@ Expected result: the new timing/default tests pass and all pre-existing reposito
 - [ ] Step 4: Commit the seam separately.
 
 ~~~powershell
-git add tests/test_interview_preparation_repository.py src/offerpilot/repositories/interview_preparation_proposals.py
+git add tests/test_interview_preparation_repository.py src/auroraagent/repositories/interview_preparation_proposals.py
 git commit -m "test: AI add interview preparation lease timing seams"
 ~~~
 
@@ -111,7 +111,7 @@ git commit -m "test: AI add interview preparation lease timing seams"
 
 **Files:**
 - Modify: tests/test_interview_preparation_repository.py
-- Modify: src/offerpilot/repositories/interview_preparation_proposals.py
+- Modify: src/auroraagent/repositories/interview_preparation_proposals.py
 
 - [ ] Step 1: Add the failing slow-provider test.
 
@@ -176,7 +176,7 @@ The same run must include a preflight lifecycle assertion: preflight may return 
 - [ ] Step 6: Commit the normal heartbeat slice.
 
 ~~~powershell
-git add tests/test_interview_preparation_repository.py src/offerpilot/repositories/interview_preparation_proposals.py
+git add tests/test_interview_preparation_repository.py src/auroraagent/repositories/interview_preparation_proposals.py
 git commit -m "feat: AI keep interview preparation lease alive"
 ~~~
 
@@ -184,7 +184,7 @@ git commit -m "feat: AI keep interview preparation lease alive"
 
 **Files:**
 - Modify: tests/test_interview_preparation_repository.py
-- Modify: src/offerpilot/repositories/interview_preparation_proposals.py
+- Modify: src/auroraagent/repositories/interview_preparation_proposals.py
 
 - [ ] Step 1: Add a failing expired-lease final-write regression.
 
@@ -233,7 +233,7 @@ Expected result: the expired-lease/no-takeover case is ready, the confirmed-loss
 - [ ] Step 5: Commit the fencing slice.
 
 ~~~powershell
-git add tests/test_interview_preparation_repository.py src/offerpilot/repositories/interview_preparation_proposals.py
+git add tests/test_interview_preparation_repository.py src/auroraagent/repositories/interview_preparation_proposals.py
 git commit -m "fix: AI fence late interview preparation results"
 ~~~
 
@@ -273,7 +273,7 @@ Expected result: the full selected group passes, with exactly one successful tak
 - [ ] Step 6: Commit the takeover slice.
 
 ~~~powershell
-git add tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py src/offerpilot/repositories/interview_preparation_proposals.py
+git add tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py src/auroraagent/repositories/interview_preparation_proposals.py
 git commit -m "test: AI cover interview preparation takeover fencing"
 ~~~
 
@@ -308,7 +308,7 @@ Expected result: all existing failure semantics pass, no secret/model output app
 - [ ] Step 5: Commit the failure/cleanup slice.
 
 ~~~powershell
-git add tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py tests/test_smoke.py src/offerpilot/repositories/interview_preparation_proposals.py
+git add tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py tests/test_smoke.py src/auroraagent/repositories/interview_preparation_proposals.py
 git commit -m "test: AI preserve interview preparation failure cleanup"
 ~~~
 
@@ -323,13 +323,13 @@ git commit -m "test: AI preserve interview preparation failure cleanup"
 Run from the worktree root:
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-preparation-lease-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-preparation-lease-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
 $featureBase = $implementationBase
 $allowed = @(
-  'src/offerpilot/repositories/interview_preparation_proposals.py',
+  'src/auroraagent/repositories/interview_preparation_proposals.py',
   'tests/test_interview_preparation_repository.py',
   'tests/test_interview_preparation_api.py',
   'tests/test_smoke.py',
@@ -350,7 +350,7 @@ The positive allowlist is the only accepted product boundary. The release report
 ~~~powershell
 uv run ruff check src tests
 uv run mypy src
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-preparation-lease-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-preparation-lease-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }
@@ -373,7 +373,7 @@ Expected result: exit 0; any Windows symlink skip must remain within the reposit
 Create one persisted temporary result directory and collect the full manifest from the same HEAD:
 
 ~~~powershell
-$gateDir = Join-Path $env:TEMP ("offerpilot-interview-preparation-pytest-" + $PID)
+$gateDir = Join-Path $env:TEMP ("auroraagent-interview-preparation-pytest-" + $PID)
 New-Item -ItemType Directory -Force -Path $gateDir | Out-Null
 uv run pytest --collect-only -q --disable-warnings 2>&1 | Tee-Object -FilePath (Join-Path $gateDir 'full-manifest.txt')
 if ($LASTEXITCODE -ne 0) { throw 'full backend collection failed' }
@@ -399,7 +399,7 @@ Use the existing frontend gate result directory recorded by the current release 
 The fresh rerun command is:
 
 ~~~powershell
-$frontendGate = Join-Path $env:TEMP ("offerpilot-interview-preparation-vitest-" + $PID)
+$frontendGate = Join-Path $env:TEMP ("auroraagent-interview-preparation-vitest-" + $PID)
 New-Item -ItemType Directory -Force -Path $frontendGate | Out-Null
 $repoRoot = (Get-Location).Path
 & powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows-vitest-groups.ps1 -Collect -RepositoryRoot $repoRoot -ResultDir $frontendGate
@@ -419,7 +419,7 @@ The frontend check must exit 0 and must not introduce a frontend change for this
 - [ ] Step 7: Commit only if static/repository changes were needed.
 
 ~~~powershell
-git add src/offerpilot/repositories/interview_preparation_proposals.py tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py tests/test_smoke.py
+git add src/auroraagent/repositories/interview_preparation_proposals.py tests/test_interview_preparation_repository.py tests/test_interview_preparation_api.py tests/test_smoke.py
 git commit -m "chore: AI verify interview preparation lease boundary"
 ~~~
 
@@ -484,7 +484,7 @@ Review the final diff against the design document. Specifically check that:
 - [ ] Step 7: Run the final working-tree gate and remove the baseline only after success.
 
 ~~~powershell
-$baselineFile = Join-Path $env:TEMP 'offerpilot-interview-preparation-lease-baseline.txt'
+$baselineFile = Join-Path $env:TEMP 'auroraagent-interview-preparation-lease-baseline.txt'
 $implementationBase = (Get-Content -LiteralPath $baselineFile -Raw).Trim()
 git cat-file -e "$implementationBase^{commit}"
 if ($LASTEXITCODE -ne 0) { throw 'Recorded implementation baseline is invalid' }

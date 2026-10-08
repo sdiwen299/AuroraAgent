@@ -2,14 +2,14 @@ import json
 
 from typer.testing import CliRunner
 
-from offerpilot.ai.types import Assistant
-from offerpilot.cli import app
-from offerpilot.config import AIProviderProfile, Config, load_config, save_config
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NoteCreate, NotesRepository
-from offerpilot.repositories.questions import QuestionsRepository
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.ai.types import Assistant
+from auroraagent.cli import app
+from auroraagent.config import AIProviderProfile, Config, load_config, save_config
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NoteCreate, NotesRepository
+from auroraagent.repositories.questions import QuestionsRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 class JSONModel:
@@ -25,7 +25,7 @@ def _write_ai_config(data_dir):
 
 
 def test_config_auto_approve_help_declares_deprecation(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     result = CliRunner().invoke(app, ["config", "--help"])
 
     assert result.exit_code == 0
@@ -34,7 +34,7 @@ def test_config_auto_approve_help_declares_deprecation(monkeypatch, tmp_path):
 
 
 def test_add_and_list_application(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     add_result = runner.invoke(app, ["add", "--company", "ByteDance", "--position", "Backend"])
@@ -49,7 +49,7 @@ def test_add_and_list_application(monkeypatch, tmp_path):
 
 
 def test_list_empty_applications(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(app, ["list"])
@@ -59,7 +59,7 @@ def test_list_empty_applications(monkeypatch, tmp_path):
 
 
 def test_list_rejects_invalid_application_status(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(app, ["list", "--status", "onsite"])
@@ -69,7 +69,7 @@ def test_list_rejects_invalid_application_status(monkeypatch, tmp_path):
 
 
 def test_config_masks_api_key(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(app, ["config", "--api-key", "sk-abcdef"])
@@ -80,7 +80,7 @@ def test_config_masks_api_key(monkeypatch, tmp_path):
 
 
 def test_config_updates_active_provider_profile(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     save_config(
         tmp_path,
         Config(
@@ -104,7 +104,7 @@ def test_config_updates_active_provider_profile(monkeypatch, tmp_path):
 
 
 def test_config_updates_runtime_and_log_options(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(
@@ -120,7 +120,7 @@ def test_config_updates_runtime_and_log_options(monkeypatch, tmp_path):
 
 
 def test_config_sets_auth_token(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(app, ["config", "--auth-token", "local-secret"])
@@ -131,7 +131,7 @@ def test_config_sets_auth_token(monkeypatch, tmp_path):
 
 
 def test_skill_cli_registers_trusts_and_enables_package(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     add_result = runner.invoke(
@@ -167,7 +167,7 @@ def test_skill_cli_registers_trusts_and_enables_package(monkeypatch, tmp_path):
 
 
 def test_skill_cli_registers_manifest_file(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path / "data"))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path / "data"))
     manifest = tmp_path / "skill.json"
     manifest.write_text(
         (
@@ -192,7 +192,7 @@ def test_skill_cli_registers_manifest_file(monkeypatch, tmp_path):
 
 
 def test_wakeup_cli_add_list_and_dispatch_due(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     add_result = runner.invoke(
@@ -229,7 +229,7 @@ def test_wakeup_cli_add_list_and_dispatch_due(monkeypatch, tmp_path):
 
 
 def test_start_uses_configured_port_by_default(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     save_config(tmp_path, Config(local_port=9099))
     captured = {}
 
@@ -237,7 +237,7 @@ def test_start_uses_configured_port_by_default(monkeypatch, tmp_path):
         captured["host"] = host
         captured["port"] = port
 
-    monkeypatch.setattr("offerpilot.cli.uvicorn.run", fake_run)
+    monkeypatch.setattr("auroraagent.cli.uvicorn.run", fake_run)
     runner = CliRunner()
 
     result = runner.invoke(app, ["start"])
@@ -247,14 +247,14 @@ def test_start_uses_configured_port_by_default(monkeypatch, tmp_path):
 
 
 def test_start_accepts_an_explicit_host(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     captured = {}
 
     def fake_run(app, host, port):  # type: ignore[no-untyped-def]
         captured["host"] = host
         captured["port"] = port
 
-    monkeypatch.setattr("offerpilot.cli.uvicorn.run", fake_run)
+    monkeypatch.setattr("auroraagent.cli.uvicorn.run", fake_run)
     runner = CliRunner()
 
     result = runner.invoke(app, ["start", "--host", "0.0.0.0", "--port", "8080"])
@@ -264,7 +264,7 @@ def test_start_accepts_an_explicit_host(monkeypatch, tmp_path):
 
 
 def test_resume_add_and_list(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path / "data"))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path / "data"))
     resume_file = tmp_path / "resume.txt"
     resume_file.write_text("Built Python APIs", encoding="utf-8")
     runner = CliRunner()
@@ -279,7 +279,7 @@ def test_resume_add_and_list(monkeypatch, tmp_path):
 
 
 def test_note_add_and_list_backfills_application(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
     runner.invoke(app, ["add", "--company", "ByteDance", "--position", "Backend"])
 
@@ -294,7 +294,7 @@ def test_note_add_and_list_backfills_application(monkeypatch, tmp_path):
 
 
 def test_offer_add_update_compare_delete(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     add_result = runner.invoke(
@@ -329,7 +329,7 @@ def test_offer_add_update_compare_delete(monkeypatch, tmp_path):
 
 
 def test_question_list_empty(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     runner = CliRunner()
 
     result = runner.invoke(app, ["question", "list"])
@@ -339,10 +339,10 @@ def test_question_list_empty(monkeypatch, tmp_path):
 
 
 def test_analyze_jd_cli_persists_result(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     _write_ai_config(tmp_path)
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: JSONModel(['{"summary":"Backend role","requirements":["Python"]}']),
     )
     runner = CliRunner()
@@ -358,9 +358,9 @@ def test_analyze_jd_cli_persists_result(monkeypatch, tmp_path):
 
 
 def test_analyze_jd_cli_rejects_url_without_building_ai_model(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: (_ for _ in ()).throw(AssertionError("AI model must not be built")),
     )
     runner = CliRunner()
@@ -375,9 +375,9 @@ def test_analyze_jd_cli_rejects_url_without_building_ai_model(monkeypatch, tmp_p
 
 
 def test_analyze_jd_cli_rejects_jd_and_url_without_external_work(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: (_ for _ in ()).throw(AssertionError("AI model must not be built")),
     )
     runner = CliRunner()
@@ -395,12 +395,12 @@ def test_analyze_jd_cli_rejects_jd_and_url_without_external_work(monkeypatch, tm
 
 
 def test_resume_match_cli_persists_match(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     _write_ai_config(tmp_path)
     resumes = ResumesRepository(session_factory_for_data_dir(tmp_path))
     resume = resumes.create(ResumeCreate(name="Backend", parsed_data="Python FastAPI"))
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: JSONModel(['{"match_score":88,"summary":"strong fit"}']),
     )
     runner = CliRunner()
@@ -415,9 +415,9 @@ def test_resume_match_cli_persists_match(monkeypatch, tmp_path):
 
 
 def test_resume_match_cli_rejects_url_without_building_ai_model(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: (_ for _ in ()).throw(AssertionError("AI model must not be built")),
     )
     runner = CliRunner()
@@ -435,12 +435,12 @@ def test_resume_match_cli_rejects_url_without_building_ai_model(monkeypatch, tmp
 
 
 def test_question_generate_cli_from_notes(monkeypatch, tmp_path):
-    monkeypatch.setenv("OFFERPILOT_DATA", str(tmp_path))
+    monkeypatch.setenv("AURORA_AGENT_DATA", str(tmp_path))
     _write_ai_config(tmp_path)
     notes_repo = NotesRepository(session_factory_for_data_dir(tmp_path))
     notes_repo.create(
         NoteCreate(
-            company="OfferPilot",
+            company="AuroraAgent",
             position="Backend",
             round="技术一面",
             date="2026-07-11",
@@ -448,7 +448,7 @@ def test_question_generate_cli_from_notes(monkeypatch, tmp_path):
         )
     )
     monkeypatch.setattr(
-        "offerpilot.cli._build_ai_model",
+        "auroraagent.cli._build_ai_model",
         lambda: JSONModel(
             [
                 (

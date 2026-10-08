@@ -66,7 +66,7 @@
 - 前端 9 文件原 205 passed；补 Offer 任务摘要回归后 model 88 passed，补实际 Undo 错误交互后组件 14 passed，共覆盖 207 项唯一测试（分批执行）。
 - Ruff 变更源码/测试通过；Mypy 3 个源码通过；最终 TypeScript 与生产构建通过。
 - 规格及最终独立质量复审通过，无开放 P0/P1/P2。质量复审发现的 error_code 读取问题已按真实组件 RED→GREEN 修正。
-- 隔离 8092 使用演示库副本，亮色 1920×1080。截图位于 `D:/Users/yuqi.chen/.offerpilot/verification/walkthrough-fixes-20260907/`：`offer-prefill.png`、`question-queue.png`、`event-missing-date.png`。只在副本新增一道中文题并完成一次评分；原 8080/8091 与数据库不变。
+- 隔离 8092 使用演示库副本，亮色 1920×1080。截图位于 `D:/Users/yuqi.chen/.auroraagent/verification/walkthrough-fixes-20260907/`：`offer-prefill.png`、`question-queue.png`、`event-missing-date.png`。只在副本新增一道中文题并完成一次评分；原 8080/8091 与数据库不变。
 - 未跑全量后端/前端、Docker 或 real-AI gate；可控模型回归不等于真实模型验收。保留已有约 1.66 MB chunk warning 和 deprecation warning。
 - U01、U02、U05、U10、U12 尚需复现；U03/U09 只关闭已确认来源加载竞态，不抹除合法不可用状态。历史失效 Undo 不批量重写。
 - 无 Schema/API/SSE 变更或破坏性数据操作，未合并、推送或替换用户部署。验收副本的签名密钥不进入仓库、截图或日志。

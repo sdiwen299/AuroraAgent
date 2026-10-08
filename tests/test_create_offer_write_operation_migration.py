@@ -9,9 +9,9 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
-import offerpilot.db as database
-from offerpilot.db import init_database
-from offerpilot.models import Base
+import auroraagent.db as database
+from auroraagent.db import init_database
+from auroraagent.models import Base
 from tests.test_review_to_readiness_migration_0029 import (
     SHA_C,
     _create_fixed_pre_0029_database,

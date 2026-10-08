@@ -21,9 +21,9 @@
 
 ### Modified backend files
 
-- `src/offerpilot/ai/tools.py` — single source of truth for editable write fields.
-- `src/offerpilot/ai/agent.py` — validate/merge edited arguments, resume checkpoint and fallback with effective arguments, and pass rejection feedback to the model.
-- `src/offerpilot/api.py` — validate `page_context`, inject it as untrusted system data, unify approval/rejection endpoints, preserve pending drafts on failure, guard archive, and generate deterministic titles.
+- `src/auroraagent/ai/tools.py` — single source of truth for editable write fields.
+- `src/auroraagent/ai/agent.py` — validate/merge edited arguments, resume checkpoint and fallback with effective arguments, and pass rejection feedback to the model.
+- `src/auroraagent/api.py` — validate `page_context`, inject it as untrusted system data, unify approval/rejection endpoints, preserve pending drafts on failure, guard archive, and generate deterministic titles.
 - `tests/test_ai_agent.py` — effective-argument, immutable-ID, enum/type, fallback, and rejection-feedback tests.
 - `tests/test_chat_api.py` — request context, confirmation payload, pending preservation, archive guard, title, and response descriptor tests.
 
@@ -176,7 +176,7 @@ git commit -m "feat: AI add contextual pilot page contract"
 
 **Files:**
 
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 - Modify: `web/src/services/chat.ts`
 - Modify: `web/src/services/chat.test.ts`
@@ -271,7 +271,7 @@ Expected: all selected tests pass.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/offerpilot/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
+git add src/auroraagent/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
 git commit -m "feat: AI send sanitized pilot page context"
 ```
 
@@ -352,8 +352,8 @@ git commit -m "feat: AI expose removable pilot context chips"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/tools.py`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/ai/tools.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 - Modify: `web/src/types/chat.ts`
 
@@ -434,7 +434,7 @@ Expected: descriptors are present and existing confirmation detail assertions st
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/offerpilot/ai/tools.py src/offerpilot/api.py tests/test_chat_api.py web/src/types/chat.ts
+git add src/auroraagent/ai/tools.py src/auroraagent/api.py tests/test_chat_api.py web/src/types/chat.ts
 git commit -m "feat: AI describe editable write fields"
 ```
 
@@ -442,7 +442,7 @@ git commit -m "feat: AI describe editable write fields"
 
 **Files:**
 
-- Modify: `src/offerpilot/ai/agent.py`
+- Modify: `src/auroraagent/ai/agent.py`
 - Modify: `tests/test_ai_agent.py`
 
 - [ ] **Step 1: Write failing agent tests**
@@ -525,7 +525,7 @@ Expected: all agent tests pass, including existing confirmation and event-sink c
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/offerpilot/ai/agent.py tests/test_ai_agent.py
+git add src/auroraagent/ai/agent.py tests/test_ai_agent.py
 git commit -m "feat: AI validate edited confirmation arguments"
 ```
 
@@ -533,7 +533,7 @@ git commit -m "feat: AI validate edited confirmation arguments"
 
 **Files:**
 
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 - Modify: `web/src/services/chat.ts`
 - Modify: `web/src/services/chat.test.ts`
@@ -614,7 +614,7 @@ Expected: all confirmation tests pass and pending state survives failure cases.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/offerpilot/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
+git add src/auroraagent/api.py tests/test_chat_api.py web/src/services/chat.ts web/src/services/chat.test.ts
 git commit -m "feat: AI preserve and resume confirmation drafts"
 ```
 
@@ -706,7 +706,7 @@ git commit -m "feat: AI edit or reject pilot proposals"
 - Modify: `web/src/components/ChatPanel/model.test.ts`
 - Modify: `web/src/components/ChatPanel/ChatPanel.module.css`
 - Modify: `web/src/types/chat.ts`
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] **Step 1: Write failing pure-helper tests**
@@ -784,7 +784,7 @@ Expected: selected tests pass and no pending thread can lock a different active 
 - [ ] **Step 9: Commit**
 
 ```bash
-git add web/src/components/ChatPanel/conversationList.ts web/src/components/ChatPanel/conversationList.test.ts web/src/components/ChatPanel/ThreadRail.tsx web/src/components/ChatPanel/index.tsx web/src/components/ChatPanel/model.ts web/src/components/ChatPanel/model.test.ts web/src/components/ChatPanel/ChatPanel.module.css web/src/types/chat.ts src/offerpilot/api.py tests/test_chat_api.py
+git add web/src/components/ChatPanel/conversationList.ts web/src/components/ChatPanel/conversationList.test.ts web/src/components/ChatPanel/ThreadRail.tsx web/src/components/ChatPanel/index.tsx web/src/components/ChatPanel/model.ts web/src/components/ChatPanel/model.test.ts web/src/components/ChatPanel/ChatPanel.module.css web/src/types/chat.ts src/auroraagent/api.py tests/test_chat_api.py
 git commit -m "feat: AI organize and recover pilot conversations"
 ```
 
@@ -792,7 +792,7 @@ git commit -m "feat: AI organize and recover pilot conversations"
 
 **Files:**
 
-- Modify: `src/offerpilot/api.py`
+- Modify: `src/auroraagent/api.py`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] **Step 1: Write failing title tests**
@@ -839,7 +839,7 @@ Expected: deterministic-title and rename tests pass.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/offerpilot/api.py tests/test_chat_api.py
+git add src/auroraagent/api.py tests/test_chat_api.py
 git commit -m "feat: AI generate deterministic conversation titles"
 ```
 

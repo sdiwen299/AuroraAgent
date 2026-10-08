@@ -714,14 +714,14 @@ Journal Event sequence / Trace integrity
 推荐模块边界：
 
 ```text
-src/offerpilot/agent_runtime/budget.py
+src/auroraagent/agent_runtime/budget.py
     ActiveWorkBudget
     OperationLease
 
-src/offerpilot/agent_runtime/journal.py
+src/auroraagent/agent_runtime/journal.py
     Recorder / Factory 使用 active Operation wrapper
 
-src/offerpilot/repositories/agent_runs.py
+src/auroraagent/repositories/agent_runs.py
     dynamic busy_timeout / progress handler / connection cleanup
 ```
 

@@ -5,12 +5,12 @@ import json
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from offerpilot.ai.types import Assistant
-from offerpilot.api import create_app
-from offerpilot.db import session_factory_for_data_dir
-from offerpilot.diagnostics import read_recent_log_entries
-from offerpilot.models import MaterialRevisionProposal
-from offerpilot.repositories.applications import ApplicationsRepository
+from auroraagent.ai.types import Assistant
+from auroraagent.api import create_app
+from auroraagent.db import session_factory_for_data_dir
+from auroraagent.diagnostics import read_recent_log_entries
+from auroraagent.models import MaterialRevisionProposal
+from auroraagent.repositories.applications import ApplicationsRepository
 
 
 class ProposalModel:

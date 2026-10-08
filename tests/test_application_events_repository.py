@@ -2,12 +2,12 @@ from datetime import datetime, timezone
 
 import pytest
 
-from offerpilot.db import init_database
-from offerpilot.repositories.application_events import (
+from auroraagent.db import init_database
+from auroraagent.repositories.application_events import (
     ApplicationEventCreate,
     ApplicationEventsRepository,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
 
 
 @pytest.mark.parametrize("bound", [False, True])

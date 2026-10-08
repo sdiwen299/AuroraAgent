@@ -16,10 +16,10 @@ from sqlalchemy import event as sqlalchemy_event
 from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 
-from offerpilot.ai.interview_preparation_proposals import safe_empty_interview_preparation_proposal
-from offerpilot.ai.types import Assistant
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.ai.interview_preparation_proposals import safe_empty_interview_preparation_proposal
+from auroraagent.ai.types import Assistant
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     ApplicationJDVersion,
@@ -31,9 +31,9 @@ from offerpilot.models import (
     KnowledgeNoteVersion,
     Resume,
 )
-from offerpilot.repositories.interview_knowledge_capture import InterviewKnowledgeCaptureRepository
-from offerpilot.repositories.json_contract import canonical_json, sha256_text
-from offerpilot.repositories.interview_preparation_proposals import (
+from auroraagent.repositories.interview_knowledge_capture import InterviewKnowledgeCaptureRepository
+from auroraagent.repositories.json_contract import canonical_json, sha256_text
+from auroraagent.repositories.interview_preparation_proposals import (
     InterviewPreparationConflictError,
     InterviewPreparationNotFound,
     InterviewPreparationProviderError,
@@ -41,10 +41,10 @@ from offerpilot.repositories.interview_preparation_proposals import (
     InterviewPreparationValidationError,
     _InterviewPreparationLeaseHeartbeat,
 )
-from offerpilot.repositories.adaptive_interview_practice import (
+from auroraagent.repositories.adaptive_interview_practice import (
     AdaptivePracticeRepository,
 )
-from offerpilot.review_readiness.projection import project_practice_focus
+from auroraagent.review_readiness.projection import project_practice_focus
 from tests.review_readiness_support import seed_review_candidate
 from tests.test_review_readiness_projection import _commit_signal
 
@@ -54,7 +54,7 @@ JD_TEXT = "Build reliable APIs with Python."
 
 def test_preparation_readiness_selection_loader_module_is_owner_local_asset() -> None:
     assert importlib.util.find_spec(
-        "offerpilot.review_readiness.preparation_selection"
+        "auroraagent.review_readiness.preparation_selection"
     ) is not None
 
 
@@ -837,7 +837,7 @@ def test_provider_error_stops_heartbeat_worker_in_cleanup(monkeypatch, tmp_path)
             self.stopped = True
 
     monkeypatch.setattr(
-        "offerpilot.repositories.interview_preparation_proposals._InterviewPreparationLeaseHeartbeat",
+        "auroraagent.repositories.interview_preparation_proposals._InterviewPreparationLeaseHeartbeat",
         TrackingHeartbeat,
     )
     factory, ids = _setup(tmp_path)
@@ -1351,7 +1351,7 @@ def _setup_selected_signal(tmp_path, *, focus_count: int = 1):  # type: ignore[n
 
 
 def test_v1_snapshot_remains_byte_equal_to_pinned_c5a020c_fixture(tmp_path) -> None:
-    from offerpilot.repositories.interview_preparation_proposals import (
+    from auroraagent.repositories.interview_preparation_proposals import (
         _build_v1_snapshot,
     )
 
@@ -1403,7 +1403,7 @@ def test_v1_snapshot_remains_byte_equal_to_pinned_c5a020c_fixture(tmp_path) -> N
 def test_v2_request_input_and_selection_fingerprints_match_ordered_golden(
     tmp_path,
 ) -> None:
-    from offerpilot.repositories.interview_preparation_proposals import (
+    from auroraagent.repositories.interview_preparation_proposals import (
         _build_v2_snapshot,
     )
 
@@ -1464,7 +1464,7 @@ def test_v2_request_input_and_selection_fingerprints_match_ordered_golden(
 
 
 def test_selection_loader_preserves_order_and_uses_no_signal_query_for_empty(tmp_path) -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionLoader,
     )
 
@@ -1521,7 +1521,7 @@ def test_selection_loader_projects_exact_v2_practice_pair_state(
     practice_lifecycle: str,
     expected_practice_state: str,
 ) -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionLoader,
     )
 
@@ -1566,7 +1566,7 @@ def test_selection_loader_projects_exact_v2_practice_pair_state(
 
 
 def test_selection_loader_returns_deeply_immutable_copied_dto(tmp_path) -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionLoader,
     )
 
@@ -1600,7 +1600,7 @@ def test_selection_loader_returns_deeply_immutable_copied_dto(tmp_path) -> None:
 def test_selection_loader_fails_closed_for_invalid_source_or_target(
     tmp_path, mutation: str, expected_code: str
 ) -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionError,
         PreparationReadinessSelectionLoader,
     )
@@ -1649,7 +1649,7 @@ def test_selection_loader_fails_closed_for_invalid_source_or_target(
 def test_selection_loader_accepts_eight_and_rejects_nine_or_cross_application(
     tmp_path,
 ) -> None:
-    from offerpilot.review_readiness.preparation_selection import (
+    from auroraagent.review_readiness.preparation_selection import (
         PreparationReadinessSelectionError,
         PreparationReadinessSelectionLoader,
     )
@@ -1755,7 +1755,7 @@ def _exact_feedback_high_water_fixture(target_bytes: int) -> list[dict[str, obje
 def test_selection_loader_enforces_exact_wrapper_after_each_of_eight_full_signals(
     tmp_path, monkeypatch, target_bytes: int, accepted: bool
 ) -> None:
-    import offerpilot.review_readiness.preparation_selection as preparation_selection
+    import auroraagent.review_readiness.preparation_selection as preparation_selection
 
     factory, seeded, version_ids, target_id, resume_id = _setup_selected_signal(
         tmp_path, focus_count=8

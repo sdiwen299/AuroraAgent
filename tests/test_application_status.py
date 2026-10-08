@@ -1,6 +1,6 @@
 import pytest
 
-from offerpilot.application_status import (
+from auroraagent.application_status import (
     APPLICATION_STATUS_IDS,
     application_status_options,
     normalize_application_status,

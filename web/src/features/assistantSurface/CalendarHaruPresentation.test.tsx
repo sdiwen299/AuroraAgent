@@ -18,12 +18,12 @@ it('right-clicks without opening chat, persists mode, and retains the same toggl
   expect(toggle).not.toHaveBeenCalled();
   const option = Array.from(document.querySelectorAll<HTMLElement>('[role="menuitemradio"]')).find((item) => item.textContent?.includes('人物展示'));
   expect(option).toBeDefined(); act(() => option?.click());
-  expect(localStorage.getItem('offerpilot.haru.presentationMode')).toBe('character');
+  expect(localStorage.getItem('auroraagent.haru.presentationMode')).toBe('character');
   expect(host.querySelector('[data-haru-mode="character"]')).not.toBeNull();
   act(() => ref.current?.click()); expect(toggle).toHaveBeenCalledTimes(1);
   Object.defineProperty(window, 'innerWidth', { value: 1200, configurable: true }); act(() => window.dispatchEvent(new Event('resize')));
   expect(host.querySelector('[data-haru-mode="compact"]')).not.toBeNull();
-  expect(localStorage.getItem('offerpilot.haru.presentationMode')).toBe('character');
+  expect(localStorage.getItem('auroraagent.haru.presentationMode')).toBe('character');
   Object.defineProperty(window, 'innerWidth', { value: 1792, configurable: true }); act(() => window.dispatchEvent(new Event('resize')));
   expect(host.querySelector('[data-haru-mode="character"]')).not.toBeNull();
   act(() => ref.current?.dispatchEvent(new KeyboardEvent('keydown', { key: 'F10', shiftKey: true, bubbles: true })));

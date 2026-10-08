@@ -7,10 +7,10 @@ import pytest
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.db import init_database
-from offerpilot.models import ApplicationEvidenceBundle, ApplicationEvent
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.evidence_bundles import (
+from auroraagent.db import init_database
+from auroraagent.models import ApplicationEvidenceBundle, ApplicationEvent
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.evidence_bundles import (
     EvidenceBundleConflictError,
     EvidenceBundleNotFound,
     EvidenceBundleValidationError,
@@ -19,8 +19,8 @@ from offerpilot.repositories.evidence_bundles import (
     parse_json_object,
     sha256_text,
 )
-from offerpilot.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 SUBMITTED_AT = datetime(2026, 7, 14, tzinfo=timezone.utc)

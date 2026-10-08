@@ -3,7 +3,7 @@ import sqlite3
 
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def _write_legacy_mock_database(path: Path, *, with_named_indexes: bool = True) -> None:

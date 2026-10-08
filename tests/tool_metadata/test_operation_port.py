@@ -10,9 +10,9 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
 from tests.tool_metadata.golden import load_asset
 
 
@@ -46,7 +46,7 @@ class _LegacyIssuerProbe:
 
 
 def _operation_graph() -> tuple[object, ToolMetadataBundleV1, object, _LegacyIssuerProbe]:
-    compensation_module = _required_module("offerpilot.pilot_runtime.compensation")
+    compensation_module = _required_module("auroraagent.pilot_runtime.compensation")
     components = _required_api(
         compensation_module,
         "prepare_compensation_handler_components",
@@ -61,7 +61,7 @@ def _operation_graph() -> tuple[object, ToolMetadataBundleV1, object, _LegacyIss
     )
     registry = components.bind(bundle.compensation_view())
     legacy_issuer = _LegacyIssuerProbe(bundle.legacy_boundary())
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     port_type = _required_api(metadata_module, "ToolOperationMetadataPort")
     port = port_type(
         operation_view=bundle.operation_view(),
@@ -211,7 +211,7 @@ def test_typed_write_handle_requires_exact_live_segment_and_claim_identity() -> 
     read_spec = lease.resolve("list_applications")
     assert write_spec is not None
     assert read_spec is not None
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     identity_type = _required_api(metadata_module, "OperationRouteIdentityV1")
     identity = identity_type(
         operation_id="operation-1",
@@ -265,7 +265,7 @@ def test_typed_write_handle_requires_exact_live_segment_and_claim_identity() -> 
 
 def test_legacy_handle_requires_the_bound_issuer_port_and_exact_route_identity() -> None:
     port, _, _, issuer = _operation_graph()
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     identity_type = _required_api(metadata_module, "OperationRouteIdentityV1")
     identity = identity_type(
         operation_id="legacy-operation-1",
@@ -297,7 +297,7 @@ def test_compensation_handle_requires_exact_committed_parent_and_handler_provena
     port, bundle, registry, _ = _operation_graph()
     view = bundle.compensation_view()
     handler_handle = registry.bind_handler(view.ordered_handler_bindings[0])
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     parent_type = _required_api(metadata_module, "CommittedPrimaryOperationIdentityV1")
     parent = parent_type(
         operation_id="parent-operation-1",
@@ -368,7 +368,7 @@ def test_compensation_handle_requires_exact_committed_parent_and_handler_provena
 
 def test_operation_handles_are_explicitly_and_idempotently_revocable() -> None:
     port, bundle, registry, issuer = _operation_graph()
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     identity_type = _required_api(metadata_module, "OperationRouteIdentityV1")
     parent_type = _required_api(metadata_module, "CommittedPrimaryOperationIdentityV1")
 
@@ -439,7 +439,7 @@ def test_operation_handles_are_explicitly_and_idempotently_revocable() -> None:
 
 
 def test_operation_route_handle_types_are_opaque_and_not_caller_constructible() -> None:
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
 
     for name in ("TypedWriteHandle", "LegacyWriteHandle", "CompensationHandle"):
         handle_type = _required_api(metadata_module, name)
@@ -448,7 +448,7 @@ def test_operation_route_handle_types_are_opaque_and_not_caller_constructible() 
 
 
 def test_operation_port_source_has_no_bare_name_collection_or_name_switch() -> None:
-    metadata_module = _required_module("offerpilot.ai.tool_runtime.metadata")
+    metadata_module = _required_module("auroraagent.ai.tool_runtime.metadata")
     source_path = Path(cast(str, metadata_module.__file__))
     source = source_path.read_text(encoding="utf-8")
 

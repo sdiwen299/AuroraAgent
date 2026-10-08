@@ -6,11 +6,11 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.ai.tool_specs.common import resolve_identity_argument, resolve_parent_application
+from auroraagent.ai.tool_specs.common import resolve_identity_argument, resolve_parent_application
 
 
 ROOT = Path(__file__).parents[2]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 
 _FORBIDDEN_SYMBOLS = frozenset(
     {
@@ -91,12 +91,12 @@ _CLASSIFICATION_LITERAL_ALLOWLIST = frozenset(
     }
 )
 _LEGACY_PROOF_FORBIDDEN_IMPORTS = (
-    "offerpilot.agent_runtime.journal",
-    "offerpilot.agent_runtime.keyring",
-    "offerpilot.ai.write_operations",
-    "offerpilot.models",
-    "offerpilot.pilot_runtime",
-    "offerpilot.repositories",
+    "auroraagent.agent_runtime.journal",
+    "auroraagent.agent_runtime.keyring",
+    "auroraagent.ai.write_operations",
+    "auroraagent.models",
+    "auroraagent.pilot_runtime",
+    "auroraagent.repositories",
 )
 _FINAL_COMPONENT_FACTORIES = frozenset(
     {
@@ -695,7 +695,7 @@ def _fallback_and_shadow_violations(path: Path, source: str) -> list[str]:
     if path in dispatcher_paths:
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and (
-                node.module == "offerpilot.ai.tool_runtime.legacy"
+                node.module == "auroraagent.ai.tool_runtime.legacy"
                 or any(item.name.startswith("Legacy") for item in node.names)
             ):
                 violations.append(f"dispatcher-legacy-import:{node.lineno}")
@@ -1351,7 +1351,7 @@ def test_negative_fixtures_prove_legacy_catalog_is_proof_only(source: str) -> No
 
 def test_legacy_proof_catalog_cannot_capture_or_query_a_repository() -> None:
     source = (
-        "from offerpilot.repositories.chat import ChatRepository\n"
+        "from auroraagent.repositories.chat import ChatRepository\n"
         "class LegacyDeterministicCatalog:\n"
         "    def __init__(self, repository: ChatRepository):\n"
         "        self.repository = repository\n"

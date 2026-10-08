@@ -15,7 +15,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260823-agent-loop-unification
+D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260823-agent-loop-unification
 ```
 
 Branch and fixed source baseline:
@@ -36,38 +36,38 @@ Do not push or merge. Do not modify the root workspace or another worktree. Do n
 ### File responsibilities
 
 ```text
-src/offerpilot/ai/agent_contracts.py
+src/auroraagent/ai/agent_contracts.py
   Chat model protocols, PendingAction, AgentTurnResult, closed AgentLoopEvent DTOs,
   cancellation/error types, and the strict AgentDriver/ApprovedWriteContinuation protocols.
 
-src/offerpilot/ai/agent_loop.py
+src/auroraagent/ai/agent_loop.py
   NewTurnSeed, ApprovedWriteSeed, AgentLoopInvocation, AgentLoopRunner, explicit while loop,
   frozen-surface model step, baseline ToolCall selection, and Tool Pipeline dispatch.
 
-src/offerpilot/ai/confirmation.py
+src/auroraagent/ai/confirmation.py
   Pure confirmation-edit parsing, canonical JSON validation, Pending revision, and descriptions.
 
-src/offerpilot/context_projector/binding.py
+src/auroraagent/context_projector/binding.py
   Bound response provenance and fail-closed exposed-tool validation.
 
-src/offerpilot/context_projector/gateway.py
+src/auroraagent/context_projector/gateway.py
   Sole production BoundProviderResponse construction and session-owned attempt identities.
 
-src/offerpilot/ai/client.py
+src/auroraagent/ai/client.py
   Expose the existing Gateway Session through the typed model protocol without changing network behavior.
 
-src/offerpilot/pilot_runtime/composition.py
+src/auroraagent/pilot_runtime/composition.py
   One concrete AgentDriver.execute adapter, ProposalJournalGate installation,
   ConfirmationSession-to-ApprovedWriteContinuation adapter, and Agent event projection.
 
-src/offerpilot/pilot_runtime/service.py
+src/auroraagent/pilot_runtime/service.py
   Build NewTurnSeed/ApprovedWriteSeed invocations and call execute exactly once;
   keep rejection/replay/recovery/deterministic routes outside the loop.
 
-src/offerpilot/pilot_runtime/continuation.py
+src/auroraagent/pilot_runtime/continuation.py
   Keep Ledger and delivery state machines; export only the narrow session operations the approved port needs.
 
-src/offerpilot/api.py
+src/auroraagent/api.py
   Compose one Agent Loop dependency; remove run/resume wrappers and dual callable injection.
 
 tests/fixtures/agent_loop/baseline_aaecf5d.json
@@ -173,10 +173,10 @@ git commit -m "test: AI 固化 Agent Loop 基线行为"
 ### Task 2: Define closed Agent contracts and Gateway provenance
 
 **Files:**
-- Create: `src/offerpilot/ai/agent_contracts.py`
-- Modify: `src/offerpilot/context_projector/binding.py`
-- Modify: `src/offerpilot/context_projector/gateway.py`
-- Modify: `src/offerpilot/ai/client.py`
+- Create: `src/auroraagent/ai/agent_contracts.py`
+- Modify: `src/auroraagent/context_projector/binding.py`
+- Modify: `src/auroraagent/context_projector/gateway.py`
+- Modify: `src/auroraagent/ai/client.py`
 - Create: `tests/agent_loop/test_contracts.py`
 - Modify: `tests/test_context_projector.py`
 
@@ -247,7 +247,7 @@ Expected: all pass.
 ### Task 3: Define the two seeds and write the explicit-loop RED matrix
 
 **Files:**
-- Create: `src/offerpilot/ai/agent_loop.py`
+- Create: `src/auroraagent/ai/agent_loop.py`
 - Create: `tests/agent_loop/test_runner.py`
 
 - [ ] **Step 1: Write failing seed and invocation tests**
@@ -313,7 +313,7 @@ Expected: collection or behavior failures because `AgentLoopRunner.run()` is not
 ### Task 4: Implement one explicit while loop and focused GREEN
 
 **Files:**
-- Modify: `src/offerpilot/ai/agent_loop.py`
+- Modify: `src/auroraagent/ai/agent_loop.py`
 - Modify: `tests/agent_loop/test_runner.py`
 
 - [ ] **Step 1: Implement seed bootstrap**
@@ -357,7 +357,7 @@ Execute all-read batches in Provider order. If any selected response call resolv
 
 ```powershell
 uv run pytest tests/agent_loop/test_contracts.py tests/agent_loop/test_runner.py tests/test_context_projector.py -q
-uv run ruff check src/offerpilot/ai/agent_contracts.py src/offerpilot/ai/agent_loop.py src/offerpilot/context_projector tests/agent_loop
+uv run ruff check src/auroraagent/ai/agent_contracts.py src/auroraagent/ai/agent_loop.py src/auroraagent/context_projector tests/agent_loop
 ```
 
 Expected: all pass and Ruff exits 0.
@@ -365,9 +365,9 @@ Expected: all pass and Ruff exits 0.
 ### Task 5: Extract pure confirmation editing and remove the old Agent module
 
 **Files:**
-- Create: `src/offerpilot/ai/confirmation.py`
-- Delete: `src/offerpilot/ai/agent.py`
-- Modify: all production/test imports returned by `rg -l "offerpilot\.ai\.agent" src tests`
+- Create: `src/auroraagent/ai/confirmation.py`
+- Delete: `src/auroraagent/ai/agent.py`
+- Modify: all production/test imports returned by `rg -l "auroraagent\.ai\.agent" src tests`
 - Modify: `tests/test_ai_agent.py` by splitting retained edit-contract cases into `tests/agent_loop/test_confirmation.py` and loop cases into `tests/agent_loop/test_runner.py`
 
 - [ ] **Step 1: Move pure edit tests before implementation**
@@ -380,7 +380,7 @@ Move the existing `prepare_pending_action` cases unchanged except imports. Add a
 uv run pytest tests/agent_loop/test_confirmation.py -q
 ```
 
-Expected: fail because `offerpilot.ai.confirmation` does not exist.
+Expected: fail because `auroraagent.ai.confirmation` does not exist.
 
 - [ ] **Step 3: Move the pure implementation**
 
@@ -401,8 +401,8 @@ Expected: all retained tests pass and no test imports the deleted module.
 ### Task 6: Cut start sync/stream to AgentDriver.execute(NewTurnSeed)
 
 **Files:**
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Modify: `tests/pilot_runtime/test_start_turn.py`
 - Modify: `tests/pilot_runtime/test_stream_preparation.py`
 - Modify: `tests/pilot_runtime/test_event_sink.py`
@@ -442,9 +442,9 @@ Expected: all pass with exact prior Runtime/SSE outcomes.
 ### Task 7: Cut approve/modify sync/stream to ApprovedWriteSeed
 
 **Files:**
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Modify: `tests/pilot_runtime/test_confirmation.py`
 - Modify: `tests/pilot_runtime/test_stream_preparation.py`
 - Modify: `tests/test_chat_api.py`
@@ -496,8 +496,8 @@ Expected: all pass with one claim winner and exact Ledger/delivery state.
 ### Task 8: Remove dual composition injection and LangGraph dependencies
 
 **Files:**
-- Modify: `src/offerpilot/api.py`
-- Modify: `src/offerpilot/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/api.py`
+- Modify: `src/auroraagent/pilot_runtime/composition.py`
 - Modify: `pyproject.toml`
 - Modify mechanically with uv: `uv.lock`
 - Modify: imports/tests identified by source scan

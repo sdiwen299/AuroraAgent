@@ -4,7 +4,7 @@ from pathlib import Path
 
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def test_application_outcome_schema_is_additive_and_idempotent(tmp_path: Path) -> None:

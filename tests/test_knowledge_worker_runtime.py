@@ -11,14 +11,14 @@ from typing import Any
 
 from PIL import Image
 
-from offerpilot.config import Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.assets import AssetInput
-from offerpilot.knowledge.repository import KnowledgeRepository
-from offerpilot.knowledge.runtime import KnowledgeWorkerRuntime
-from offerpilot.knowledge.service import IngestRequest, KnowledgeIngestService
-from offerpilot.knowledge.worker import ExtractionWorker
-from offerpilot.models import KnowledgeJob
+from auroraagent.config import Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.assets import AssetInput
+from auroraagent.knowledge.repository import KnowledgeRepository
+from auroraagent.knowledge.runtime import KnowledgeWorkerRuntime
+from auroraagent.knowledge.service import IngestRequest, KnowledgeIngestService
+from auroraagent.knowledge.worker import ExtractionWorker
+from auroraagent.models import KnowledgeJob
 
 
 def _png_bytes() -> bytes:

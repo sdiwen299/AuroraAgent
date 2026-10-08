@@ -55,7 +55,7 @@ export default function Sidebar({
     >
       <div className={styles.brand}>
         <span className={styles.brandMark} aria-hidden="true">OP</span>
-        <span className={styles.brandName}>OfferPilot</span>
+        <span className={styles.brandName}>曙光</span>
         {onToggleCollapse ? (
           <button
             type="button"

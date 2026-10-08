@@ -74,7 +74,7 @@ INTERVIEW_ITEM_KEYS = frozenset(
         "preparation_available",
     }
 )
-INTERVIEW_SERIALIZER_PATH = "src/offerpilot/api.py"
+INTERVIEW_SERIALIZER_PATH = "src/auroraagent/api.py"
 INTERVIEW_SERIALIZER_NAME = "_interview_index_item_json"
 INTERVIEW_NOTE_SOURCE_STATUSES = frozenset({"current", "source_changed"})
 RFC3339 = re.compile(
@@ -304,7 +304,7 @@ def test_interview_asset_matches_the_immutable_baseline_serializer_keys() -> Non
 
 
 def test_production_python_does_not_read_review_only_core_task_assets() -> None:
-    source_root = REPOSITORY_ROOT / "src" / "offerpilot"
+    source_root = REPOSITORY_ROOT / "src" / "auroraagent"
     forbidden = set(ASSET_NAMES) | {"tests/fixtures/core_task_surface", "core_task_surface"}
     for source_path in source_root.rglob("*.py"):
         tree = ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))

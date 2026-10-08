@@ -13,18 +13,18 @@ from uuid import uuid4
 
 import pytest
 
-import offerpilot.pilot_runtime.composition as composition_module
-from offerpilot.chat_transport import PreparedStreamGuard, SseAgentExecutionHost
-from offerpilot.ai.agent_contracts import AgentTurnResult, PendingAction
-from offerpilot.ai.agent_loop import (
+import auroraagent.pilot_runtime.composition as composition_module
+from auroraagent.chat_transport import PreparedStreamGuard, SseAgentExecutionHost
+from auroraagent.ai.agent_contracts import AgentTurnResult, PendingAction
+from auroraagent.ai.agent_loop import (
     AgentLoopInvocation,
     ApprovedContinuationSegment,
     SegmentSurfaceGate,
     build_segment_surface_gate,
 )
-from offerpilot.ai.tool_authority import AuthorityFactory, TrustedContextScope
-from offerpilot.ai.tool_authority.contracts import SegmentExecutionAuthority
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.tool_authority import AuthorityFactory, TrustedContextScope
+from auroraagent.ai.tool_authority.contracts import SegmentExecutionAuthority
+from auroraagent.ai.write_operations import (
     DeliveryOwnership,
     LedgerOperationPreheader,
     OperationCommitted,
@@ -32,26 +32,26 @@ from offerpilot.ai.write_operations import (
     TerminalPayload,
     WriteOperationError,
 )
-from offerpilot.ai.tool_authority.policy import validate_startup_policy
-from offerpilot.ai.tool_runtime.catalog import (
+from auroraagent.ai.tool_authority.policy import validate_startup_policy
+from auroraagent.ai.tool_runtime.catalog import (
     SegmentToolCatalogLease,
 )
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.agent_runtime.journal import NullRunRecorder, RunRecorderFactory
-from offerpilot.agent_runtime.keyring import JournalKeyDomain
-from offerpilot.db import init_database
-from offerpilot.pilot_runtime.persistence import ChatPersistenceCoordinator
-from offerpilot.repositories.agent_runs import AgentRunRepository
-from offerpilot.repositories.chat import ChatRepository
-from offerpilot.repositories.application_events import ApplicationEventsRepository
-from offerpilot.repositories.applications import ApplicationsRepository
-from offerpilot.repositories.jd import JDAnalysesRepository
-from offerpilot.repositories.notes import NotesRepository
-from offerpilot.repositories.offers import OffersRepository
-from offerpilot.repositories.resumes import ResumesRepository
-from offerpilot.pilot_runtime.errors import RuntimeCancelled, RuntimeTransportAborted
-from offerpilot.pilot_runtime.contracts import (
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.agent_runtime.journal import NullRunRecorder, RunRecorderFactory
+from auroraagent.agent_runtime.keyring import JournalKeyDomain
+from auroraagent.db import init_database
+from auroraagent.pilot_runtime.persistence import ChatPersistenceCoordinator
+from auroraagent.repositories.agent_runs import AgentRunRepository
+from auroraagent.repositories.chat import ChatRepository
+from auroraagent.repositories.application_events import ApplicationEventsRepository
+from auroraagent.repositories.applications import ApplicationsRepository
+from auroraagent.repositories.jd import JDAnalysesRepository
+from auroraagent.repositories.notes import NotesRepository
+from auroraagent.repositories.offers import OffersRepository
+from auroraagent.repositories.resumes import ResumesRepository
+from auroraagent.pilot_runtime.errors import RuntimeCancelled, RuntimeTransportAborted
+from auroraagent.pilot_runtime.contracts import (
     AssistantMessageEvent,
     CancelReason,
     CompletedEvent,
@@ -74,13 +74,13 @@ from offerpilot.pilot_runtime.contracts import (
     ToolCallEvent,
     UserMessageSavedEvent,
 )
-from offerpilot.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
-from offerpilot.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
-from offerpilot.pilot_runtime.continuation import (
+from auroraagent.pilot_runtime.event_sink import InMemoryRuntimeInvocationControl
+from auroraagent.pilot_runtime.persistence import PersistenceResult, PersistenceStatus
+from auroraagent.pilot_runtime.continuation import (
     ConfirmationApprovedWritePort,
     ConfirmationSession,
 )
-from offerpilot.pilot_runtime.service import (
+from auroraagent.pilot_runtime.service import (
     PilotRuntime,
     ResolvedPolicyCatalog,
     ResolvedModel,
@@ -91,7 +91,7 @@ from offerpilot.pilot_runtime.service import (
     _freeze_stream_value,
     _materialize_stream_value,
 )
-from offerpilot.ai.types import Assistant, Message, ToolCall
+from auroraagent.ai.types import Assistant, Message, ToolCall
 from tests.tool_metadata.test_production_bundle import _production_components
 
 
@@ -99,7 +99,7 @@ _METADATA_COMPONENTS = _production_components()
 _METADATA_BUNDLE = _METADATA_COMPONENTS.bundle
 _TEST_TOOL_CATALOG = _METADATA_COMPONENTS.typed_catalog
 _AUTHORITY_SESSIONS = init_database(
-    Path(tempfile.mkdtemp(prefix="offerpilot-stream-authority-")) / "authority.db"
+    Path(tempfile.mkdtemp(prefix="auroraagent-stream-authority-")) / "authority.db"
 )
 _AUTHORITY_POLICY = validate_startup_policy(_TEST_TOOL_CATALOG.authority_manifest)
 
@@ -1402,7 +1402,7 @@ def test_real_stream_run_recorder_keeps_transport_uuid_and_terminal_events(
     request: pytest.FixtureRequest,
 ) -> None:
     data_dir = tmp_path
-    sessions = init_database(data_dir / "offerpilot.db")
+    sessions = init_database(data_dir / "auroraagent.db")
     request.addfinalizer(lambda: sessions.kw["bind"].dispose())
     chat = ChatRepository(sessions)
     conversation = chat.create_conversation("real stream journal")
@@ -1945,7 +1945,7 @@ def test_bare_execute_after_lifecycle_begin_is_rejected_without_side_effects() -
 
 
 def test_guard_does_not_execute_after_completion_winner() -> None:
-    from offerpilot.pilot_runtime.contracts import PreparedLifecycle
+    from auroraagent.pilot_runtime.contracts import PreparedLifecycle
 
     lifecycle = PreparedLifecycle()
     calls: list[str] = []
@@ -1999,8 +1999,8 @@ def test_background_finalizer_does_not_complete_active_body_owner() -> None:
         await task
         return during, lifecycle.state
 
-    from offerpilot.chat_transport import GuardedStreamingResponse
-    from offerpilot.pilot_runtime.contracts import PreparedLifecycle, PreparedLifecycleState
+    from auroraagent.chat_transport import GuardedStreamingResponse
+    from auroraagent.pilot_runtime.contracts import PreparedLifecycle, PreparedLifecycleState
 
     during, after = asyncio.run(scenario())
     assert during is PreparedLifecycleState.EXECUTING

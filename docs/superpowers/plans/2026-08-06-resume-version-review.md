@@ -6,7 +6,7 @@
 
 **Architecture:** 用不依赖 React 或网络的 `resumeVersionDiff.ts` 递归比较两个 `content_json`，在公开结果边界完成值归一化和 Unicode 安全截断。`ResumeVersionCompareDrawer` 负责基准选择、空状态和差异展示；`ResumeLibraryView` 只从已有 `resumes` 查询结果管理目标版本和 Drawer，不新增读取或写入 service。
 
-**Tech Stack:** React 18、TypeScript、Ant Design、TanStack Query、Vitest、jsdom、Vite、PowerShell、本地 `OFFERPILOT_DATA` 隔离目录。
+**Tech Stack:** React 18、TypeScript、Ant Design、TanStack Query、Vitest、jsdom、Vite、PowerShell、本地 `AURORA_AGENT_DATA` 隔离目录。
 
 ---
 
@@ -15,7 +15,7 @@
 工作目录和分支固定为：
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260806-resume-version-review
+D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260806-resume-version-review
 feat/20260806-resume-version-review
 ```
 
@@ -48,7 +48,7 @@ docs/superpowers/plans/2026-08-06-resume-version-review.md
 docs/reports/2026-08-06-resume-version-review-browser-acceptance.md
 ```
 
-禁止修改 `web/src/services/**`、`web/src/types/**`、`web/src/layout/AppShell.tsx`、`web/src/components/ApplicationDetail.tsx`、`src/offerpilot/**`、`tests/**`，以及任何 JD、Opportunity Fit、材料、面试或 Pilot 文件。
+禁止修改 `web/src/services/**`、`web/src/types/**`、`web/src/layout/AppShell.tsx`、`web/src/components/ApplicationDetail.tsx`、`src/auroraagent/**`、`tests/**`，以及任何 JD、Opportunity Fit、材料、面试或 Pilot 文件。
 
 每个任务先写红灯测试，再实现最小行为，再运行对应测试。所有提交信息遵守仓库规则，例如 `test: AI define resume diff contract`、`feat: AI add resume version comparison`。
 
@@ -262,7 +262,7 @@ it('builds a safe canonical tree for nested unsupported values in a container', 
   expect(result.items).toHaveLength(1);
   expect(result.items[0].path).toBe('/projects');
   expect(result.items[0].after?.valueType).toBe('array');
-  expect(result.items[0].after?.text.full).toContain('__offerpilot_unsupported__');
+  expect(result.items[0].after?.text.full).toContain('__auroraagent_unsupported__');
   expect(result.items[0].after?.text.full).not.toContain('no raw function text');
   expect(result.items[0].after?.text.full).not.toContain('no raw symbol text');
   expect(getterCalls).toBe(0);
@@ -270,7 +270,7 @@ it('builds a safe canonical tree for nested unsupported values in a container', 
   const removedResult = diffResumeContent({ projects: [added] }, {});
   expect(removedResult.items).toHaveLength(1);
   expect(removedResult.items[0].path).toBe('/projects');
-  expect(removedResult.items[0].before?.text.full).toContain('__offerpilot_unsupported__');
+  expect(removedResult.items[0].before?.text.full).toContain('__auroraagent_unsupported__');
   expect(removedResult.items[0].before?.text.full).not.toContain('no raw function text');
 });
 ```
@@ -335,7 +335,7 @@ if (Object.is(left, right)) return;
 
 - [ ] **Step 5: 实现安全值和 canonical JSON**
 
-使用固定占位文本 `（无法安全展示）` 和固定嵌套节点 `{"__offerpilot_unsupported__":"（无法安全展示）"}`。字符串使用原文；有限数字、布尔、`null` 使用固定字面量；`NaN`、`Infinity` 和其他不支持标量映射为该固定节点。普通对象和数组必须先由递归 safe-tree 构造器处理每个嵌套值，再对 safe tree 做排序键后的 canonical JSON；绝不对原始容器调用 `JSON.stringify`。循环、函数、Symbol、BigInt、`undefined`、异常 getter、抛错 Proxy 和异常子容器只进入固定节点，不调用不可信 `toString()`。所有最终文本通过 `Array.from(text)` 按 code point 截断到 160，超出时追加 `…`，不规范化 Unicode。
+使用固定占位文本 `（无法安全展示）` 和固定嵌套节点 `{"__auroraagent_unsupported__":"（无法安全展示）"}`。字符串使用原文；有限数字、布尔、`null` 使用固定字面量；`NaN`、`Infinity` 和其他不支持标量映射为该固定节点。普通对象和数组必须先由递归 safe-tree 构造器处理每个嵌套值，再对 safe tree 做排序键后的 canonical JSON；绝不对原始容器调用 `JSON.stringify`。循环、函数、Symbol、BigInt、`undefined`、异常 getter、抛错 Proxy 和异常子容器只进入固定节点，不调用不可信 `toString()`。所有最终文本通过 `Array.from(text)` 按 code point 截断到 160，超出时追加 `…`，不规范化 Unicode。
 
 - [ ] **Step 6: 实现计数和 identical**
 
@@ -542,12 +542,12 @@ cd web
 npm.cmd run build
 cd ..
 
-$tempData = Join-Path ([IO.Path]::GetTempPath()) ('offerpilot-resume-version-review-' + [Guid]::NewGuid().ToString('N'))
+$tempData = Join-Path ([IO.Path]::GetTempPath()) ('auroraagent-resume-version-review-' + [Guid]::NewGuid().ToString('N'))
 $probe = [Net.Sockets.TcpListener]::new([Net.IPAddress]::Loopback, 0)
 $probe.Start()
 $port = ([Net.IPEndPoint]$probe.LocalEndpoint).Port
 $probe.Stop()
-$previousData = $env:OFFERPILOT_DATA
+$previousData = $env:AURORA_AGENT_DATA
 $server = $null
 
 function Get-ProcessTreeIds([int]$rootId) {
@@ -562,10 +562,10 @@ function Get-ProcessTreeIds([int]$rootId) {
 ```powershell
 try {
   New-Item -ItemType Directory -Force -Path $tempData | Out-Null
-  $env:OFFERPILOT_DATA = $tempData
+  $env:AURORA_AGENT_DATA = $tempData
   $server = Start-Process powershell -WindowStyle Hidden -PassThru -ArgumentList @(
   '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command',
-  "Set-Location '$((Get-Location).Path)'; `$env:OFFERPILOT_DATA = '$tempData'; uv run oc start --port $port"
+  "Set-Location '$((Get-Location).Path)'; `$env:AURORA_AGENT_DATA = '$tempData'; uv run oc start --port $port"
   )
 $healthUri = "http://127.0.0.1:$port/api/health"
 $ready = $false
@@ -575,7 +575,7 @@ for ($attempt = 0; $attempt -lt 40; $attempt++) {
     if ($health) { $ready = $true; break }
   } catch { Start-Sleep -Milliseconds 500 }
 }
-if (-not $ready) { throw "local OfferPilot did not become healthy: $healthUri" }
+if (-not $ready) { throw "local AuroraAgent did not become healthy: $healthUri" }
 
 $resumeBody = @{
   title = '中文主简历'
@@ -636,15 +636,15 @@ finally {
     $tempParent = [IO.Path]::GetDirectoryName($tempFull)
     if (-not $tempFull.StartsWith($tempRoot, [StringComparison]::OrdinalIgnoreCase) -or
         $tempParent.TrimEnd('\', '/') -ne $tempRoot.TrimEnd('\', '/') -or
-        -not $tempLeaf.StartsWith('offerpilot-resume-version-review-', [StringComparison]::OrdinalIgnoreCase)) {
+        -not $tempLeaf.StartsWith('auroraagent-resume-version-review-', [StringComparison]::OrdinalIgnoreCase)) {
       throw "refusing to remove non-temporary path: $tempFull"
     }
     if (Test-Path -LiteralPath $tempFull) { Remove-Item -LiteralPath $tempFull -Recurse -Force }
     if (Test-Path -LiteralPath $tempFull) { throw "temporary data cleanup failed: $tempFull" }
   }
   finally {
-    if ($null -eq $previousData) { Remove-Item Env:OFFERPILOT_DATA -ErrorAction SilentlyContinue }
-    else { $env:OFFERPILOT_DATA = $previousData }
+    if ($null -eq $previousData) { Remove-Item Env:AURORA_AGENT_DATA -ErrorAction SilentlyContinue }
+    else { $env:AURORA_AGENT_DATA = $previousData }
   }
 }
 ```
@@ -755,7 +755,7 @@ $jdFiles = @(
 ) | Where-Object { $_ } | Sort-Object -Unique
 $unexpected = @($featureFiles | Where-Object { $_ -notin $allowlist })
 $intersection = @($featureFiles | Where-Object { $_ -in $jdFiles }) | Sort-Object -Unique
-$bannedPrefixes = @('src/offerpilot/', 'web/src/services/', 'web/src/types/', 'tests/')
+$bannedPrefixes = @('src/auroraagent/', 'web/src/services/', 'web/src/types/', 'tests/')
 $banned = @($featureFiles | Where-Object {
   $path = $_
   @($bannedPrefixes | Where-Object { $path.StartsWith($_) }).Count -gt 0
@@ -765,7 +765,7 @@ if ($intersection.Count -ne 0) { $intersection; throw 'JD branch intersection is
 if ($banned.Count -ne 0) { $banned; throw 'forbidden backend/service/type/test path changed' }
 ```
 
-该检查通过 allowlist、禁止前缀和分支交集三重断言，证明没有 `src/offerpilot/**`、`web/src/services/**`、`web/src/types/**`、`tests/**` 或其他共享模块改动。
+该检查通过 allowlist、禁止前缀和分支交集三重断言，证明没有 `src/auroraagent/**`、`web/src/services/**`、`web/src/types/**`、`tests/**` 或其他共享模块改动。
 
 - [ ] **Step 4: 运行格式检查并确认工作区状态**
 

@@ -17,7 +17,7 @@ from typing import Any
 
 import pytest
 
-from offerpilot.knowledge.brief import (
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_PROMPT_VERSION,
     BRIEF_SCHEMA_VERSION,
@@ -428,10 +428,10 @@ def test_derive_document_toplevel_section_covered() -> None:
 
 from pathlib import Path  # noqa: E402
 
-from offerpilot.config import AIProviderProfile, Config  # noqa: E402
-from offerpilot.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW  # noqa: E402
-from offerpilot.knowledge.repository import BriefAttemptCreateInput  # noqa: E402
-from offerpilot.knowledge.service import KnowledgeIngestService  # noqa: E402
+from auroraagent.config import AIProviderProfile, Config  # noqa: E402
+from auroraagent.knowledge.brief import BRIEF_MIN_CONTEXT_WINDOW  # noqa: E402
+from auroraagent.knowledge.repository import BriefAttemptCreateInput  # noqa: E402
+from auroraagent.knowledge.service import KnowledgeIngestService  # noqa: E402
 
 from _knowledge_seam import (  # noqa: E402
     RoleAwareModelClient,
@@ -489,7 +489,7 @@ def test_worker_blocks_brief_when_no_text_evidence(tmp_path: Path) -> None:
 
 def test_schema_version_v2_marks_v1_brief_outdated(tmp_path: Path) -> None:
     """KBR-04：schema_version 升级使旧 v1 Brief 正确标记 outdated。"""
-    content = "# 概述\n\nSource 描述 OfferPilot。\n\n## 第二段\n\n另一段 Evidence。\n".encode(
+    content = "# 概述\n\nSource 描述 AuroraAgent。\n\n## 第二段\n\n另一段 Evidence。\n".encode(
         "utf-8"
     )
     repository, session_factory, source_id, snapshot_id = ingest_and_extract(
@@ -537,7 +537,7 @@ def test_prompt_version_change_alone_marks_brief_outdated(tmp_path: Path) -> Non
     与 schema_version，本用例固定 schema_version 为当前值，只把 prompt_version 设成旧值，
     证明 outdated 判定不依赖 schema_version 同时变化。
     """
-    content = "# 概述\n\nSource 描述 OfferPilot。\n\n## 第二段\n\n另一段 Evidence。\n".encode(
+    content = "# 概述\n\nSource 描述 AuroraAgent。\n\n## 第二段\n\n另一段 Evidence。\n".encode(
         "utf-8"
     )
     repository, session_factory, source_id, snapshot_id = ingest_and_extract(
@@ -579,7 +579,7 @@ def test_prompt_version_change_alone_marks_brief_outdated(tmp_path: Path) -> Non
 def test_seam_model_coverage_field_cannot_bypass_coverage_gate(tmp_path: Path) -> None:
     """KBR-04：模型返回 coverage 字段谎称 covered，但缺实际 citation 仍被门禁拒。"""
     content = (
-        "# 概述\n\nSource 描述 OfferPilot 架构。\n\n"
+        "# 概述\n\nSource 描述 AuroraAgent 架构。\n\n"
         "## 第二段\n\n另一章节的独立 Evidence。\n"
     ).encode("utf-8")
     repository, session_factory, source_id, snapshot_id = ingest_and_extract(

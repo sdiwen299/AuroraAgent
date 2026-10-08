@@ -8,7 +8,7 @@ import pytest
 
 
 ROOT = Path(__file__).parents[2]
-SRC = ROOT / "src" / "offerpilot"
+SRC = ROOT / "src" / "auroraagent"
 AI = SRC / "ai"
 
 _LEGACY_AGENT_SYMBOLS = {
@@ -34,9 +34,9 @@ _LEGACY_AGENT_SYMBOLS = {
 _LOOP_FORBIDDEN_IMPORT_PREFIXES = (
     "fastapi",
     "starlette",
-    "offerpilot.chat_transport",
-    "offerpilot.pilot_runtime",
-    "offerpilot.repositories",
+    "auroraagent.chat_transport",
+    "auroraagent.pilot_runtime",
+    "auroraagent.repositories",
 )
 _OLD_PATH_SWITCH_FRAGMENTS = {
     "agent_loop_enabled",

@@ -10,9 +10,9 @@ from typing import Any
 import pytest
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.db import init_database, session_factory_for_data_dir
-from offerpilot.knowledge.brief import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.db import init_database, session_factory_for_data_dir
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_MIN_CONTEXT_WINDOW,
     BRIEF_PROMPT_VERSION,
@@ -28,15 +28,15 @@ from offerpilot.knowledge.brief import (
     parse_support_decision,
     validate_brief_against_evidence,
 )
-from offerpilot.knowledge.repository import (
+from auroraagent.knowledge.repository import (
     BriefAttemptCreateInput,
     EvidenceRecord,
     JobCreateInput,
     KnowledgeBriefAttemptError,
     KnowledgeRepository,
 )
-from offerpilot.knowledge.service import IngestRequest
-from offerpilot.knowledge.worker import (
+from auroraagent.knowledge.service import IngestRequest
+from auroraagent.knowledge.worker import (
     ExtractionWorker,
     BriefWorker,
     KnowledgeJobRunner,
@@ -53,7 +53,7 @@ def _valid_payload_dict() -> dict[str, Any]:
         "schema_version": 2,
         "language": "zh-CN",
         "overview": [
-            {"statement": "Source 描述了 OfferPilot 架构。", "evidence_ids": ["ev_1"]},
+            {"statement": "Source 描述了 AuroraAgent 架构。", "evidence_ids": ["ev_1"]},
             {"statement": "Source 给出 SQLite SSOT 决策。", "evidence_ids": ["ev_2"]},
         ],
         "key_points": [
@@ -63,7 +63,7 @@ def _valid_payload_dict() -> dict[str, Any]:
             {
                 "section_key": "概述",
                 "heading_path": ["概述"],
-                "summary": "该章节介绍 OfferPilot 整体方向。",
+                "summary": "该章节介绍 AuroraAgent 整体方向。",
                 "evidence_ids": ["ev_1"],
             },
         ],
@@ -416,7 +416,7 @@ def test_generation_prompt_marks_assets_only_sections() -> None:
 
 def test_repair_prompt_restricts_to_fixes() -> None:
     """Spec §10.3 / KBR-06 repair 只能对失败 block 返回 replace/delete/split patch。"""
-    from offerpilot.knowledge.brief import ISSUE_CITATION_MISSING, ValidationIssue
+    from auroraagent.knowledge.brief import ISSUE_CITATION_MISSING, ValidationIssue
 
     evidence_row = _evidence_record(evidence_id="ev_1")
     messages = build_repair_prompt(
@@ -468,13 +468,13 @@ def _setup_repository(tmp_path: Path) -> tuple[KnowledgeRepository, sessionmaker
 
     # 通过 service 走完一次完整 ingest，再显式驱动 Extraction queue，
     # 得到一个 extracted Source（ingest 只入队 extract job）。
-    from offerpilot.knowledge.service import KnowledgeIngestService
+    from auroraagent.knowledge.service import KnowledgeIngestService
 
     service = KnowledgeIngestService(repository, tmp_path, session_factory)
     result = service.ingest(
         IngestRequest(
             filename="doc.md",
-            content_bytes="# 概述\n\nSource 描述 OfferPilot 与 SQLite。\n\n## 第二段\n\n另一条 Evidence。\n".encode("utf-8"),
+            content_bytes="# 概述\n\nSource 描述 AuroraAgent 与 SQLite。\n\n## 第二段\n\n另一条 Evidence。\n".encode("utf-8"),
             title_hint="测试",
         )
     )
@@ -764,7 +764,7 @@ def _build_valid_payload_from_evidence(evidence_page_items: list[EvidenceRecord]
     """
     evidence_ids = [item.id for item in evidence_page_items]
     assert len(evidence_ids) >= 2
-    from offerpilot.knowledge.brief import build_section_coverage_plan
+    from auroraagent.knowledge.brief import build_section_coverage_plan
 
     plan = build_section_coverage_plan(evidence_page_items)
     section_eids: dict[str, list[str]] = {}
@@ -934,7 +934,7 @@ def test_validator_parse_failure_is_replayed_as_structured_step(tmp_path: Path) 
 
 def test_attempt_step_api_drops_legacy_preview() -> None:
     """旧库中截断 preview 也不得通过 API 暴露。"""
-    from offerpilot.api import _knowledge_brief_attempt_step_payload
+    from auroraagent.api import _knowledge_brief_attempt_step_payload
 
     payload = _knowledge_brief_attempt_step_payload(
         SimpleNamespace(

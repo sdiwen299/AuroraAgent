@@ -8,9 +8,9 @@ import pytest
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, sessionmaker
 
-from offerpilot.ai.types import Assistant
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.ai.types import Assistant
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     ApplicationEvent,
     ApplicationJDVersion,
@@ -18,16 +18,16 @@ from offerpilot.models import (
     MaterialRevisionProposal,
     Resume,
 )
-from offerpilot.repositories.applications import ApplicationCreate, ApplicationsRepository
-from offerpilot.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
-from offerpilot.repositories import material_revision_proposals as material_revision_proposals_module
-from offerpilot.repositories.material_revision_proposals import (
+from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.material_kits import MaterialKitCreate, MaterialKitsRepository
+from auroraagent.repositories import material_revision_proposals as material_revision_proposals_module
+from auroraagent.repositories.material_revision_proposals import (
     MaterialProposalConflictError,
     MaterialProposalNotFound,
     MaterialProposalValidationError,
     MaterialRevisionProposalsRepository,
 )
-from offerpilot.repositories.resumes import ResumeCreate, ResumesRepository
+from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 
 
 class _TrackedSession:

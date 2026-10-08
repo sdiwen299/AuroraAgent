@@ -21,11 +21,11 @@
 2. **契约与生成器**
    - `contracts/recovery-policy.v1.json`；
    - `scripts/generate_recovery_contract.py`：校验（缺字段/重复 code/未知 disposition 非零退出）+ 确定性生成；
-   - 生成 `src/offerpilot/reliability/recovery_policy_generated.py` 与
+   - 生成 `src/auroraagent/reliability/recovery_policy_generated.py` 与
      `web/src/lib/recoveryPolicy/generatedRecoveryPolicy.ts`；
    - 测试：生成器重跑零差异。
 3. **Python 消费**
-   - `src/offerpilot/reliability/policy.py`：查询助手 + `recovery_error_response`；
+   - `src/auroraagent/reliability/policy.py`：查询助手 + `recovery_error_response`；
    - `api.py` mock-interview 端点改用契约助手（含补齐缺失 error_code 的对齐修正）；
 4. **前端消费**
    - `web/src/lib/recoveryPolicy/recoveryPolicy.ts`：`resolveErrorRecovery`；
@@ -33,7 +33,7 @@
 5. **Harness 消费**
    - `smoke.py`：real-AI 失败处理按 disposition（terminal→删除重建；retry_same_key→至多一次同 key 重放；其余→终止并报 disposition）；`_assert_mock_interview_attempt_restart_state` 改为契约驱动。
 6. **Trace Envelope**
-   - `src/offerpilot/reliability/trace.py`；api.py 在 question/feedback 操作处记录成功/修复/终态/未知四类结局。
+   - `src/auroraagent/reliability/trace.py`；api.py 在 question/feedback 操作处记录成功/修复/终态/未知四类结局。
 7. **Feedback 证据 ID**
    - `ai/mock_interview.py::generate_feedback` 改 evidence_ids；更新受控 Provider 测试。
 8. **门禁**

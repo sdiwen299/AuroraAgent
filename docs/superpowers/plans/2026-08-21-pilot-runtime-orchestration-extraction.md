@@ -15,7 +15,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260821-pilot-runtime-orchestration
+D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260821-pilot-runtime-orchestration
 ```
 
 Branch:
@@ -42,54 +42,54 @@ plan during execution. Any contract change stops implementation and returns to d
 ### File responsibilities
 
 ```text
-src/offerpilot/pilot_runtime/__init__.py
+src/auroraagent/pilot_runtime/__init__.py
   Stable internal exports only.
 
-src/offerpilot/pilot_runtime/contracts.py
+src/auroraagent/pilot_runtime/contracts.py
   Request DTOs, RuntimeOutcome, RuntimeEvent, Prepared lifecycle, invocation control, protocols.
 
-src/offerpilot/pilot_runtime/errors.py
+src/auroraagent/pilot_runtime/errors.py
   RuntimeCancelled, RuntimeTransportAborted, and closed product failure categories.
 
-src/offerpilot/pilot_runtime/event_sink.py
+src/auroraagent/pilot_runtime/event_sink.py
   Safe event/cancel wrappers; no FastAPI or persistence.
 
-src/offerpilot/pilot_runtime/persistence.py
+src/auroraagent/pilot_runtime/persistence.py
   ChatMessage/Pending/clarification orchestration over existing ChatRepository methods.
 
-src/offerpilot/pilot_runtime/deterministic.py
+src/auroraagent/pilot_runtime/deterministic.py
   Explicit bridge for current server-trusted deterministic Pilot actions and confirmations.
 
-src/offerpilot/pilot_runtime/continuation.py
+src/auroraagent/pilot_runtime/continuation.py
   Ledger-first confirmation, claim, heartbeat, replay, delivery, fallback, and fencing orchestration.
 
-src/offerpilot/pilot_runtime/service.py
+src/auroraagent/pilot_runtime/service.py
   Single state machine for start_turn, prepare_stream, execute_prepared_stream, and confirmation.
 
-src/offerpilot/pilot_runtime/composition.py
+src/auroraagent/pilot_runtime/composition.py
   Construct PilotRuntime from existing repositories, model resolver, catalog, recorder factory, and clocks.
 
-src/offerpilot/chat_transport.py
+src/auroraagent/chat_transport.py
   FastAPI HTTP/SSE mapping, AgentExecutionHost, unbounded Queue, PreparedStreamGuard, guarded response.
 
-src/offerpilot/api.py
+src/auroraagent/api.py
   Request normalization, auth entry, Runtime invocation, and final FastAPI response only.
 ```
 
 ### Exact positive allowlist
 
 ```text
-src/offerpilot/pilot_runtime/__init__.py
-src/offerpilot/pilot_runtime/contracts.py
-src/offerpilot/pilot_runtime/errors.py
-src/offerpilot/pilot_runtime/event_sink.py
-src/offerpilot/pilot_runtime/persistence.py
-src/offerpilot/pilot_runtime/deterministic.py
-src/offerpilot/pilot_runtime/continuation.py
-src/offerpilot/pilot_runtime/service.py
-src/offerpilot/pilot_runtime/composition.py
-src/offerpilot/chat_transport.py
-src/offerpilot/api.py
+src/auroraagent/pilot_runtime/__init__.py
+src/auroraagent/pilot_runtime/contracts.py
+src/auroraagent/pilot_runtime/errors.py
+src/auroraagent/pilot_runtime/event_sink.py
+src/auroraagent/pilot_runtime/persistence.py
+src/auroraagent/pilot_runtime/deterministic.py
+src/auroraagent/pilot_runtime/continuation.py
+src/auroraagent/pilot_runtime/service.py
+src/auroraagent/pilot_runtime/composition.py
+src/auroraagent/chat_transport.py
+src/auroraagent/api.py
 tests/pilot_runtime/__init__.py
 tests/pilot_runtime/test_baseline_golden.py
 tests/pilot_runtime/test_contracts.py
@@ -117,9 +117,9 @@ expanding the allowlist silently.
 **Files:**
 - Read: `docs/superpowers/specs/2026-08-21-pilot-runtime-orchestration-extraction-design.md`
 - Read: `docs/superpowers/plans/2026-08-21-pilot-runtime-orchestration-extraction.md`
-- Create outside repository: `%TEMP%\offerpilot-pilot-runtime-gate\baseline.txt`
-- Create outside repository: `%TEMP%\offerpilot-pilot-runtime-gate\allowlist.txt`
-- Create outside repository: `%TEMP%\offerpilot-pilot-runtime-gate.locator.json`
+- Create outside repository: `%TEMP%\auroraagent-pilot-runtime-gate\baseline.txt`
+- Create outside repository: `%TEMP%\auroraagent-pilot-runtime-gate\allowlist.txt`
+- Create outside repository: `%TEMP%\auroraagent-pilot-runtime-gate.locator.json`
 
 - [ ] **Step 1: Verify the implementation starts from the plan commit**
 
@@ -138,21 +138,21 @@ Expected: exit code 0, no output.
 - [ ] **Step 2: Persist baseline, exact allowlist, and hash outside the worktree**
 
 ```powershell
-$gateRoot = Join-Path $env:TEMP 'offerpilot-pilot-runtime-gate'
-$locatorPath = Join-Path $env:TEMP 'offerpilot-pilot-runtime-gate.locator.json'
+$gateRoot = Join-Path $env:TEMP 'auroraagent-pilot-runtime-gate'
+$locatorPath = Join-Path $env:TEMP 'auroraagent-pilot-runtime-gate.locator.json'
 New-Item -ItemType Directory -Force -Path $gateRoot | Out-Null
 $allowlist = @(
-  'src/offerpilot/pilot_runtime/__init__.py',
-  'src/offerpilot/pilot_runtime/contracts.py',
-  'src/offerpilot/pilot_runtime/errors.py',
-  'src/offerpilot/pilot_runtime/event_sink.py',
-  'src/offerpilot/pilot_runtime/persistence.py',
-  'src/offerpilot/pilot_runtime/deterministic.py',
-  'src/offerpilot/pilot_runtime/continuation.py',
-  'src/offerpilot/pilot_runtime/service.py',
-  'src/offerpilot/pilot_runtime/composition.py',
-  'src/offerpilot/chat_transport.py',
-  'src/offerpilot/api.py',
+  'src/auroraagent/pilot_runtime/__init__.py',
+  'src/auroraagent/pilot_runtime/contracts.py',
+  'src/auroraagent/pilot_runtime/errors.py',
+  'src/auroraagent/pilot_runtime/event_sink.py',
+  'src/auroraagent/pilot_runtime/persistence.py',
+  'src/auroraagent/pilot_runtime/deterministic.py',
+  'src/auroraagent/pilot_runtime/continuation.py',
+  'src/auroraagent/pilot_runtime/service.py',
+  'src/auroraagent/pilot_runtime/composition.py',
+  'src/auroraagent/chat_transport.py',
+  'src/auroraagent/api.py',
   'tests/pilot_runtime/__init__.py',
   'tests/pilot_runtime/test_baseline_golden.py',
   'tests/pilot_runtime/test_contracts.py',
@@ -191,7 +191,7 @@ Expected: three gate files exist outside the repository.
 - [ ] **Step 3: Run the reusable scope assertion**
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-pilot-runtime-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-pilot-runtime-gate.locator.json') | ConvertFrom-Json
 if ((Get-Location).Path -ne [string]$locator.repository_root) { throw 'wrong worktree' }
 $baseline = (Get-Content -Raw -LiteralPath $locator.baseline_path).Trim()
 if ($baseline -ne [string]$locator.baseline_sha) { throw 'baseline file changed' }
@@ -334,9 +334,9 @@ git commit -m "test: AI 固化 Pilot Runtime 基线行为"
 ### Task 2: Define closed Runtime contracts and lifecycle CAS
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/__init__.py`
-- Create: `src/offerpilot/pilot_runtime/contracts.py`
-- Create: `src/offerpilot/pilot_runtime/errors.py`
+- Create: `src/auroraagent/pilot_runtime/__init__.py`
+- Create: `src/auroraagent/pilot_runtime/contracts.py`
+- Create: `src/auroraagent/pilot_runtime/errors.py`
 - Create: `tests/pilot_runtime/test_contracts.py`
 
 - [ ] **Step 1: Write failing contract and lifecycle tests**
@@ -383,7 +383,7 @@ eligibility can only be represented by that signal, never by a free-form callbac
 uv run pytest tests/pilot_runtime/test_contracts.py -q
 ```
 
-Expected: import failure because `offerpilot.pilot_runtime` does not exist.
+Expected: import failure because `auroraagent.pilot_runtime` does not exist.
 
 - [ ] **Step 3: Implement the exact closed types**
 
@@ -430,8 +430,8 @@ and protocols for `RuntimeEventSink`, `RuntimeSignalSink`, `AgentExecutionHost`,
 
 ```powershell
 uv run pytest tests/pilot_runtime/test_contracts.py -q
-uv run ruff check src/offerpilot/pilot_runtime tests/pilot_runtime/test_contracts.py
-uv run mypy src/offerpilot/pilot_runtime
+uv run ruff check src/auroraagent/pilot_runtime tests/pilot_runtime/test_contracts.py
+uv run mypy src/auroraagent/pilot_runtime
 ```
 
 Expected: all commands exit 0.
@@ -439,7 +439,7 @@ Expected: all commands exit 0.
 - [ ] **Step 5: Commit contracts**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/__init__.py src/offerpilot/pilot_runtime/contracts.py src/offerpilot/pilot_runtime/errors.py tests/pilot_runtime/test_contracts.py
+git add src/auroraagent/pilot_runtime/__init__.py src/auroraagent/pilot_runtime/contracts.py src/auroraagent/pilot_runtime/errors.py tests/pilot_runtime/test_contracts.py
 git commit -m "feat: AI 定义 Pilot Runtime 封闭契约"
 ```
 
@@ -448,8 +448,8 @@ git commit -m "feat: AI 定义 Pilot Runtime 封闭契约"
 ### Task 3: Implement control-flow-safe event delivery and guarded SSE lifecycle
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/event_sink.py`
-- Create: `src/offerpilot/chat_transport.py`
+- Create: `src/auroraagent/pilot_runtime/event_sink.py`
+- Create: `src/auroraagent/chat_transport.py`
 - Create: `tests/pilot_runtime/test_event_sink.py`
 - Create: `tests/pilot_runtime/test_transport.py`
 
@@ -522,8 +522,8 @@ background finalizer; do not use `__del__` or weakref timing.
 
 ```powershell
 uv run pytest tests/pilot_runtime/test_event_sink.py tests/pilot_runtime/test_transport.py -q
-uv run ruff check src/offerpilot/pilot_runtime/event_sink.py src/offerpilot/chat_transport.py tests/pilot_runtime/test_event_sink.py tests/pilot_runtime/test_transport.py
-uv run mypy src/offerpilot/pilot_runtime src/offerpilot/chat_transport.py
+uv run ruff check src/auroraagent/pilot_runtime/event_sink.py src/auroraagent/chat_transport.py tests/pilot_runtime/test_event_sink.py tests/pilot_runtime/test_transport.py
+uv run mypy src/auroraagent/pilot_runtime src/auroraagent/chat_transport.py
 ```
 
 Expected: all commands exit 0.
@@ -531,7 +531,7 @@ Expected: all commands exit 0.
 - [ ] **Step 6: Commit transport primitives**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/event_sink.py src/offerpilot/chat_transport.py tests/pilot_runtime/test_event_sink.py tests/pilot_runtime/test_transport.py
+git add src/auroraagent/pilot_runtime/event_sink.py src/auroraagent/chat_transport.py tests/pilot_runtime/test_event_sink.py tests/pilot_runtime/test_transport.py
 git commit -m "feat: AI 建立 Pilot Runtime 流式传输边界"
 ```
 
@@ -540,9 +540,9 @@ git commit -m "feat: AI 建立 Pilot Runtime 流式传输边界"
 ### Task 4: Extract the baseline AgentExecutionHost without changing timeout semantics
 
 **Files:**
-- Modify: `src/offerpilot/chat_transport.py`
+- Modify: `src/auroraagent/chat_transport.py`
 - Create: `tests/pilot_runtime/test_execution_host.py`
-- Read unchanged: `src/offerpilot/api.py:10415-10455`
+- Read unchanged: `src/auroraagent/api.py:10415-10455`
 
 - [ ] **Step 1: Write failing sync host tests**
 
@@ -608,7 +608,7 @@ Expected: all pass; the production routes still use their old helpers at this in
 - [ ] **Step 6: Commit host extraction**
 
 ```powershell
-git add src/offerpilot/chat_transport.py tests/pilot_runtime/test_execution_host.py
+git add src/auroraagent/chat_transport.py tests/pilot_runtime/test_execution_host.py
 git commit -m "refactor: AI 提取 Agent 执行宿主"
 ```
 
@@ -617,10 +617,10 @@ git commit -m "refactor: AI 提取 Agent 执行宿主"
 ### Task 5: Build the Chat persistence coordinator over existing repository atoms
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/persistence.py`
+- Create: `src/auroraagent/pilot_runtime/persistence.py`
 - Create: `tests/pilot_runtime/test_persistence.py`
-- Read unchanged: `src/offerpilot/repositories/chat.py:169-738`
-- Read unchanged: `src/offerpilot/api.py:10611-10924`
+- Read unchanged: `src/auroraagent/repositories/chat.py:169-738`
+- Read unchanged: `src/auroraagent/api.py:10611-10924`
 
 - [ ] **Step 1: Write failing persistence tests**
 
@@ -672,7 +672,7 @@ Expected: all collected tests pass.
 - [ ] **Step 5: Commit persistence coordinator**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/persistence.py tests/pilot_runtime/test_persistence.py
+git add src/auroraagent/pilot_runtime/persistence.py tests/pilot_runtime/test_persistence.py
 git commit -m "refactor: AI 收束 Chat 持久化编排"
 ```
 
@@ -681,10 +681,10 @@ git commit -m "refactor: AI 收束 Chat 持久化编排"
 ### Task 6: Implement the sync model Start Turn state machine
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/service.py`
+- Create: `src/auroraagent/pilot_runtime/service.py`
 - Create: `tests/pilot_runtime/test_start_turn.py`
-- Read unchanged: `src/offerpilot/api.py:5479-5746`
-- Read unchanged: `src/offerpilot/ai/agent.py:233-844`
+- Read unchanged: `src/auroraagent/api.py:5479-5746`
+- Read unchanged: `src/auroraagent/ai/agent.py:233-844`
 
 - [ ] **Step 1: Write failing state-order tests with strict fakes**
 
@@ -742,8 +742,8 @@ route failure before side effects for those branches. The production API is not 
 
 ```powershell
 uv run pytest tests/pilot_runtime/test_start_turn.py tests/test_chat_api.py -q
-uv run ruff check src/offerpilot/pilot_runtime/service.py tests/pilot_runtime/test_start_turn.py
-uv run mypy src/offerpilot/pilot_runtime
+uv run ruff check src/auroraagent/pilot_runtime/service.py tests/pilot_runtime/test_start_turn.py
+uv run mypy src/auroraagent/pilot_runtime
 ```
 
 Expected: all commands exit 0.
@@ -751,7 +751,7 @@ Expected: all commands exit 0.
 - [ ] **Step 5: Commit sync Runtime**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/service.py tests/pilot_runtime/test_start_turn.py
+git add src/auroraagent/pilot_runtime/service.py tests/pilot_runtime/test_start_turn.py
 git commit -m "feat: AI 建立同步 Pilot Runtime 状态机"
 ```
 
@@ -760,8 +760,8 @@ git commit -m "feat: AI 建立同步 Pilot Runtime 状态机"
 ### Task 7: Implement stream preparation, direct execution, and abort convergence
 
 **Files:**
-- Modify: `src/offerpilot/pilot_runtime/service.py`
-- Modify: `src/offerpilot/chat_transport.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
+- Modify: `src/auroraagent/chat_transport.py`
 - Create: `tests/pilot_runtime/test_stream_preparation.py`
 
 - [ ] **Step 1: Write failing preheader order tests**
@@ -833,7 +833,7 @@ Expected: all pass.
 - [ ] **Step 6: Commit stream preparation**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/service.py src/offerpilot/chat_transport.py tests/pilot_runtime/test_stream_preparation.py
+git add src/auroraagent/pilot_runtime/service.py src/auroraagent/chat_transport.py tests/pilot_runtime/test_stream_preparation.py
 git commit -m "feat: AI 实现 Pilot Runtime 流式准备阶段"
 ```
 
@@ -842,10 +842,10 @@ git commit -m "feat: AI 实现 Pilot Runtime 流式准备阶段"
 ### Task 8: Move deterministic Pilot actions behind the explicit bridge
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/deterministic.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Create: `src/auroraagent/pilot_runtime/deterministic.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Create: `tests/pilot_runtime/test_deterministic.py`
-- Read unchanged during extraction: `src/offerpilot/api.py:1889-2480`
+- Read unchanged during extraction: `src/auroraagent/api.py:1889-2480`
 
 - [ ] **Step 1: Write failing deterministic boundary tests**
 
@@ -887,7 +887,7 @@ Expected: all pass before route cutover because the old API path remains active.
 - [ ] **Step 5: Commit deterministic bridge**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/deterministic.py src/offerpilot/pilot_runtime/service.py tests/pilot_runtime/test_deterministic.py
+git add src/auroraagent/pilot_runtime/deterministic.py src/auroraagent/pilot_runtime/service.py tests/pilot_runtime/test_deterministic.py
 git commit -m "refactor: AI 隔离确定性 Pilot 编排"
 ```
 
@@ -896,11 +896,11 @@ git commit -m "refactor: AI 隔离确定性 Pilot 编排"
 ### Task 9: Move confirmation and Ledger delivery coordination into Runtime
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/continuation.py`
-- Modify: `src/offerpilot/pilot_runtime/service.py`
+- Create: `src/auroraagent/pilot_runtime/continuation.py`
+- Modify: `src/auroraagent/pilot_runtime/service.py`
 - Create: `tests/pilot_runtime/test_confirmation.py`
-- Read unchanged during extraction: `src/offerpilot/api.py:6109-7390`
-- Read unchanged: `src/offerpilot/ai/write_operations.py:130-1080`
+- Read unchanged during extraction: `src/auroraagent/api.py:6109-7390`
+- Read unchanged: `src/auroraagent/ai/write_operations.py:130-1080`
 
 - [ ] **Step 1: Write failing Ledger-first and reject tests**
 
@@ -952,7 +952,7 @@ do not replace them with a guessed compatibility filename.
 - [ ] **Step 7: Commit confirmation coordinator**
 
 ```powershell
-git add src/offerpilot/pilot_runtime/continuation.py src/offerpilot/pilot_runtime/service.py tests/pilot_runtime/test_confirmation.py
+git add src/auroraagent/pilot_runtime/continuation.py src/auroraagent/pilot_runtime/service.py tests/pilot_runtime/test_confirmation.py
 git commit -m "refactor: AI 收束确认与 Ledger 编排"
 ```
 
@@ -961,10 +961,10 @@ git commit -m "refactor: AI 收束确认与 Ledger 编排"
 ### Task 10: Compose PilotRuntime and atomically cut over all four routes
 
 **Files:**
-- Create: `src/offerpilot/pilot_runtime/composition.py`
-- Modify: `src/offerpilot/pilot_runtime/__init__.py`
-- Modify: `src/offerpilot/api.py`
-- Modify: `src/offerpilot/chat_transport.py`
+- Create: `src/auroraagent/pilot_runtime/composition.py`
+- Modify: `src/auroraagent/pilot_runtime/__init__.py`
+- Modify: `src/auroraagent/api.py`
+- Modify: `src/auroraagent/chat_transport.py`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] **Step 1: Write failing composition and route-spy tests**
@@ -1030,7 +1030,7 @@ Expected: all pass with exact baseline HTTP/SSE/Provider/Tool/Pending/Ledger/Jou
 - [ ] **Step 6: Commit the atomic production cutover**
 
 ```powershell
-git add src/offerpilot/pilot_runtime src/offerpilot/chat_transport.py src/offerpilot/api.py tests/pilot_runtime tests/test_chat_api.py
+git add src/auroraagent/pilot_runtime src/auroraagent/chat_transport.py src/auroraagent/api.py tests/pilot_runtime tests/test_chat_api.py
 git commit -m "refactor: AI 切换统一 Pilot Runtime 编排"
 ```
 
@@ -1091,8 +1091,8 @@ exports until every negative fixture and production scan passes. Do not change b
 
 ```powershell
 uv run pytest tests/test_pilot_runtime_extraction_gate.py tests/pilot_runtime tests/test_chat_api.py -q
-uv run ruff check src/offerpilot/pilot_runtime src/offerpilot/chat_transport.py src/offerpilot/api.py tests/pilot_runtime tests/test_pilot_runtime_extraction_gate.py tests/test_chat_api.py
-uv run mypy src/offerpilot/pilot_runtime src/offerpilot/chat_transport.py src/offerpilot/api.py
+uv run ruff check src/auroraagent/pilot_runtime src/auroraagent/chat_transport.py src/auroraagent/api.py tests/pilot_runtime tests/test_pilot_runtime_extraction_gate.py tests/test_chat_api.py
+uv run mypy src/auroraagent/pilot_runtime src/auroraagent/chat_transport.py src/auroraagent/api.py
 ```
 
 Expected: all commands exit 0.
@@ -1100,7 +1100,7 @@ Expected: all commands exit 0.
 - [ ] **Step 6: Commit mechanical gates and cleanup**
 
 ```powershell
-git add src/offerpilot/api.py src/offerpilot/pilot_runtime src/offerpilot/chat_transport.py tests/test_pilot_runtime_extraction_gate.py
+git add src/auroraagent/api.py src/auroraagent/pilot_runtime src/auroraagent/chat_transport.py tests/test_pilot_runtime_extraction_gate.py
 git commit -m "test: AI 固化 Pilot Runtime 提取门禁"
 ```
 

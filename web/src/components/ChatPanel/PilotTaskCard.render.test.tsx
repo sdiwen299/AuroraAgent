@@ -36,7 +36,7 @@ const completedStep: ToolStep = {
     {
       id: 'application-1',
       kind: 'application',
-      title: 'OfferPilot',
+      title: 'AuroraAgent',
       meta: '产品经理',
       snippet: '已投递，等待笔试通知',
       source: 'applications',
@@ -151,7 +151,7 @@ describe('PilotTaskCard', () => {
 
     act(() => toggle?.click());
     expect(toggle?.getAttribute('aria-expanded')).toBe('true');
-    expect(timeline?.textContent).toContain('OfferPilot');
+    expect(timeline?.textContent).toContain('AuroraAgent');
   });
 
   it('does not invent source or unknown-result state for an ordinary Pilot task', () => {

@@ -43,7 +43,7 @@
 
 ## 6. 资产与许可
 
-- 使用 Live2D 官方 Haru 受付版样例及 Cubism Core；第三方资产不声明为 OfferPilot 自有许可。
+- 使用 Live2D 官方 Haru 受付版样例及 Cubism Core；第三方资产不声明为 AuroraAgent 自有许可。
 - 在模型目录 NOTICE、设置页和 README 中保留 Live2D/Cubism 版权与官方条款链接。
 - 正式分发前再次确认 Live2D SDK Publication License；第一期不提供模型扩展能力。
 

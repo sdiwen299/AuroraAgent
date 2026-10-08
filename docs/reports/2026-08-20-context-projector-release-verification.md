@@ -29,7 +29,7 @@ The scripts now compute file SHA-256 with `System.Security.Cryptography.SHA256` 
 
 ### Application JD baseline gate: explicitly accepted external gate
 
-`test_application_jd_implementation_scope_is_machine_checked` requires two release-orchestrator artifacts: `OFFERPILOT_APPLICATION_JD_BASELINE_FILE` and `OFFERPILOT_APPLICATION_JD_ALLOWLIST_FILE`. Neither artifact is present in this Context Projector worktree or current process. Generating an allowlist from the current diff would invalidate the gate's independent scope-control purpose, so no synthetic baseline or allowlist was created.
+`test_application_jd_implementation_scope_is_machine_checked` requires two release-orchestrator artifacts: `AURORA_AGENT_APPLICATION_JD_BASELINE_FILE` and `AURORA_AGENT_APPLICATION_JD_ALLOWLIST_FILE`. Neither artifact is present in this Context Projector worktree or current process. Generating an allowlist from the current diff would invalidate the gate's independent scope-control purpose, so no synthetic baseline or allowlist was created.
 
 Acceptance decision for this branch: this external, Application-JD-specific scope gate is accepted as an unresolved release-orchestrator prerequisite rather than represented as passed. The prior Application JD release evidence remains in `docs/reports/2026-08-05-application-jd-versions-release-verification.md`. A release operator may rerun the gate with the recorded external baseline and allowlist before integration if repository policy requires a current aggregate run.
 
@@ -41,7 +41,7 @@ Command:
 uv run oc verify --profile real-ai --static-dir web/dist
 ```
 
-Configuration was read from the existing local OfferPilot profile without printing or modifying its secret. Safe route summary: `openai_compatible`, model `deepseek-v4-flash`, endpoint host `api.deepseek.com`.
+Configuration was read from the existing local AuroraAgent profile without printing or modifying its secret. Safe route summary: `openai_compatible`, model `deepseek-v4-flash`, endpoint host `api.deepseek.com`.
 
 Result: passed. The gate completed health/settings/SPA checks, application/resume/event CRUD, Interview Preparation, Material Proposal, Opportunity Fit triage and deep review, Interview Review, Knowledge Capture, bounded Mock Interview, Chat write confirmation, pending cleanup, and final application cleanup.
 
@@ -49,7 +49,7 @@ Result: passed. The gate completed health/settings/SPA checks, application/resum
 
 The built SPA was served from the isolated data directory:
 
-`D:\Users\yuqi.chen\.offerpilot\verification\context-projector-20260820\browser-data`
+`D:\Users\yuqi.chen\.auroraagent\verification\context-projector-20260820\browser-data`
 
 The in-app browser completed these real UI journeys against `http://127.0.0.1:8765`:
 
@@ -70,9 +70,9 @@ Read-only database verification after the browser flow:
 
 Screenshot evidence:
 
-`D:\Users\yuqi.chen\.offerpilot\verification\context-projector-20260820\browser-application-scoped.png`
+`D:\Users\yuqi.chen\.auroraagent\verification\context-projector-20260820\browser-application-scoped.png`
 
-The browser data and screenshot are isolated from the user's normal OfferPilot database. No formal Provider configuration or secret was changed.
+The browser data and screenshot are isolated from the user's normal AuroraAgent database. No formal Provider configuration or secret was changed.
 
 ## Verification summary
 

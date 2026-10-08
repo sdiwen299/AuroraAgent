@@ -7,11 +7,11 @@ import pytest
 from sqlalchemy import event, select, update
 from sqlalchemy.exc import IntegrityError
 
-from offerpilot.db import init_database
-from offerpilot.models import Conversation, PilotExecution
-from offerpilot.pilot_control import PilotControlRepository, TurnControlConflict, TurnExecutionFenced
-from offerpilot.pilot_timeline import PilotTimelineRepository
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.db import init_database
+from auroraagent.models import Conversation, PilotExecution
+from auroraagent.pilot_control import PilotControlRepository, TurnControlConflict, TurnExecutionFenced
+from auroraagent.pilot_timeline import PilotTimelineRepository
+from auroraagent.repositories.chat import ChatRepository
 
 
 @pytest.fixture
@@ -265,7 +265,7 @@ def test_fence_rejects_a_lease_that_expired_before_commit(control_store):
 
 
 def test_monotonic_expiry_cannot_be_extended_by_a_late_heartbeat(control_store, monkeypatch):
-    from offerpilot.pilot_runtime.turn_control import DurableRuntimeInvocationControl
+    from auroraagent.pilot_runtime.turn_control import DurableRuntimeInvocationControl
     _, controls, turns, now = control_store
     turn = admit(turns)
     lease = controls.claim_start(turn.turn_id)
@@ -291,7 +291,7 @@ def test_monotonic_expiry_cannot_be_extended_by_a_late_heartbeat(control_store, 
 
 
 def test_registry_shutdown_fences_owners_but_keeps_committed_facts(control_store):
-    from offerpilot.pilot_runtime.turn_control import TurnControlRegistry
+    from auroraagent.pilot_runtime.turn_control import TurnControlRegistry
     factory, controls, turns, _ = control_store
     turn = admit(turns)
     lease = controls.claim_start(turn.turn_id)
@@ -346,7 +346,7 @@ def test_renew_reads_time_after_acquiring_the_database_lock(control_store):
 
 @pytest.mark.parametrize('superseded', ['stopped', 'new_execution'])
 def test_timeout_recovery_cannot_overwrite_a_stop_or_a_new_execution(control_store, superseded):
-    from offerpilot.pilot_runtime.turn_control import DurableRuntimeInvocationControl
+    from auroraagent.pilot_runtime.turn_control import DurableRuntimeInvocationControl
     factory, controls, turns, _ = control_store
     turn = admit(turns)
     control = DurableRuntimeInvocationControl(controls, controls.claim_start(turn.turn_id))
@@ -367,7 +367,7 @@ def test_timeout_recovery_cannot_overwrite_a_stop_or_a_new_execution(control_sto
 
 
 def test_title_generation_does_not_start_after_stop_and_cannot_commit_after_new_execution(control_store):
-    from offerpilot.pilot_runtime.turn_control import DurableRuntimeInvocationControl
+    from auroraagent.pilot_runtime.turn_control import DurableRuntimeInvocationControl
     factory, controls, turns, _ = control_store
     turn = admit(turns)
     control = DurableRuntimeInvocationControl(controls, controls.claim_start(turn.turn_id))

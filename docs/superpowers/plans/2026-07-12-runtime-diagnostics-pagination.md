@@ -13,8 +13,8 @@
 ### Task 1: Paginate the Diagnostics API
 
 **Files:**
-- Modify: `src/offerpilot/diagnostics.py:1-45`
-- Modify: `src/offerpilot/api.py:14,1310-1312`
+- Modify: `src/auroraagent/diagnostics.py:1-45`
+- Modify: `src/auroraagent/api.py:14,1310-1312`
 - Modify: `tests/test_diagnostics_api.py:1-23`
 
 - [ ] **Step 1: Add failing API tests for offset pages and validation**
@@ -23,7 +23,7 @@
 def test_get_logs_returns_newest_relative_pages_and_metadata(tmp_path):
     for number in range(1, 6):
         append_log_entry(tmp_path, "INFO", f"entry-{number}")
-    with (tmp_path / "logs" / "offerpilot.log").open("a", encoding="utf-8") as handle:
+    with (tmp_path / "logs" / "auroraagent.log").open("a", encoding="utf-8") as handle:
         handle.write("not-json\n[]\n")
     client = TestClient(create_app(data_dir=tmp_path))
 
@@ -104,7 +104,7 @@ Run:
 
 ```powershell
 uv run pytest tests/test_diagnostics_api.py -q
-uv run ruff check src/offerpilot/diagnostics.py src/offerpilot/api.py tests/test_diagnostics_api.py
+uv run ruff check src/auroraagent/diagnostics.py src/auroraagent/api.py tests/test_diagnostics_api.py
 ```
 
 Expected: chronological page rows, malformed-row exclusion, `has_more`, out-of-range pages, and query validation all pass. The repository-wide validation handler intentionally maps invalid query parameters to HTTP 400.
@@ -112,7 +112,7 @@ Expected: chronological page rows, malformed-row exclusion, `has_more`, out-of-r
 - [ ] **Step 5: Commit the API boundary**
 
 ```powershell
-git add src/offerpilot/diagnostics.py src/offerpilot/api.py tests/test_diagnostics_api.py
+git add src/auroraagent/diagnostics.py src/auroraagent/api.py tests/test_diagnostics_api.py
 git commit -m "feat: AI paginate runtime diagnostics logs"
 ```
 

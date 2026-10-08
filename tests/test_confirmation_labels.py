@@ -4,9 +4,9 @@ import json
 import re
 from pathlib import Path
 
-from offerpilot.ai.confirmation_receipt import edited_confirmation_receipt
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.ai.tool_specs.legacy import build_static_adapter_catalog
+from auroraagent.ai.confirmation_receipt import edited_confirmation_receipt
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.ai.tool_specs.legacy import build_static_adapter_catalog
 
 
 def _editable_fields():

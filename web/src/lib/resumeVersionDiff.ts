@@ -76,7 +76,7 @@ type SafeBuildResult = {
 };
 
 const UNSUPPORTED_TEXT = '（无法安全展示）';
-const UNSUPPORTED_MARKER = '__offerpilot_unsupported__';
+const UNSUPPORTED_MARKER = '__auroraagent_unsupported__';
 const MAX_PREVIEW_CODE_POINTS = 160;
 const MAX_DIFF_DEPTH = 256;
 const MAX_DIFF_NODES = 10000;

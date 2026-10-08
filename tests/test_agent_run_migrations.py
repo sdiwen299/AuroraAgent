@@ -4,8 +4,8 @@ import pytest
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import IntegrityError
 
-from offerpilot.db import init_database, journal_session_factory_for_data_dir
-from offerpilot.models import AgentContextSnapshot, AgentEvent, AgentRun, ChatMessage, Conversation
+from auroraagent.db import init_database, journal_session_factory_for_data_dir
+from auroraagent.models import AgentContextSnapshot, AgentEvent, AgentRun, ChatMessage, Conversation
 
 
 def _migration_versions(engine: object) -> set[str]:

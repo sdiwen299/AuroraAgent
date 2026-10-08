@@ -6,18 +6,18 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.ai.agent_loop import _pending_presentation_snapshot
-from offerpilot.ai.confirmation import prepare_pending_action
-from offerpilot.ai.tool_runtime.context import ToolExecutionContext
-from offerpilot.ai.tool_runtime.metadata import canonical_json_bytes, freeze_json
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.ai.agent_loop import _pending_presentation_snapshot
+from auroraagent.ai.confirmation import prepare_pending_action
+from auroraagent.ai.tool_runtime.context import ToolExecutionContext
+from auroraagent.ai.tool_runtime.metadata import canonical_json_bytes, freeze_json
+from auroraagent.ai.write_operations import (
     OperationReplay,
     TerminalPayload,
     VerifiedPendingReplay,
 )
-from offerpilot.pilot_runtime.continuation import _runtime_replay
-from offerpilot.pilot_runtime.contracts import ConfirmationRequiredOutcome
+from auroraagent.pilot_runtime.continuation import _runtime_replay
+from auroraagent.pilot_runtime.contracts import ConfirmationRequiredOutcome
 from tests.tool_metadata.test_production_bundle import _production_components
 
 

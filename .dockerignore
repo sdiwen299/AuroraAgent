@@ -12,7 +12,7 @@ oc.exe
 *.db-wal
 *.db-shm
 config.json
-.offerpilot/
+.auroraagent/
 
 # Frontend build deps + outputs (rebuilt in-image)
 web/node_modules/

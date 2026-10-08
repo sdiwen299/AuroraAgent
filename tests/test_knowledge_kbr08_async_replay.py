@@ -20,8 +20,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from offerpilot.config import AIProviderProfile, Config
-from offerpilot.knowledge.brief import (
+from auroraagent.config import AIProviderProfile, Config
+from auroraagent.knowledge.brief import (
     BRIEF_LANGUAGE,
     BRIEF_REPAIR_PATCH_VERSION,
     BRIEF_SCHEMA_VERSION,
@@ -30,11 +30,11 @@ from offerpilot.knowledge.brief import (
     ISSUE_COVERAGE_MISSING,
     ISSUE_SUPPORT_PARTIAL,
 )
-from offerpilot.knowledge.extractor import (
+from auroraagent.knowledge.extractor import (
     METADATA_EXTRACTION_VERSION,
     MarkdownExtractor,
 )
-from offerpilot.knowledge.evidence_policy import EVIDENCE_POLICY_VERSION
+from auroraagent.knowledge.evidence_policy import EVIDENCE_POLICY_VERSION
 
 from _knowledge_seam import (
     BriefRunOutcome,
@@ -91,7 +91,7 @@ def _async_source_bytes() -> bytes:
         f"![[{_OBSIDIAN_TOKEN}.png]]\n\n"
         f'<en-media type="image/png" hash="{_EVERNOTE_TOKEN}"/>\n\n'
         "# 概述\n\n"
-        f"OfferPilot 使用 {_BODY_TERM} 作为单一事实源。\n\n"
+        f"AuroraAgent 使用 {_BODY_TERM} 作为单一事实源。\n\n"
         "## 启用异步\n\n"
         f"@EnableAsync 注解 {_ENABLE_ASYNC_TERM} 开启方法级异步支持。\n\n"
         "## 标注方法\n\n"
@@ -134,7 +134,7 @@ def _ev_id_by_term(evidence: list[Any], term: str) -> str:
 def _find_other_source_evidence_id(repository: Any, exclude_source_id: int) -> str:
     """找一条不属于 exclude_source_id 的文本 Evidence id（用于 citation ownership）。"""
     session_factory = repository._session_factory  # type: ignore[attr-defined]
-    from offerpilot.models import KnowledgeEvidence
+    from auroraagent.models import KnowledgeEvidence
 
     with session_factory() as session:
         rows = (
@@ -337,7 +337,7 @@ def test_async_replay_aggregated_one_repair_picks_direct_evidence_then_ready(
         "schema_version": BRIEF_SCHEMA_VERSION,
         "language": BRIEF_LANGUAGE,
         "overview": [
-            {"statement": "Source 涉及 OfferPilot 架构。", "evidence_ids": [ev_overview]},
+            {"statement": "Source 涉及 AuroraAgent 架构。", "evidence_ids": [ev_overview]},
             # overview[1] 陈述关于 @EnableAsync；citation 误引其他 Source（ownership），同时
             # 带本 Source 的 ev_enable_async（有效 citation，使原块可定章节「启用异步」）。
             # Finding 5：replace 须落回原块有效 citation 章节范围。
@@ -514,7 +514,7 @@ def test_async_replay_first_round_report_contains_all_failure_types(
         "schema_version": BRIEF_SCHEMA_VERSION,
         "language": BRIEF_LANGUAGE,
         "overview": [
-            {"statement": "概述 OfferPilot 架构。", "evidence_ids": [ev_overview]},
+            {"statement": "概述 AuroraAgent 架构。", "evidence_ids": [ev_overview]},
             {"statement": "@EnableAsync citation 选错。", "evidence_ids": [other_ev]},
         ],
         "key_points": [

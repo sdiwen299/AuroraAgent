@@ -2,7 +2,7 @@ import sqlite3
 
 from sqlalchemy import text
 
-from offerpilot.db import init_database
+from auroraagent.db import init_database
 
 
 def test_interview_review_schema_is_created_and_idempotent(tmp_path):

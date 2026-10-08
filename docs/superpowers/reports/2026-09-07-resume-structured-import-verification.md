@@ -39,7 +39,7 @@ pytest tests/test_resume_structured_import.py tests/test_context_projector_sourc
 pytest tests/test_resumes_api.py tests/test_module_workflows.py -q
 pytest tests/test_jd_resume_ai_api.py tests/tool_pipeline/test_resumes.py -q
 mypy src
-ruff check src/offerpilot/resume_structured_import.py src/offerpilot/ai/resume_structured_import.py src/offerpilot/ai/workflows.py src/offerpilot/api.py src/offerpilot/repositories/resumes.py tests/test_resume_structured_import.py
+ruff check src/auroraagent/resume_structured_import.py src/auroraagent/ai/resume_structured_import.py src/auroraagent/ai/workflows.py src/auroraagent/api.py src/auroraagent/repositories/resumes.py tests/test_resume_structured_import.py
 ```
 
 前端在 `web` 下运行：
@@ -51,7 +51,7 @@ npm run build
 
 ### Smoke 数据影响
 
-这次实际运行的 `oc smoke` 未覆盖 `OFFERPILOT_DATA`，使用了默认本地数据目录，创建 `Smoke Co` 投递 #277 和3个测试会话，并以模拟模型完成该测试投递的确认写入。没有调用外部AI，未删除这些记录或其他用户数据。三个会话请求为 `move this application to offer`、`create application card regression`、`create event card regression`；后两条创建卡片被拒绝。此项已告知用户，不将本次 smoke 描述为隔离数据库验收。
+这次实际运行的 `oc smoke` 未覆盖 `AURORA_AGENT_DATA`，使用了默认本地数据目录，创建 `Smoke Co` 投递 #277 和3个测试会话，并以模拟模型完成该测试投递的确认写入。没有调用外部AI，未删除这些记录或其他用户数据。三个会话请求为 `move this application to offer`、`create application card regression`、`create event card regression`；后两条创建卡片被拒绝。此项已告知用户，不将本次 smoke 描述为隔离数据库验收。
 
 ## 隔离浏览器
 
@@ -59,7 +59,7 @@ npm run build
 
 步骤：上传→检查独立只读原文→显式开始分类→核对17项候选→取消Excel勾选→确认16项→教育/工作/项目各模块回读→技能只有Python/SQL→“其他”为空→刷新保留状态→再次预览全部已有字段受保护→取消不写。
 
-截图目录：`D:/Users/yuqi.chen/.offerpilot/verification/resume-structured-import-20260907/`。
+截图目录：`D:/Users/yuqi.chen/.auroraagent/verification/resume-structured-import-20260907/`。
 
 | 截图 | 正在做什么 |
 | --- | --- |

@@ -6,13 +6,13 @@
 
 **分支：`refactor/20260825-tool-metadata-convergence`**
 
-**Worktree：`D:\Users\yuqi.chen\offerpilot\.worktrees\refactor-20260825-tool-metadata-convergence`**
+**Worktree：`D:\Users\yuqi.chen\auroraagent\.worktrees\refactor-20260825-tool-metadata-convergence`**
 
 > 本文只定义本阶段架构，不修改生产代码。设计已复审通过，测试先行实施计划另文维护。
 
 ## 1. 背景与问题
 
-OfferPilot 已依次完成：
+AuroraAgent 已依次完成：
 
 ```text
 Durable Execution Journal

@@ -7,11 +7,11 @@ from uuid import uuid4
 import pytest
 from sqlalchemy import select
 
-from offerpilot.context_sources.binding_scope import current_frozen_readiness, frozen_readiness_scope
-from offerpilot.context_sources.contracts import ContextPolicies, ContributorPolicy
-from offerpilot.context_sources.loader import load_optional_sources
-from offerpilot.context_sources.models import ContextContributorSettings
-from offerpilot.context_sources.readiness import (
+from auroraagent.context_sources.binding_scope import current_frozen_readiness, frozen_readiness_scope
+from auroraagent.context_sources.contracts import ContextPolicies, ContributorPolicy
+from auroraagent.context_sources.loader import load_optional_sources
+from auroraagent.context_sources.models import ContextContributorSettings
+from auroraagent.context_sources.readiness import (
     ReadinessContextBinding,
     ReadinessContextConflict,
     ReadinessContextRequest,
@@ -19,10 +19,10 @@ from offerpilot.context_sources.readiness import (
     ReadinessContextUnavailable,
     load_readiness_source,
 )
-from offerpilot.context_projector.contracts import ProjectionError
-from offerpilot.context_projector.loader import ContextSourceLoader
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.context_projector.contracts import ProjectionError
+from auroraagent.context_projector.loader import ContextSourceLoader
+from auroraagent.db import init_database
+from auroraagent.models import (
     ApplicationEvent,
     Conversation,
     InterviewNote,
@@ -31,7 +31,7 @@ from offerpilot.models import (
     InterviewReadinessSignalVersion,
     Resume,
 )
-from offerpilot.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
+from auroraagent.repositories.chat import ChatRepository, ConversationScopeMutationSnapshot
 from tests.review_readiness_support import seed_review_candidate
 from tests.test_review_readiness_projection import _commit_signal, _reject_signal_operation
 
@@ -229,7 +229,7 @@ def test_clear_is_explicit_idempotent_withdrawal_and_stops_consumption(readiness
     repository = ReadinessContextRepository(case["sessions"])
     _confirm(case, ordered_version_ids=[case["version_id"]])
 
-    from offerpilot.context_sources.readiness import ReadinessContextClearRequest
+    from auroraagent.context_sources.readiness import ReadinessContextClearRequest
 
     command = ReadinessContextClearRequest(
         mutation_id=uuid4(), expected_revision=1, confirmed=True

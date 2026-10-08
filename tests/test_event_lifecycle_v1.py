@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.event_lifecycle import classify_event_lifecycle_v1
+from auroraagent.event_lifecycle import classify_event_lifecycle_v1
 
 
 FIXTURE = (

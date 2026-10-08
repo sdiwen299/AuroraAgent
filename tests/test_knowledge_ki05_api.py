@@ -18,7 +18,7 @@ from concurrent.futures import ThreadPoolExecutor
 from fastapi.testclient import TestClient
 from conftest import wait_for_extraction
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 

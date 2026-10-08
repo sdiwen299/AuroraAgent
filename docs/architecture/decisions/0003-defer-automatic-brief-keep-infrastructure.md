@@ -53,4 +53,4 @@ KV1-01 已关闭自动触发，但采用"在调用点剪 callback"策略而非�
 
 - ADR-0002 V1 发布范围（解释为什么 Brief 不在 V1）
 - [Knowledge 系统主文档](../knowledge-system.md) §10 Source Brief 生命周期
-- `src/offerpilot/knowledge/brief.py`、`src/offerpilot/knowledge/worker.py`（BriefWorker）
+- `src/auroraagent/knowledge/brief.py`、`src/auroraagent/knowledge/worker.py`（BriefWorker）

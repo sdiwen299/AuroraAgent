@@ -8,7 +8,7 @@
 
 同一个 `error_code` 的恢复动作分散在四层，各自维护、各自解释：
 
-1. API 层：`src/offerpilot/api.py` 每个 endpoint 手写 `error_response(status, message, code=...)`；
+1. API 层：`src/auroraagent/api.py` 每个 endpoint 手写 `error_response(status, message, code=...)`；
 2. Repository 层：`mock_interviews.py` 的 Attempt 状态（`provider_unknown` / `contract_failed` / `source_conflict`）隐含恢复语义；
 3. 前端：`InterviewStudio.tsx::errorDetails` 硬编码少量 code，其余按 HTTP 422/409 猜测；
 4. Harness：`smoke.py` / PS 脚本 / browser harness 各自重写「provider 保留、contract 删除」的规则。

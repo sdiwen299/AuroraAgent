@@ -1,10 +1,10 @@
 from sqlalchemy import select
 import pytest
 
-from offerpilot.context_sources.summary import ConversationSummary, ConversationSummaryRepository, SummaryRequest, SummaryUnavailable, load_summary
-from offerpilot.context_projector.loader import ContextSourceLoader
-from offerpilot.db import init_database
-from offerpilot.models import ChatMessage, Conversation
+from auroraagent.context_sources.summary import ConversationSummary, ConversationSummaryRepository, SummaryRequest, SummaryUnavailable, load_summary
+from auroraagent.context_projector.loader import ContextSourceLoader
+from auroraagent.db import init_database
+from auroraagent.models import ChatMessage, Conversation
 
 
 @pytest.fixture

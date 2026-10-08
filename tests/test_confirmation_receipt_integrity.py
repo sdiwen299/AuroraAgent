@@ -6,15 +6,15 @@ import json
 
 import pytest
 
-from offerpilot.ai.confirmation_receipt import EDITED_CONFIRMATION_RECEIPT_STRATEGY
-from offerpilot.ai.write_operations import (
+from auroraagent.ai.confirmation_receipt import EDITED_CONFIRMATION_RECEIPT_STRATEGY
+from auroraagent.ai.write_operations import (
     LedgerKeyDomain,
     WriteOperationError,
     build_terminal_payload,
     confirmation_strategy_fingerprint,
     payload_from_operation,
 )
-from offerpilot.models import WriteOperation
+from auroraagent.models import WriteOperation
 
 
 KEY = LedgerKeyDomain("receipt-integrity-fixture", b"synthetic-test-key-32-bytes-long!!")

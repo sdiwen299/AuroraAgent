@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from offerpilot.pilot_runtime.execution_budget import (
+from auroraagent.pilot_runtime.execution_budget import (
     RuntimeBudget,
     RuntimeBudgetExceeded,
     RuntimeClockInvalid,

@@ -532,7 +532,7 @@ export async function exportBackup(path = '/backups/export'): Promise<void> {
   const url = URL.createObjectURL(archive);
   const anchor = document.createElement('a');
   anchor.href = url;
-  anchor.download = 'offerpilot-backup.zip';
+  anchor.download = 'auroraagent-backup.zip';
   anchor.click();
   URL.revokeObjectURL(url);
 }

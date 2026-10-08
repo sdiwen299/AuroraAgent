@@ -1,5 +1,5 @@
 <!-- 超限原因: 本文是跨 Knowledge、Memory、Interview、Conversation、Exercise 与 Pilot 的长期架构和数据流 SSOT。 -->
-# OfferPilot Knowledge 系统：核心方向与架构设计
+# AuroraAgent Knowledge 系统：核心方向与架构设计
 
 **Status**: Accepted
 **Last updated**: 2026-07-18
@@ -9,7 +9,7 @@
 
 ## 1. 文档定位
 
-本文是 OfferPilot Knowledge 系统的长期架构事实源，定义产品职责、上下文边界、领域模型、
+本文是 AuroraAgent Knowledge 系统的长期架构事实源，定义产品职责、上下文边界、领域模型、
 核心数据流、质量不变量和演进约束。后续实施 Spec 必须引用本文，不得通过局部实现改变本文边界。
 
 前一轮以自动 Wiki 为中心的 Spec、Plan 和 ADR 已删除，必要的调研结论、否决理由与决策过程
@@ -18,7 +18,7 @@
 
 ## 2. 核心结论
 
-OfferPilot Knowledge 是 Pilot 的可审计长期知识底座。它首先服务 Pilot 对话，其次服务练习
+AuroraAgent Knowledge 是 Pilot 的可审计长期知识底座。它首先服务 Pilot 对话，其次服务练习
 生成、答案解释和评分依据。
 
 系统不再把“导入一份 Source 后自动创建或修改多个主题 Page”作为 Ingest 目标：
@@ -50,7 +50,7 @@ Pilot 与用户讨论 → Note Preview → 用户确认 → Knowledge Note Versi
 `docs/llm-wiki.md` 描述的是人类、Agent 与 Obsidian 协作维护 Wiki 的工作方式：一次处理一个
 Source，人类阅读摘要并指导模型，Agent 更新多个 Markdown Page、索引和链接，人类再持续检查。
 
-OfferPilot 将这一工作方式产品化成无人值守 Ingest Pipeline，却去掉了最关键的人类反馈环，
+AuroraAgent 将这一工作方式产品化成无人值守 Ingest Pipeline，却去掉了最关键的人类反馈环，
 同时保留“一份 Source 自动修改多个 Page”的假设。工作流模式因此被误当成了产品规格。
 
 ### 3.2 五份真实 Source 暴露的问题
@@ -106,7 +106,7 @@ Dify、RAGFlow、Open WebUI、AnythingLLM、Khoj、FastGPT、QAnything 等项目
 - 多路召回与重排应由评估结果驱动，而不是先选择重型框架。
 - 图谱项目的启发是事实、时间和来源的结构化，不是立即引入图数据库。
 
-OfferPilot 暂不直接依赖这些完整平台，也不在当前阶段引入 GraphRAG、外部向量库或事实图谱。
+AuroraAgent 暂不直接依赖这些完整平台，也不在当前阶段引入 GraphRAG、外部向量库或事实图谱。
 
 ## 5. 产品职责
 
@@ -395,7 +395,7 @@ V1 核心模型不保留 `knowledge_wiki_pages`、Page Version、Index Entry、W
 SQLite 继续作为 Knowledge 运行时唯一事实源。文件系统只保存 Source 原件、资产、临时文件和导出：
 
 ```text
-$OFFERPILOT_DATA/
+$AURORA_AGENT_DATA/
 ├── config.json
 ├── data.db
 ├── knowledge/
@@ -414,7 +414,7 @@ Note 和 Brief 运行时保存在 SQLite，不维护实时 Markdown Wiki。Obsid
 
 ## 14. 为什么不是纯传统 RAG
 
-传统 RAG 在查询时从 Chunk 重新生成答案。OfferPilot 保留 Source/Evidence 检索底座，同时增加
+传统 RAG 在查询时从 Chunk 重新生成答案。AuroraAgent 保留 Source/Evidence 检索底座，同时增加
 用户确认的 Knowledge Note：
 
 - 重要的跨 Source 思考可以长期保存。

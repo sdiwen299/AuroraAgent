@@ -14,9 +14,9 @@ from sqlalchemy.exc import StatementError
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-import offerpilot.db as database
-from offerpilot.db import init_database
-from offerpilot.models import (
+import auroraagent.db as database
+from auroraagent.db import init_database
+from auroraagent.models import (
     APPLICATION_FOREIGN_KEY_MODELS,
     AdaptivePracticePlan,
     Base,

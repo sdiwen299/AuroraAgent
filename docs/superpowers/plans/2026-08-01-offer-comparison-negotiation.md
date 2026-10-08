@@ -12,7 +12,7 @@
 
 ## Scope and fixed contracts
 
-The implementation starts from main@14ec28b in D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260801-offer-negotiation after rebasing onto the current origin/main. The Application Journey task is abandoned and must not be edited. The root worktree's uncommitted tests/test_smoke.py is outside this task and must not be touched.
+The implementation starts from main@14ec28b in D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260801-offer-negotiation after rebasing onto the current origin/main. The Application Journey task is abandoned and must not be edited. The root worktree's uncommitted tests/test_smoke.py is outside this task and must not be touched.
 
 The following contracts are fixed before implementation:
 
@@ -56,9 +56,9 @@ The server constructs this snapshot from current rows, trims only for blank vali
 
 Create or modify only these functional areas unless a focused test proves an existing shared helper must be extended:
 
-- Backend models and migration: src/offerpilot/models.py, src/offerpilot/db.py.
-- Backend schemas/routes/repositories: src/offerpilot/schemas.py, src/offerpilot/api.py, src/offerpilot/repositories/offer_comparison.py, src/offerpilot/repositories/offer_negotiation.py.
-- AI contract: src/offerpilot/ai/offer_negotiation.py and the smallest existing JSON-contract/provider helper required for shared parsing.
+- Backend models and migration: src/auroraagent/models.py, src/auroraagent/db.py.
+- Backend schemas/routes/repositories: src/auroraagent/schemas.py, src/auroraagent/api.py, src/auroraagent/repositories/offer_comparison.py, src/auroraagent/repositories/offer_negotiation.py.
+- AI contract: src/auroraagent/ai/offer_negotiation.py and the smallest existing JSON-contract/provider helper required for shared parsing.
 - Backend tests: tests/test_offer_comparison_dimensions.py, tests/test_offer_negotiation_api.py, tests/test_offer_negotiation_repository.py, tests/test_offer_negotiation_ai.py, tests/test_offer_negotiation_migration.py.
 - Frontend contract/service: web/src/types/offer.ts, web/src/services/offers.ts.
 - Frontend Offer center: web/src/components/OfferCenterView.tsx, web/src/components/OfferCard.tsx, web/src/components/OfferCompareDrawer.tsx, new web/src/components/OfferComparisonDimensions.tsx, new web/src/components/OfferNegotiationDrawer.tsx.
@@ -71,7 +71,7 @@ Every task below is test-first: write the named failing tests, run them to estab
 
 **Files:**
 - Create: tests/test_offer_negotiation_migration.py
-- Modify: src/offerpilot/models.py, src/offerpilot/db.py
+- Modify: src/auroraagent/models.py, src/auroraagent/db.py
 
 - [ ] Step 1: Add migration contract tests before model changes. Cover a fresh database and a real pre-feature SQLite schema with the current Offer table plus no negotiation tables. Assert startup creates migration 0017_offer_comparison_negotiation, all four new tables and unique indexes exist, and running init_database twice does not duplicate or alter rows. Insert an Offer and verify its current fields are byte-equivalent after migration.
 - [ ] Step 2: Run uv run pytest tests/test_offer_negotiation_migration.py -q; it must fail because the feature tables and migration marker do not exist.
@@ -84,15 +84,15 @@ Every task below is test-first: write the named failing tests, run them to estab
 - [ ] Step 4: Add an explicit 0017_offer_comparison_negotiation migration helper after Base.metadata.create_all. It must create missing tables/indexes for an old database, use INSERT OR IGNORE for the migration record, and leave existing Offer bytes and migration records unchanged. Run the fresh/old/repeated-startup tests until all pass.
 - [ ] Step 5: Commit:
 ~~~powershell
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_offer_negotiation_migration.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_offer_negotiation_migration.py
 git commit -m "feat: AI add offer negotiation schema"
 ~~~
 
 ## Task 2: Implement custom comparison dimensions and values
 
 **Files:**
-- Create: src/offerpilot/repositories/offer_comparison.py, tests/test_offer_comparison_dimensions.py
-- Modify: src/offerpilot/schemas.py, src/offerpilot/api.py, web/src/types/offer.ts, web/src/services/offers.ts
+- Create: src/auroraagent/repositories/offer_comparison.py, tests/test_offer_comparison_dimensions.py
+- Modify: src/auroraagent/schemas.py, src/auroraagent/api.py, web/src/types/offer.ts, web/src/services/offers.ts
 
 - [ ] Step 1: Add failing repository/API tests for nonblank labels, archive behavior, active-only listing, old archived values remaining readable, one value per Offer/dimension, exact user text preservation, missing/physically deleted Offer rejection, and stable Chinese 422 for blank labels/values. Assert no score/rating fields exist.
 - [ ] Step 2: Run uv run pytest tests/test_offer_comparison_dimensions.py -q; it must fail before the endpoints/repository exist.
@@ -117,7 +117,7 @@ git commit -m "feat: AI add offer negotiation schema"
 - [ ] Step 4: Add typed OfferComparisonDimension, OfferComparisonValue, OfferComparisonRead, and request/response types and typed service functions in web/src/types/offer.ts and web/src/services/offers.ts. The comparison UI uses the new structured read endpoint and never interprets the legacy Offer[] response as dimension data. Do not add an offer_id Chat context field.
 - [ ] Step 5: Run uv run pytest tests/test_offer_comparison_dimensions.py -q; run relevant web service tests; commit:
 ~~~powershell
-git add src/offerpilot/repositories/offer_comparison.py src/offerpilot/schemas.py src/offerpilot/api.py tests/test_offer_comparison_dimensions.py web/src/types/offer.ts web/src/services/offers.ts
+git add src/auroraagent/repositories/offer_comparison.py src/auroraagent/schemas.py src/auroraagent/api.py tests/test_offer_comparison_dimensions.py web/src/types/offer.ts web/src/services/offers.ts
 git commit -m "feat: AI add offer comparison dimensions"
 ~~~
 
@@ -141,7 +141,7 @@ git commit -m "feat: AI add offer comparison dimension UI"
 ## Task 4: Harden the existing multi-Offer comparison contract
 
 **Files:**
-- Modify: src/offerpilot/api.py, src/offerpilot/repositories/offers.py, web/src/components/OfferCenterView.tsx, web/src/components/OfferCard.tsx, web/src/components/OfferCompareDrawer.tsx
+- Modify: src/auroraagent/api.py, src/auroraagent/repositories/offers.py, web/src/components/OfferCenterView.tsx, web/src/components/OfferCard.tsx, web/src/components/OfferCompareDrawer.tsx
 - Test: tests/test_offers_api.py, web/src/components/OfferCenterView.test.tsx, new web/src/components/OfferCompareDrawer.test.tsx
 
 - [ ] Step 1: Add failing tests for duplicate IDs being removed before the minimum-two check, missing/invisible IDs returning stable errors, and two visible distinct IDs preserving request order. Mounted UI tests must reject score/rank/weight/average/best/recommend/accept/decline wording and show blank values as 尚未填写.
@@ -149,15 +149,15 @@ git commit -m "feat: AI add offer comparison dimension UI"
 - [ ] Step 3: Keep comparison in Offer center only. Pass active dimension/value rows into the drawer without sorting user-selected Offer columns. Add explicit “用此 Offer 准备谈薪” callbacks carrying the exact Offer ID; do not infer an Offer from column position after rerender.
 - [ ] Step 4: Rerun both focused commands and commit:
 ~~~powershell
-git add src/offerpilot/api.py src/offerpilot/repositories/offers.py web/src/components/OfferCenterView.tsx web/src/components/OfferCard.tsx web/src/components/OfferCompareDrawer.tsx tests/test_offers_api.py web/src/components/OfferCenterView.test.tsx web/src/components/OfferCompareDrawer.test.tsx
+git add src/auroraagent/api.py src/auroraagent/repositories/offers.py web/src/components/OfferCenterView.tsx web/src/components/OfferCard.tsx web/src/components/OfferCompareDrawer.tsx tests/test_offers_api.py web/src/components/OfferCenterView.test.tsx web/src/components/OfferCompareDrawer.test.tsx
 git commit -m "feat: AI harden offer comparison"
 ~~~
 
 ## Task 5: Build the strict negotiation Proposal contract
 
 **Files:**
-- Create: src/offerpilot/ai/offer_negotiation.py, src/offerpilot/repositories/offer_negotiation.py, tests/test_offer_negotiation_ai.py, tests/test_offer_negotiation_repository.py
-- Modify: src/offerpilot/api.py, src/offerpilot/schemas.py
+- Create: src/auroraagent/ai/offer_negotiation.py, src/auroraagent/repositories/offer_negotiation.py, tests/test_offer_negotiation_ai.py, tests/test_offer_negotiation_repository.py
+- Modify: src/auroraagent/api.py, src/auroraagent/schemas.py
 
 - [ ] Step 1: Add failing AI/repository tests for the exact generation payload and snapshot above: same dimension set in different order has the same canonical JSON/fingerprint and `/dimensions/dimension_001/...` paths; an accidentally entered value can be deleted, then the structured read returns null and the generation snapshot stores null without creating a value evidence path; a model reference to that missing value is rejected as unknown_evidence_ref; archived/ninth/duplicate dimensions return 422 without an Attempt; and Provider payload excludes database IDs. Add positive numeric evidence tests for `base_monthly=28000` with excerpt `28000`, `months_per_year=12` with excerpt `12`, and `signing_bonus=0` with excerpt `0`; add negative tests for comma/currency/unit/Chinese numeral rewrites and partial numeric excerpts. Also cover duplicate JSON keys, fenced JSON, non-object roots, missing/extra fields, wrong types, blank id/text/rationale/excerpt, non-finite values, concrete array limits, duplicate item IDs across all arrays, invalid source/path/excerpt, and forbidden decision/law/market/company-policy assertions. Assert the terminal matrix exactly: no-evidence returns locally generated safe_empty 201 with zero Provider calls; pure shape failure then valid repair makes exactly two calls and returns normal; pure shape failure twice makes exactly two calls, stores safe_empty, and same-key replay makes zero calls; semantic failure makes one call, stores no Proposal, returns 502 offer_negotiation_unverifiable, and same-key replay makes zero calls; Provider/network failure stores provider_unknown, returns 502 offer_negotiation_provider_error, and same-key retry uses the original frozen input.
 - [ ] Step 2: Run uv run pytest tests/test_offer_negotiation_ai.py tests/test_offer_negotiation_repository.py -q; expected failure is the absent parser/validator/repository behavior.
@@ -166,14 +166,14 @@ git commit -m "feat: AI harden offer comparison"
 - [ ] Step 5: Add these typed routes: POST /api/offers/{offer_id}/negotiation/proposals for generation, GET /api/offers/{offer_id}/negotiation/proposals for current-Offer history, GET /api/offer-negotiation/proposals/{proposal_id} for immutable history after Offer changes, and POST /api/offer-negotiation/proposals/{proposal_id}/confirm for HITL handoff. Validate visible Offer/current input before creating an Attempt; historical reads return frozen content with source_changed after Offer edit/delete. Use distinct 201/200/202/409/422/502 envelopes and safe Chinese mapping. Diagnostics contain only category, HTTP status, timeout, elapsed time, repair count, and hashed Provider request ID.
 - [ ] Step 6: Run uv run pytest tests/test_offer_negotiation_ai.py tests/test_offer_negotiation_repository.py tests/test_offer_negotiation_api.py -q; commit:
 ~~~powershell
-git add src/offerpilot/ai/offer_negotiation.py src/offerpilot/repositories/offer_negotiation.py src/offerpilot/api.py src/offerpilot/schemas.py tests/test_offer_negotiation_ai.py tests/test_offer_negotiation_repository.py tests/test_offer_negotiation_api.py
+git add src/auroraagent/ai/offer_negotiation.py src/auroraagent/repositories/offer_negotiation.py src/auroraagent/api.py src/auroraagent/schemas.py tests/test_offer_negotiation_ai.py tests/test_offer_negotiation_repository.py tests/test_offer_negotiation_api.py
 git commit -m "feat: AI add offer negotiation proposals"
 ~~~
 
 ## Task 6: Add atomic HITL Brief confirmation and historical reads
 
 **Files:**
-- Modify: src/offerpilot/repositories/offer_negotiation.py, src/offerpilot/api.py, src/offerpilot/schemas.py
+- Modify: src/auroraagent/repositories/offer_negotiation.py, src/auroraagent/api.py, src/auroraagent/schemas.py
 - Test: tests/test_offer_negotiation_api.py, tests/test_offer_negotiation_repository.py
 
 - [ ] Step 1: Add failing tests binding Proposal, Offer, application_id, selected block IDs, edited content, and source fingerprint in one transaction. No Brief may exist before confirmation. Successful confirmation creates exactly one Brief. Concurrent two-session confirmations create one row and replay the same Brief. Changed source returns 409 with no write. Deleted Offer leaves Proposal/Brief history readable and marked changed.
@@ -182,7 +182,7 @@ git commit -m "feat: AI add offer negotiation proposals"
 - [ ] Step 4: Return immutable Proposal/Brief content, source_states, source_changed, offer_id, and application_id from history. Never rewrite hashes or rebind to a new Offer. Map 404/409/422 to safe Chinese messages.
 - [ ] Step 5: Run uv run pytest tests/test_offer_negotiation_api.py tests/test_offer_negotiation_repository.py -q; commit:
 ~~~powershell
-git add src/offerpilot/repositories/offer_negotiation.py src/offerpilot/api.py src/offerpilot/schemas.py tests/test_offer_negotiation_api.py tests/test_offer_negotiation_repository.py
+git add src/auroraagent/repositories/offer_negotiation.py src/auroraagent/api.py src/auroraagent/schemas.py tests/test_offer_negotiation_api.py tests/test_offer_negotiation_repository.py
 git commit -m "feat: AI add offer negotiation confirmation"
 ~~~
 
@@ -206,14 +206,14 @@ git commit -m "feat: AI add offer negotiation UI"
 
 **Files:**
 - Modify: existing Pilot attachment/context files under web/src/features/pilot/, web/src/components/ChatPanel/, and web/src/layout/AppShell.tsx only where the current attachment contract requires it.
-- Test: new web/src/components/OfferPilotNegotiation.test.tsx, existing Pilot attachment/context tests, tests/test_chat_api.py, tests/test_chat_repository.py if backend context behavior needs a regression.
+- Test: new web/src/components/AuroraAgentNegotiation.test.tsx, existing Pilot attachment/context tests, tests/test_chat_api.py, tests/test_chat_repository.py if backend context behavior needs a regression.
 
 - [ ] Step 1: Add failing integration tests for the trigger boundary: with no selected Offer and no user action, Pilot renders no Offer card and makes no Offer list, Chat, or Provider request; when the user explicitly clicks the existing “准备谈薪” action, Pilot opens a local selector; before selection it still sends no message, creates no Chat row, and calls no Provider; after explicit selection it renders the static card. Also cover associated context_type=application/context_ref, workspace context for an unassociated Offer, no persisted offer_id payload, the same service functions for Pilot/UI, and no auto-send/provider call before confirmation.
-- [ ] Step 2: Run from web: npm.cmd test -- --run src/components/OfferPilotNegotiation.test.tsx src/features/pilot/PilotAttachmentContext.render.test.tsx.
+- [ ] Step 2: Run from web: npm.cmd test -- --run src/components/AuroraAgentNegotiation.test.tsx src/features/pilot/PilotAttachmentContext.render.test.tsx.
 - [ ] Step 3: Reuse explicit Offer attachment. Add no new Chat discriminator, API route, prompt, repository, retry state, or auto-approval path. The passive Pilot view does not list Offers. Only the user's explicit “准备谈薪” action opens a selector; selecting one Offer creates only local attachment state, then renders the static card and opens the same drawer after the user confirms the action. The UI and Pilot call the same generation, history, and confirmation service functions.
 - [ ] Step 4: Rerun focused tests, Chat tests if changed, and commit:
 ~~~powershell
-git add web/src/features/pilot web/src/components/ChatPanel web/src/layout/AppShell.tsx web/src/components/OfferPilotNegotiation.test.tsx tests/test_chat_api.py tests/test_chat_repository.py
+git add web/src/features/pilot web/src/components/ChatPanel web/src/layout/AppShell.tsx web/src/components/AuroraAgentNegotiation.test.tsx tests/test_chat_api.py tests/test_chat_repository.py
 git commit -m "feat: AI connect offer negotiation to Pilot"
 ~~~
 
@@ -221,7 +221,7 @@ git commit -m "feat: AI connect offer negotiation to Pilot"
 
 **Files:**
 - Create or modify: scripts/offer-negotiation-real-ai-browser-harness.ps1, tests/test_offer_negotiation_browser_harness.py
-- Modify only scoped diagnostic/error mapping paths in src/offerpilot/api.py, src/offerpilot/ai/offer_negotiation.py, and web/src/components/OfferNegotiationDrawer.tsx.
+- Modify only scoped diagnostic/error mapping paths in src/auroraagent/api.py, src/auroraagent/ai/offer_negotiation.py, and web/src/components/OfferNegotiationDrawer.tsx.
 
 - [ ] Step 1: Add failing harness/error tests for redacted Chinese mapping, scoped diagnostics, 422 cleanup, 404 history/source_changed, 409 freeze, and code-specific retry semantics. Assert 202 generating retains the key; 502 offer_negotiation_provider_error retains the key and same-key retry; 502 offer_negotiation_unverifiable clears the key, leaves the Attempt invalidated, and rejects same-key retry without another Provider call. The harness must fail if it classifies either 502 by status alone.
 - [ ] Step 2: Implement an isolated temporary data directory and a silent byte-for-byte copy of the real config.json, including the configured Provider secret. Do not print, parse into logs, archive, or report the copied config; delete it in finally. Record only local browser /api requests and the actual configured Provider scheme+host+port. Fail closed on any unapproved host or server egress. Never emit keys, Offer/JD/resume text, evidence excerpts, raw model output, snapshots, or secrets.
@@ -229,7 +229,7 @@ git commit -m "feat: AI connect offer negotiation to Pilot"
 - [ ] Step 4: Run uv run pytest tests/test_offer_negotiation_browser_harness.py -q and the Offer-specific isolated real-AI verify command; do not substitute another AI flow.
 - [ ] Step 5: Commit:
 ~~~powershell
-git add scripts/offer-negotiation-real-ai-browser-harness.ps1 tests/test_offer_negotiation_browser_harness.py src/offerpilot/api.py src/offerpilot/ai/offer_negotiation.py web/src/components/OfferNegotiationDrawer.tsx
+git add scripts/offer-negotiation-real-ai-browser-harness.ps1 tests/test_offer_negotiation_browser_harness.py src/auroraagent/api.py src/auroraagent/ai/offer_negotiation.py web/src/components/OfferNegotiationDrawer.tsx
 git commit -m "test: AI verify offer negotiation boundaries"
 ~~~
 
@@ -245,7 +245,7 @@ uv run pytest tests/test_offer_comparison_dimensions.py tests/test_offer_negotia
 uv run ruff check src tests
 uv run mypy src
 Set-Location web
-npm.cmd test -- --run src/components/OfferCenterView.test.tsx src/components/OfferCompareDrawer.test.tsx src/components/OfferNegotiationDrawer.test.tsx src/components/OfferPilotNegotiation.test.tsx
+npm.cmd test -- --run src/components/OfferCenterView.test.tsx src/components/OfferCompareDrawer.test.tsx src/components/OfferNegotiationDrawer.test.tsx src/components/AuroraAgentNegotiation.test.tsx
 npm.cmd run build
 Set-Location ..
 $featureBase = '14ec28b'
@@ -254,7 +254,7 @@ git diff --check "$featureBase..HEAD"
 Record actual exit codes and counts; a timeout is not a pass.
 - [ ] Step 2: Obtain independent code review for history retention, duplicate IDs, duplicate JSON, evidence validation, lease/CAS, confirmation uniqueness, Pilot leakage, cross-domain writes, and raw-content logging. Fix P0/P1 with regression tests; name any accepted P2 in the report.
 - [ ] Step 3: Run grouped backend gate rather than one timeout-prone pytest. Verify collected node-id manifest equals a disjoint group union, no node appears twice, and only the four pre-approved Windows symlink-permission skips occur with exact reasons. Run frontend full tests in stable groups, TypeScript/build, Ruff, Mypy, local smoke, local verify, and Offer-specific real-AI verify.
-- [ ] Step 4: Run isolated browser flow with the silent exact config copy and temporary OFFERPILOT_DATA. Verify local-only browser traffic, exact Provider endpoint egress, no recruitment access, HITL confirmations, source-changed history, and zero unrelated writes including zero Chat writes. Stop services, browser targets, and proxy; remove temp data and copied config; compare the original user data directory before/after.
+- [ ] Step 4: Run isolated browser flow with the silent exact config copy and temporary AURORA_AGENT_DATA. Verify local-only browser traffic, exact Provider endpoint egress, no recruitment access, HITL confirmations, source-changed history, and zero unrelated writes including zero Chat writes. Stop services, browser targets, and proxy; remove temp data and copied config; compare the original user data directory before/after.
 - [ ] Step 5: Write docs/reports/2026-08-01-offer-negotiation-release-verification.md with commit/base, commands, exit codes, counts, skips, focused/AI/browser results, cleanup comparison, review findings, and risks. Do not include secrets, Offer/JD/resume text, evidence excerpts, raw model output, or raw request IDs.
 - [ ] Step 6: Scan changed files for placeholder markers, placeholder error mappings, decision language, and offer_id Chat context fields. From the repository root set `$featureBase = '14ec28b'`, run `git diff --check "$featureBase..HEAD"`, confirm `git status --short` is empty, verify that the report is Git-tracked, then separately stage and commit the report:
 ~~~powershell

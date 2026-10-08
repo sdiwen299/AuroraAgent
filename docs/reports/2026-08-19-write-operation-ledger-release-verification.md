@@ -39,7 +39,7 @@ Provider/read-tool-free recovery and chained Pending reconciliation.
 ## Full automated gates
 
 Backend persisted gate artifacts:
-`D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-write-ledger-acceptance-9dc67c6\backend-results`
+`D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-write-ledger-acceptance-9dc67c6\backend-results`
 
 - Fresh manifest: 2,497 unique node ids; SHA-256
   `df8b9c6917e8306d897f74548dfffd2e4a9716270cbf030d6d47df1af17005b2`.
@@ -52,7 +52,7 @@ Backend persisted gate artifacts:
   no duplicate node ids or unexpected skips.
 
 Frontend persisted gate artifacts:
-`D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-write-ledger-acceptance-4cb9cca\frontend-results`
+`D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-write-ledger-acceptance-4cb9cca\frontend-results`
 
 - 10 groups, 166 files, 1,222 tests passed.
 - Test-id SHA-256:
@@ -82,7 +82,7 @@ control. A second status-change proposal was rejected through the two-step rejec
 UI and returned a stable “没有更改状态” continuation while leaving the application in
 its prior state. The browser service was stopped after verification; isolated evidence
 data remains under
-`D:\Users\yuqi.chen\AppData\Local\Temp\offerpilot-ledger-browser-9dc67c6`.
+`D:\Users\yuqi.chen\AppData\Local\Temp\auroraagent-ledger-browser-9dc67c6`.
 
 Crash boundaries, sync/SSE parity, edit/retry, restart, read-tool continuation, chained
 Pending, owner-crash takeover, and Undo replay are evidenced by the executable backend

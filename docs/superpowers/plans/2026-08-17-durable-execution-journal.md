@@ -15,7 +15,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\feat-20260817-durable-execution-journal
+D:\Users\yuqi.chen\auroraagent\.worktrees\feat-20260817-durable-execution-journal
 ```
 
 The source stack starts at `b0a5697`; the reviewed design is finalized through commit `c741bde`. At implementation start, the plan commit itself becomes the immutable implementation baseline.
@@ -23,16 +23,16 @@ The source stack starts at `b0a5697`; the reviewed design is finalized through c
 ### Exact positive allowlist
 
 ```text
-src/offerpilot/models.py
-src/offerpilot/db.py
-src/offerpilot/repositories/agent_runs.py
-src/offerpilot/agent_runtime/__init__.py
-src/offerpilot/agent_runtime/events.py
-src/offerpilot/agent_runtime/journal.py
-src/offerpilot/agent_runtime/keyring.py
-src/offerpilot/agent_runtime/trace.py
-src/offerpilot/api.py
-src/offerpilot/ai/agent.py
+src/auroraagent/models.py
+src/auroraagent/db.py
+src/auroraagent/repositories/agent_runs.py
+src/auroraagent/agent_runtime/__init__.py
+src/auroraagent/agent_runtime/events.py
+src/auroraagent/agent_runtime/journal.py
+src/auroraagent/agent_runtime/keyring.py
+src/auroraagent/agent_runtime/trace.py
+src/auroraagent/api.py
+src/auroraagent/ai/agent.py
 tests/test_agent_run_migrations.py
 tests/test_agent_runs_repository.py
 tests/test_agent_run_journal.py
@@ -45,16 +45,16 @@ tests/test_smoke.py
 docs/reports/2026-08-17-durable-execution-journal-release-verification.md
 ```
 
-The design and this plan are read-only after bootstrap. Any required path outside this list stops implementation and requires a plan revision before continuing. In particular, do not modify `web/**`, `src/offerpilot/ai/tools.py`, `src/offerpilot/config.py`, `src/offerpilot/sse.py`, existing business repositories, public API schemas, or `README.md`.
+The design and this plan are read-only after bootstrap. Any required path outside this list stops implementation and requires a plan revision before continuing. In particular, do not modify `web/**`, `src/auroraagent/ai/tools.py`, `src/auroraagent/config.py`, `src/auroraagent/sse.py`, existing business repositories, public API schemas, or `README.md`.
 
 ### Task 0: Persist baseline and allowlist
 
 **Files:**
 - Read: `docs/superpowers/specs/2026-08-17-durable-execution-journal-design.md`
 - Read: `docs/superpowers/plans/2026-08-17-durable-execution-journal.md`
-- Create outside repository: `%TEMP%\offerpilot-durable-journal-gate\baseline.txt`
-- Create outside repository: `%TEMP%\offerpilot-durable-journal-gate\allowlist.txt`
-- Create outside repository: `%TEMP%\offerpilot-durable-journal-gate.locator.json`
+- Create outside repository: `%TEMP%\auroraagent-durable-journal-gate\baseline.txt`
+- Create outside repository: `%TEMP%\auroraagent-durable-journal-gate\allowlist.txt`
+- Create outside repository: `%TEMP%\auroraagent-durable-journal-gate.locator.json`
 
 - [ ] **Step 1: Verify the worktree and capture the plan commit once**
 
@@ -75,20 +75,20 @@ Expected: no output and exit code 0.
 - [ ] **Step 2: Persist one immutable allowlist source**
 
 ```powershell
-$gateRoot = Join-Path $env:TEMP 'offerpilot-durable-journal-gate'
-$locator = Join-Path $env:TEMP 'offerpilot-durable-journal-gate.locator.json'
+$gateRoot = Join-Path $env:TEMP 'auroraagent-durable-journal-gate'
+$locator = Join-Path $env:TEMP 'auroraagent-durable-journal-gate.locator.json'
 New-Item -ItemType Directory -Force -Path $gateRoot | Out-Null
 $allowlist = @(
-  'src/offerpilot/models.py',
-  'src/offerpilot/db.py',
-  'src/offerpilot/repositories/agent_runs.py',
-  'src/offerpilot/agent_runtime/__init__.py',
-  'src/offerpilot/agent_runtime/events.py',
-  'src/offerpilot/agent_runtime/journal.py',
-  'src/offerpilot/agent_runtime/keyring.py',
-  'src/offerpilot/agent_runtime/trace.py',
-  'src/offerpilot/api.py',
-  'src/offerpilot/ai/agent.py',
+  'src/auroraagent/models.py',
+  'src/auroraagent/db.py',
+  'src/auroraagent/repositories/agent_runs.py',
+  'src/auroraagent/agent_runtime/__init__.py',
+  'src/auroraagent/agent_runtime/events.py',
+  'src/auroraagent/agent_runtime/journal.py',
+  'src/auroraagent/agent_runtime/keyring.py',
+  'src/auroraagent/agent_runtime/trace.py',
+  'src/auroraagent/api.py',
+  'src/auroraagent/ai/agent.py',
   'tests/test_agent_run_migrations.py',
   'tests/test_agent_runs_repository.py',
   'tests/test_agent_run_journal.py',
@@ -120,7 +120,7 @@ Expected: locator, baseline, and allowlist exist outside the worktree.
 Every later independent PowerShell process must first load and validate the locator, then evaluate committed, staged, unstaged, and untracked paths:
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-durable-journal-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-durable-journal-gate.locator.json') | ConvertFrom-Json
 if ((Get-Location).Path -ne [string]$locator.repository_root) { throw 'wrong worktree' }
 $baseline = (Get-Content -Raw -LiteralPath $locator.baseline_path).Trim()
 if ($baseline -ne [string]$locator.baseline_sha) { throw 'baseline file changed' }
@@ -145,11 +145,11 @@ Expected: exit code 0. Do not recompute `$baseline` after this task.
 ### Task 1: Journal key domain and backup exclusion
 
 **Files:**
-- Create: `src/offerpilot/agent_runtime/keyring.py`
+- Create: `src/auroraagent/agent_runtime/keyring.py`
 - Create: `tests/test_agent_run_keyring.py`
-- Modify: `src/offerpilot/api.py:10014-10027`
+- Modify: `src/auroraagent/api.py:10014-10027`
 - Modify: `tests/test_settings_api.py:497-555`
-- Create: `src/offerpilot/agent_runtime/__init__.py`
+- Create: `src/auroraagent/agent_runtime/__init__.py`
 
 - [ ] **Step 1: Write key lifecycle failure tests**
 
@@ -189,7 +189,7 @@ Run:
 uv run pytest tests/test_agent_run_keyring.py -q
 ```
 
-Expected: FAIL because `offerpilot.agent_runtime.keyring` does not exist.
+Expected: FAIL because `auroraagent.agent_runtime.keyring` does not exist.
 
 - [ ] **Step 3: Implement the dedicated key file**
 
@@ -245,7 +245,7 @@ Run:
 
 ```powershell
 uv run pytest tests/test_agent_run_keyring.py tests/test_settings_api.py -q
-uv run ruff check src/offerpilot/agent_runtime/keyring.py src/offerpilot/api.py tests/test_agent_run_keyring.py tests/test_settings_api.py
+uv run ruff check src/auroraagent/agent_runtime/keyring.py src/auroraagent/api.py tests/test_agent_run_keyring.py tests/test_settings_api.py
 ```
 
 Expected: all selected tests pass and Ruff exits 0.
@@ -253,7 +253,7 @@ Expected: all selected tests pass and Ruff exits 0.
 Commit with separate commands:
 
 ```powershell
-git add src/offerpilot/agent_runtime/__init__.py src/offerpilot/agent_runtime/keyring.py src/offerpilot/api.py tests/test_agent_run_keyring.py tests/test_settings_api.py
+git add src/auroraagent/agent_runtime/__init__.py src/auroraagent/agent_runtime/keyring.py src/auroraagent/api.py tests/test_agent_run_keyring.py tests/test_settings_api.py
 git commit -m "feat: AI add durable journal key domain"
 ```
 
@@ -262,8 +262,8 @@ git commit -m "feat: AI add durable journal key domain"
 ### Task 2: Three-table schema and `0024` migration
 
 **Files:**
-- Modify: `src/offerpilot/models.py:1336-1430`
-- Modify: `src/offerpilot/db.py:34-230`
+- Modify: `src/auroraagent/models.py:1336-1430`
+- Modify: `src/auroraagent/db.py:34-230`
 - Create: `tests/test_agent_run_migrations.py`
 
 - [ ] **Step 1: Write migration and foreign-key tests**
@@ -361,13 +361,13 @@ Enable foreign keys on this engine. Do not call migrations or `create_all` from 
 
 ```powershell
 uv run pytest tests/test_agent_run_migrations.py tests/test_database.py -q
-uv run ruff check src/offerpilot/models.py src/offerpilot/db.py tests/test_agent_run_migrations.py
+uv run ruff check src/auroraagent/models.py src/auroraagent/db.py tests/test_agent_run_migrations.py
 ```
 
 Expected: all selected tests pass.
 
 ```powershell
-git add src/offerpilot/models.py src/offerpilot/db.py tests/test_agent_run_migrations.py
+git add src/auroraagent/models.py src/auroraagent/db.py tests/test_agent_run_migrations.py
 git commit -m "feat: AI add durable agent journal schema"
 ```
 
@@ -376,9 +376,9 @@ git commit -m "feat: AI add durable agent journal schema"
 ### Task 3: Strict event, HMAC, context, and manifest contracts
 
 **Files:**
-- Create: `src/offerpilot/agent_runtime/events.py`
+- Create: `src/auroraagent/agent_runtime/events.py`
 - Create: `tests/test_agent_run_journal.py`
-- Modify: `src/offerpilot/agent_runtime/__init__.py`
+- Modify: `src/auroraagent/agent_runtime/__init__.py`
 
 - [ ] **Step 1: Write red tests for normalization and privacy**
 
@@ -477,25 +477,25 @@ Implement `normalize_context_identity`, `normalize_source_reference`, `prepare_c
 ```python
 hmac.new(
     key.secret,
-    b"offerpilot-agent-input-v1\0" + canonical_input_utf8,
+    b"auroraagent-agent-input-v1\0" + canonical_input_utf8,
     hashlib.sha256,
 ).hexdigest()
 ```
 
-`fact_digest` must hash stable envelope plus `facts`; `payload_digest` must hash the whole `{facts, telemetry}` payload. `pending_identity_fingerprint` must use domain `offerpilot-agent-pending-v1\0`; `model_id_fingerprint` must use domain `offerpilot-agent-model-v1\0`; both carry `fingerprint_key_id`.
+`fact_digest` must hash stable envelope plus `facts`; `payload_digest` must hash the whole `{facts, telemetry}` payload. `pending_identity_fingerprint` must use domain `auroraagent-agent-pending-v1\0`; `model_id_fingerprint` must use domain `auroraagent-agent-model-v1\0`; both carry `fingerprint_key_id`.
 
 - [ ] **Step 5: Verify green and commit**
 
 ```powershell
 uv run pytest tests/test_agent_run_journal.py -q
-uv run ruff check src/offerpilot/agent_runtime/events.py tests/test_agent_run_journal.py
-uv run mypy src/offerpilot/agent_runtime/events.py
+uv run ruff check src/auroraagent/agent_runtime/events.py tests/test_agent_run_journal.py
+uv run mypy src/auroraagent/agent_runtime/events.py
 ```
 
 Expected: all selected commands exit 0.
 
 ```powershell
-git add src/offerpilot/agent_runtime/__init__.py src/offerpilot/agent_runtime/events.py tests/test_agent_run_journal.py
+git add src/auroraagent/agent_runtime/__init__.py src/auroraagent/agent_runtime/events.py tests/test_agent_run_journal.py
 git commit -m "feat: AI add durable journal event contracts"
 ```
 
@@ -504,7 +504,7 @@ git commit -m "feat: AI add durable journal event contracts"
 ### Task 4: Atomic repository, ordering, and bounded lock behavior
 
 **Files:**
-- Create: `src/offerpilot/repositories/agent_runs.py`
+- Create: `src/auroraagent/repositories/agent_runs.py`
 - Create: `tests/test_agent_runs_repository.py`
 
 - [ ] **Step 1: Write atomicity, idempotency, and concurrency tests**
@@ -586,14 +586,14 @@ Inside each transaction, query an existing dedupe/snapshot key before validating
 
 ```powershell
 uv run pytest tests/test_agent_run_migrations.py tests/test_agent_runs_repository.py -q
-uv run ruff check src/offerpilot/repositories/agent_runs.py tests/test_agent_runs_repository.py
-uv run mypy src/offerpilot/repositories/agent_runs.py
+uv run ruff check src/auroraagent/repositories/agent_runs.py tests/test_agent_runs_repository.py
+uv run mypy src/auroraagent/repositories/agent_runs.py
 ```
 
 Expected: all selected commands exit 0.
 
 ```powershell
-git add src/offerpilot/repositories/agent_runs.py tests/test_agent_runs_repository.py
+git add src/auroraagent/repositories/agent_runs.py tests/test_agent_runs_repository.py
 git commit -m "feat: AI add atomic durable journal repository"
 ```
 
@@ -602,11 +602,11 @@ git commit -m "feat: AI add atomic durable journal repository"
 ### Task 5: Safe recorder budgets and deterministic trace reconstruction
 
 **Files:**
-- Create: `src/offerpilot/agent_runtime/journal.py`
-- Create: `src/offerpilot/agent_runtime/trace.py`
+- Create: `src/auroraagent/agent_runtime/journal.py`
+- Create: `src/auroraagent/agent_runtime/trace.py`
 - Create: `tests/test_agent_run_trace.py`
 - Modify: `tests/test_agent_run_journal.py`
-- Modify: `src/offerpilot/agent_runtime/__init__.py`
+- Modify: `src/auroraagent/agent_runtime/__init__.py`
 
 - [ ] **Step 1: Write recorder fail-open and budget tests**
 
@@ -697,7 +697,7 @@ class RunRecorderFactory:
 `RunRecorderFactory` must:
 
 ```text
-env OFFERPILOT_AGENT_JOURNAL_ENABLED=false -> NullRunRecorder
+env AURORA_AGENT_AGENT_JOURNAL_ENABLED=false -> NullRunRecorder
 key unavailable -> NullRunRecorder + fixed journal_secret_unavailable diagnostic
 new logical request -> create Run and initial Segment atomically
 confirmation -> find by conversation_id + waiting_tool_call_id, then start a new Segment
@@ -727,14 +727,14 @@ Use the exact lifecycle/completion/integrity priority from the design. Never inf
 
 ```powershell
 uv run pytest tests/test_agent_run_journal.py tests/test_agent_run_trace.py -q
-uv run ruff check src/offerpilot/agent_runtime tests/test_agent_run_journal.py tests/test_agent_run_trace.py
-uv run mypy src/offerpilot/agent_runtime
+uv run ruff check src/auroraagent/agent_runtime tests/test_agent_run_journal.py tests/test_agent_run_trace.py
+uv run mypy src/auroraagent/agent_runtime
 ```
 
 Expected: all selected commands exit 0.
 
 ```powershell
-git add src/offerpilot/agent_runtime/__init__.py src/offerpilot/agent_runtime/journal.py src/offerpilot/agent_runtime/trace.py tests/test_agent_run_journal.py tests/test_agent_run_trace.py
+git add src/auroraagent/agent_runtime/__init__.py src/auroraagent/agent_runtime/journal.py src/auroraagent/agent_runtime/trace.py tests/test_agent_run_journal.py tests/test_agent_run_trace.py
 git commit -m "feat: AI add safe journal recorder and trace"
 ```
 
@@ -743,7 +743,7 @@ git commit -m "feat: AI add safe journal recorder and trace"
 ### Task 6: Instrument model and tool lifecycle in the Agent runner
 
 **Files:**
-- Modify: `src/offerpilot/ai/agent.py:135-205,282-450,466-610,614-670`
+- Modify: `src/auroraagent/ai/agent.py:135-205,282-450,466-610,614-670`
 - Modify: `tests/test_ai_agent.py`
 
 - [ ] **Step 1: Write Agent lifecycle tests before production edits**
@@ -793,14 +793,14 @@ Default to `NullRunRecorder`. Preserve `event_sink` exactly for existing SSE eve
 
 ```powershell
 uv run pytest tests/test_ai_agent.py -q
-uv run ruff check src/offerpilot/ai/agent.py tests/test_ai_agent.py
-uv run mypy src/offerpilot/ai/agent.py
+uv run ruff check src/auroraagent/ai/agent.py tests/test_ai_agent.py
+uv run mypy src/auroraagent/ai/agent.py
 ```
 
 Expected: all Agent tests pass; existing event-sink assertions remain unchanged.
 
 ```powershell
-git add src/offerpilot/ai/agent.py tests/test_ai_agent.py
+git add src/auroraagent/ai/agent.py tests/test_ai_agent.py
 git commit -m "feat: AI instrument agent model and tool runs"
 ```
 
@@ -809,7 +809,7 @@ git commit -m "feat: AI instrument agent model and tool runs"
 ### Task 7: Integrate initial sync, stream, deterministic, and replay routes
 
 **Files:**
-- Modify: `src/offerpilot/api.py:1058-1395,4469-4875,9846-10035`
+- Modify: `src/auroraagent/api.py:1058-1395,4469-4875,9846-10035`
 - Modify: `tests/test_chat_api.py`
 
 - [ ] **Step 1: Write route-level causal and behavior-equivalence tests**
@@ -878,14 +878,14 @@ Change only the internal API helper `_persist_ai_messages` to return the IDs dir
 
 ```powershell
 uv run pytest tests/test_chat_api.py tests/test_ai_agent.py -q
-uv run ruff check src/offerpilot/api.py tests/test_chat_api.py
-uv run mypy src/offerpilot/api.py
+uv run ruff check src/auroraagent/api.py tests/test_chat_api.py
+uv run mypy src/auroraagent/api.py
 ```
 
 Expected: all selected tests pass, including byte-for-byte SSE envelope assertions.
 
 ```powershell
-git add src/offerpilot/api.py tests/test_chat_api.py
+git add src/auroraagent/api.py tests/test_chat_api.py
 git commit -m "feat: AI journal chat execution lifecycle"
 ```
 
@@ -894,7 +894,7 @@ git commit -m "feat: AI journal chat execution lifecycle"
 ### Task 8: Confirmation resume, approval ordering, and disposition convergence
 
 **Files:**
-- Modify: `src/offerpilot/api.py:4877-5450`
+- Modify: `src/auroraagent/api.py:4877-5450`
 - Modify: `tests/test_chat_api.py`
 - Modify: `tests/test_agent_run_journal.py`
 
@@ -943,14 +943,14 @@ Do not create an orphan Run when lookup fails. Do not move confirmation token co
 
 ```powershell
 uv run pytest tests/test_chat_api.py tests/test_agent_run_journal.py tests/test_ai_agent.py -q
-uv run ruff check src/offerpilot/api.py src/offerpilot/ai/agent.py tests/test_chat_api.py tests/test_agent_run_journal.py
+uv run ruff check src/auroraagent/api.py src/auroraagent/ai/agent.py tests/test_chat_api.py tests/test_agent_run_journal.py
 uv run mypy src
 ```
 
 Expected: all selected tests and Mypy pass.
 
 ```powershell
-git add src/offerpilot/api.py tests/test_chat_api.py tests/test_agent_run_journal.py
+git add src/auroraagent/api.py tests/test_chat_api.py tests/test_agent_run_journal.py
 git commit -m "feat: AI journal confirmation resume lifecycle"
 ```
 
@@ -1027,7 +1027,7 @@ git commit -m "test: AI verify durable journal equivalence"
 Run the reusable Task 0 scope assertion. Expected: zero outside-allowlist paths. Reload the fixed baseline in the same PowerShell process, then run:
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-durable-journal-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-durable-journal-gate.locator.json') | ConvertFrom-Json
 $baseline = (Get-Content -Raw -LiteralPath $locator.baseline_path).Trim()
 git diff --check "$baseline..HEAD"
 ```
@@ -1053,7 +1053,7 @@ Resolve every P0/P1. Fix P2 unless the user explicitly accepts a documented resi
 - [ ] **Step 3: Generate a fresh backend manifest without hiding duplicates**
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-durable-journal-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-durable-journal-gate.locator.json') | ConvertFrom-Json
 $backend = Join-Path (Split-Path $locator.baseline_path -Parent) 'backend-results'
 New-Item -ItemType Directory -Force -Path $backend | Out-Null
 $raw = @(& uv run pytest --collect-only -q --disable-warnings tests 2>&1)

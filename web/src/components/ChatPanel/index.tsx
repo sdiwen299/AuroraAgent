@@ -174,7 +174,7 @@ export function VoiceCoachingPilotEntry({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-const CHAT_WIDTH_STORAGE_KEY = 'offerpilot.chatPanelWidth';
+const CHAT_WIDTH_STORAGE_KEY = 'auroraagent.chatPanelWidth';
 const DEFAULT_CHAT_WIDTH = 920;
 const MIN_CHAT_WIDTH = 720;
 const CONFIRMATION_RECONCILE_MAX_POLLS = 240;
@@ -1552,7 +1552,7 @@ function ChatPanelView({
             <RobotOutlined />
           </div>
           <div style={{ minWidth: 0 }}>
-            <div className={`${styles.headTitle} op-gradient-text`}>OfferPilot 领航员</div>
+            <div className={`${styles.headTitle} op-gradient-text`}>曙光领航员</div>
             <div className={styles.headSub}>基于投递、日程、复盘与 Offer 实时作答</div>
           </div>
           <span className={styles.modeBadge}>{isNego ? '谈薪教练' : '通用助手'}</span>
@@ -1624,7 +1624,7 @@ function ChatPanelView({
               {showEmpty ? (
                 <div className={styles.empty}>
                   <div className={styles.emptyTitle}>
-                    {isNego ? '开始谈薪辅导' : '你好，我是 OfferPilot 领航员'}
+                    {isNego ? '开始谈薪辅导' : '你好，我是曙光领航员'}
                   </div>
                   <div className={styles.emptyHint}>
                     {isNego

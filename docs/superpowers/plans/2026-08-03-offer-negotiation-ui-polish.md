@@ -47,14 +47,14 @@ git rev-parse --short HEAD
 | `web/src/components/ChatPanel/PilotOfferSelectionCard.test.tsx` | Pilot 主动选择测试 |
 | `web/src/components/ChatPanel/ContextPanel.tsx` | 接入 Pilot 选择卡 |
 | `web/src/components/ChatPanel/ChatPanel.module.css` | Pilot 卡片现有主题样式 |
-| `web/src/components/OfferPilotNegotiation.test.tsx` | Pilot 挂载与入口回归 |
+| `web/src/components/AuroraAgentNegotiation.test.tsx` | Pilot 挂载与入口回归 |
 | `web/src/components/OfferCenterView.tsx` | Offer 中心样式容器和入口 |
 | `web/src/components/OfferCenterView.test.tsx` | UI 入口与零额外写入 |
 | `web/src/layout/AppShell.offerNegotiation.test.tsx` | UI/Pilot 草稿隔离挂载测试 |
 | `artifacts/2026-08-03-offer-negotiation/*.png` | 重新生成的亮色宽屏截图 |
 | `docs/reports/2026-08-01-offer-negotiation-release-verification.md` | 历史验收报告（路径已收敛） |
 
-禁止修改 `src/offerpilot/`、数据库迁移、后端 schema、API 路由、Provider prompt、AI 校验器和共享 HTTP 契约。
+禁止修改 `src/auroraagent/`、数据库迁移、后端 schema、API 路由、Provider prompt、AI 校验器和共享 HTTP 契约。
 
 ### Task 1: 收口 Offer 卡片层级
 
@@ -597,7 +597,7 @@ const submitGeneration = async (fromRetry = false) => {
 Run:
 
 ```powershell
-npm.cmd test -- OfferNegotiationDrawer.test.tsx OfferCenterView.test.tsx OfferPilotNegotiation.test.tsx offer-negotiation/OfferNegotiationPresentation.test.tsx
+npm.cmd test -- OfferNegotiationDrawer.test.tsx OfferCenterView.test.tsx AuroraAgentNegotiation.test.tsx offer-negotiation/OfferNegotiationPresentation.test.tsx
 ```
 
 Expected: PASS。
@@ -619,7 +619,7 @@ git commit -m "style: AI build structured negotiation workspace"
 - Create: `web/src/components/ChatPanel/PilotOfferSelectionCard.test.tsx`
 - Modify: `web/src/components/ChatPanel/ContextPanel.tsx`
 - Modify: `web/src/components/ChatPanel/ChatPanel.module.css`
-- Modify: `web/src/components/OfferPilotNegotiation.test.tsx`
+- Modify: `web/src/components/AuroraAgentNegotiation.test.tsx`
 
 - [ ] **Step 1: 写 Pilot 主动选择失败测试**
 
@@ -646,7 +646,7 @@ it('asks for an explicit Offer and confirms the user answer before continuing', 
 
 - [ ] **Step 2: 运行测试并确认失败**
 
-Run: `npm.cmd test -- ChatPanel/PilotOfferSelectionCard.test.tsx OfferPilotNegotiation.test.tsx`
+Run: `npm.cmd test -- ChatPanel/PilotOfferSelectionCard.test.tsx AuroraAgentNegotiation.test.tsx`
 
 Expected: FAIL，因为当前使用原生 select，没有独立询问和回答确认卡。
 
@@ -676,7 +676,7 @@ interface PilotOfferSelectionCardProps {
 Run:
 
 ```powershell
-npm.cmd test -- ChatPanel/PilotOfferSelectionCard.test.tsx OfferPilotNegotiation.test.tsx ChatPanel
+npm.cmd test -- ChatPanel/PilotOfferSelectionCard.test.tsx AuroraAgentNegotiation.test.tsx ChatPanel
 ```
 
 Expected: PASS。
@@ -684,7 +684,7 @@ Expected: PASS。
 - [ ] **Step 6: 提交**
 
 ```powershell
-git add web/src/components/ChatPanel/PilotOfferSelectionCard.tsx web/src/components/ChatPanel/PilotOfferSelectionCard.test.tsx web/src/components/ChatPanel/ContextPanel.tsx web/src/components/ChatPanel/ChatPanel.module.css web/src/components/OfferPilotNegotiation.test.tsx
+git add web/src/components/ChatPanel/PilotOfferSelectionCard.tsx web/src/components/ChatPanel/PilotOfferSelectionCard.test.tsx web/src/components/ChatPanel/ContextPanel.tsx web/src/components/ChatPanel/ChatPanel.module.css web/src/components/AuroraAgentNegotiation.test.tsx
 ```
 
 ```powershell
@@ -740,7 +740,7 @@ Run:
 
 ```powershell
 cd web
-npm.cmd test -- OfferCard.test.tsx OfferComparisonDimensionPanel.test.tsx OfferCompareDrawer.test.tsx OfferNegotiationDrawer.test.tsx OfferCenterView.test.tsx OfferPilotNegotiation.test.tsx ChatPanel/PilotOfferSelectionCard.test.tsx offer-negotiation/OfferNegotiationPresentation.test.tsx src/layout/AppShell.offerNegotiation.test.tsx
+npm.cmd test -- OfferCard.test.tsx OfferComparisonDimensionPanel.test.tsx OfferCompareDrawer.test.tsx OfferNegotiationDrawer.test.tsx OfferCenterView.test.tsx AuroraAgentNegotiation.test.tsx ChatPanel/PilotOfferSelectionCard.test.tsx offer-negotiation/OfferNegotiationPresentation.test.tsx src/layout/AppShell.offerNegotiation.test.tsx
 ```
 
 Expected: 所有测试 PASS。
@@ -811,7 +811,7 @@ Expected: 所有命令退出码 0。
 
 ```powershell
 $changed = git diff --name-only 10fc4ba..HEAD
-$forbidden = $changed | Where-Object { $_ -match '^(src/offerpilot/|tests/.*\.py$|migrations/)' }
+$forbidden = $changed | Where-Object { $_ -match '^(src/auroraagent/|tests/.*\.py$|migrations/)' }
 if ($forbidden) { throw "UI polish modified forbidden backend files:`n$($forbidden -join "`n")" }
 ```
 

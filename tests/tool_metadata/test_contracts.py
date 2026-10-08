@@ -4,8 +4,8 @@ from enum import Enum
 
 import pytest
 
-from offerpilot.ai.tool_authority.contracts import _require_capabilities
-from offerpilot.ai.tool_runtime.policy_types import (
+from auroraagent.ai.tool_authority.contracts import _require_capabilities
+from auroraagent.ai.tool_runtime.policy_types import (
     CompensationKind,
     LegacyBoundaryVisibility,
     OperationKind,
@@ -78,11 +78,11 @@ def test_policy_enums_are_exact_closed_string_contracts() -> None:
 
 
 def test_tool_capability_has_one_leaf_identity_and_no_context_reexport() -> None:
-    from offerpilot.ai.tool_runtime import context, policy_types, ToolCapability as public_type
+    from auroraagent.ai.tool_runtime import context, policy_types, ToolCapability as public_type
 
     assert ToolCapability is policy_types.ToolCapability
     assert public_type is ToolCapability
-    assert ToolCapability.__module__ == "offerpilot.ai.tool_runtime.policy_types"
+    assert ToolCapability.__module__ == "auroraagent.ai.tool_runtime.policy_types"
     assert not hasattr(context, "ToolCapability")
 
 
@@ -105,7 +105,7 @@ def test_authority_accepts_only_the_relocated_exact_capability_enum() -> None:
         "ToolCapability",
         {"APPLICATIONS_READ": "applications.read"},
         type=str,
-        module="offerpilot.ai.tool_runtime.policy_types",
+        module="auroraagent.ai.tool_runtime.policy_types",
     )
     spoof = next(iter(spoof_type))
     assert type(spoof).__module__ == ToolCapability.__module__

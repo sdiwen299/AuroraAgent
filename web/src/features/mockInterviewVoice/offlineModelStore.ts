@@ -17,7 +17,7 @@ export interface OfflineModelStorePorts {
   estimateStorage(): Promise<{ quota?: number; usage?: number } | undefined>;
 }
 
-const DATABASE_NAME = 'offerpilot-offline-models';
+const DATABASE_NAME = 'auroraagent-offline-models';
 const STORE_NAME = 'metadata';
 const MODEL_KEY = 'whisper-balanced';
 

@@ -19,7 +19,7 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from offerpilot.api import create_app
+from auroraagent.api import create_app
 
 
 def symlink_or_skip(link: Path, target: Path, *, target_is_directory: bool = False) -> None:

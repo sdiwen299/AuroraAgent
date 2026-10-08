@@ -14,10 +14,10 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.exc import OperationalError
 
-import offerpilot.agent_runtime.events as events_module
-import offerpilot.agent_runtime.journal as journal_module
-from offerpilot.agent_runtime.budget import JournalBudgetExhausted, JournalDeadlineExceeded
-from offerpilot.agent_runtime.events import (
+import auroraagent.agent_runtime.events as events_module
+import auroraagent.agent_runtime.journal as journal_module
+from auroraagent.agent_runtime.budget import JournalBudgetExhausted, JournalDeadlineExceeded
+from auroraagent.agent_runtime.events import (
     ContextManifestInput,
     JournalEventValidationError,
     _ordered_digest,
@@ -28,14 +28,14 @@ from offerpilot.agent_runtime.events import (
     prepare_context_snapshot,
     prepare_event,
 )
-from offerpilot.agent_runtime.keyring import JournalKeyDomain
-from offerpilot.ai.tool_runtime.catalog import compile_tool_metadata_manifest
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_specs.catalog import build_model_tool_catalog
-from offerpilot.context_projector.contracts import RuntimeSurfaceAudit
-from offerpilot.context_projector.manifest import CONTRIBUTOR_ORDER
-from offerpilot.db import init_database
-from offerpilot.agent_runtime.journal import (
+from auroraagent.agent_runtime.keyring import JournalKeyDomain
+from auroraagent.ai.tool_runtime.catalog import compile_tool_metadata_manifest
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_specs.catalog import build_model_tool_catalog
+from auroraagent.context_projector.contracts import RuntimeSurfaceAudit
+from auroraagent.context_projector.manifest import CONTRIBUTOR_ORDER
+from auroraagent.db import init_database
+from auroraagent.agent_runtime.journal import (
     EventInput,
     NullRunRecorder,
     ResumedDisposition,
@@ -44,9 +44,9 @@ from offerpilot.agent_runtime.journal import (
     SuspendedDisposition,
     TerminalDisposition,
 )
-from offerpilot.models import AgentEvent, ChatMessage, Conversation
-from offerpilot.pilot_runtime.compensation import prepare_compensation_handler_components
-from offerpilot.repositories.agent_runs import (
+from auroraagent.models import AgentEvent, ChatMessage, Conversation
+from auroraagent.pilot_runtime.compensation import prepare_compensation_handler_components
+from auroraagent.repositories.agent_runs import (
     AgentRunRepository,
     DispositionCommand,
     StartRunCommand,
@@ -320,7 +320,7 @@ def test_input_fingerprint_uses_exact_domain_formula() -> None:
     canonical = canonical_json(logical_input).encode("utf-8")
     expected = hmac.new(
         KEY.secret,
-        b"offerpilot-agent-input-v1\0" + canonical,
+        b"auroraagent-agent-input-v1\0" + canonical,
         hashlib.sha256,
     ).hexdigest()
 
@@ -336,8 +336,8 @@ def test_input_fingerprint_uses_exact_domain_formula() -> None:
 @pytest.mark.parametrize(
     "relative_path",
     [
-        Path("src/offerpilot/agent_runtime/events.py"),
-        Path("src/offerpilot/context_projector/manifest.py"),
+        Path("src/auroraagent/agent_runtime/events.py"),
+        Path("src/auroraagent/context_projector/manifest.py"),
     ],
 )
 def test_journal_sha256_is_initialized_before_bounded_updates(relative_path: Path) -> None:
@@ -384,7 +384,7 @@ def test_event_hmac_paths_update_fixed_utf8_byte_chunks(
     value = "界" * 5000
     expected_fingerprint = hmac.new(
         KEY.secret,
-        b"offerpilot-agent-pending-v1\0" + canonical_json(value).encode("utf-8"),
+        b"auroraagent-agent-pending-v1\0" + canonical_json(value).encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()
     monkeypatch.setattr(
@@ -401,7 +401,7 @@ def test_event_hmac_paths_update_fixed_utf8_byte_chunks(
     )
     expected_logical = hmac.new(
         KEY.secret,
-        b"offerpilot-agent-input-v1\0" + canonical_json({"content": value}).encode("utf-8"),
+        b"auroraagent-agent-input-v1\0" + canonical_json({"content": value}).encode("utf-8"),
         hashlib.sha256,
     ).hexdigest()
     assert prepared.logical_input_fingerprint == expected_logical
@@ -1963,7 +1963,7 @@ def test_factory_returns_null_recorder_when_key_is_unavailable() -> None:
 def test_factory_environment_switch_returns_silent_null_recorder(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("OFFERPILOT_AGENT_JOURNAL_ENABLED", "false")
+    monkeypatch.setenv("AURORA_AGENT_AGENT_JOURNAL_ENABLED", "false")
     repository = RecordingJournalRepository()
     factory = RunRecorderFactory(repository, key=KEY)  # type: ignore[arg-type]
 

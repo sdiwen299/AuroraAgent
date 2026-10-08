@@ -12,16 +12,16 @@ This phase adds a fail-open diagnostic execution journal around the existing Age
 
 The immutable positive allowlist contained these paths:
 
-- `src/offerpilot/models.py`
-- `src/offerpilot/db.py`
-- `src/offerpilot/repositories/agent_runs.py`
-- `src/offerpilot/agent_runtime/__init__.py`
-- `src/offerpilot/agent_runtime/events.py`
-- `src/offerpilot/agent_runtime/journal.py`
-- `src/offerpilot/agent_runtime/keyring.py`
-- `src/offerpilot/agent_runtime/trace.py`
-- `src/offerpilot/api.py`
-- `src/offerpilot/ai/agent.py`
+- `src/auroraagent/models.py`
+- `src/auroraagent/db.py`
+- `src/auroraagent/repositories/agent_runs.py`
+- `src/auroraagent/agent_runtime/__init__.py`
+- `src/auroraagent/agent_runtime/events.py`
+- `src/auroraagent/agent_runtime/journal.py`
+- `src/auroraagent/agent_runtime/keyring.py`
+- `src/auroraagent/agent_runtime/trace.py`
+- `src/auroraagent/api.py`
+- `src/auroraagent/ai/agent.py`
 - `tests/test_agent_run_migrations.py`
 - `tests/test_agent_runs_repository.py`
 - `tests/test_agent_run_journal.py`
@@ -33,7 +33,7 @@ The immutable positive allowlist contained these paths:
 - `tests/test_smoke.py`
 - `docs/reports/2026-08-17-durable-execution-journal-release-verification.md`
 
-The pre-report scope assertion found zero changed paths outside this allowlist. A diagnostic cleanup change outside the allowlist was committed and immediately reverted; it has no net baseline diff. After the user separately authorized closing the real-AI cleanup blocker before merge, the final baseline diff contains exactly one separately scoped path outside the immutable Journal allowlist: `src/offerpilot/smoke.py`. The original allowlist remained unchanged.
+The pre-report scope assertion found zero changed paths outside this allowlist. A diagnostic cleanup change outside the allowlist was committed and immediately reverted; it has no net baseline diff. After the user separately authorized closing the real-AI cleanup blocker before merge, the final baseline diff contains exactly one separately scoped path outside the immutable Journal allowlist: `src/auroraagent/smoke.py`. The original allowlist remained unchanged.
 
 ## Delivered behavior
 
@@ -70,7 +70,7 @@ There are no public API, CLI, UI, SSE envelope, Provider, or business-domain sch
 - `97d6c31 revert: AI remove out-of-scope smoke cleanup`
 - `86c6cde fix: AI close durable journal smoke lifecycle`
 
-The `c110892` / `97d6c31` pair is a net-zero diagnostic attempt retained in history for auditability. The separately authorized lifecycle fix was then implemented in `src/offerpilot/smoke.py` as a one-path exception to the immutable Journal allowlist, with its regressions added to the already allowlisted `tests/test_smoke.py`.
+The `c110892` / `97d6c31` pair is a net-zero diagnostic attempt retained in history for auditability. The separately authorized lifecycle fix was then implemented in `src/auroraagent/smoke.py` as a one-path exception to the immutable Journal allowlist, with its regressions added to the already allowlisted `tests/test_smoke.py`.
 
 ## Schema and migration verification
 

@@ -1,4 +1,4 @@
-# OfferPilot 产品待办
+# AuroraAgent 产品待办
 
 状态核对：2026-09-08，主线 `408d851`。本文收敛 2026-08-07 调研形成的待办，不重新定义产品 PRD，也不将历史验收当作本次回归结果。
 
@@ -10,10 +10,10 @@
 
 | 原事项 | 当前实现范围与入口 | 历史证据 |
 |---|---|---|
-| JD 版本前置依赖 | [JD 版本仓储](../src/offerpilot/repositories/application_jd_versions.py)已存在，不再等待分支合并 | [JD 版本验证](reports/2026-08-05-application-jd-versions-release-verification.md) |
-| 投递事实档案与结果反馈 | [投递档案及结果仓储](../src/offerpilot/repositories/application_outcomes.py)保存冻结快照与追加式反馈历史，API 已接入 | [结果闭环验证](reports/2026-08-12-application-outcome-feedback-release-verification.md) |
-| 结构化面试故事库 | [故事仓储](../src/offerpilot/repositories/interview_stories.py)支持故事、不可变版本、来源与人工确认；不据此宣称原调研中的所有扩展字段均已交付 | [故事库验证](reports/2026-08-10-interview-story-library-release-verification.md) |
-| 基于复盘的自适应练习 | [专项练习仓储](../src/offerpilot/repositories/adaptive_interview_practice.py)支持确认重点驱动的练习与完成历史，不引入综合能力评分 | [练习验证](reports/2026-08-12-adaptive-interview-practice-release-verification.md) |
+| JD 版本前置依赖 | [JD 版本仓储](../src/auroraagent/repositories/application_jd_versions.py)已存在，不再等待分支合并 | [JD 版本验证](reports/2026-08-05-application-jd-versions-release-verification.md) |
+| 投递事实档案与结果反馈 | [投递档案及结果仓储](../src/auroraagent/repositories/application_outcomes.py)保存冻结快照与追加式反馈历史，API 已接入 | [结果闭环验证](reports/2026-08-12-application-outcome-feedback-release-verification.md) |
+| 结构化面试故事库 | [故事仓储](../src/auroraagent/repositories/interview_stories.py)支持故事、不可变版本、来源与人工确认；不据此宣称原调研中的所有扩展字段均已交付 | [故事库验证](reports/2026-08-10-interview-story-library-release-verification.md) |
+| 基于复盘的自适应练习 | [专项练习仓储](../src/auroraagent/repositories/adaptive_interview_practice.py)支持确认重点驱动的练习与完成历史，不引入综合能力评分 | [练习验证](reports/2026-08-12-adaptive-interview-practice-release-verification.md) |
 | 简历诊断与事实补充 | [事实补充工作台](../web/src/components/ResumeFactSupplementWorkspace.tsx)支持手工确认事实并创建派生版本；不是 AI 自动补齐事实 | [工作台验收](reports/2026-08-12-resume-fact-workspace-browser-acceptance.md) |
 | 跟进信、感谢信草稿 | [沟通草稿面板](../web/src/components/ApplicationCommunicationDraftPanel.tsx)提供本地可编辑、可复制草稿，不调用 AI、不持久保存草稿、不自动发送 | [沟通草稿验收](reports/2026-08-13-application-communication-drafts-browser-acceptance.md) |
 

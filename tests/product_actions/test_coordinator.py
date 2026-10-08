@@ -17,14 +17,14 @@ from sqlalchemy import event, func, select, text, update
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-import offerpilot.product_actions.coordinator as coordinator_module
-from offerpilot.ai.write_operations import (
+import auroraagent.product_actions.coordinator as coordinator_module
+from auroraagent.ai.write_operations import (
     TerminalPayload,
     WriteOperationError,
     build_terminal_payload,
 )
-from offerpilot.db import init_database
-from offerpilot.models import (
+from auroraagent.db import init_database
+from auroraagent.models import (
     Application,
     InterviewNote,
     InterviewReadinessSignal,
@@ -33,7 +33,7 @@ from offerpilot.models import (
     WriteOperation,
     WriteOperationTransition,
 )
-from offerpilot.product_actions.coordinator import (
+from auroraagent.product_actions.coordinator import (
     ProductActionDeclaredExecutorFailureV1,
     ProductActionCoordinatorError,
     ProductActionHandlerResultV1,
@@ -45,14 +45,14 @@ from offerpilot.product_actions.coordinator import (
     TrustedProductActionDecisionV1,
     seal_interview_story_product_action_handler,
 )
-from offerpilot.product_actions.contracts import (
+from auroraagent.product_actions.contracts import (
     JSONValue,
     ProductActionExecutionAuthorization,
     ProductActionIntegrityError,
     canonical_product_action_json,
 )
-from offerpilot.product_actions.issuer import InterviewStoryActionIssuer
-from offerpilot.review_readiness.candidates import project_readiness_candidates
+from auroraagent.product_actions.issuer import InterviewStoryActionIssuer
+from auroraagent.review_readiness.candidates import project_readiness_candidates
 
 from tests.review_readiness_support import seed_review_candidate
 from tests.test_review_readiness_repository import _coordinator
@@ -913,7 +913,7 @@ def test_rejection_recovery_issues_reject_scoped_credential(tmp_path, monkeypatc
 def test_primary_input_fingerprint_is_cross_process_canonical_golden() -> None:
     script = textwrap.dedent(
         """
-        from offerpilot.ai.write_operations import LedgerKeyDomain, ledger_fingerprint
+        from auroraagent.ai.write_operations import LedgerKeyDomain, ledger_fingerprint
 
         key = LedgerKeyDomain(
             "11111111-1111-4111-8111-111111111111",

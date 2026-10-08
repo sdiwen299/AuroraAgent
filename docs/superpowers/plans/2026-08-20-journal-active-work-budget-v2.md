@@ -15,7 +15,7 @@
 Work only in:
 
 ```text
-D:\Users\yuqi.chen\offerpilot\.worktrees\fix-20260820-journal-active-work-budget
+D:\Users\yuqi.chen\auroraagent\.worktrees\fix-20260820-journal-active-work-budget
 ```
 
 Branch:
@@ -35,11 +35,11 @@ The reviewed design is [2026-08-20-journal-active-work-budget-v2-design.md](../s
 ### Exact positive allowlist
 
 ```text
-src/offerpilot/agent_runtime/budget.py
-src/offerpilot/agent_runtime/events.py
-src/offerpilot/agent_runtime/journal.py
-src/offerpilot/context_projector/manifest.py
-src/offerpilot/repositories/agent_runs.py
+src/auroraagent/agent_runtime/budget.py
+src/auroraagent/agent_runtime/events.py
+src/auroraagent/agent_runtime/journal.py
+src/auroraagent/context_projector/manifest.py
+src/auroraagent/repositories/agent_runs.py
 tests/test_agent_run_budget.py
 tests/test_agent_run_journal.py
 tests/test_agent_runs_repository.py
@@ -56,9 +56,9 @@ Do not modify database models/migrations, API schemas, SSE contracts, Provider c
 **Files:**
 - Read: `docs/superpowers/specs/2026-08-20-journal-active-work-budget-v2-design.md`
 - Read: `docs/superpowers/plans/2026-08-20-journal-active-work-budget-v2.md`
-- Create outside repository: `%TEMP%\offerpilot-journal-budget-v2-gate\baseline.txt`
-- Create outside repository: `%TEMP%\offerpilot-journal-budget-v2-gate\allowlist.txt`
-- Create outside repository: `%TEMP%\offerpilot-journal-budget-v2-gate.locator.json`
+- Create outside repository: `%TEMP%\auroraagent-journal-budget-v2-gate\baseline.txt`
+- Create outside repository: `%TEMP%\auroraagent-journal-budget-v2-gate\allowlist.txt`
+- Create outside repository: `%TEMP%\auroraagent-journal-budget-v2-gate.locator.json`
 
 - [ ] **Step 1: Verify the clean worktree and capture the plan commit**
 
@@ -77,15 +77,15 @@ Expected: exit code 0 and no output.
 - [ ] **Step 2: Persist one immutable allowlist source**
 
 ```powershell
-$gateRoot = Join-Path $env:TEMP 'offerpilot-journal-budget-v2-gate'
-$locatorPath = Join-Path $env:TEMP 'offerpilot-journal-budget-v2-gate.locator.json'
+$gateRoot = Join-Path $env:TEMP 'auroraagent-journal-budget-v2-gate'
+$locatorPath = Join-Path $env:TEMP 'auroraagent-journal-budget-v2-gate.locator.json'
 New-Item -ItemType Directory -Force -Path $gateRoot | Out-Null
 $allowlist = @(
-  'src/offerpilot/agent_runtime/budget.py',
-  'src/offerpilot/agent_runtime/events.py',
-  'src/offerpilot/agent_runtime/journal.py',
-  'src/offerpilot/context_projector/manifest.py',
-  'src/offerpilot/repositories/agent_runs.py',
+  'src/auroraagent/agent_runtime/budget.py',
+  'src/auroraagent/agent_runtime/events.py',
+  'src/auroraagent/agent_runtime/journal.py',
+  'src/auroraagent/context_projector/manifest.py',
+  'src/auroraagent/repositories/agent_runs.py',
   'tests/test_agent_run_budget.py',
   'tests/test_agent_run_journal.py',
   'tests/test_agent_runs_repository.py',
@@ -115,7 +115,7 @@ Expected: all three gate files exist outside the worktree.
 - [ ] **Step 3: Run the reusable scope assertion**
 
 ```powershell
-$locator = Get-Content -Raw (Join-Path $env:TEMP 'offerpilot-journal-budget-v2-gate.locator.json') | ConvertFrom-Json
+$locator = Get-Content -Raw (Join-Path $env:TEMP 'auroraagent-journal-budget-v2-gate.locator.json') | ConvertFrom-Json
 if ((Get-Location).Path -ne [string]$locator.repository_root) { throw 'wrong worktree' }
 $baseline = (Get-Content -Raw -LiteralPath $locator.baseline_path).Trim()
 if ($baseline -ne [string]$locator.baseline_sha) { throw 'baseline file changed' }
@@ -144,7 +144,7 @@ Expected: exit code 0. Re-run this assertion after every task; never recompute t
 ### Task 1: Build the active-work budget primitives
 
 **Files:**
-- Create: `src/offerpilot/agent_runtime/budget.py`
+- Create: `src/auroraagent/agent_runtime/budget.py`
 - Create: `tests/test_agent_run_budget.py`
 
 - [ ] **Step 1: Write failing monotonic and adapter tests**
@@ -194,7 +194,7 @@ Also cover a decreasing sample, `Exception`, arbitrary `BaseException`, and an i
 uv run pytest tests/test_agent_run_budget.py -q
 ```
 
-Expected: collection fails because `offerpilot.agent_runtime.budget` does not exist.
+Expected: collection fails because `auroraagent.agent_runtime.budget` does not exist.
 
 - [ ] **Step 3: Implement the dependency-free budget module**
 
@@ -327,8 +327,8 @@ class OperationLease:
 
 ```powershell
 uv run pytest tests/test_agent_run_budget.py -q
-uv run ruff check src/offerpilot/agent_runtime/budget.py tests/test_agent_run_budget.py
-uv run mypy src/offerpilot/agent_runtime/budget.py
+uv run ruff check src/auroraagent/agent_runtime/budget.py tests/test_agent_run_budget.py
+uv run mypy src/auroraagent/agent_runtime/budget.py
 ```
 
 Expected: all commands exit 0.
@@ -336,7 +336,7 @@ Expected: all commands exit 0.
 - [ ] **Step 5: Commit the budget primitives**
 
 ```powershell
-git add src/offerpilot/agent_runtime/budget.py tests/test_agent_run_budget.py
+git add src/auroraagent/agent_runtime/budget.py tests/test_agent_run_budget.py
 git commit -m "feat: AI add journal active work budget"
 ```
 
@@ -345,8 +345,8 @@ git commit -m "feat: AI add journal active work budget"
 ### Task 2: Make canonical, HMAC, and V2 Manifest work interruptible
 
 **Files:**
-- Modify: `src/offerpilot/agent_runtime/events.py`
-- Modify: `src/offerpilot/context_projector/manifest.py`
+- Modify: `src/auroraagent/agent_runtime/events.py`
+- Modify: `src/auroraagent/context_projector/manifest.py`
 - Modify: `tests/test_agent_run_journal.py`
 - Modify: `tests/test_context_projector.py`
 
@@ -416,7 +416,7 @@ def _build_manifest_payload(
             _check_budget(budget_check)
             chunks.append(
                 {
-                    "path_hmac": _identity(secret, b"offerpilot-surface-chunk-v2", chunk.path),
+                    "path_hmac": _identity(secret, b"auroraagent-surface-chunk-v2", chunk.path),
                     "ordinal": chunk.ordinal,
                     "total": chunk.total,
                     "truncated": chunk.truncated,
@@ -428,7 +428,7 @@ def _build_manifest_payload(
             {
                 "source_hmac": _identity(
                     secret,
-                    b"offerpilot-surface-source-v2",
+                    b"auroraagent-surface-source-v2",
                     f"{source.kind}:{source.revision_identity}",
                 ),
                 "content_revision_fingerprint": source.content_revision_fingerprint,
@@ -442,7 +442,7 @@ def _build_manifest_payload(
                 {
                     "source_hmac": _identity(
                         secret,
-                        b"offerpilot-surface-source-v2",
+                        b"auroraagent-surface-source-v2",
                         f"{index}:{fingerprint}",
                     ),
                     "content_revision_fingerprint": fingerprint,
@@ -457,7 +457,7 @@ def _build_manifest_payload(
     for item in audit.selected_history_group_ids:
         _check_budget(budget_check)
         history_groups.append(
-            _identity(secret, b"offerpilot-surface-history-v2", item)
+            _identity(secret, b"auroraagent-surface-history-v2", item)
         )
     tools: list[str] = []
     for tool_name in audit.selected_tool_names:
@@ -499,7 +499,7 @@ def prepare_surface_manifest_v2(
     providers: list[str] = []
     for identity in provider_identities:
         _check_budget(budget_check)
-        providers.append(_identity(secret, b"offerpilot-surface-provider-v2", identity))
+        providers.append(_identity(secret, b"auroraagent-surface-provider-v2", identity))
     _check_budget(budget_check)
     manifest = _build_manifest_payload(
         audit,
@@ -528,8 +528,8 @@ Call it before and after every bounded provider/contributor/history/tool/source/
 
 ```powershell
 uv run pytest tests/test_agent_run_journal.py tests/test_context_projector.py -q
-uv run ruff check src/offerpilot/agent_runtime/events.py src/offerpilot/context_projector/manifest.py tests/test_agent_run_journal.py tests/test_context_projector.py
-uv run mypy src/offerpilot/agent_runtime/events.py src/offerpilot/context_projector/manifest.py
+uv run ruff check src/auroraagent/agent_runtime/events.py src/auroraagent/context_projector/manifest.py tests/test_agent_run_journal.py tests/test_context_projector.py
+uv run mypy src/auroraagent/agent_runtime/events.py src/auroraagent/context_projector/manifest.py
 ```
 
 Expected: tests pass; existing V1/V2 canonical fixtures and fingerprints remain unchanged.
@@ -537,7 +537,7 @@ Expected: tests pass; existing V1/V2 canonical fixtures and fingerprints remain 
 - [ ] **Step 5: Commit the interruptible transforms**
 
 ```powershell
-git add src/offerpilot/agent_runtime/events.py src/offerpilot/context_projector/manifest.py tests/test_agent_run_journal.py tests/test_context_projector.py
+git add src/auroraagent/agent_runtime/events.py src/auroraagent/context_projector/manifest.py tests/test_agent_run_journal.py tests/test_context_projector.py
 git commit -m "refactor: AI bound journal canonical work"
 ```
 
@@ -546,7 +546,7 @@ git commit -m "refactor: AI bound journal canonical work"
 ### Task 3: Add Journal-owned SQLite deadline guards
 
 **Files:**
-- Modify: `src/offerpilot/repositories/agent_runs.py`
+- Modify: `src/auroraagent/repositories/agent_runs.py`
 - Modify: `tests/test_agent_runs_repository.py`
 
 - [ ] **Step 1: Write failing dynamic deadline and progress-handler tests**
@@ -733,9 +733,9 @@ assert subsequent_normal_append.event_type == "route.selected"
 
 ```powershell
 uv run pytest tests/test_agent_runs_repository.py -q
-uv run ruff check src/offerpilot/repositories/agent_runs.py tests/test_agent_runs_repository.py
-uv run mypy src/offerpilot/repositories/agent_runs.py
-git add src/offerpilot/repositories/agent_runs.py tests/test_agent_runs_repository.py
+uv run ruff check src/auroraagent/repositories/agent_runs.py tests/test_agent_runs_repository.py
+uv run mypy src/auroraagent/repositories/agent_runs.py
+git add src/auroraagent/repositories/agent_runs.py tests/test_agent_runs_repository.py
 git commit -m "feat: AI enforce journal sqlite operation deadlines"
 ```
 
@@ -744,7 +744,7 @@ git commit -m "feat: AI enforce journal sqlite operation deadlines"
 ### Task 4: Switch Factory creation and ordinary Recorder calls to active operations
 
 **Files:**
-- Modify: `src/offerpilot/agent_runtime/journal.py`
+- Modify: `src/auroraagent/agent_runtime/journal.py`
 - Modify: `tests/test_agent_run_journal.py`
 
 - [ ] **Step 1: Write failing cumulative-budget tests**
@@ -831,9 +831,9 @@ For confirmation resume, `find_waiting_run()` and `start_segment()` share one le
 
 ```powershell
 uv run pytest tests/test_agent_run_budget.py tests/test_agent_run_journal.py -q
-uv run ruff check src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py
-uv run mypy src/offerpilot/agent_runtime/journal.py
-git add src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py
+uv run ruff check src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py
+uv run mypy src/auroraagent/agent_runtime/journal.py
+git add src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py
 git commit -m "refactor: AI switch journal recorder to active work"
 ```
 
@@ -842,7 +842,7 @@ git commit -m "refactor: AI switch journal recorder to active work"
 ### Task 5: Preserve the caller-owned `tool.started` transaction boundary
 
 **Files:**
-- Modify: `src/offerpilot/agent_runtime/journal.py`
+- Modify: `src/auroraagent/agent_runtime/journal.py`
 - Modify: `tests/test_agent_run_journal.py`
 - Modify: `tests/test_agent_runs_repository.py`
 
@@ -890,8 +890,8 @@ Do not install handlers, change PRAGMA, call commit/rollback/close/invalidate, o
 
 ```powershell
 uv run pytest tests/test_agent_run_journal.py tests/test_agent_runs_repository.py -k "bound or prepared_event" -q
-uv run ruff check src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py
-git add src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py
+uv run ruff check src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py
+git add src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py
 git commit -m "fix: AI preserve bound journal transaction ownership"
 ```
 
@@ -900,7 +900,7 @@ git commit -m "fix: AI preserve bound journal transaction ownership"
 ### Task 6: Implement resume and final disposition concurrency state machines
 
 **Files:**
-- Modify: `src/offerpilot/agent_runtime/journal.py`
+- Modify: `src/auroraagent/agent_runtime/journal.py`
 - Modify: `tests/test_agent_run_journal.py`
 
 - [ ] **Step 1: Write the three-thread nonterminal fencing regression**
@@ -996,9 +996,9 @@ At entry, read a side-effect-free sample. For invalid input, under the state loc
 ```powershell
 uv run pytest tests/test_agent_run_journal.py -k "thread or concurrent or resume or disposition or finalizer or absolute_noop" -q
 uv run pytest tests/test_agent_run_journal.py -q
-uv run ruff check src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py
-uv run mypy src/offerpilot/agent_runtime/journal.py
-git add src/offerpilot/agent_runtime/journal.py tests/test_agent_run_journal.py
+uv run ruff check src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py
+uv run mypy src/auroraagent/agent_runtime/journal.py
+git add src/auroraagent/agent_runtime/journal.py tests/test_agent_run_journal.py
 git commit -m "fix: AI serialize journal resume and disposition"
 ```
 
@@ -1013,7 +1013,7 @@ git commit -m "fix: AI serialize journal resume and disposition"
 
 - [ ] **Step 1: Write a failing AST gate for Journal-owned calls**
 
-Parse `src/offerpilot/agent_runtime/journal.py` and assert every production call to these methods contains both `deadline=` and `safe_clock=`:
+Parse `src/auroraagent/agent_runtime/journal.py` and assert every production call to these methods contains both `deadline=` and `safe_clock=`:
 
 ```python
 OWNED_METHODS = {
@@ -1046,8 +1046,8 @@ Expected before cleanup: FAIL on remaining legacy wall-deadline symbols or raw R
 
 ```powershell
 uv run pytest tests/test_journal_active_work_budget_gate.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py -q
-uv run ruff check tests/test_journal_active_work_budget_gate.py src/offerpilot/agent_runtime src/offerpilot/repositories/agent_runs.py
-git add tests/test_journal_active_work_budget_gate.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py src/offerpilot/agent_runtime/journal.py src/offerpilot/repositories/agent_runs.py
+uv run ruff check tests/test_journal_active_work_budget_gate.py src/auroraagent/agent_runtime src/auroraagent/repositories/agent_runs.py
+git add tests/test_journal_active_work_budget_gate.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py src/auroraagent/agent_runtime/journal.py src/auroraagent/repositories/agent_runs.py
 git commit -m "test: AI gate journal active budget ownership"
 ```
 
@@ -1129,8 +1129,8 @@ git commit -m "test: AI verify journal active budget integration"
 
 ```powershell
 uv run pytest tests/test_agent_run_budget.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py tests/test_agent_run_trace.py tests/test_context_projector.py tests/tool_pipeline/test_journal.py tests/tool_pipeline/test_pipeline.py tests/test_chat_api.py -q
-uv run ruff check src/offerpilot/agent_runtime src/offerpilot/context_projector/manifest.py src/offerpilot/repositories/agent_runs.py tests/test_agent_run_budget.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py tests/test_context_projector.py tests/test_chat_api.py tests/test_journal_active_work_budget_gate.py
-uv run mypy src/offerpilot/agent_runtime src/offerpilot/context_projector/manifest.py src/offerpilot/repositories/agent_runs.py
+uv run ruff check src/auroraagent/agent_runtime src/auroraagent/context_projector/manifest.py src/auroraagent/repositories/agent_runs.py tests/test_agent_run_budget.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py tests/test_context_projector.py tests/test_chat_api.py tests/test_journal_active_work_budget_gate.py
+uv run mypy src/auroraagent/agent_runtime src/auroraagent/context_projector/manifest.py src/auroraagent/repositories/agent_runs.py
 git diff --check
 ```
 
@@ -1157,7 +1157,7 @@ Expected: no open P0/P1/P2. Fix each finding with a failing regression first, re
 - [ ] **Step 3: Commit review fixes when needed**
 
 ```powershell
-git add src/offerpilot/agent_runtime/budget.py src/offerpilot/agent_runtime/events.py src/offerpilot/agent_runtime/journal.py src/offerpilot/context_projector/manifest.py src/offerpilot/repositories/agent_runs.py tests/test_agent_run_budget.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py tests/test_context_projector.py tests/test_chat_api.py tests/test_journal_active_work_budget_gate.py
+git add src/auroraagent/agent_runtime/budget.py src/auroraagent/agent_runtime/events.py src/auroraagent/agent_runtime/journal.py src/auroraagent/context_projector/manifest.py src/auroraagent/repositories/agent_runs.py tests/test_agent_run_budget.py tests/test_agent_run_journal.py tests/test_agent_runs_repository.py tests/test_context_projector.py tests/test_chat_api.py tests/test_journal_active_work_budget_gate.py
 git commit -m "fix: AI close journal budget review"
 ```
 

@@ -1,4 +1,4 @@
-from offerpilot.ai.mock_interview import (
+from auroraagent.ai.mock_interview import (
     build_mock_interview_diagnostic,
     should_retry_mock_interview_format,
 )

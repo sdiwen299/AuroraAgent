@@ -14,7 +14,7 @@
 
 **Files:**
 - Modify: `tests/test_mock_interview_ai.py`
-- Modify: `src/offerpilot/ai/mock_interview.py`
+- Modify: `src/auroraagent/ai/mock_interview.py`
 
 - [ ] **Step 1: Write failing AI contract tests**
 
@@ -83,7 +83,7 @@ Expected: the first test raises `MockInterviewUnverifiableError` after one call 
 
 - [ ] **Step 3: Implement the minimal repair classification**
 
-Add `blank_value` to `_FORMAT_REPAIR_CATEGORIES` in `src/offerpilot/ai/mock_interview.py`:
+Add `blank_value` to `_FORMAT_REPAIR_CATEGORIES` in `src/auroraagent/ai/mock_interview.py`:
 
 ```python
 _FORMAT_REPAIR_CATEGORIES = {
@@ -357,7 +357,7 @@ Expected: all commands exit 0.
 Run:
 
 ```powershell
-uv run ruff check src/offerpilot/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py
+uv run ruff check src/auroraagent/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py
 uv run mypy src
 git diff --check
 ```
@@ -389,7 +389,7 @@ Reload the existing in-app browser tab and verify the page loads. Preserve Attem
 Record the regression counts, real-AI outcome, browser behavior, and the fact that Attempt 11 remains unchanged. Then run:
 
 ```powershell
-git add src/offerpilot/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py web/src/features/interviewStudio/InterviewStudio.tsx web/src/features/interviewStudio/InterviewStudio.module.css web/src/features/interviewStudio/InterviewStudio.test.tsx
+git add src/auroraagent/ai/mock_interview.py tests/test_mock_interview_ai.py tests/test_mock_interview_api.py web/src/features/interviewStudio/InterviewStudio.tsx web/src/features/interviewStudio/InterviewStudio.module.css web/src/features/interviewStudio/InterviewStudio.test.tsx
 git add -f docs/reports/2026-08-15-continuous-voice-interview-release.md docs/superpowers/plans/2026-08-16-mock-interview-feedback-visibility.md
 git commit -m "fix: AI surface mock interview feedback status"
 ```

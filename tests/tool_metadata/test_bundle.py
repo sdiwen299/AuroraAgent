@@ -13,8 +13,8 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_runtime import metadata as metadata_module
-from offerpilot.ai.tool_runtime.catalog import ToolCatalog
+from auroraagent.ai.tool_runtime import metadata as metadata_module
+from auroraagent.ai.tool_runtime.catalog import ToolCatalog
 from tests.tool_metadata.factories import (
     compose_synthetic_bundle,
     synthetic_tool_spec,

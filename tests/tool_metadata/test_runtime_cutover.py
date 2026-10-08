@@ -6,13 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from offerpilot.ai.agent_contracts import PendingAction
-from offerpilot.models import ChatMessage, WriteOperation
-from offerpilot.repositories.chat import ChatRepository
+from auroraagent.ai.agent_contracts import PendingAction
+from auroraagent.models import ChatMessage, WriteOperation
+from auroraagent.repositories.chat import ChatRepository
 
 
 ROOT = Path(__file__).parents[2]
-PRODUCTION_ROOT = ROOT / "src" / "offerpilot"
+PRODUCTION_ROOT = ROOT / "src" / "auroraagent"
 
 TASK11_PRODUCTION_FILES = (
     PRODUCTION_ROOT / "ai" / "tool_runtime" / "legacy.py",
@@ -585,8 +585,8 @@ def test_service_presentation_gate_rejects_aliases_and_raw_result_dataflow(sourc
 @pytest.mark.parametrize(
     "source",
     (
-        "from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicAdapter as RawAdapter",
-        ("from offerpilot.ai.tool_runtime.legacy import LegacyDeterministicCatalog as Compat"),
+        "from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicAdapter as RawAdapter",
+        ("from auroraagent.ai.tool_runtime.legacy import LegacyDeterministicCatalog as Compat"),
         "RawAdapter = LegacyDeterministicAdapter",
         "Compat = lr.LegacyDeterministicCatalog",
         "class Compat(LegacyDeterministicCatalog):\n    pass",

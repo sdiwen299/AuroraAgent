@@ -8,8 +8,8 @@ import pytest
 from domain_harness import execute_case
 from golden import load_golden
 
-from offerpilot.ai.tool_runtime.contracts import materialize_provider_payloads
-from offerpilot.ai.tool_specs.resumes import resume_specs
+from auroraagent.ai.tool_runtime.contracts import materialize_provider_payloads
+from auroraagent.ai.tool_specs.resumes import resume_specs
 
 
 RESUME_TOOLS = ("list_resumes", "get_resume", "resume_update_career_intent", "resume_rewrite_highlight", "list_resume_matches")

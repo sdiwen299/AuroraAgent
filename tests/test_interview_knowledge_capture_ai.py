@@ -4,15 +4,15 @@ import json
 
 import pytest
 
-from offerpilot.ai.interview_knowledge_capture import (
+from auroraagent.ai.interview_knowledge_capture import (
     SAFE_EMPTY_PREVIEW,
     InterviewKnowledgePreviewError,
     InterviewKnowledgeProviderError,
     generate_interview_knowledge_preview,
     validate_interview_knowledge_preview,
 )
-from offerpilot.ai.types import Assistant
-from offerpilot.knowledge.interview_capture import CanonicalFragment
+from auroraagent.ai.types import Assistant
+from auroraagent.knowledge.interview_capture import CanonicalFragment
 
 
 FRAGMENTS = [

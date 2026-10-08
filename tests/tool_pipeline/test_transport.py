@@ -5,7 +5,7 @@ from typing import Any, cast
 
 import pytest
 
-from offerpilot.ai.tool_runtime.contracts import (
+from auroraagent.ai.tool_runtime.contracts import (
     BindingAudit,
     PreparedToolCall,
     ToolExecutionRecord,
@@ -14,10 +14,10 @@ from offerpilot.ai.tool_runtime.contracts import (
     ToolSpec,
     ToolSuccess,
 )
-from offerpilot.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
-from offerpilot.ai.tool_runtime.metadata import ToolMetadataBundleV1
-from offerpilot.ai.tool_runtime.rendering import render_compatibility
-from offerpilot.ai.tool_runtime.transport import project_transport_event
+from auroraagent.ai.tool_runtime.catalog import SegmentToolSpecHandle, ToolCatalog
+from auroraagent.ai.tool_runtime.metadata import ToolMetadataBundleV1
+from auroraagent.ai.tool_runtime.rendering import render_compatibility
+from auroraagent.ai.tool_runtime.transport import project_transport_event
 from tests.tool_metadata.factories import compose_synthetic_bundle, synthetic_tool_spec
 
 

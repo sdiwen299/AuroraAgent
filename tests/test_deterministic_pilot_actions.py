@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from offerpilot.ai.deterministic_actions import (
+from auroraagent.ai.deterministic_actions import (
     build_pilot_pending_action,
     decide_pilot_action,
     is_pilot_cancel_message,
