@@ -1,0 +1,284 @@
+/* HR 工作台（概览 / 岗位看板 / 候选人筛选）共用样式。
+   复用全局 --op-* 设计令牌与全局 op-* 原语（op-list-row / op-empty-state / op-pill），
+   仅补充 HR 视图自身的页头、统计条与面板结构。 */
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-top: 8px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 11px;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  background: var(--op-accent);
+  color: var(--op-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transform: rotate(-1deg);
+}
+
+.eyebrow::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  background: var(--op-primary);
+}
+
+.title {
+  margin: 0;
+  color: var(--op-ink);
+  font-family: var(--op-font-display);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  margin: 7px 0 0;
+  max-width: 560px;
+  color: var(--op-muted-strong);
+  font-size: 13px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 统计条：沿用仪表盘 kpiRow 的 1px 缝合网格与左侧色条。 */
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid var(--op-border);
+  border-radius: 12px;
+  background: var(--op-border);
+}
+
+.statCard {
+  position: relative;
+  min-height: 118px;
+  padding: 16px 18px 14px;
+  background: var(--op-surface);
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--op-primary);
+  opacity: 0.2;
+}
+
+.statCard:nth-child(1)::before {
+  background: var(--op-action);
+  opacity: 0.82;
+}
+
+.statCard:nth-child(2)::before {
+  background: var(--op-info);
+  opacity: 0.72;
+}
+
+.statCard:nth-child(3)::before {
+  background: var(--op-accent);
+  opacity: 0.9;
+}
+
+.statCard:nth-child(4)::before {
+  background: var(--op-success);
+  opacity: 0.72;
+}
+
+.statLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--op-muted-strong);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.statLabel :global(.anticon) {
+  color: var(--op-muted);
+  font-size: 14px;
+}
+
+.statValue {
+  margin-top: 9px;
+  color: var(--op-ink);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.statHint {
+  display: inline-flex;
+  margin-top: 12px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: var(--op-layout-bg);
+  color: var(--op-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* 双栏区：漏斗 + 在招岗位。 */
+.grid2 {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(420px, 1.35fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* 面板与仪表盘 ConversionFunnel 的 .card 保持同规格（同圆角、同阴影）。 */
+.panel {
+  min-width: 0;
+  padding: 15px;
+  border-radius: 14px;
+  background: var(--op-surface);
+  box-shadow: var(--op-shadow-md);
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.panelTitleText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--op-ink);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.panelTitleText::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--op-action);
+  box-shadow: 0 0 0 4px var(--op-action-soft);
+}
+
+.panelMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--op-muted);
+  font-size: 12px;
+}
+
+.rowMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rowTitle {
+  color: var(--op-ink);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.rowMeta {
+  margin-top: 3px;
+  color: var(--op-muted);
+  font-size: 12px;
+}
+
+/* 表格容器：让 antd Table 落在纸感圆角面板里。 */
+.tableWrap {
+  overflow: hidden;
+  border: 1px solid var(--op-border);
+  border-radius: 14px;
+  background: var(--op-surface);
+  box-shadow: var(--op-shadow-sm);
+}
+
+.tableWrap :global(.ant-table) {
+  background: transparent;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.toolbarSpacer {
+  flex: 1;
+}
+
+.spinWrap {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+}
+
+.emptyBox {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.emptyBox strong {
+  color: var(--op-ink);
+  font-size: 15px;
+}
+
+.emptyBox span {
+  max-width: 420px;
+  color: var(--op-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .statRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
