@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Interview — Premium Landing Page</title>
+  <style>
+    :root{
+      --cream:#f8f1de;
+      --ink:#0e0803;
+      --olive:#20340f;
+      --muted:#61635f;
+      --yellow:#f0c521;
+      --orange:#9f3410;
+      --grid:rgba(14,8,3,.075);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--cream);
+      font-family:Georgia,"Times New Roman",serif;
+      overflow-x:hidden;
+    }
+    .page{
+      min-height:100vh;
+      background:
+        linear-gradient(var(--grid) 1px,transparent 1px),
+        linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+      background-size:48px 48px;
+      background-position:center 130px;
+    }
+    .nav{
+      width:min(1120px,calc(100% - 48px));
+      margin:14px auto 0;
+      min-height:68px;
+      border:1.5px dashed rgba(14,8,3,.45);
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 14px 10px 20px;
+      background:rgba(248,241,222,.78);
+      backdrop-filter:blur(8px);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-family:Arial,sans-serif;
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.04em;
+    }
+    .brand-mark{
+      width:44px;height:44px;border-radius:10px;
+      display:grid;place-items:center;
+      background:var(--yellow);
+      font-size:23px;
+    }
+    .links{display:flex;gap:34px;font-size:14px}
+    .links a{color:inherit;text-decoration:none}
+    .actions{display:flex;gap:10px}
+    .btn{
+      border:1.5px solid var(--ink);
+      border-radius:12px;
+      padding:12px 20px;
+      background:transparent;
+      font-weight:700;
+      cursor:pointer;
+      transition:.22s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{
+      background:var(--olive);
+      color:#fff;
+      border-color:var(--olive);
+    }
+    .hero{
+      width:min(1120px,calc(100% - 48px));
+      margin:72px auto 0;
+      text-align:center;
+      position:relative;
+    }
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      background:var(--yellow);
+      padding:7px 13px;
+      font-size:13px;
+      border-radius:2px;
+      transform:rotate(-1deg);
+      margin-bottom:24px;
+    }
+    .eyebrow span{
+      display:grid;place-items:center;
+      width:21px;height:21px;border-radius:5px;
+      background:var(--olive);color:#fff;
+      font-family:Arial,sans-serif;
+    }
+    h1{
+      margin:0 auto;
+      max-width:1050px;
+      font-family:Arial,Helvetica,sans-serif;
+      font-size:clamp(52px,7.1vw,94px);
+      line-height:.96;
+      letter-spacing:-.075em;
+      color:var(--olive);
+      font-weight:900;
+    }
+    .marker{
+      position:relative;
+      display:inline-block;
+      z-index:0;
+      padding:0 10px;
+    }
+    .marker:before{
+      content:"";
+      position:absolute;
+      left:-5px;right:-8px;top:18%;
+      height:72%;
+      background:#f7dc35;
+      z-index:-1;
+      transform:rotate(-1.2deg);
+      clip-path:polygon(1% 7%,98% 0,100% 87%,2% 100%);
+    }
+    .sub{
+      max-width:850px;
+      margin:30px auto 0;
+      font-size:22px;
+      line-height:1.55;
+    }
+    .cta{display:flex;justify-content:center;gap:12px;margin:34px 0 34px}
+    .trust{
+      display:flex;align-items:center;justify-content:center;
+      gap:24px;flex-wrap:wrap;
+      font-family:Arial,sans-serif;
+      font-size:13px;
+      color:#77796e;
+      margin-bottom:10px;
+    }
+    .trust strong{color:var(--ink)}
+    .trust span{font-weight:700;font-size:17px}
+    .rule{height:1.5px;background:var(--olive);opacity:.8;width:490px;max-width:70%;margin:auto}
+    .scribble{
+      position:absolute;
+      width:125px;
+      height:165px;
+      border:2px solid var(--olive);
+      opacity:.9;
+      transform:rotate(12deg);
+      left:-18px;
+      top:300px;
+      clip-path:polygon(5% 5%,95% 0,100% 94%,0 100%);
+    }
+    .scribble:after{
+      content:"•  ─────\A •  ─────\A •  ─────\A •  ─────";
+      white-space:pre;
+      position:absolute;
+      left:22px;top:35px;
+      line-height:27px;
+      font-size:13px;
+    }
+    .scribble.right{
+      left:auto;right:-20px;top:390px;transform:rotate(-15deg);
+      opacity:.55;
+    }
+    .showcase{
+      width:min(1120px,calc(100% - 48px));
+      margin:50px auto 110px;
+      position:relative;
+    }
+    .video-frame{
+      border:12px solid var(--orange);
+      border-radius:32px;
+      overflow:hidden;
+      background:#211a12;
+      min-height:560px;
+      box-shadow:0 24px 60px rgba(14,8,3,.12);
+    }
+    .video{
+      min-height:560px;
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(circle at 75% 28%,rgba(240,197,33,.25),transparent 20%),
+        radial-gradient(circle at 22% 72%,rgba(159,52,16,.22),transparent 25%),
+        linear-gradient(135deg,#1c2815 0%,#11170d 52%,#302016 100%);
+    }
+    .video-grid{
+      position:absolute;inset:0;
+      opacity:.13;
+      background-image:
+        linear-gradient(rgba(248,241,222,.55) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(248,241,222,.55) 1px,transparent 1px);
+      background-size:34px 34px;
+    }
+    .video-copy{
+      position:absolute;
+      z-index:2;
+      left:42px;
+      top:34px;
+      color:#f8f1de;
+      max-width:330px;
+      font-family:Arial,Helvetica,sans-serif;
+    }
+    .video-copy .tag{
+      display:inline-block;
+      border:1px solid rgba(248,241,222,.42);
+      border-radius:999px;
+      padding:7px 12px;
+      font-size:11px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      margin-bottom:15px;
+    }
+    .video-copy h2{
+      margin:0;
+      font-size:38px;
+      line-height:.98;
+      letter-spacing:-.055em;
+    }
+    .video-copy p{
+      margin:14px 0 0;
+      color:rgba(248,241,222,.72);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .interviewer{
+      position:absolute;
+      z-index:1;
+      right:10%;
+      bottom:-52px;
+      width:310px;
+      height:390px;
+      border-radius:150px 150px 32px 32px;
+      background:
+        radial-gradient(circle at 50% 27%,#8d7359 0 16%,transparent 16.5%),
+        radial-gradient(circle at 50% 25%,#24221e 0 25%,transparent 25.5%),
+        linear-gradient(135deg,#2d3b22,#10150d 72%);
+      box-shadow:
+        0 0 0 1px rgba(248,241,222,.16),
+        0 25px 80px rgba(0,0,0,.42);
+    }
+    .interviewer:before{
+      content:"";
+      position:absolute;
+      width:100px;height:18px;
+      border-radius:50%;
+      left:105px;top:100px;
+      border-top:2px solid rgba(248,241,222,.7);
+    }
+    .interviewer:after{
+      content:"AI";
+      position:absolute;
+      left:50%;bottom:74px;
+      transform:translateX(-50%);
+      width:56px;height:56px;
+      border-radius:50%;
+      display:grid;place-items:center;
+      background:var(--yellow);
+      color:var(--ink);
+      font:900 18px Arial,sans-serif;
+      box-shadow:0 0 0 9px rgba(240,197,33,.12);
+    }
+    .play{
+      position:absolute;
+      z-index:5;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:94px;height:94px;
+      border-radius:50%;
+      background:rgba(248,241,222,.94);
+      display:grid;place-items:center;
+      box-shadow:0 18px 55px rgba(0,0,0,.35);
+      cursor:pointer;
+      transition:.25s ease;
+    }
+    .play:hover{
+      transform:translate(-50%,-50%) scale(1.08);
+      background:var(--yellow);
+    }
+    .play:after{
+      content:"";
+      margin-left:6px;
+      border-left:23px solid var(--orange);
+      border-top:15px solid transparent;
+      border-bottom:15px solid transparent;
+    }
+    .video-status{
+      position:absolute;
+      z-index:4;
+      right:30px;top:30px;
+      color:#f8f1de;
+      font:12px Arial,sans-serif;
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(14,8,3,.36);
+      border:1px solid rgba(248,241,222,.22);
+      backdrop-filter:blur(8px);
+    }
+    .video-bars{
+      position:absolute;
+      z-index:3;
+      left:42px;right:42px;bottom:27px;
+      height:5px;border-radius:99px;
+      background:rgba(248,241,222,.2);
+      overflow:hidden;
+    }
+    .video-bars:after{
+      content:"";
+      display:block;width:38%;height:100%;
+      background:var(--yellow);
+      border-radius:99px;
+    }
+    .footer-note{
+      text-align:center;
+      font:13px Arial,sans-serif;
+      color:#77796e;
+      padding-bottom:30px;
+    }
+    @media(max-width:900px){
+      .links{display:none}
+      .nav{width:calc(100% - 28px)}
+      .hero,.showcase{width:calc(100% - 28px)}
+      .hero{margin-top:52px}
+      .sub{font-size:18px}
+      .scribble{display:none}
+      .video-frame,.video{min-height:430px}
+    }
+    @media(max-width:560px){
+      .brand{font-size:20px}
+      .brand-mark{width:38px;height:38px}
+      .actions .btn:first-child{display:none}
+      h1{font-size:52px}
+      .cta{flex-direction:column;align-items:center}
+      .btn{width:min(280px,100%)}
+      .video-frame{border-width:7px;border-radius:22px}
+      .video-copy{left:22px;top:22px;max-width:250px}
+      .video-copy h2{font-size:28px}
+      .video-copy p{font-size:12px}
+      .interviewer{right:-8%;width:235px;height:300px}
+      .video-bars{left:22px;right:22px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav">
+      <div class="brand">
+        <div class="brand-mark">AI</div>
+        <span>Interview</span>
+      </div>
+      <div class="links">
+        <a href="#interview">AI Interview</a>
+        <a href="#features">Features</a>
+        <a href="#business">For Business</a>
+        <a href="#recruiters">For Recruiters</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="actions">
+        <button class="btn">Log In</button>
+        <button class="btn btn-primary">Try It Free</button>
+      </div>
+    </nav>
+
+    <section class="hero" id="interview">
+      <div class="eyebrow"><span>✦</span>Next-Gen AI Technology</div>
+      <h1>
+        AI Interviewer<br>
+        get your dream<br>
+        <span class="marker">top talent.</span>
+      </h1>
+
+      <p class="sub">
+        Configure intelligent interview questions, conduct realistic
+        conversations, and receive comprehensive performance analysis
+        for every candidate.
+      </p>
+
+      <div class="cta">
+        <button class="btn btn-primary">Practice For Free</button>
+        <button class="btn">Explore Platform</button>
+      </div>
+
+      <div class="trust">
+        <strong>Trusted by learners & teams</strong>
+        <span>stripe</span>
+        <span>HubSpot</span>
+        <span>coinbase</span>
+        <span>Google</span>
+      </div>
+      <div class="rule"></div>
+
+      <div class="scribble"></div>
+      <div class="scribble right"></div>
+    </section>
+
+    <section class="showcase" id="features">
+      <div class="video-frame">
+        <div class="video">
+          <div class="video-grid"></div>
+          <div class="video-copy">
+            <div class="tag">AI Interview Experience</div>
+            <h2>Meet your<br>AI interviewer.</h2>
+            <p>Natural conversation, intelligent follow-up questions, and instant interview insights.</p>
+          </div>
+          <div class="video-status">● LIVE INTERVIEW PREVIEW</div>
+          <div class="interviewer"></div>
+          <div class="play" aria-label="Play interview preview"></div>
+          <div class="video-bars"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Original brandless implementation inspired by the visual language of premium AI interview landing pages.
+    </div>
+  </main>
+</body>
+</html>

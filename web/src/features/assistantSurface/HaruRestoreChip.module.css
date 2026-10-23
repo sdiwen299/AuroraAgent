@@ -1,0 +1,32 @@
+.slot {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 1000;
+}
+
+.chip {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--op-ink, #0e0803);
+  border-radius: 50%;
+  background: rgba(248, 241, 222, 0.92);
+  color: var(--op-ink, #0e0803);
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: var(--op-shadow-sm);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.chip:hover {
+  background: var(--op-accent, #f0c521);
+  transform: translateY(-1px);
+}
+
+.chip:focus-visible {
+  outline: none;
+  box-shadow: var(--op-focus-ring);
+}
