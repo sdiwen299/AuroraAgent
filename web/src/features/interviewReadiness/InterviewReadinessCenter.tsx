@@ -583,7 +583,7 @@ export default function InterviewReadinessCenter({
 
         <aside className={styles.sidePanel} aria-label="面试说明">
           <div className={styles.sideBlock}><span className={styles.eyebrow}>本次输入</span><h3>{realMode ? '只带入已确认来源' : '只发送已确认资料'}</h3><p>{realMode ? '当前 JD、明确选择的简历和已锁定的面试事件属于本次准备。' : '快速练习只发送冻结 JD、明确选择的简历和本次确认的回答。'}</p></div>
-          <div className={styles.sideBlock}><span className={styles.eyebrow}>仅在本地</span><h3>什么不会离开浏览器</h3><p>原始音频、临时转写、语音活动片段和 Haru 的位置只在本地处理或保存。</p></div>
+          <div className={styles.sideBlock}><span className={styles.eyebrow}>仅在本地</span><h3>什么不会离开浏览器</h3><p>原始音频、临时转写、语音活动片段和 Aurora 的位置只在本地处理或保存。</p></div>
           <div className={styles.sideBlock}><span className={styles.eyebrow}>练习结束后</span><h3>保留清晰的来源边界</h3><p>你可以查看确认过的回答与复盘入口。快速练习不会出现在投递或日历里。</p></div>
         </aside>
       </div>

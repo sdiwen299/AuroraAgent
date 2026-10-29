@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import PilotMascot, { type PilotMascotRuntime } from './PilotMascot';
 import type { PilotMascotRuntimeController } from './live2dRuntime';
 
+vi.mock('@/components/Lanyard/Lanyard', () => ({ default: () => <div data-testid="lanyard-3d" /> }));
+
 let container: HTMLDivElement;
 let root: Root;
 

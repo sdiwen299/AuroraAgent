@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type HTMLAttributes } from 'react';
 import { useDraggable } from '@dnd-kit/core';
 import { Select, message, Popconfirm, Button } from 'antd';
 import { DeleteOutlined, RightOutlined } from '@ant-design/icons';
@@ -69,12 +69,16 @@ export default function KanbanCard({
     return <div className={`${styles.card} ${styles.cardOverlay}`}>{cardContent}</div>;
   }
 
+  const dragProps = {
+    ...listeners,
+    ...attributes,
+  } as HTMLAttributes<HTMLDivElement>;
+
   return (
     <div
       ref={setNodeRef}
       className={`${styles.card} ${isDragging ? styles.cardPlaceholder : ''}`}
-      {...listeners}
-      {...attributes}
+      {...dragProps}
     >
       {cardContent}
       <div className={styles.cardFooter}>

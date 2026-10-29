@@ -55,6 +55,11 @@
   display: block;
 }
 
+.canvasHost :global(.lanyard-wrapper) {
+  width: 100%;
+  height: 100%;
+}
+
 .glow {
   position: absolute;
   left: 15%;

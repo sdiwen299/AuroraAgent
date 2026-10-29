@@ -28,7 +28,7 @@ from auroraagent.repositories.applications import ApplicationCreate, Application
 from auroraagent.repositories.jd import JDAnalysesRepository
 from auroraagent.repositories.notes import NoteCreate, NotesRepository
 from auroraagent.repositories.offers import OfferCreate, OffersRepository
-from auroraagent.repositories.questions import QuestionsRepository
+from auroraagent.repositories.questions import QuestionsRepository, normalize_question_type
 from auroraagent.repositories.resumes import ResumeCreate, ResumesRepository
 from auroraagent.repositories.wakeups import WakeupCreate, WakeupsRepository
 from auroraagent.smoke import (
@@ -824,8 +824,16 @@ def offer_compare(ids: str = typer.Argument(...)) -> None:
 def question_list(
     status: str = typer.Option("", "--status", help="filter by status"),
     topic: str = typer.Option("", "--topic", help="filter by topic"),
+    question_type: str = typer.Option("", "--type", help="filter by question type (subjective/choice/programming)"),
 ) -> None:
-    rows = _questions_repo().list(status=status, topic=topic)
+    normalized_type = question_type
+    if question_type:
+        normalized_type = normalize_question_type(question_type)
+        if normalized_type is None:
+            raise typer.BadParameter(
+                f"unknown question type: {question_type}", param_hint="--type"
+            )
+    rows = _questions_repo().list(status=status, topic=topic, question_type=normalized_type)
     if not rows:
         typer.echo("\nNo questions yet. Try: oc question generate --topic system-design")
         return
@@ -833,7 +841,7 @@ def question_list(
     typer.echo("-------------------------------------------------------------")
     for row in rows:
         typer.echo(
-            f"#{row.id} [{row.category}/{row.difficulty}] {_truncate(row.question, 60)} "
+            f"#{row.id} [{row.category}/{row.difficulty}/{row.question_type}] {_truncate(row.question, 60)} "
             f"- status:{row.status} practice:{row.practice_count}"
         )
 

@@ -19,6 +19,9 @@ class Account(Base):
     display_name: Mapped[str] = mapped_column(
         String, nullable=False, default="", server_default=""
     )
+    role: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="candidate", server_default="candidate"
+    )
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.current_timestamp()
@@ -37,6 +40,9 @@ class AccountSession(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     account_id: Mapped[int] = mapped_column(
         ForeignKey("accounts.id", ondelete="CASCADE"), nullable=False
+    )
+    role: Mapped[str] = mapped_column(
+        String(32), nullable=False, default="candidate", server_default="candidate"
     )
     token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
     created_at: Mapped[int] = mapped_column(Integer, nullable=False)

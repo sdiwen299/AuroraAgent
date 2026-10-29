@@ -19,10 +19,42 @@ class QuestionCreate:
     category: str = ""
     difficulty: str = "medium"
     reference_answer: str = ""
+    question_type: str = "subjective"
+    options: list[str] | None = None
+    correct_answer: str = ""
+    starter_code: str = ""
+    language: str = ""
     tags: list[str] | None = None
     source_type: str = "manual"
     status: str = "new"
     application_id: Optional[int] = None
+
+
+QUESTION_TYPE_ALIASES = {
+    "": "subjective",
+    "subjective": "subjective",
+    "问答": "subjective",
+    "问答题": "subjective",
+    "简答题": "subjective",
+    "主观题": "subjective",
+    "choice": "choice",
+    "single_choice": "choice",
+    "选择": "choice",
+    "选择题": "choice",
+    "单选": "choice",
+    "单选题": "choice",
+    "programming": "programming",
+    "code": "programming",
+    "编程": "programming",
+    "编程题": "programming",
+    "代码题": "programming",
+    "算法题": "programming",
+}
+
+
+def normalize_question_type(value: str) -> str | None:
+    """Map aliases (选择题/编程题/...) to a stored question type; None when unknown."""
+    return QUESTION_TYPE_ALIASES.get(value.strip().lower())
 
 
 class QuestionsRepository:
@@ -52,6 +84,8 @@ class QuestionsRepository:
         category: str = "",
         difficulty: str = "",
         status: str = "",
+        source_type: str = "",
+        question_type: str = "",
     ) -> list[Question]:
         statement = select(Question)
         if topic:
@@ -62,9 +96,37 @@ class QuestionsRepository:
             statement = statement.where(Question.difficulty == difficulty)
         if status:
             statement = statement.where(Question.status == status)
+        if source_type:
+            statement = statement.where(Question.source_type == source_type)
+        if question_type:
+            statement = statement.where(Question.question_type == question_type)
         statement = statement.order_by(Question.created_at.desc(), Question.id.desc())
         with self._session_factory() as session:
             return list(session.scalars(statement))
+
+    def import_template_questions(self, items: list[QuestionCreate]) -> tuple[list[Question], int]:
+        """Import externally supplied template questions with stable hash deduplication."""
+        with self._session_factory() as session:
+            existing = {
+                value for value in session.scalars(select(Question.question_hash)) if value
+            }
+            accepted: list[Question] = []
+            skipped = 0
+            for item in items:
+                normalized = question_hash(item.question)
+                if not normalized or normalized in existing:
+                    skipped += 1
+                    continue
+                question = _question_from_create(item)
+                question.question_hash = normalized
+                accepted.append(question)
+                existing.add(normalized)
+            if accepted:
+                session.add_all(accepted)
+                session.commit()
+                for question in accepted:
+                    session.refresh(question)
+            return accepted, skipped
 
     def list_due(self, limit: int = 20) -> List[Question]:
         now = datetime.now(timezone.utc)
@@ -87,9 +149,15 @@ class QuestionsRepository:
             if question is None:
                 return None
             question.category = data.category
+            question.topic = data.topic
             question.difficulty = data.difficulty or "medium"
             question.question = data.question
             question.reference_answer = data.reference_answer
+            question.question_type = data.question_type or "subjective"
+            question.options = data.options or []
+            question.correct_answer = data.correct_answer
+            question.starter_code = data.starter_code
+            question.language = data.language
             question.tags = data.tags or []
             question.status = data.status or "new"
             question.question_hash = question_hash(data.question)
@@ -159,10 +227,15 @@ def _question_from_create(data: QuestionCreate) -> Question:
         difficulty=data.difficulty or "medium",
         question=data.question,
         reference_answer=data.reference_answer,
+        question_type=data.question_type or "subjective",
+        correct_answer=data.correct_answer,
+        starter_code=data.starter_code,
+        language=data.language,
         source_type=data.source_type or "manual",
         status=data.status or "new",
         question_hash=question_hash(data.question),
     )
+    question.options = data.options or []
     question.tags = data.tags or []
     return question
 

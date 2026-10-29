@@ -5,7 +5,7 @@ describe('SettingsView localization', () => {
   it('groups the workspace settings into stable product sections', () => {
     expect(source).toContain('AI 与模型');
     expect(source).toContain('数据与备份');
-    expect(source).toContain('Haru 与外观');
+    expect(source).toContain('Aurora 与外观');
     expect(source).toContain('语音');
     expect(source).toContain('高级与诊断');
     expect(source).toContain('<AISettingsDrawer');

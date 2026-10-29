@@ -1,27 +1,30 @@
 import { createApiClient } from './http';
-import type { AuthAccount, AuthStatus } from '@/components/AuthGate/model';
+import type { AuthAccount, AuthStatus, UserRole } from '@/components/AuthGate/model';
 
 const http = createApiClient({ baseURL: '/api', timeout: 10000 });
 
 export async function getAuthStatus(): Promise<AuthStatus> {
-  const { data } = await http.get<AuthStatus>('/auth/status');
+  const { data } = await http.get<AuthStatus>('/auth/status?include_role=1');
   return data;
 }
 
 export interface AuthSession {
   token: string;
   account: AuthAccount;
+  role?: UserRole;
 }
 
 export async function registerAccount(payload: {
   email: string;
   password: string;
   displayName?: string;
+  role?: UserRole;
 }): Promise<AuthSession> {
   const { data } = await http.post<AuthSession>('/auth/register', {
     email: payload.email,
     password: payload.password,
     display_name: payload.displayName ?? '',
+    role: payload.role ?? 'candidate',
   });
   return data;
 }
@@ -29,13 +32,19 @@ export async function registerAccount(payload: {
 export async function loginAccount(payload: {
   email: string;
   password: string;
+  role?: UserRole;
 }): Promise<AuthSession> {
-  const { data } = await http.post<AuthSession>('/auth/login', payload);
+  const { data } = await http.post<AuthSession>('/auth/login', { ...payload, role: payload.role ?? 'candidate' });
   return data;
 }
 
 export async function logoutAccount(): Promise<void> {
   await http.post('/auth/logout', {});
+}
+
+export async function switchAccountRole(role: UserRole): Promise<{ role: UserRole }> {
+  const { data } = await http.post<{ account: AuthAccount; role: UserRole }>('/auth/role', { role });
+  return data;
 }
 
 /** 从后端错误体里取出可直接展示的中文提示。 */

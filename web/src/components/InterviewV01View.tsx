@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Button, Empty, List, Space, Spin, Tabs, Tag, Typography } from 'antd';
-import { SoundOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  CheckCircleOutlined,
+  FileSearchOutlined,
+  PlayCircleOutlined,
+  SoundOutlined,
+} from '@ant-design/icons';
 import { listInterviews } from '@/services/interviews';
 import type { InterviewIndexItem } from '@/types/interviewIndex';
 import { normalizeInterviewIndexItem } from '@/features/interviewEvents/interviewIndexContract';
@@ -11,6 +17,7 @@ import {
 } from '@/features/interviewEvents/interviewEventCard';
 import type { TaskLaunchRequest } from '@/features/coreTaskSurface/contracts';
 import workflowStyles from './ui/WorkflowSurface.module.css';
+import styles from './InterviewV01View.module.css';
 import type { Application } from '@/types/application';
 import type { ScheduleEvent } from '@/types/event';
 import type { Resume } from '@/types/resume';
@@ -378,6 +385,10 @@ export default function InterviewV01View({
     () => cards.filter((card) => card.bucket === 'completed' || card.bucket === 'cancelled'),
     [cards],
   );
+  const reviewPendingCount = useMemo(
+    () => completedCards.filter((card) => card.primaryAction === 'record_review').length,
+    [completedCards],
+  );
 
   const eventStateNotice = eventsLoading ? (
     <Spin aria-label="正在确认面试状态" />
@@ -391,16 +402,54 @@ export default function InterviewV01View({
   ) : null;
 
   return (
-    <div data-testid="interview-surface" className={`${workflowStyles.surface} op-view-enter`} style={{ padding: 24 }}>
-      <div className="op-section-heading" style={{ marginBottom: 18 }}>
-        <div>
-          <Title level={2} style={{ margin: 0 }}>面试</Title>
-          <Paragraph type="secondary" style={{ margin: '6px 0 0' }}>
+    <div data-testid="interview-surface" className={`${workflowStyles.surface} ${styles.page} op-view-enter`}>
+      <header className={styles.hero}>
+        <div className={styles.heroText}>
+          <span className={styles.eyebrow}>面试工作台</span>
+          <Title level={2} className={styles.heroTitle}>面试</Title>
+          <Paragraph className={styles.heroSubtitle}>
             围绕具体面试事件准备，完成后再进入面试练习和复盘沉淀。
           </Paragraph>
         </div>
+        {onOpenFreePractice ? (
+          <Button
+            type="primary"
+            size="large"
+            icon={<PlayCircleOutlined />}
+            className={styles.heroCta}
+            onClick={onOpenFreePractice}
+          >
+            开始面试练习
+          </Button>
+        ) : null}
+      </header>
+
+      <div className={styles.stats}>
+        <div className={styles.stat} data-tone="accent">
+          <span className={styles.statIcon} aria-hidden="true"><CalendarOutlined /></span>
+          <div className={styles.statBody}>
+            <div className={styles.statValue}>{upcomingCards.length}</div>
+            <div className={styles.statLabel}>即将进行</div>
+          </div>
+        </div>
+        <div className={styles.stat} data-tone="info">
+          <span className={styles.statIcon} aria-hidden="true"><FileSearchOutlined /></span>
+          <div className={styles.statBody}>
+            <div className={styles.statValue}>{reviewPendingCount}</div>
+            <div className={styles.statLabel}>待复盘</div>
+          </div>
+        </div>
+        <div className={styles.stat} data-tone="success">
+          <span className={styles.statIcon} aria-hidden="true"><CheckCircleOutlined /></span>
+          <div className={styles.statBody}>
+            <div className={styles.statValue}>{completedCards.length}</div>
+            <div className={styles.statLabel}>已完成</div>
+          </div>
+        </div>
       </div>
+
       <Tabs
+        className={styles.tabs}
         activeKey={activeTab}
         onChange={(key) => setActiveTab(key as InterviewTabKey)}
         items={[
@@ -413,7 +462,8 @@ export default function InterviewV01View({
       {activeTab === 'upcoming' ? (
         eventStateNotice ?? (
           <section aria-labelledby="upcoming-interviews-title">
-            <Title id="upcoming-interviews-title" level={3}>即将进行</Title>
+            <h3 id="upcoming-interviews-title" className={styles.sectionHeading}>即将进行</h3>
+            <p className={styles.sectionNote}>按计划时间排列，先处理最近的面试事件。</p>
             <InterviewList
               cards={upcomingCards}
               bucket="upcoming"
@@ -433,10 +483,10 @@ export default function InterviewV01View({
       {activeTab === 'completed' ? (
         eventStateNotice ?? (
           <section aria-labelledby="completed-interviews-title">
-            <div className="op-section-heading" style={{ marginBottom: 20 }}>
+            <div className="op-section-heading" style={{ marginBottom: 16 }}>
               <div>
-                <Title id="completed-interviews-title" level={3} style={{ margin: 0 }}>已完成</Title>
-                <Paragraph type="secondary" style={{ margin: '6px 0 0' }}>查看本次面试的复盘和来源状态。</Paragraph>
+                <h3 id="completed-interviews-title" className={styles.sectionHeading}>已完成</h3>
+                <p className={styles.sectionNote} style={{ marginBottom: 0 }}>查看本次面试的复盘和来源状态。</p>
               </div>
               <Space wrap>
                 {onOpenVoiceCoachingGrowth ? <Button icon={<SoundOutlined />} onClick={onOpenVoiceCoachingGrowth}>表达成长</Button> : null}
@@ -461,17 +511,26 @@ export default function InterviewV01View({
 
       {activeTab === 'practice' ? (
         <section data-testid="free-practice-workspace" aria-labelledby="free-practice-title">
-          <div className="op-section-heading" style={{ marginBottom: 20 }}>
-            <div>
-              <Title id="free-practice-title" level={3} style={{ margin: 0 }}>面试练习</Title>
-              <Paragraph type="secondary" style={{ margin: '6px 0 0' }}>快速模拟或围绕已确认的复盘重点练习回答，开始前不会自动调用模型。</Paragraph>
+          <h3 id="free-practice-title" className={styles.sectionHeading}>面试练习</h3>
+          <p className={styles.sectionNote}>快速模拟或围绕已确认的复盘重点练习回答，开始前不会自动调用模型。</p>
+          <div className={styles.practicePanel}>
+            <div className={styles.practiceCopy}>
+              <div className={styles.practiceTitle}>准备好开始一轮练习</div>
+              <p className={styles.practiceText}>
+                选择快速模拟，或从面试复盘中的已确认重点开始一次回答练习。练习过程不会写入你的投递记录，结束后可自行保存复盘。
+              </p>
             </div>
-            <Space wrap>
-              {onOpenFreePractice ? <Button type="primary" onClick={onOpenFreePractice}>开始面试练习</Button> : null}
-            </Space>
-          </div>
-          <div className="op-empty-state" style={{ marginTop: 20 }}>
-            <Empty description="选择快速模拟，或从面试复盘中的已确认重点开始一次回答练习。" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            {onOpenFreePractice ? (
+              <Button
+                type="primary"
+                size="large"
+                icon={<PlayCircleOutlined />}
+                className={styles.heroCta}
+                onClick={onOpenFreePractice}
+              >
+                开始面试练习
+              </Button>
+            ) : null}
           </div>
         </section>
       ) : null}

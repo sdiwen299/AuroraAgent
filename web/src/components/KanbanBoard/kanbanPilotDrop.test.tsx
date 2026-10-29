@@ -140,6 +140,9 @@ describe('Kanban Pilot dnd-kit routing', () => {
   it('renders the whole Kanban card with dnd-kit bindings and no native draggable attribute', () => {
     renderBoard();
 
+    const expandColumn = container?.querySelectorAll<HTMLButtonElement>('button[aria-expanded="false"]')[1];
+    act(() => expandColumn?.click());
+
     const card = container?.querySelector<HTMLDivElement>('[data-dnd-kit-draggable="true"]');
     expect(card).not.toBeNull();
     expect(card?.getAttribute('draggable')).toBeNull();

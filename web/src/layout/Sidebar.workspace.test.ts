@@ -3,7 +3,8 @@ import source from './Sidebar.tsx?raw';
 
 describe('Sidebar workspace hierarchy', () => {
   it('renders grouped task, resource, and utility navigation', () => {
-    expect(source).toContain("MODULE_NAV.filter((item) => item.key !== 'settings')");
+    expect(source).toContain('moduleNavForRole(role)');
+    expect(source).toContain("roleNav.filter((item) => item.key !== 'settings')");
     expect(source).toContain('data-navigation-tier="utility"');
     expect(source).toContain("onChange('settings')");
     expect(source).toContain('NAVIGATION_GROUPS');

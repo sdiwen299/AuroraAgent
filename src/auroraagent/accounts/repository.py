@@ -39,6 +39,7 @@ class AccountRecord:
     id: int
     email: str
     display_name: str
+    role: str
     created_at: datetime | None
 
 
@@ -59,11 +60,19 @@ def _validate_registration(email: str, password: str) -> None:
         raise AccountError("密码过长", code="password_too_long")
 
 
-def _record(account: Account) -> AccountRecord:
+def normalize_role(raw: str) -> str:
+    role = (raw or "candidate").strip().lower()
+    if role not in {"candidate", "hr"}:
+        raise AccountError("身份类型不正确", code="role_invalid")
+    return role
+
+
+def _record(account: Account, role: str | None = None) -> AccountRecord:
     return AccountRecord(
         id=account.id,
         email=account.email,
         display_name=account.display_name or "",
+        role=normalize_role(role if role is not None else account.role),
         created_at=account.created_at,
     )
 
@@ -81,8 +90,13 @@ class AccountsRepository:
     def has_accounts(self) -> bool:
         return self.count_accounts() > 0
 
+    def primary_account_id(self) -> int | None:
+        with self._session_factory() as session:
+            value = session.scalar(select(func.min(Account.id)))
+        return int(value) if value is not None else None
+
     def register(
-        self, email: str, password: str, display_name: str = ""
+        self, email: str, password: str, display_name: str = "", role: str = "candidate"
     ) -> AccountRecord:
         normalized = normalize_email(email)
         _validate_registration(normalized, password)
@@ -91,6 +105,7 @@ class AccountsRepository:
                 email=normalized,
                 display_name=(display_name or "").strip()[:120],
                 password_hash=hash_password(password),
+                role=normalize_role(role),
                 updated_at=datetime.now(),
             )
             session.add(account)
@@ -104,10 +119,13 @@ class AccountsRepository:
             session.refresh(account)
             return _record(account)
 
-    def authenticate(self, email: str, password: str) -> AccountRecord | None:
+    def authenticate(self, email: str, password: str, role: str = "candidate") -> AccountRecord | None:
         normalized = normalize_email(email)
         if not normalized or not password:
             return None
+        # role 只是进入时的视图模式（可在登录后切换），不是账号身份，
+        # 因此只校验取值合法，不再要求与账号注册时的默认身份一致。
+        normalize_role(role)
         with self._session_factory() as session:
             account = session.scalar(select(Account).where(Account.email == normalized))
             if account is None:
@@ -116,13 +134,14 @@ class AccountsRepository:
                 return None
             return _record(account)
 
-    def create_session(self, account_id: int) -> str:
+    def create_session(self, account_id: int, role: str = "candidate") -> str:
         token = new_session_token()
         now = int(time())
         with self._session_factory() as session:
             session.add(
                 AccountSession(
                     account_id=account_id,
+                    role=normalize_role(role),
                     token_hash=session_token_hash(token),
                     created_at=now,
                     last_seen_at=now,
@@ -131,6 +150,29 @@ class AccountsRepository:
             )
             session.commit()
         return token
+
+    def set_session_role(self, token: str, role: str) -> AccountRecord | None:
+        if not token:
+            return None
+        normalized_role = normalize_role(role)
+        token_hash = session_token_hash(token)
+        now = int(time())
+        with self._session_factory() as session:
+            row = session.execute(
+                select(AccountSession, Account)
+                .join(Account, Account.id == AccountSession.account_id)
+                .where(AccountSession.token_hash == token_hash)
+            ).first()
+            if row is None:
+                return None
+            account_session, account = row
+            if account_session.expires_at <= now:
+                session.delete(account_session)
+                session.commit()
+                return None
+            account_session.role = normalized_role
+            session.commit()
+            return _record(account, role=normalized_role)
 
     def resolve_session(self, token: str) -> AccountRecord | None:
         if not token:
@@ -152,7 +194,7 @@ class AccountsRepository:
                 return None
             account_session.last_seen_at = now
             session.commit()
-            return _record(account)
+            return _record(account, role=account_session.role)
 
     def revoke_session(self, token: str) -> bool:
         if not token:

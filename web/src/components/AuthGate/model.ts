@@ -1,7 +1,10 @@
 export interface AuthAccount {
   email: string;
   display_name: string;
+  role?: UserRole;
 }
+
+export type UserRole = 'candidate' | 'hr';
 
 export interface AuthStatus {
   auth_enabled: boolean;

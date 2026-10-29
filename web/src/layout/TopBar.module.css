@@ -50,6 +50,37 @@
   flex-wrap: wrap;
 }
 
+.roleSwitch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--op-border-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--op-layout-bg) 60%, transparent);
+}
+
+.roleOption {
+  min-height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--op-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.roleOptionActive {
+  background: var(--op-primary);
+  color: #fff;
+}
+
+.roleOption:focus-visible {
+  outline: 2px solid var(--op-primary);
+  outline-offset: 2px;
+}
+
 .actionButton,
 .primaryAction {
   min-width: 40px;

@@ -1,0 +1,47 @@
+.layer {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.petal {
+  position: absolute;
+  top: -12vh;
+  left: var(--sakura-left);
+  display: block;
+  width: var(--sakura-size);
+  height: calc(var(--sakura-size) * 0.72);
+  border-radius: 76% 24% 70% 30%;
+  background: var(--sakura-color);
+  box-shadow: 0 0 8px rgb(246 166 187 / 18%);
+  opacity: var(--sakura-opacity);
+  transform: rotate(var(--sakura-rotate));
+  animation: sakura-fall var(--sakura-duration) linear var(--sakura-delay) infinite;
+  will-change: transform;
+}
+
+@keyframes sakura-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(var(--sakura-rotate));
+  }
+
+  46% {
+    transform: translate3d(var(--sakura-sway), 44vh, 0) rotate(calc(var(--sakura-rotate) + 110deg));
+  }
+
+  100% {
+    transform: translate3d(var(--sakura-drift), 116vh, 0) rotate(calc(var(--sakura-rotate) + 250deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .petal {
+    top: 10vh;
+    animation: none;
+    opacity: calc(var(--sakura-opacity) * 0.55);
+    transform: rotate(var(--sakura-rotate));
+  }
+}

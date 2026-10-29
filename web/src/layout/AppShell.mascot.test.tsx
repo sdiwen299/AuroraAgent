@@ -127,8 +127,8 @@ vi.mock('@/features/pilotMascot/PilotMascot', () => ({
   default: (props: {
     onTogglePilot: () => void;
     onHide: () => void;
-    onZoomChange: (zoom: number) => void;
     panelOpen: boolean;
+    onZoomChange: (zoom: number) => void;
     placement?: string;
     notification?: { status: string; conversationId?: number } | null;
     zoom: number;
@@ -147,6 +147,31 @@ vi.mock('@/features/pilotMascot/PilotMascot', () => ({
       <button type="button" data-testid="toggle-mascot-pilot" onClick={props.onTogglePilot}>toggle</button>
       <button type="button" data-testid="hide-mascot" onClick={props.onHide}>hide</button>
       <button type="button" data-testid="zoom-mascot" onClick={() => props.onZoomChange(1.2)}>zoom</button>
+    </section>
+  ),
+}));
+vi.mock('@/features/assistantSurface/LanyardDock', () => ({
+  default: (props: {
+    onToggle: () => void;
+    onHide: () => void;
+    panelOpen: boolean;
+    notification?: { status: string; conversationId?: number } | null;
+    onZoomChange?: (zoom: number) => void;
+    zoom?: number;
+    animationLevel?: string;
+    positionResetToken?: number;
+  }) => (
+    <section
+      data-testid="pilot-mascot"
+      data-panel-open={String(props.panelOpen)}
+      data-notification={props.notification?.status}
+      data-zoom={props.zoom}
+      data-animation-level={props.animationLevel}
+      data-position-reset-token={props.positionResetToken}
+    >
+      <button type="button" data-testid="toggle-mascot-pilot" onClick={props.onToggle}>toggle</button>
+      <button type="button" data-testid="hide-mascot" onClick={props.onHide}>hide</button>
+      <button type="button" data-testid="zoom-mascot" onClick={() => props.onZoomChange?.(1.2)}>zoom</button>
     </section>
   ),
 }));
@@ -376,7 +401,7 @@ describe('AppShell Pilot mascot integration', () => {
 
     act(() => host.querySelector<HTMLButtonElement>('[data-testid="toggle-mascot-pilot"]')?.click());
     await flush();
-    expect(document.querySelector('[role="dialog"][aria-label="Haru 轻量对话"]')).not.toBeNull();
+    expect(document.querySelector('[role="dialog"][aria-label="Aurora 轻量对话"]')).not.toBeNull();
     expect(host.querySelector('[data-testid="pilot-drawer-chat"]')?.getAttribute('data-conversation-request')).toBe('418');
     expect(host.querySelector('[data-testid="pilot-mascot"]')?.getAttribute('data-notification')).toBeNull();
     const sharedChatOwner = host.querySelector('[data-testid="pilot-drawer-chat"]');

@@ -9,6 +9,7 @@ import InterviewPreview from './InterviewPreview';
 import TestimonialsSection from './components/TestimonialsSection';
 import FAQSection from './components/FAQSection';
 import TechText from './TechText';
+import SakuraRain from './SakuraRain';
 
 interface Props {
   /** 打开登录小窗 */
@@ -139,6 +140,7 @@ export default function LandingPage({ onLogin, onRegister, onEnterInterview }: P
 
   return (
     <main className={styles.page} style={{ '--scroll-progress': `${scrollProgress}%` } as CSSProperties}>
+      <SakuraRain />
       <div className={styles.scrollProgress} aria-hidden="true"><span /></div>
       <nav className={styles.nav}>
         <div className={styles.brand}>

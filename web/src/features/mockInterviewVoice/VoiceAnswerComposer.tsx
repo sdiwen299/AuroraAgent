@@ -109,6 +109,7 @@ interface Props {
   compact?: boolean;
   continuousCommand?: VoiceAnswerComposerCommand;
   onContinuousEvent?: (event: VoiceAnswerComposerEvent) => void;
+  disableQuestionNarration?: boolean;
 }
 
 function defaultBrowser(): VoiceAnswerBrowser {
@@ -171,6 +172,7 @@ export default function VoiceAnswerComposer({
   compact = false,
   continuousCommand,
   onContinuousEvent,
+  disableQuestionNarration = false,
 }: Props) {
   const browser = useMemo(() => suppliedBrowser ?? defaultBrowser(), [suppliedBrowser]);
   const capabilities = useMemo(() => detectVoiceInterviewCapabilities({
@@ -401,6 +403,12 @@ export default function VoiceAnswerComposer({
     if (disabled || recordingState === 'recording' || recordingState === 'paused') return;
     const narrationGeneration = ++narrationGenerationRef.current;
     activeNarrationCommandRef.current = commandId;
+    if (disableQuestionNarration) {
+      activeNarrationCommandRef.current = undefined;
+      setNarrationState('idle');
+      if (commandId !== undefined) emitContinuousEvent({ type: 'question_read_finished', commandId });
+      return;
+    }
     if (!capabilities.speechSynthesis) {
       activeNarrationCommandRef.current = undefined;
       if (commandId !== undefined) emitContinuousEvent({ type: 'question_read_finished', commandId });

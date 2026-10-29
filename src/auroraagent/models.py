@@ -1119,6 +1119,13 @@ class Question(Base):
     difficulty: Mapped[str] = mapped_column(String, default="medium", server_default="medium")
     question: Mapped[str] = mapped_column(String, nullable=False)
     reference_answer: Mapped[str] = mapped_column(String, default="", server_default="")
+    question_type: Mapped[str] = mapped_column(
+        String, default="subjective", server_default="subjective"
+    )
+    _options: Mapped[str] = mapped_column("options", String, default="[]", server_default="[]")
+    correct_answer: Mapped[str] = mapped_column(String, default="", server_default="")
+    starter_code: Mapped[str] = mapped_column(String, default="", server_default="")
+    language: Mapped[str] = mapped_column(String, default="", server_default="")
     _tags: Mapped[str] = mapped_column("tags", String, default="[]", server_default="[]")
     source_type: Mapped[str] = mapped_column(String, default="manual", server_default="manual")
     status: Mapped[str] = mapped_column(String, default="new", server_default="new")
@@ -1150,6 +1157,17 @@ class Question(Base):
     @tags.setter
     def tags(self, value: list[str]) -> None:
         self._tags = json.dumps(value or [], ensure_ascii=False)
+
+    @property
+    def options(self) -> list[str]:
+        if not self._options:
+            return []
+        value = json.loads(self._options)
+        return value if isinstance(value, list) else []
+
+    @options.setter
+    def options(self, value: list[str]) -> None:
+        self._options = json.dumps(value or [], ensure_ascii=False)
 
 
 class QuestionReview(Base):
@@ -3310,4 +3328,126 @@ class KnowledgeRetrievalTrace(Base):
         DateTime(timezone=True),
         nullable=False,
         server_default=func.current_timestamp(),
+    )
+
+
+JOB_POSTING_STATUSES = ("draft", "open", "paused", "closed")
+CANDIDATE_APPLICATION_STAGES = (
+    "applied",
+    "screening",
+    "interview",
+    "offer",
+    "hired",
+    "rejected",
+)
+
+
+class JobPosting(Base):
+    """招聘岗位：招聘端（HR）发布的岗位需求，与求职者投递记录分开存储。"""
+
+    __tablename__ = "hr_job_postings"
+    __table_args__ = (Index("idx_hr_job_postings_status", "status"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    title: Mapped[str] = mapped_column(String, nullable=False)
+    company_name: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    department: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    location: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    employment_type: Mapped[str] = mapped_column(
+        String, nullable=False, default="", server_default=""
+    )
+    salary_range: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    headcount: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    requirements: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    status: Mapped[str] = mapped_column(
+        String, nullable=False, default="draft", server_default="draft"
+    )
+    notes: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class Candidate(Base):
+    """候选人档案：招聘方视角的联系人与来源，可关联一份简历。"""
+
+    __tablename__ = "hr_candidates"
+    __table_args__ = (Index("idx_hr_candidates_name", "name"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    phone: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    source: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    headline: Mapped[str] = mapped_column(String, nullable=False, default="", server_default="")
+    resume_id: Mapped[int | None] = mapped_column(
+        ForeignKey("resumes.id", ondelete="SET NULL"), nullable=True
+    )
+    notes: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class CandidateApplication(Base):
+    """候选人投递：候选人针对某个招聘岗位进入筛选流水线的记录。"""
+
+    __tablename__ = "hr_candidate_applications"
+    __table_args__ = (
+        UniqueConstraint(
+            "job_posting_id",
+            "candidate_id",
+            name="uq_hr_candidate_applications_posting_candidate",
+        ),
+        Index("idx_hr_candidate_applications_posting", "job_posting_id"),
+        Index("idx_hr_candidate_applications_candidate", "candidate_id"),
+        Index("idx_hr_candidate_applications_stage", "stage"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    job_posting_id: Mapped[int] = mapped_column(
+        ForeignKey("hr_job_postings.id", ondelete="CASCADE"), nullable=False
+    )
+    candidate_id: Mapped[int] = mapped_column(
+        ForeignKey("hr_candidates.id", ondelete="CASCADE"), nullable=False
+    )
+    stage: Mapped[str] = mapped_column(
+        String, nullable=False, default="applied", server_default="applied"
+    )
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    stage_note: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
+    applied_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.current_timestamp(),
+        onupdate=func.current_timestamp(),
     )

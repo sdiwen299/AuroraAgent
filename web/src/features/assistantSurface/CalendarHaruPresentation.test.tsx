@@ -3,7 +3,7 @@ import { act, createRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { expect, it, vi } from 'vitest';
 import CalendarHaruPresentation from './CalendarHaruPresentation';
-vi.mock('@/features/pilotMascot/live2dRuntime', () => ({ live2dPilotMascotRuntime: { mount: vi.fn().mockResolvedValue({ setActivity: vi.fn(), dispose: vi.fn(), setZoom: vi.fn() }) } }));
+vi.mock('@/components/Lanyard/Lanyard', () => ({ default: () => <div data-testid="lanyard-3d" /> }));
 (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 it('right-clicks without opening chat, persists mode, and retains the same toggle callback', async () => {
   localStorage.clear();

@@ -33,7 +33,7 @@ const SECTION_LABELS: Record<string, string> = {
 };
 
 const SOURCE_LABELS: Record<string, string> = {
-  manual: '手动创建', dialog: 'Haru 对话', upload: '现有简历上传', sample: '样例', sample_copy: '样例副本',
+  manual: '手动创建', dialog: 'Aurora 对话', upload: '现有简历上传', sample: '样例', sample_copy: '样例副本',
 };
 
 const SECTIONS: Array<{ key: SectionKey; label: string }> = [

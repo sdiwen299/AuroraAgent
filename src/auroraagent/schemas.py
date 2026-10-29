@@ -30,6 +30,54 @@ class ApplicationOut(BaseModel):
     updated_at: datetime
 
 
+class JobPostingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    title: str
+    company_name: str
+    department: str
+    location: str
+    employment_type: str
+    salary_range: str
+    headcount: int
+    description: str
+    requirements: str
+    status: str
+    notes: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class CandidateOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    email: str
+    phone: str
+    source: str
+    headline: str
+    resume_id: int | None = None
+    notes: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class CandidateApplicationOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    job_posting_id: int
+    candidate_id: int
+    stage: str
+    rating: int | None = None
+    stage_note: str
+    applied_at: datetime | None = None
+    created_at: datetime
+    updated_at: datetime
+
+
 class ApplicationSubmissionSnapshotOut(BaseModel):
     id: int
     application_id: int
@@ -261,6 +309,11 @@ class QuestionOut(BaseModel):
     difficulty: str
     question: str
     reference_answer: str
+    question_type: str = "subjective"
+    options: list[str] = []
+    correct_answer: str = ""
+    starter_code: str = ""
+    language: str = ""
     tags: list[str]
     source_type: str
     status: str

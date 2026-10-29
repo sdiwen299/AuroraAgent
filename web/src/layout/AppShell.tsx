@@ -43,6 +43,7 @@ import { listOfferBindingState } from '@/components/offerWorkspaceModel';
 import type { EvidenceTarget } from '@/components/ChatPanel/model';
 import CommandPalette from './CommandPalette';
 import { moduleTabsForView, type ViewMode } from './navigation';
+import { useAuthRoleControls } from '@/components/AuthGate/role';
 import {
   pushWorkspaceView,
   readInitialWorkspaceView,
@@ -84,7 +85,7 @@ import {
   onboardingActionIntent,
 } from '@/features/onboarding/actionRouting';
 import dayjs from 'dayjs';
-import PilotMascot, { type PilotMascotActivity } from '@/features/pilotMascot/PilotMascot';
+import type { PilotMascotActivity } from '@/features/pilotMascot/PilotMascot';
 import {
   readPilotMascotAnimationLevel,
   readPilotMascotZoom,
@@ -101,6 +102,8 @@ import {
   usePilotConversationController,
 } from '@/features/assistantSurface/AssistantSurfaceProvider';
 import HaruDock from '@/features/assistantSurface/HaruDock';
+import LanyardDock from '@/features/assistantSurface/LanyardDock';
+import DesktopPet from '@/features/desktopPet/DesktopPet';
 import PilotWorkspace from '@/features/assistantSurface/PilotWorkspace';
 import {
   DEFAULT_APPLICATION_VIEW_STATE,
@@ -738,6 +741,9 @@ const InterviewReadinessCenter = lazy(() => import('@/features/interviewReadines
 const VoiceCoachingGrowthView = lazy(() => import('@/components/VoiceCoachingGrowthView'));
 const ResumeLibraryView = lazy(() => import('@/components/ResumeLibraryView'));
 const SettingsView = lazy(() => import('@/components/SettingsView'));
+const HrDashboardView = lazy(() => import('@/features/recruiting/HrDashboardView'));
+const HrJobBoardView = lazy(() => import('@/features/recruiting/HrJobBoardView'));
+const HrCandidatePipelineView = lazy(() => import('@/features/recruiting/HrCandidatePipelineView'));
 
 
 export interface ApplicationOfferScope {
@@ -965,6 +971,8 @@ export default function AppShell() {
 }
 
 function AppShellContent() {
+  const { role, switchRole } = useAuthRoleControls();
+  const isHr = role === 'hr';
   const assistantSurface = useAssistantSurface();
   const pilotController = usePilotConversationController();
   const [offerNegotiationEntryPoint, setOfferNegotiationEntryPoint] = useState<'ui' | 'pilot'>('ui');
@@ -1085,7 +1093,7 @@ function AppShellContent() {
   const [interviewPreparationSelection, setInterviewPreparationSelection] = useState<InterviewPreparationSelection | null>(null);
   const [interviewStudioContext, setInterviewStudioContext] = useState<(RealInterviewStudioContext | QuickPracticeStudioContext) | null>(null);
   const [interviewStudioHaruVisible, setInterviewStudioHaruVisible] = useState(false);
-  const [interviewStudioEvidenceOpen, setInterviewStudioEvidenceOpen] = useState(true);
+  const interviewStudioLanyardTriggerRef = useRef<HTMLButtonElement>(null);
   const openQuickPracticeStudio = useCallback((context: QuickPracticeStudioContext) => {
     setInterviewStudioHaruVisible(false);
     setInterviewStudioContext(context);
@@ -1419,7 +1427,7 @@ function AppShellContent() {
       }),
     [view, selectedApp, coachedOffer]
   );
-  const moduleTabs = moduleTabsForView(view);
+  const moduleTabs = moduleTabsForView(view, role);
   const selectedOfferScope = selectedApp
     ? scopeApplicationOffers(offersData, selectedApp.id)
     : { offers: offersData, hasInvalidOwner: false };
@@ -2410,6 +2418,9 @@ function AppShellContent() {
       >
         <div className="op-view-enter" style={view === 'pilot' ? { display: 'contents' } : undefined}>
           {view === 'dashboard' && (
+            isHr ? (
+              <HrDashboardView onNavigate={navigateToView} />
+            ) : (
             <DashboardView
               applications={apps}
               events={evs}
@@ -2421,16 +2432,24 @@ function AppShellContent() {
               onAddApplication={() => setAddOpen(true)}
               onOnboardingAction={handleOnboardingAction}
             />
+            )
           )}
           {view === 'board' && (
+            isHr ? (
+              <HrJobBoardView />
+            ) : (
             <KanbanBoard
               applications={apps}
               onOpenDetail={openApplicationDetail}
               onAttachToPilot={attachToPilot}
               viewState={applicationViewState}
             />
+            )
           )}
           {view === 'applications-list' && (
+            isHr ? (
+              <HrJobBoardView />
+            ) : (
             <ApplicationListView
               applications={apps}
                events={evs}
@@ -2440,6 +2459,7 @@ function AppShellContent() {
                viewState={applicationViewState}
                onViewStateChange={setApplicationViewState}
             />
+            )
           )}
           {view === 'calendar' && (
             <CalendarView
@@ -2454,6 +2474,9 @@ function AppShellContent() {
             <RemindersView onNavigate={navigateToView} onOpenDetailById={goDetailById} />
           )}
           {view === 'offers' && (
+            isHr ? (
+              <HrCandidatePipelineView />
+            ) : (
             <OfferCenterView
               applications={apps}
               onAddApplication={() => setAddOpen(true)}
@@ -2465,6 +2488,7 @@ function AppShellContent() {
               focusOfferId={offerEvidenceFocus?.id}
               onEvidenceFocusConsumed={offerEvidenceFocus ? () => clearEvidenceFocus(offerEvidenceFocus) : undefined}
             />
+            )
           )}
           {view === 'knowledge' && <KnowledgeSourcesView />}
           {view === 'reviews' && (
@@ -2565,6 +2589,9 @@ function AppShellContent() {
             />
           ))}
           {view === 'resumes' && (
+            isHr ? (
+              <HrCandidatePipelineView />
+            ) : (
             <ResumeLibraryView
               uploadRequestToken={resumeUploadRequestToken}
               onUploadRequestConsumed={() => setResumeUploadRequestToken(0)}
@@ -2573,6 +2600,7 @@ function AppShellContent() {
               onEvidenceFocusConsumed={resumeEvidenceFocus ? () => clearEvidenceFocus(resumeEvidenceFocus) : undefined}
               onboardingFocusToken={resumeOnboardingFocusToken}
             />
+            )
           )}
           {view === 'pilot' && (
             <div
@@ -2612,7 +2640,7 @@ function AppShellContent() {
 
   let topBarPrimaryAction: TopBarAction | undefined;
   if (!selectedApp) {
-    if (['dashboard', 'reminders', 'board', 'applications-list'].includes(view)) {
+    if (!isHr && ['dashboard', 'reminders', 'board', 'applications-list'].includes(view)) {
       topBarPrimaryAction = {
         label: '添加投递',
         ariaLabel: '添加投递',
@@ -2630,7 +2658,7 @@ function AppShellContent() {
         ariaLabel: '开始刷题',
         onClick: () => setQuestionPracticeRequestToken((token) => token + 1),
       };
-    } else if (view === 'offers') {
+    } else if (!isHr && view === 'offers') {
       topBarPrimaryAction = {
         label: apps.length === 0 ? '添加投递' : '录入 Offer',
         ariaLabel: apps.length === 0 ? '添加投递后录入 Offer' : '录入 Offer',
@@ -2638,7 +2666,7 @@ function AppShellContent() {
           ? () => setAddOpen(true)
           : () => setOfferCreateRequestToken((token) => token + 1),
       };
-    } else if (view === 'resumes') {
+    } else if (!isHr && view === 'resumes') {
       topBarPrimaryAction = {
         label: '上传简历',
         ariaLabel: '上传简历',
@@ -2667,6 +2695,7 @@ function AppShellContent() {
           reminderCount={actions.length}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed((collapsed) => !collapsed)}
+          role={role}
         />
       ) : null}
       <Layout
@@ -2686,6 +2715,7 @@ function AppShellContent() {
             onOpenSettings={() => navigateToView('settings')}
             fullscreen={workspaceFullscreen}
             onToggleFullscreen={() => setWorkspaceFullscreen((fullscreen) => !fullscreen)}
+            roleSwitch={{ role, onSwitch: switchRole }}
           />
         ) : null}
         <Content
@@ -2809,24 +2839,20 @@ function AppShellContent() {
           }}
           onToggleHaru={() => setInterviewStudioHaruVisible((visible) => !visible)}
           onActivityChange={setPilotMascotActivity}
-          onEvidenceVisibilityChange={setInterviewStudioEvidenceOpen}
         />
       ) : null}
 
       {interviewStudioContext && interviewStudioHaruVisible ? (
-        <PilotMascot
-          activity={pilotMascotActivity}
-          panelOpen
-          onTogglePilot={() => undefined}
+        <LanyardDock
+          triggerRef={interviewStudioLanyardTriggerRef}
+          onAnchorRectChange={() => undefined}
+          onToggle={() => undefined}
           onHide={() => setInterviewStudioHaruVisible(false)}
-          zoom={pilotMascotZoom}
-          onZoomChange={setPilotMascotZoomPreference}
-          animationLevel={pilotMascotAnimationLevel}
-          positionResetToken={pilotMascotPositionResetToken}
-          studioEvidenceOpen={interviewStudioEvidenceOpen}
-          placement="interview-studio"
+          panelOpen
         />
       ) : null}
+
+      <DesktopPet isHr={isHr} />
 
       <AddApplicationForm open={addOpen} onClose={() => setAddOpen(false)} onCreated={(application) => { setIntakeApplicationId(application.id); openApplicationDetail(application); }} />
       <CommandPalette

@@ -1,0 +1,53 @@
+.panel {
+  display: block;
+  margin: 16px 0 2px;
+  overflow: visible;
+}
+
+/* Keep the workspace stable even when the avatar asset is portrait-oriented. */
+.visual { position: relative; aspect-ratio: 16 / 9; min-height: 240px; max-height: min(440px, 52vh); overflow: hidden; border: 1px solid color-mix(in srgb, var(--op-primary) 20%, var(--op-border)); border-radius: 16px; background: radial-gradient(circle at 50% 24%, #3a4a72 0, #172238 44%, #0d1424 100%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.video { display: block; width: 100%; height: 100%; object-fit: contain; background: transparent; }
+.fallback { position: absolute; inset: 0; overflow: hidden; transition: opacity 160ms ease; }
+.fallback[data-visible='false'] { opacity: 0; pointer-events: none; }
+.fallbackVideo, .previewShade { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.fallbackVideo { top: -6%; left: -6%; width: 112%; height: 112%; filter: saturate(.96) contrast(1.01); transform: scale(1.02); transform-origin: center; }
+.previewShade { background: linear-gradient(180deg, rgba(8, 14, 28, .08), rgba(8, 14, 28, .28) 100%); }
+
+/* 演示形象标识：左上角玻璃牌，不再压在人物脸上 */
+.fallbackIdentity { position: absolute; z-index: 2; top: 14px; left: 16px; display: flex; align-items: center; gap: 11px; max-width: min(360px, 76%); padding: 10px 14px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 14px; background: rgba(8, 14, 28, .48); color: white; backdrop-filter: blur(6px); }
+.avatar { display: grid; place-items: center; flex: 0 0 auto; width: 38px; height: 38px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; font-size: 17px; }
+.fallbackCopy { display: grid; gap: 3px; min-width: 0; }
+.fallbackCopy strong { font-size: 13.5px; letter-spacing: .01em; }
+.fallbackCopy span { color: rgba(255, 255, 255, .76); font-size: 10.5px; line-height: 1.5; }
+
+.stageTopline { position: absolute; z-index: 2; top: 14px; right: 16px; left: auto; display: flex; align-items: center; gap: 10px; pointer-events: none; }
+.liveBadge { position: static; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 999px; background: rgba(8, 14, 28, .48); color: white; font-size: 10px; font-weight: 800; backdrop-filter: blur(6px); }
+.liveBadge i { width: 6px; height: 6px; border-radius: 50%; background: #9ba8bc; }
+.liveBadge i[data-state='connected'] { background: #4ade80; box-shadow: 0 0 0 4px rgba(74, 222, 128, .16); }
+.liveBadge i[data-state='connecting'] { background: #fbbf24; }
+.liveBadge i[data-state='error'] { background: #fb923c; }
+.stageBrand { color: rgba(255, 255, 255, .72); font-size: 10px; font-weight: 800; letter-spacing: .16em; }
+.questionCaption { position: absolute; z-index: 2; right: 16px; bottom: 16px; left: auto; width: min(58%, 620px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 12px; padding: 11px 13px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 13px; background: rgba(8, 14, 28, .52); color: white; text-align: left; cursor: pointer; backdrop-filter: blur(6px); transition: background 140ms ease, border-color 140ms ease; }
+.questionCaption:hover { border-color: rgba(255, 255, 255, .48); background: rgba(8, 14, 28, .68); }
+.questionCaption strong { grid-column: 1; overflow: hidden; font-size: 14px; font-weight: 620; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+.questionCaption :global(.anticon) { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: #b7c5ff; font-size: 18px; }
+.captionLabel { grid-column: 1; color: rgba(255, 255, 255, .62); font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+
+.copy { display: flex; min-width: 0; flex-direction: column; justify-content: center; gap: 2px; padding: 12px 4px 2px; }
+.heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.heading h2 { margin: 4px 0 0; font-size: 18px; font-weight: 650; letter-spacing: -.03em; }
+.identity { min-width: 0; }
+.kicker { color: var(--op-primary-strong); font-size: 10px; font-weight: 850; letter-spacing: .14em; }
+.copy p { max-width: 640px; margin: 8px 0 12px; color: var(--op-muted-strong); font-size: 12px; line-height: 1.6; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions :global(.ant-btn) { min-height: 36px; }
+.error { margin-top: 8px; color: var(--op-warning-strong); font-size: 11px; line-height: 1.5; }
+
+@media (max-width: 700px) {
+  .visual { min-height: 210px; }
+  .fallbackIdentity { top: 10px; left: 10px; gap: 9px; padding: 8px 11px; }
+  .questionCaption { right: 10px; bottom: 10px; left: 10px; width: auto; }
+  .questionCaption strong { font-size: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .fallback { transition: none; } }

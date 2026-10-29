@@ -18,10 +18,13 @@ import {
   message,
 } from 'antd';
 import {
+  BookOutlined,
   BulbOutlined,
   DeleteOutlined,
   EditOutlined,
+  FileTextOutlined,
   FireOutlined,
+  FormOutlined,
   PlusOutlined,
   ReloadOutlined,
   ThunderboltOutlined,
@@ -40,24 +43,31 @@ import type {
   Question,
   QuestionDifficulty,
   QuestionInput,
+  QuestionSource,
   QuestionStatus,
+  QuestionType,
   ReviewRating,
 } from '@/types/question';
+import boardImage from '../jpg/board.png';
+import dashboardImage from '../jpg/dashboard.png';
+import interviewImage from '../jpg/interview.png';
+import offersImage from '../jpg/offers.png';
+import resumesImage from '../jpg/resumes.png';
+import DriftWall from './DriftWall';
+import QuestionAnswerPage from './QuestionAnswerPage';
+import {
+  DIFFICULTY_META,
+  OPTION_LETTERS,
+  QUESTION_TYPE_META,
+  SOURCE_META,
+  STATUS_META,
+  questionTypeOf,
+} from './questionMeta';
 import styles from './QuestionBankView.module.css';
 
 const { Paragraph } = Typography;
 
-const DIFFICULTY_META: Record<QuestionDifficulty, { label: string; color: string }> = {
-  easy: { label: '简单', color: 'green' },
-  medium: { label: '中等', color: 'gold' },
-  hard: { label: '困难', color: 'red' },
-};
-
-const STATUS_META: Record<QuestionStatus, { label: string; color: string }> = {
-  new: { label: '未刷', color: 'default' },
-  practicing: { label: '练习中', color: 'blue' },
-  mastered: { label: '已掌握', color: 'green' },
-};
+const QUESTION_WALL_IMAGES = [boardImage, dashboardImage, interviewImage, offersImage, resumesImage];
 
 interface QuestionBankViewProps {
   focusId?: number;
@@ -68,8 +78,25 @@ export default function QuestionBankView({
   focusId,
   practiceRequestToken,
 }: QuestionBankViewProps) {
-  const [tab, setTab] = useState<'question_bank' | 'review'>(practiceRequestToken ? 'review' : 'question_bank');
+  const [tab, setTab] = useState<'question_bank' | 'popular' | 'review'>(practiceRequestToken ? 'review' : 'question_bank');
+  const [templateTopic, setTemplateTopic] = useState('');
+  const [templateBankOnly, setTemplateBankOnly] = useState(false);
+  const [activeQueue, setActiveQueue] = useState<Question[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const lastPracticeRequestTokenRef = useRef<number | undefined>(practiceRequestToken);
+
+  const activeQuestion = activeQueue[activeIndex] ?? null;
+
+  const openQuestion = (question: Question, queue: Question[]) => {
+    const index = queue.findIndex((item) => item.id === question.id);
+    setActiveQueue(queue);
+    setActiveIndex(index >= 0 ? index : 0);
+  };
+
+  const closeQuestion = () => {
+    setActiveQueue([]);
+    setActiveIndex(0);
+  };
 
   // When launched from a mock-interview drill link, surface the target id.
   useEffect(() => {
@@ -86,6 +113,22 @@ export default function QuestionBankView({
     }
   }, [practiceRequestToken]);
 
+  if (activeQuestion) {
+    return (
+      <QuestionAnswerPage
+        question={activeQuestion}
+        position={{ index: activeIndex, total: activeQueue.length }}
+        onPrev={activeIndex > 0 ? () => setActiveIndex((index) => index - 1) : undefined}
+        onNext={
+          activeIndex < activeQueue.length - 1
+            ? () => setActiveIndex((index) => index + 1)
+            : undefined
+        }
+        onBack={closeQuestion}
+      />
+    );
+  }
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -95,15 +138,38 @@ export default function QuestionBankView({
         </div>
         <Segmented
           value={tab}
-          onChange={(v) => setTab(v as 'question_bank' | 'review')}
+          onChange={(v) => {
+            const next = v as 'question_bank' | 'popular' | 'review';
+            if (next !== 'question_bank') setTemplateBankOnly(false);
+            setTab(next);
+          }}
           options={[
             { label: '题库', value: 'question_bank' },
+            { label: '热门题库', value: 'popular' },
             { label: '今日复习', value: 'review' },
           ]}
         />
       </div>
 
-      <section hidden={tab !== 'question_bank'} aria-label="题库模式"><BankTab /></section>
+      <section hidden={tab !== 'question_bank'} aria-label="题库模式">
+        <BankTab
+          key={`${templateBankOnly ? 'template' : 'all'}-${templateTopic || 'all'}`}
+          initialSourceType={templateBankOnly ? 'template' : undefined}
+          initialTopic={templateTopic}
+          onOpenQuestion={openQuestion}
+        />
+      </section>
+      <section hidden={tab !== 'popular'} aria-label="热门笔试题库">
+        <PopularBanksTab
+          onOpenQuestion={openQuestion}
+          onOpenBank={() => {
+            setTemplateTopic('');
+            setTemplateBankOnly(true);
+            setTab('question_bank');
+          }}
+          onPractice={() => setTab('review')}
+        />
+      </section>
       <section hidden={tab !== 'review'} aria-label="今日复习模式"><PracticeTab /></section>
     </div>
   );
@@ -111,22 +177,34 @@ export default function QuestionBankView({
 
 /* ----------------------------- 题库 tab ----------------------------- */
 
-function BankTab() {
+function BankTab({
+  initialSourceType,
+  initialTopic,
+  onOpenQuestion,
+}: {
+  initialSourceType?: QuestionSource;
+  initialTopic?: string;
+  onOpenQuestion: (question: Question, queue: Question[]) => void;
+}) {
   const qc = useQueryClient();
   const [status, setStatus] = useState<QuestionStatus | 'all'>('all');
   const [difficulty, setDifficulty] = useState<QuestionDifficulty | 'all'>('all');
+  const [sourceType, setSourceType] = useState<QuestionSource | 'all'>(initialSourceType ?? 'all');
+  const [questionType, setQuestionType] = useState<QuestionType | 'all'>('all');
   const [search, setSearch] = useState('');
   const [generateOpen, setGenerateOpen] = useState(false);
   const [editing, setEditing] = useState<Question | null>(null);
   const [manualOpen, setManualOpen] = useState(false);
-  const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
   const filter = useMemo(
     () => ({
       ...(status !== 'all' ? { status } : {}),
       ...(difficulty !== 'all' ? { difficulty } : {}),
+      ...(sourceType !== 'all' ? { source_type: sourceType } : {}),
+      ...(questionType !== 'all' ? { question_type: questionType } : {}),
+      ...(initialTopic ? { topic: initialTopic } : {}),
     }),
-    [status, difficulty],
+    [status, difficulty, sourceType, questionType, initialTopic],
   );
 
   const { data: questions = [], isLoading } = useQuery({
@@ -154,13 +232,6 @@ function BankTab() {
     },
     onError: () => message.error('删除失败'),
   });
-
-  const toggleExpand = (id: number) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
 
   if (generateOpen) {
     return <GenerateDrawer open={generateOpen} onClose={() => setGenerateOpen(false)} />;
@@ -198,6 +269,31 @@ function BankTab() {
             { label: '未刷', value: 'new' },
             { label: '练习中', value: 'practicing' },
             { label: '已掌握', value: 'mastered' },
+          ]}
+        />
+        <Select
+          value={sourceType}
+          onChange={setSourceType}
+          style={{ width: 130 }}
+          aria-label="按来源筛选"
+          options={[
+            { label: '全部来源', value: 'all' },
+            { label: '模板题库', value: 'template' },
+            { label: '面试复盘', value: 'ai_notes' },
+            { label: '知识库', value: 'ai_knowledge' },
+            { label: '手动', value: 'manual' },
+          ]}
+        />
+        <Select
+          value={questionType}
+          onChange={setQuestionType}
+          style={{ width: 120 }}
+          aria-label="按题型筛选"
+          options={[
+            { label: '全部题型', value: 'all' },
+            { label: '问答题', value: 'subjective' },
+            { label: '选择题', value: 'choice' },
+            { label: '编程题', value: 'programming' },
           ]}
         />
         <Select
@@ -246,11 +342,15 @@ function BankTab() {
           {visible.map((q) => (
             <div key={q.id} className={styles.qCard}>
               <div className={styles.qMeta}>
+                <Tag color={QUESTION_TYPE_META[questionTypeOf(q)].color}>
+                  {QUESTION_TYPE_META[questionTypeOf(q)].label}
+                </Tag>
                 {q.category && <Tag color="purple">{q.category}</Tag>}
                 <Tag color={DIFFICULTY_META[q.difficulty].color}>
                   {DIFFICULTY_META[q.difficulty].label}
                 </Tag>
                 <Tag color={STATUS_META[q.status].color}>{STATUS_META[q.status].label}</Tag>
+                <Tag color={SOURCE_META[q.source_type].color}>{SOURCE_META[q.source_type].label}</Tag>
                 {q.practice_count > 0 && (
                   <span style={{ fontSize: 12, color: 'var(--op-muted)' }}>
                     刷题 {q.practice_count} 次
@@ -281,26 +381,19 @@ function BankTab() {
               </div>
               <div
                 className={styles.qStem}
-                onClick={() => toggleExpand(q.id)}
+                onClick={() => onOpenQuestion(q, visible)}
                 role="button"
                 tabIndex={0}
+                aria-label={`进入答题：${q.question}`}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    toggleExpand(q.id);
+                    onOpenQuestion(q, visible);
                   }
                 }}
               >
                 {q.question}
               </div>
-              {expanded.has(q.id) && q.reference_answer && (
-                <div className={styles.qAnswer}>{q.reference_answer}</div>
-              )}
-              {expanded.has(q.id) && !q.reference_answer && (
-                <div className={styles.qAnswer} style={{ color: 'var(--op-muted)' }}>
-                  （暂无参考答案）
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -315,6 +408,190 @@ function BankTab() {
         }}
       />
     </>
+  );
+}
+
+type PopularCategory = { key: string; label: string; keywords: string[] };
+
+const POPULAR_CATEGORIES: PopularCategory[] = [
+  { key: 'hot', label: '热门', keywords: [] },
+  { key: 'backend', label: '后端', keywords: ['后端', 'java', 'spring', 'go', 'c++', 'python', 'php', 'redis', 'mysql', '系统设计'] },
+  { key: 'frontend', label: '前端', keywords: ['前端', 'javascript', 'typescript', 'react', 'vue', 'html', 'css'] },
+  { key: 'database', label: '数据库', keywords: ['数据库', 'mysql', 'redis', 'elasticsearch', 'mongodb'] },
+  { key: 'network', label: '计算机网络', keywords: ['网络', 'http', 'tcp', '计算机网络'] },
+  { key: 'os', label: '操作系统', keywords: ['操作系统', 'linux', '内核'] },
+  { key: 'data', label: '数据结构', keywords: ['数据结构', '算法', '数组', '链表'] },
+  { key: 'ai', label: '人工智能', keywords: ['人工智能', 'ai', '大模型', '机器学习'] },
+  { key: 'project', label: '项目', keywords: ['项目', '场景', '实战'] },
+  { key: 'all', label: '全部', keywords: [] },
+];
+
+function matchesPopularCategory(question: Question, category: PopularCategory): boolean {
+  if (category.key === 'hot' || category.key === 'all') return true;
+  const haystack = `${question.question} ${question.topic ?? ''} ${question.category} ${question.tags.join(' ')}`.toLowerCase();
+  return category.keywords.some((keyword) => haystack.includes(keyword.toLowerCase()));
+}
+
+function PopularBanksTab({
+  onOpenBank,
+  onPractice,
+  onOpenQuestion,
+}: {
+  onOpenBank: (topic: string) => void;
+  onPractice: () => void;
+  onOpenQuestion: (question: Question, queue: Question[]) => void;
+}) {
+  const [categoryKey, setCategoryKey] = useState('hot');
+  const [typeKey, setTypeKey] = useState<QuestionType | 'all'>('all');
+  const { data: questions = [], isLoading } = useQuery({
+    queryKey: ['questions', { source_type: 'template' }],
+    queryFn: () => listQuestions({ source_type: 'template' }),
+  });
+
+  const category = POPULAR_CATEGORIES.find((item) => item.key === categoryKey) ?? POPULAR_CATEGORIES[0];
+  const categoryQuestions = questions.filter((question) => matchesPopularCategory(question, category));
+  const typeCounts: Record<'all' | QuestionType, number> = {
+    all: categoryQuestions.length,
+    subjective: categoryQuestions.filter((q) => questionTypeOf(q) === 'subjective').length,
+    choice: categoryQuestions.filter((q) => questionTypeOf(q) === 'choice').length,
+    programming: categoryQuestions.filter((q) => questionTypeOf(q) === 'programming').length,
+  };
+  const visibleQuestions =
+    typeKey === 'all'
+      ? categoryQuestions
+      : categoryQuestions.filter((question) => questionTypeOf(question) === typeKey);
+
+  return (
+    <div className={styles.popularPage}>
+      <div className={styles.popularHeading}>
+        <div>
+          <span className={styles.popularEyebrow}>模板题库 · 知识检索同步</span>
+          <h2 className={styles.popularTitle}>热门笔试题库</h2>
+          <p className={styles.popularSubtitle}>按主题挑选题库，进入后直接开始刷题和间隔复习。</p>
+        </div>
+        <div className={styles.popularActions}>
+          <Button icon={<BookOutlined />} onClick={() => onOpenBank('')}>浏览全部</Button>
+        </div>
+      </div>
+
+      <div className={styles.popularFilterPanel}>
+        <div className={styles.popularNav}>
+          <div className={styles.popularShortcuts}>
+            <button
+              type="button"
+              className={styles.popularShortcut}
+              onClick={onPractice}
+            >
+              <span className={`${styles.popularShortcutIcon} ${styles.popularShortcutIconStart}`} aria-hidden>
+                <FormOutlined />
+              </span>
+              <span>开刷</span>
+            </button>
+            <button
+              type="button"
+              className={`${styles.popularShortcut} ${categoryKey === 'hot' ? styles.popularShortcutSelected : ''}`}
+              aria-pressed={categoryKey === 'hot'}
+              onClick={() => setCategoryKey('hot')}
+            >
+              <span className={`${styles.popularShortcutIcon} ${styles.popularShortcutIconHot}`} aria-hidden>
+                <FireOutlined />
+              </span>
+              <span>热门</span>
+            </button>
+            <span className={styles.popularNavDivider} aria-hidden />
+          </div>
+
+          <div className={styles.popularCategoryBar} role="tablist" aria-label="笔试题库分类">
+            {POPULAR_CATEGORIES.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                role="tab"
+                aria-selected={item.key === categoryKey}
+                className={`${styles.popularCategory} ${item.key === categoryKey ? styles.popularCategorySelected : ''}`}
+                onClick={() => setCategoryKey(item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.popularTypeRow} role="tablist" aria-label="题型筛选">
+          <span className={styles.popularTypeLabel}>题型</span>
+          {(
+            [
+              { key: 'all', label: '全部' },
+              { key: 'choice', label: '选择题' },
+              { key: 'programming', label: '编程题' },
+              { key: 'subjective', label: '问答题' },
+            ] as const
+          ).map((item) => (
+            <button
+              key={item.key}
+              type="button"
+              role="tab"
+              aria-selected={item.key === typeKey}
+              className={`${styles.popularTypeChip} ${item.key === typeKey ? styles.popularTypeChipSelected : ''}`}
+              onClick={() => setTypeKey(item.key)}
+            >
+              {item.label}
+              <span className={styles.popularTypeCount}>{typeCounts[item.key]}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className={styles.popularRailHeader}>
+        <div>
+          <span className={styles.popularRailTitle}>{category.label}题库</span>
+          <span className={styles.popularRailCount}>{visibleQuestions.length} 道题</span>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className={styles.popularEmpty}>正在加载模板题库…</div>
+      ) : visibleQuestions.length === 0 ? (
+        <div className={styles.popularEmpty}>
+          <FileTextOutlined />
+          <strong>
+            {questions.length === 0
+              ? '模板题目正在准备中'
+              : typeKey === 'all'
+                ? '这个分类暂时没有题目'
+                : '这个分类下暂时没有该题型的题目'}
+          </strong>
+          <span>{questions.length === 0 ? '系统题目数据准备完成后会直接展示在这里。' : '切换其他分类或题型继续浏览。'}</span>
+        </div>
+      ) : (
+        <div className={styles.popularDriftViewport}>
+          <DriftWall
+            items={visibleQuestions.map((question, index) => ({
+              image: QUESTION_WALL_IMAGES[index % QUESTION_WALL_IMAGES.length],
+              title: `${QUESTION_TYPE_META[questionTypeOf(question)].label} · ${question.topic ? `${question.topic}笔试题` : (question.category || '开源题库')} · ${question.question}`,
+              onClick: () => onOpenQuestion(question, visibleQuestions),
+            }))}
+            columns={5}
+            tileWidth={204}
+            tileHeight={144}
+            gap={16}
+            radius={16}
+            tilt={13}
+            turn={-10}
+            perspective={1260}
+            depth={92}
+            speed={22}
+            direction="up"
+            variance={0.3}
+            parallax={0.45}
+            lift={42}
+            fade={0.28}
+            dim={0.84}
+            overlayColor="#20340f"
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -421,18 +698,32 @@ function QuestionFormModal({
   const qc = useQueryClient();
   const [form] = Form.useForm();
   const isEdit = !!question;
+  const [questionType, setQuestionType] = useState<QuestionType>('subjective');
+  const watchedOptions: string[] = Form.useWatch('options', form) ?? [];
 
   useEffect(() => {
     if (open) {
+      const type = question ? questionTypeOf(question) : 'subjective';
+      setQuestionType(type);
       form.setFieldsValue({
         question: question?.question ?? '',
         category: question?.category ?? '',
         difficulty: question?.difficulty ?? 'medium',
         reference_answer: question?.reference_answer ?? '',
+        question_type: type,
+        options: question?.options ?? [],
+        correct_answer: question?.correct_answer ?? '',
+        starter_code: question?.starter_code ?? '',
+        language: question?.language ?? 'python',
         tags: question?.tags ?? [],
       });
     }
   }, [open, question, form]);
+
+  const optionLetters = watchedOptions
+    .slice(0, 8)
+    .map((_, index) => OPTION_LETTERS[index])
+    .filter((_, index) => (watchedOptions[index] ?? '').trim().length > 0);
 
   const saveMutation = useMutation({
     mutationFn: (values: QuestionInput) =>
@@ -443,7 +734,11 @@ function QuestionFormModal({
       qc.invalidateQueries({ queryKey: ['questions-due'] });
       onClose();
     },
-    onError: () => message.error('保存失败'),
+    onError: (err: unknown) => {
+      const msg =
+        (err as { response?: { data?: { error?: string } } })?.response?.data?.error ?? '保存失败';
+      message.error(msg);
+    },
   });
 
   return (
@@ -461,6 +756,9 @@ function QuestionFormModal({
         form={form}
         layout="vertical"
         onFinish={(values) => saveMutation.mutate(values as QuestionInput)}
+        onValuesChange={(changed) => {
+          if ('question_type' in changed) setQuestionType(changed.question_type ?? 'subjective');
+        }}
         style={{ marginTop: 12 }}
       >
         <Form.Item
@@ -468,9 +766,27 @@ function QuestionFormModal({
           label="题目"
           rules={[{ required: true, message: '请输入题目' }]}
         >
-          <Input.TextArea rows={2} placeholder="例如：什么是 goroutine 泄漏？如何排查？" />
+          <Input.TextArea
+            rows={questionType === 'programming' ? 4 : 2}
+            placeholder={
+              questionType === 'choice'
+                ? '题干，例如：下列关于 HashMap 的说法正确的是？'
+                : questionType === 'programming'
+                  ? '题目描述、示例输入输出、数据范围（支持 Markdown）'
+                  : '例如：什么是 goroutine 泄漏？如何排查？'
+            }
+          />
         </Form.Item>
         <Space size={12} style={{ display: 'flex' }}>
+          <Form.Item name="question_type" label="题型" style={{ width: 120 }}>
+            <Select
+              options={[
+                { label: '问答题', value: 'subjective' },
+                { label: '选择题', value: 'choice' },
+                { label: '编程题', value: 'programming' },
+              ]}
+            />
+          </Form.Item>
           <Form.Item name="category" label="分类" style={{ flex: 1 }}>
             <Input placeholder="如 Go并发 / 系统设计" />
           </Form.Item>
@@ -484,10 +800,96 @@ function QuestionFormModal({
             />
           </Form.Item>
         </Space>
+
+        {questionType === 'choice' && (
+          <>
+            <div className={styles.formBlockLabel}>
+              选项 <span className={styles.formRequired}>*</span>
+            </div>
+            <Form.List
+              name="options"
+              rules={[
+                {
+                  validator: (_, value: string[] | undefined) =>
+                    (value ?? []).filter((item) => item && item.trim()).length >= 2
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('至少填写 2 个选项')),
+                },
+              ]}
+            >
+              {(fields, { add, remove }, { errors }) => (
+                <>
+                  {fields.map((field, index) => (
+                    <Space key={field.key} align="baseline" style={{ display: 'flex', marginBottom: 6 }}>
+                      <span className={styles.optionLetter}>{OPTION_LETTERS[index]}</span>
+                      <Form.Item
+                        name={[field.name]}
+                        rules={[{ required: true, message: '选项内容不能为空' }]}
+                        style={{ marginBottom: 0, width: 360 }}
+                      >
+                        <Input placeholder={`选项 ${OPTION_LETTERS[index]}`} />
+                      </Form.Item>
+                      {fields.length > 2 && (
+                        <Button type="text" danger size="small" onClick={() => remove(field.name)}>
+                          删除
+                        </Button>
+                      )}
+                    </Space>
+                  ))}
+                  <Button
+                    type="dashed"
+                    size="small"
+                    icon={<PlusOutlined />}
+                    onClick={() => add('')}
+                    disabled={fields.length >= 8}
+                  >
+                    添加选项
+                  </Button>
+                  <Form.ErrorList errors={errors} />
+                </>
+              )}
+            </Form.List>
+            <div style={{ height: 12 }} />
+            <Form.Item
+              name="correct_answer"
+              label="正确答案"
+              rules={[{ required: true, message: '请选择正确答案' }]}
+            >
+              <Select
+                placeholder="选择正确选项"
+                options={optionLetters.map((letter) => ({ label: `正确答案 ${letter}`, value: letter }))}
+              />
+            </Form.Item>
+          </>
+        )}
+
+        {questionType === 'programming' && (
+          <Space size={12} style={{ display: 'flex' }}>
+            <Form.Item name="language" label="语言" style={{ width: 140 }}>
+              <Select
+                options={[
+                  { label: 'Python', value: 'python' },
+                  { label: 'Java', value: 'java' },
+                  { label: 'Go', value: 'go' },
+                  { label: 'C++', value: 'cpp' },
+                  { label: 'JavaScript', value: 'javascript' },
+                  { label: 'SQL', value: 'sql' },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item name="starter_code" label="初始代码" style={{ flex: 1 }}>
+              <Input.TextArea rows={4} placeholder="打开题目时预填的代码模板" />
+            </Form.Item>
+          </Space>
+        )}
+
         <Form.Item name="tags" label="标签">
           <Select mode="tags" placeholder="回车添加标签" tokenSeparators={[',']} />
         </Form.Item>
-        <Form.Item name="reference_answer" label="参考答案">
+        <Form.Item
+          name="reference_answer"
+          label={questionType === 'programming' ? '参考实现与思路' : questionType === 'choice' ? '答案解析' : '参考答案'}
+        >
           <Input.TextArea rows={4} placeholder="要点式参考答案" />
         </Form.Item>
       </Form>
@@ -534,6 +936,7 @@ function PracticeTab() {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement;
       if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) return;
+      if (el && el.tagName === 'BUTTON') return;
       if (!current) return;
       if (!revealed && (e.key === ' ' || e.key === 'Enter')) {
         e.preventDefault();
@@ -602,6 +1005,9 @@ function PracticeTab() {
       ) : (
         <div className={styles.flash}>
           <div className={styles.qMeta}>
+            <Tag color={QUESTION_TYPE_META[questionTypeOf(current)].color}>
+              {QUESTION_TYPE_META[questionTypeOf(current)].label}
+            </Tag>
             {current.category && <Tag color="purple">{current.category}</Tag>}
             <Tag color={DIFFICULTY_META[current.difficulty].color}>
               {DIFFICULTY_META[current.difficulty].label}
@@ -611,8 +1017,36 @@ function PracticeTab() {
 
           <div className={styles.flashStem}>{current.question}</div>
 
+          {questionTypeOf(current) === 'choice' && (current.options ?? []).length > 0 && (
+            <ul className={styles.flashOptions}>
+              {(current.options ?? []).map((option, index) => {
+                const letter = OPTION_LETTERS[index] ?? String(index + 1);
+                const isCorrect = revealed && letter === (current.correct_answer ?? '').toUpperCase();
+                return (
+                  <li
+                    key={letter}
+                    className={`${styles.flashOption} ${isCorrect ? styles.flashOptionCorrect : ''}`}
+                  >
+                    <span className={styles.optionLetter}>{letter}</span>
+                    <span>{option}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+
           {revealed ? (
             <div className={styles.flashAnswer}>
+              {questionTypeOf(current) === 'choice' && current.correct_answer && (
+                <div className={styles.flashCorrect}>
+                  正确答案：{current.correct_answer}
+                  {(() => {
+                    const letter = (current.correct_answer || '').toUpperCase();
+                    const text = (current.options ?? [])[OPTION_LETTERS.indexOf(letter)];
+                    return text ? ` · ${text}` : '';
+                  })()}
+                </div>
+              )}
               {current.reference_answer || '（这道题暂无参考答案，凭记忆自评即可）'}
             </div>
           ) : (

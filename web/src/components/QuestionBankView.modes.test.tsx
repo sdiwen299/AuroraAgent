@@ -33,6 +33,7 @@ const dueQuestion: Question = {
   difficulty: 'medium',
   question: '如何设计一个限流器？',
   reference_answer: '令牌桶。',
+  question_type: 'subjective',
   tags: ['限流'],
   source_type: 'manual',
   status: 'new',
@@ -41,11 +42,49 @@ const dueQuestion: Question = {
   updated_at: '2026-09-07T00:00:00Z',
 };
 
+const secondQuestion: Question = {
+  id: 42,
+  category: '数据库',
+  difficulty: 'hard',
+  question: '解释一下 MVCC 的实现原理？',
+  reference_answer: '多版本并发控制。',
+  question_type: 'subjective',
+  tags: ['数据库'],
+  source_type: 'template',
+  status: 'practicing',
+  practice_count: 2,
+  created_at: '2026-09-07T00:00:00Z',
+  updated_at: '2026-09-07T00:00:00Z',
+};
+
+// 该 jsdom 环境未内置 localStorage，用内存实现补齐答题页草稿持久化。
+function installLocalStorage() {
+  if (window.localStorage) {
+    window.localStorage.clear();
+    return;
+  }
+  const store = new Map<string, string>();
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => store.set(key, String(value)),
+      removeItem: (key: string) => store.delete(key),
+      clear: () => store.clear(),
+      key: (index: number) => [...store.keys()][index] ?? null,
+      get length() {
+        return store.size;
+      },
+    },
+  });
+}
+
 let root: Root;
 let host: HTMLDivElement;
 
 beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  installLocalStorage();
   window.matchMedia = () => ({ matches: false, addListener: () => undefined, removeListener: () => undefined }) as unknown as MediaQueryList;
   host = document.createElement('div');
   document.body.appendChild(host);
@@ -190,5 +229,63 @@ describe('QuestionBankView question-bank and spaced-review owner', () => {
     clickButton('删除题目', host);
     await waitFor(() => expect(questionService.deleteQuestion).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(questionService.listDueQuestions).toHaveBeenCalledTimes(3));
+  });
+
+  it('opens a self-assessment answer page from a question and records a review', async () => {
+    vi.mocked(questionService.listQuestions).mockResolvedValue([dueQuestion]);
+    vi.mocked(questionService.submitReview).mockResolvedValue(dueQuestion);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+
+    await act(async () => root.render(<QueryClientProvider client={queryClient}><QuestionBankView /></QueryClientProvider>));
+    await waitFor(() => expect(host.textContent).toContain(dueQuestion.question));
+
+    const stem = host.querySelector<HTMLElement>(`[aria-label="进入答题：${dueQuestion.question}"]`);
+    expect(stem).toBeTruthy();
+    act(() => stem?.click());
+
+    await waitFor(() => expect(host.querySelector('[aria-label="题目答题页"]')).toBeTruthy());
+    expect(host.textContent).toContain('你的作答');
+    expect(host.textContent).not.toContain(dueQuestion.reference_answer);
+
+    clickButton('显示参考答案');
+    await waitFor(() => expect(host.textContent).toContain(dueQuestion.reference_answer));
+
+    setInput('[aria-label="作答输入"]', '我的作答内容');
+    clickButton('掌握');
+    await waitFor(() => expect(questionService.submitReview).toHaveBeenCalledWith(dueQuestion.id, 3, '我的作答内容'));
+  });
+
+  it('navigates between questions and preserves per-question drafts', async () => {
+    vi.mocked(questionService.listQuestions).mockResolvedValue([dueQuestion, secondQuestion]);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+
+    await act(async () => root.render(<QueryClientProvider client={queryClient}><QuestionBankView /></QueryClientProvider>));
+    await waitFor(() => expect(host.textContent).toContain(secondQuestion.question));
+
+    act(() => host.querySelector<HTMLElement>(`[aria-label="进入答题：${dueQuestion.question}"]`)?.click());
+    await waitFor(() => expect(host.textContent).toContain('第 1 / 2 题'));
+
+    setInput('[aria-label="作答输入"]', '限流草稿');
+    await waitFor(() =>
+      expect(host.querySelector<HTMLTextAreaElement>('[aria-label="作答输入"]')?.value).toBe('限流草稿'),
+    );
+
+    clickButton('下一题');
+    await waitFor(() => expect(host.textContent).toContain('第 2 / 2 题'));
+    expect(host.textContent).toContain(secondQuestion.question);
+    expect(host.querySelector<HTMLTextAreaElement>('[aria-label="作答输入"]')?.value).toBe('');
+
+    setInput('[aria-label="作答输入"]', 'MVCC 草稿');
+    clickButton('上一题');
+    await waitFor(() => expect(host.textContent).toContain('第 1 / 2 题'));
+    expect(host.textContent).toContain(dueQuestion.question);
+    await waitFor(() =>
+      expect(host.querySelector<HTMLTextAreaElement>('[aria-label="作答输入"]')?.value).toBe('限流草稿'),
+    );
+
+    clickButton('下一题');
+    await waitFor(() =>
+      expect(host.querySelector<HTMLTextAreaElement>('[aria-label="作答输入"]')?.value).toBe('MVCC 草稿'),
+    );
   });
 });

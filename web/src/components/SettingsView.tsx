@@ -2,11 +2,12 @@ import ContextPolicySettings from './ContextPolicySettings';
 import ConfirmedMemorySettings from './ConfirmedMemorySettings';
 import ProactiveSettings from './ProactiveSettings';
 import ProactiveInbox from './ProactiveInbox';
-import { ApiOutlined, CopyOutlined, DownloadOutlined, FileSearchOutlined, LogoutOutlined, ReloadOutlined, RobotOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { ApiOutlined, CopyOutlined, DownloadOutlined, FileSearchOutlined, LogoutOutlined, ReloadOutlined, RobotOutlined, SettingOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Alert, Button, Divider, Empty, Input, Modal, Pagination, Select, Skeleton, Space, Spin, Switch, Tag, Typography, message } from 'antd';
 import { exportBackup, getLogs, getSettings, getSettingsBackup, type LogEntry, type LogsPage, type Settings } from '@/services/chat';
 import { getAuthStatus, logoutAccount } from '@/services/auth';
+import AddAccountModal from '@/components/AuthGate/AddAccountModal';
 import { clearStoredAuthToken } from '@/services/authToken';
 import { ONBOARDING_QUERY_KEY, setOnboardingForceOpen } from '@/services/onboarding';
 import { buildDiagnosticsText } from '@/lib/diagnostics';
@@ -44,6 +45,7 @@ export default function SettingsView({
   const [logPage, setLogPage] = useState(1);
   const [lastLogsPage, setLastLogsPage] = useState<LogsPage>();
   const [aiSettingsOpen, setAISettingsOpen] = useState(false);
+  const [addAccountOpen, setAddAccountOpen] = useState(false);
   const logOffset = (logPage - 1) * LOG_PAGE_SIZE;
   const settingsQuery = useQuery({
     queryKey: ['settings-summary'],
@@ -169,8 +171,21 @@ export default function SettingsView({
             ?? (authStatusQuery.data?.has_accounts ? '未登录' : '尚未注册')
           }
         />
+        <RuntimeField label="身份" value={authStatusQuery.data?.account?.role === 'hr' ? 'HR 招聘' : '求职者'} />
+        <RuntimeField label="工作区" value="本地共享工作区" />
         <div>
           <Space wrap>
+            <Button icon={<UserOutlined />} disabled={!authStatusQuery.data?.authenticated} onClick={() => setAddAccountOpen(true)}>
+              添加账号
+            </Button>
+            <Button
+              icon={<UserSwitchOutlined />}
+              loading={logoutMutation.isPending}
+              disabled={!authStatusQuery.data?.account}
+              onClick={() => logoutMutation.mutate()}
+            >
+              切换账号
+            </Button>
             <Button
               icon={<LogoutOutlined />}
               loading={logoutMutation.isPending}
@@ -182,6 +197,8 @@ export default function SettingsView({
           </Space>
         </div>
       </section>
+
+      {addAccountOpen ? <AddAccountModal onClose={() => setAddAccountOpen(false)} onCreated={() => { setAddAccountOpen(false); message.success('账号已创建，请点击“切换账号”后选择对应身份登录'); }} /> : null}
 
       <section style={panelStyle}>
         <Space align="start" size={12}>
@@ -275,10 +292,10 @@ export default function SettingsView({
             </span>
             <div>
               <Typography.Title id="pilot-mascot-settings-title" level={4} style={panelTitleStyle}>
-                Haru 与外观
+                Aurora 与外观
               </Typography.Title>
               <Typography.Text style={{ color: 'var(--op-muted)' }}>
-                调整 Haru 在桌面工作区的显示、大小、位置和动态效果。
+                调整 Aurora 在桌面工作区的显示、大小、位置和动态效果。
               </Typography.Text>
             </div>
           </Space>
@@ -299,7 +316,7 @@ export default function SettingsView({
           <label style={preferenceFieldStyle}>
             <span style={preferenceLabelStyle}>角色大小</span>
             <Select
-              aria-label="Haru 角色大小"
+              aria-label="Aurora 角色大小"
               value={pilotMascotZoom}
               onChange={onPilotMascotZoomChange}
               options={[0.8, 0.9, 1, 1.1, 1.2, 1.3].map((value) => ({
@@ -312,7 +329,7 @@ export default function SettingsView({
           <label style={preferenceFieldStyle}>
             <span style={preferenceLabelStyle}>动画级别</span>
             <Select
-              aria-label="Haru 动画级别"
+              aria-label="Aurora 动画级别"
               value={pilotMascotAnimationLevel}
               onChange={(value) => onPilotMascotAnimationLevelChange(value)}
               options={[
@@ -327,7 +344,7 @@ export default function SettingsView({
         <div>
           <Button
             icon={<ReloadOutlined />}
-            aria-label="重置 Haru 位置"
+            aria-label="重置 Aurora 位置"
             onClick={onPilotMascotResetPosition}
           >
             重置位置
@@ -335,8 +352,8 @@ export default function SettingsView({
         </div>
         <Typography.Text role="status" style={{ color: 'var(--op-muted)', fontSize: 12 }}>
           {systemReducedMotion
-            ? '系统已开启减少动态效果，Haru 将以静态方式显示。'
-            : 'Haru 会遵循系统的减少动态效果设置。'}
+            ? '系统已开启减少动态效果，Aurora 将以静态方式显示。'
+            : 'Aurora 会遵循系统的减少动态效果设置。'}
         </Typography.Text>
         <Typography.Text style={{ color: 'var(--op-muted)', fontSize: 12 }}>
           Haru character © Live2D Inc.，依据官方样例数据条款使用。{' '}

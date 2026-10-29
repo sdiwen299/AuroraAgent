@@ -2,7 +2,7 @@
 .launcher { display: flex; align-items: center; gap: 10px; height: 52px; padding: 6px 16px 6px 8px; border: 1px solid var(--op-border-strong); border-radius: 28px; background: var(--op-surface); color: var(--op-ink); box-shadow: 0 2px 10px color-mix(in srgb, var(--op-primary) 12%, transparent); cursor: pointer; font: inherit; }
 .portrait { position: relative; display: block; overflow: hidden; width: 36px; height: 36px; border-radius: 50%; background: var(--surface-sunken); }
 .modelFrame { position: absolute; display: block; width: 160px; height: 248px; left: 50%; top: -12px; transform: translateX(-50%); pointer-events: none; }
-.modelFrame canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
+.modelFrame :global(.lanyard-wrapper) { width: 100%; height: 100%; pointer-events: none; }
 .caption { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
 .caption small { font-size: 11px; font-weight: 400; color: var(--op-muted-strong); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--op-success, #22b76a); box-shadow: 0 0 0 3px color-mix(in srgb, var(--op-success, #22b76a) 12%, transparent); }
@@ -11,7 +11,6 @@
 .more { width: 32px; height: 40px; background: transparent; border: 0; border-radius: 8px; color: var(--op-muted-strong); cursor: pointer; }
 .more:hover { background: var(--surface-hover); }
 .blankCheck { display: inline-block; width: 14px; }
-.fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--op-primary); font-size: 24px; background: var(--op-surface); }
 .presentation[data-haru-mode='character'] { height: 248px; justify-content: center; }
 .presentation[data-haru-mode='character'] .launcher { height: 100%; width: 180px; padding: 0; flex-direction: column; justify-content: flex-end; gap: 0; background: transparent; border: 0; box-shadow: none; }
 .presentation[data-haru-mode='character'] .portrait { width: 160px; height: 218px; border-radius: 0; background: transparent; }

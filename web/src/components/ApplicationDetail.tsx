@@ -1949,7 +1949,7 @@ export default function ApplicationDetail({ initialTab = 'overview', application
                 type="warning"
                 showIcon
                 message="有一项助手操作正在等待处理"
-                description="请先在 Haru / Pilot 中完成确认；当前投递任务不会替换或暴露其他操作的身份。"
+                description="请先在 Aurora / Pilot 中完成确认；当前投递任务不会替换或暴露其他操作的身份。"
               />
           ) : null}
           <div className={styles.preparationGrid}>

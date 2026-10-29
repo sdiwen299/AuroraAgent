@@ -35,4 +35,21 @@ describe('TopBar detail presentation', () => {
     act(() => root.render(<TopBar onSearch={vi.fn()} onOpenSettings={vi.fn()} />));
     expect(container.textContent).toMatch(/早上好|下午好|晚上好|夜深了/);
   });
+
+  it('switches the active view role through the top bar toggle', () => {
+    const onSwitch = vi.fn();
+    act(() => root.render(
+      <TopBar
+        onSearch={vi.fn()}
+        onOpenSettings={vi.fn()}
+        roleSwitch={{ role: 'candidate', onSwitch }}
+      />,
+    ));
+    const hrButton = [...container.querySelectorAll('button')].find(
+      (button) => button.textContent === 'HR 招聘',
+    );
+    expect(hrButton?.getAttribute('aria-pressed')).toBe('false');
+    act(() => hrButton?.click());
+    expect(onSwitch).toHaveBeenCalledWith('hr');
+  });
 });

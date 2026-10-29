@@ -11,6 +11,10 @@ function renderWithQuestions(questions: Question[]) {
     defaultOptions: { queries: { retry: false, staleTime: Infinity } },
   });
   queryClient.setQueryData(['questions', {}], questions);
+  queryClient.setQueryData(
+    ['questions', { source_type: 'template' }],
+    questions.filter((item) => item.source_type === 'template'),
+  );
   queryClient.setQueryData(['questions', 'stats'], stats());
   queryClient.setQueryData(['questions-due'], questions);
 
@@ -32,6 +36,7 @@ function question(patch: Partial<Question> = {}): Question {
     difficulty: 'hard',
     question: '如何设计一个高并发短链系统？',
     reference_answer: '发号器、缓存、限流、异步写入。',
+    question_type: 'subjective',
     tags: ['缓存', '限流'],
     source_type: 'ai_knowledge',
     status: 'new',
@@ -67,6 +72,16 @@ describe('QuestionBankView', () => {
     expect(markup).toContain('手动添加');
     expect(markup).toContain('题库还是空的');
     expect(markup).toContain('从面试复盘生成题目，或手动添加');
+  });
+
+  it('renders the popular template-bank landing page with category navigation', () => {
+    const markup = renderWithQuestions([question({ source_type: 'template', topic: 'Java 基础' })]);
+
+    expect(markup).toContain('热门笔试题库');
+    expect(markup).toContain('热门');
+    expect(markup).toContain('后端');
+    expect(markup).toContain('Java 基础笔试题');
+    expect(markup).toContain('进入题库');
   });
 
   it('renders generated questions with filters, status, difficulty, and edit/delete controls', () => {

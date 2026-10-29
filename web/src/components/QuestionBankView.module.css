@@ -158,6 +158,354 @@
   margin-left: auto;
 }
 
+/* Popular template-bank landing page */
+.popularPage {
+  display: grid;
+  gap: 18px;
+}
+
+.popularHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 4px 2px 0;
+}
+
+.popularEyebrow {
+  color: var(--op-action);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.popularTitle {
+  margin: 5px 0 0;
+  color: var(--op-ink);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.popularSubtitle {
+  margin: 6px 0 0;
+  color: var(--op-muted);
+  font-size: 13px;
+}
+
+.popularActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 分类导航：左侧快捷入口（开刷 / 热门）+ 竖分隔线 + 等宽分类胶囊 */
+.popularFilterPanel {
+  padding: 12px 16px 10px;
+  border: 1px solid var(--op-border);
+  border-radius: 18px;
+  background: var(--surface-sunken);
+  box-shadow: var(--op-shadow-sm);
+}
+
+.popularNav {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 2px 0 10px;
+  border-bottom: 1px solid var(--op-border);
+}
+
+.popularShortcuts {
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding-top: 2px;
+}
+
+.popularShortcut {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 56px;
+  padding: 2px 4px 4px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--op-muted-strong);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: color 180ms var(--op-ease), background 180ms var(--op-ease),
+    transform 180ms var(--op-ease);
+}
+
+.popularShortcut:hover,
+.popularShortcut:focus-visible {
+  background: var(--surface-hover);
+  color: var(--op-ink);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.popularShortcutSelected {
+  color: var(--op-action);
+}
+
+.popularShortcutIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 13px;
+  color: var(--op-primary-strong);
+  font-size: 19px;
+  transition: transform 180ms var(--op-ease), box-shadow 180ms var(--op-ease);
+}
+
+.popularShortcutIconStart {
+  background: color-mix(in srgb, var(--op-accent) 30%, var(--op-surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--op-accent) 40%, transparent);
+}
+
+.popularShortcutIconHot {
+  background: color-mix(in srgb, var(--op-action) 10%, var(--op-surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--op-action) 20%, transparent);
+  color: var(--op-action);
+}
+
+.popularShortcut:hover .popularShortcutIcon,
+.popularShortcut:focus-visible .popularShortcutIcon {
+  transform: translateY(-1px) rotate(-4deg);
+}
+
+.popularNavDivider {
+  flex: 0 0 auto;
+  width: 1px;
+  height: 26px;
+  margin: 9px 12px 0;
+  background: var(--op-border-strong);
+}
+
+.popularCategoryBar {
+  display: flex;
+  flex: 1 1 0;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.popularCategory {
+  flex: 0 0 auto;
+  width: 84px;
+  padding: 7px 4px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: var(--op-surface);
+  color: var(--op-muted-strong);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  transition: background 180ms var(--op-ease), color 180ms var(--op-ease),
+    box-shadow 180ms var(--op-ease), transform 180ms var(--op-ease);
+}
+
+.popularCategory:hover,
+.popularCategory:focus-visible {
+  background: color-mix(in srgb, var(--op-action) 7%, var(--op-surface));
+  color: var(--op-action);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.popularCategorySelected {
+  background: var(--op-action);
+  color: #fff;
+  box-shadow: 0 7px 15px color-mix(in srgb, var(--op-action) 22%, transparent);
+}
+
+.popularCategorySelected:hover,
+.popularCategorySelected:focus-visible {
+  background: var(--op-action-strong);
+  color: #fff;
+}
+
+/* 题型筛选（全部 / 选择题 / 编程题 / 问答题） */
+.popularTypeRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0 2px;
+}
+
+.popularTypeLabel {
+  color: var(--op-muted);
+  font-size: 12px;
+  font-weight: 700;
+  margin-right: 2px;
+}
+
+.popularTypeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border: 1px solid var(--op-border);
+  border-radius: 999px;
+  background: var(--op-surface);
+  color: var(--op-muted-strong);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 180ms var(--op-ease), color 180ms var(--op-ease),
+    border-color 180ms var(--op-ease);
+}
+
+.popularTypeChip:hover,
+.popularTypeChip:focus-visible {
+  color: var(--op-action);
+  border-color: color-mix(in srgb, var(--op-action) 45%, var(--op-border));
+  outline: none;
+}
+
+.popularTypeChipSelected {
+  background: color-mix(in srgb, var(--op-action) 10%, var(--op-surface));
+  border-color: color-mix(in srgb, var(--op-action) 38%, var(--op-border));
+  color: var(--op-action);
+}
+
+.popularTypeChipSelected:hover,
+.popularTypeChipSelected:focus-visible {
+  color: var(--op-action);
+}
+
+.popularTypeCount {
+  font-family: var(--op-font-mono, inherit);
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.popularRailHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.popularRailTitle {
+  color: var(--op-ink);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.popularRailCount {
+  margin-left: 9px;
+  color: var(--op-muted);
+  font-size: 12px;
+}
+
+.popularDriftViewport {
+  position: relative;
+  min-height: clamp(460px, 58vh, 600px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--op-border) 88%, transparent);
+  border-radius: 22px;
+  background: var(--op-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--op-surface) 45%, transparent), var(--op-shadow-md);
+  isolation: isolate;
+}
+
+.popularDriftViewport::before {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: min(880px, 88%);
+  height: 64%;
+  border: 1px solid color-mix(in srgb, var(--op-action) 12%, transparent);
+  border-radius: 50%;
+  transform: translateX(-50%) rotateX(68deg);
+  content: '';
+  pointer-events: none;
+}
+
+.popularDriftViewport > :global(.drift-wall) {
+  position: relative;
+  z-index: 1;
+}
+
+.popularEmpty {
+  display: grid;
+  min-height: 250px;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px dashed var(--op-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--op-layout-bg) 70%, var(--op-surface));
+  color: var(--op-muted);
+  text-align: center;
+}
+
+.popularEmpty svg {
+  color: var(--op-action);
+  font-size: 26px;
+}
+
+.popularEmpty strong {
+  color: var(--op-ink);
+  font-size: 15px;
+}
+
+.popularEmpty span {
+  max-width: 420px;
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  .popularHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .popularFilterPanel {
+    padding: 10px 10px 8px;
+  }
+
+  .popularNav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .popularNavDivider {
+    display: none;
+  }
+
+  .popularCategoryBar {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .popularCategory {
+    flex: 0 0 auto;
+    width: auto;
+    padding: 7px 14px;
+  }
+
+  .popularDriftViewport {
+    min-height: 420px;
+  }
+}
+
 /* Practice flashcard */
 .flash {
   background: var(--op-surface);
@@ -179,6 +527,34 @@
   letter-spacing: -0.01em;
 }
 
+.flashOptions {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flashOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--op-border);
+  background: var(--op-surface);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--op-ink);
+}
+
+.flashOptionCorrect {
+  border-color: var(--op-primary);
+  background: color-mix(in srgb, var(--op-primary) 8%, white);
+  font-weight: 600;
+}
+
 .flashAnswer {
   background: var(--op-layout-bg);
   border-radius: 12px;
@@ -188,6 +564,15 @@
   line-height: 1.75;
   white-space: pre-wrap;
   animation: revealIn 0.24s var(--op-ease);
+}
+
+.flashCorrect {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--op-border-strong);
+  color: var(--op-primary);
+  font-weight: 700;
+  white-space: normal;
 }
 
 @keyframes revealIn {
@@ -275,8 +660,37 @@
   .flashAnswer,
   .qCard,
   .rateBtn,
-  .progressFill {
+  .progressFill,
+  .popularShortcut,
+  .popularShortcutIcon,
+  .popularCategory {
     animation: none;
     transition: none;
   }
+}
+
+/* 手动增改题目的题型辅助样式 */
+.formBlockLabel {
+  margin-bottom: 6px;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+}
+
+.formRequired {
+  color: #ff4d4f;
+  margin-right: 4px;
+}
+
+.optionLetter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--op-layout-bg);
+  color: var(--op-muted-strong);
+  font-size: 12px;
+  font-weight: 700;
 }

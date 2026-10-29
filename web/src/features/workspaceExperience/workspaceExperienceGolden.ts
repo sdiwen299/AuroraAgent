@@ -7,5 +7,5 @@ export const WORKSPACE_EXPERIENCE_GOLDEN = {
   interviewSections: ['待准备', '模拟练习', '题库', '复盘与成长'],
   resourceSections: ['简历', '经历与故事', '学习资料'],
   offerModes: ['entry', 'single', 'selection', 'comparison'],
-  settingsSections: ['AI 与模型', '数据与备份', 'Haru 与外观', '语音', '高级与诊断'],
+  settingsSections: ['AI 与模型', '数据与备份', 'Aurora 与外观', '语音', '高级与诊断'],
 } as const;

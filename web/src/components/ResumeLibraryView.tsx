@@ -26,6 +26,7 @@ import ResumeVersionCompareDrawer from './ResumeVersionCompareDrawer';
 import type { Resume, ResumeContent } from '@/types/resume';
 import { findEvidenceFocusRecord } from '@/lib/pilotEvidenceFocus';
 import styles from './ResumeLibraryView.module.css';
+import { useAuthRole } from '@/components/AuthGate/role';
 
 const BLANK_RESUME_CONTENT: ResumeContent = {
   career_intent: { target_roles: [], target_locations: [] },
@@ -55,6 +56,7 @@ export default function ResumeLibraryView({
   onEvidenceFocusConsumed,
   onboardingFocusToken,
 }: ResumeLibraryViewProps) {
+  const role = useAuthRole();
   const qc = useQueryClient();
   const [uploadOpen, setUploadOpen] = useState(false);
   const [editing, setEditing] = useState<Resume | null>(null);
@@ -73,7 +75,7 @@ export default function ResumeLibraryView({
   const createDialogMut = useMutation({
     mutationFn: () =>
       createResume({
-        title: 'Haru 对话初稿简历',
+        title: 'Aurora 对话初稿简历',
         source: 'dialog',
         content_json: BLANK_RESUME_CONTENT,
         career_intent: BLANK_RESUME_CONTENT.career_intent,
@@ -303,7 +305,7 @@ export default function ResumeLibraryView({
     >
       <div className={styles.header}>
         <div>
-          <div className={styles.title}>简历库</div>
+          <div className={styles.title}>{role === 'hr' ? '候选人简历库' : '简历库'}</div>
           <div className={styles.subtitle}>共 {filtered.length} 份 · 拖入 PDF 至任意位置可上传</div>
         </div>
         <div
@@ -327,7 +329,7 @@ export default function ResumeLibraryView({
           >
              和 Haru 创建初稿
            </Button>
-           <Button icon={<CloudUploadOutlined />} onClick={() => setUploadOpen(true)}>上传现有简历</Button>
+           <Button icon={<CloudUploadOutlined />} onClick={() => setUploadOpen(true)}>{role === 'hr' ? '导入候选人简历' : '上传现有简历'}</Button>
            <Dropdown menu={{ items: [{ key: 'sample', label: '用样例开始', icon: <FileAddOutlined />, onClick: () => sampleMut.mutate() }] }}>
              <Button icon={<MoreOutlined />} loading={sampleMut.isPending}>更多创建方式</Button>
            </Dropdown>

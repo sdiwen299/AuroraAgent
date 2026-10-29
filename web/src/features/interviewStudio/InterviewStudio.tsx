@@ -31,6 +31,7 @@ import { buildEvidenceEntries, evidenceKey, type StudioEvidenceEntry } from './e
 import styles from './InterviewStudio.module.css';
 import { EvidenceTechnicalDetails } from '@/components/ui/EvidenceTechnicalDetails';
 import ContinuousVoiceModePanel from './ContinuousVoiceModePanel';
+import LiveTalkingDigitalHuman from './digitalHuman/LiveTalkingDigitalHuman';
 
 export interface InterviewStudioContext {
   kind: 'application_event';
@@ -234,6 +235,7 @@ export default function InterviewStudio({ context, onClose, onActivityChange, on
     countdownSeconds: null,
     error: null,
   });
+  const [digitalHumanConnected, setDigitalHumanConnected] = useState(false);
   const [continuousCommand, setContinuousCommand] = useState<VoiceAnswerComposerCommand>();
   const [attemptId, setAttemptId] = useState<number | null>(() => businessRecovery?.attemptId ?? recovery?.attemptId ?? null);
   const [timeline, setTimeline] = useState<TimelineEntry[]>(() => businessRecovery?.timeline ?? []);
@@ -939,7 +941,7 @@ export default function InterviewStudio({ context, onClose, onActivityChange, on
         <div className={styles.topActions}>
           <span className={styles.round}>{state ? `第 ${state.turnNo} / ${state.maxTurns} 轮` : '准备中'}</span>
           <Tag color={startError || terminalFailure || state?.phase === 'result_unknown' ? 'orange' : 'green'}>{terminalFailure ? '需要重新开始' : startError || state?.phase === 'result_unknown' ? '结果待确认' : '来源已冻结'}</Tag>
-          {onToggleHaru ? <Button type="text" icon={<MenuOutlined />} onClick={onToggleHaru}>显示 Haru</Button> : null}
+          {onToggleHaru ? <Button type="text" icon={<MenuOutlined />} onClick={onToggleHaru}>显示 Aurora</Button> : null}
           <Button
             onClick={() => void finish()}
             loading={feedbackGenerating}
@@ -954,6 +956,12 @@ export default function InterviewStudio({ context, onClose, onActivityChange, on
       <main className={styles.main}>
         <section className={`${styles.timeline} ${styles.conversationPane}`} aria-label="面试对话时间线">
           <div className={styles.timelineHeader}><div><span className={styles.kicker}>面试对话</span><h2>保持对话，答案由你确认</h2></div><span className={styles.livePill}><i /> {state?.phase === 'contract_failed' ? '需要重新开始' : state?.phase === 'result_unknown' ? '需要对账' : '本轮进行中'}</span></div>
+          <LiveTalkingDigitalHuman
+            question={currentQuestion}
+            speakQuestions={digitalHumanConnected}
+            speakTrigger={continuousCommand?.type === 'read_question' ? continuousCommand.id : undefined}
+            onConnectionChange={setDigitalHumanConnected}
+          />
           {feedbackGenerating ? (
             <div className={`${styles.studioStatus} ${styles.feedbackProgress}`} data-interview-studio-status role="status" aria-live="polite">
               <span className={styles.loader} />
@@ -1099,6 +1107,7 @@ export default function InterviewStudio({ context, onClose, onActivityChange, on
                   compact
                   continuousCommand={continuousCommand}
                   onContinuousEvent={handleContinuousEvent}
+                  disableQuestionNarration={digitalHumanConnected}
                   onDirtyChange={setVoiceDirty}
                   onActivityChange={onActivityChange}
                 />

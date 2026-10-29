@@ -1,3 +1,5 @@
+import type { UserRole } from '@/components/AuthGate/model';
+
 export type ViewMode =
   | 'dashboard'
   | 'board'
@@ -16,6 +18,7 @@ export type ViewMode =
 export type ModuleKey =
   | 'today'
   | 'applications'
+  | 'written_test'
   | 'interview'
   | 'offers'
   | 'resources'
@@ -41,6 +44,18 @@ export interface ModuleTabItem {
   label: string;
 }
 
+export function moduleNavForRole(role: UserRole = 'candidate'): ModuleNavItem[] {
+  if (role !== 'hr') return MODULE_NAV;
+  return [
+    { key: 'settings', label: '配置 API', defaultView: 'settings', group: 'primary' },
+    { key: 'applications', label: '岗位投递', defaultView: 'board', group: 'primary' },
+    { key: 'resources', label: '筛选简历', defaultView: 'resumes', group: 'primary' },
+    { key: 'written_test', label: '笔试', defaultView: 'questions', group: 'primary' },
+    { key: 'interview', label: '面试', defaultView: 'interview', group: 'primary' },
+    { key: 'offers', label: '录用进展', defaultView: 'offers', group: 'primary' },
+  ];
+}
+
 export const NAVIGATION_GROUPS: NavigationGroup[] = [
   { key: 'primary', label: '主要任务' },
   { key: 'resources', label: '常用资料' },
@@ -50,6 +65,7 @@ export const NAVIGATION_GROUPS: NavigationGroup[] = [
 export const MODULE_NAV: ModuleNavItem[] = [
   { key: 'today', label: '今日', defaultView: 'dashboard', group: 'primary' },
   { key: 'applications', label: '投递', defaultView: 'board', group: 'primary' },
+  { key: 'written_test', label: '笔试', defaultView: 'questions', group: 'primary' },
   { key: 'interview', label: '面试', defaultView: 'interview', group: 'primary' },
   { key: 'offers', label: 'Offer', defaultView: 'offers', group: 'primary' },
   { key: 'resources', label: '素材库', defaultView: 'resumes', group: 'resources' },
@@ -66,9 +82,11 @@ export const MODULE_TABS: Record<ModuleKey, ModuleTabItem[]> = {
     { view: 'board', label: '看板' },
     { view: 'applications-list', label: '列表' },
   ],
+  written_test: [
+    { view: 'questions', label: '笔试' },
+  ],
   interview: [
     { view: 'interview', label: '面试' },
-    { view: 'questions', label: '刷题' },
   ],
   offers: [
     { view: 'offers', label: 'Offer' },
@@ -88,7 +106,7 @@ const VIEW_TO_MODULE: Partial<Record<ViewMode, ModuleKey>> = {
   resumes: 'resources',
   reviews: 'resources',
   knowledge: 'resources',
-  questions: 'interview',
+  questions: 'written_test',
   board: 'applications',
   'applications-list': 'applications',
   calendar: 'today',
@@ -101,6 +119,7 @@ const VIEW_TO_MODULE: Partial<Record<ViewMode, ModuleKey>> = {
 const DEFAULT_VIEW_BY_MODULE: Record<ModuleKey, ViewMode> = {
   today: 'dashboard',
   applications: 'board',
+  written_test: 'questions',
   interview: 'interview',
   offers: 'offers',
   resources: 'resumes',
@@ -118,6 +137,11 @@ export function defaultViewForModule(module: ModuleKey): ViewMode {
   return DEFAULT_VIEW_BY_MODULE[module];
 }
 
-export function moduleTabsForView(view: ViewMode): ModuleTabItem[] {
-  return MODULE_TABS[resolveModuleForView(view)];
+export function moduleTabsForView(view: ViewMode, role: UserRole = 'candidate'): ModuleTabItem[] {
+  const tabs = MODULE_TABS[resolveModuleForView(view)];
+  if (role !== 'hr') return tabs;
+  if (view === 'board' || view === 'applications-list') return [{ view: 'board', label: '岗位看板' }, { view: 'applications-list', label: '岗位列表' }];
+  if (view === 'resumes') return [{ view: 'resumes', label: '候选人' }];
+  if (view === 'offers') return [{ view: 'offers', label: '录用进展' }];
+  return tabs;
 }

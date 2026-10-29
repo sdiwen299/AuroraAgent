@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { ReactNode } from 'react';
+import type { UserRole } from '@/components/AuthGate/model';
 import styles from './TopBar.module.css';
 
 export interface TopBarAction {
@@ -18,6 +19,11 @@ export interface TopBarAction {
   disabled?: boolean;
 }
 
+export interface TopBarRoleSwitch {
+  role: UserRole;
+  onSwitch: (role: UserRole) => void;
+}
+
 export interface TopBarProps {
   compact?: boolean;
   summary?: string;
@@ -26,6 +32,7 @@ export interface TopBarProps {
   onOpenSettings: () => void;
   fullscreen?: boolean;
   onToggleFullscreen?: () => void;
+  roleSwitch?: TopBarRoleSwitch;
 }
 
 function greeting(): string {
@@ -44,6 +51,7 @@ export default function TopBar({
   compact = false,
   fullscreen = false,
   onToggleFullscreen,
+  roleSwitch,
 }: TopBarProps) {
   return (
     <header className={`${styles.topbar} ${compact ? styles.compact : ''} op-topbar`}>
@@ -60,6 +68,26 @@ export default function TopBar({
         </div>
       </div> : null}
       <div className={`${styles.actions} op-topbar-actions`}>
+        {roleSwitch ? (
+          <div className={styles.roleSwitch} role="group" aria-label="切换使用身份">
+            <button
+              type="button"
+              className={`${styles.roleOption}${roleSwitch.role === 'candidate' ? ` ${styles.roleOptionActive}` : ''}`}
+              aria-pressed={roleSwitch.role === 'candidate'}
+              onClick={() => roleSwitch.onSwitch('candidate')}
+            >
+              求职者
+            </button>
+            <button
+              type="button"
+              className={`${styles.roleOption}${roleSwitch.role === 'hr' ? ` ${styles.roleOptionActive}` : ''}`}
+              aria-pressed={roleSwitch.role === 'hr'}
+              onClick={() => roleSwitch.onSwitch('hr')}
+            >
+              HR 招聘
+            </button>
+          </div>
+        ) : null}
         <Button className={styles.actionButton} icon={<SearchOutlined />} onClick={onSearch}>
           快速打开 <span style={{ opacity: 0.6, marginLeft: 4 }}>{typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘ K' : 'Ctrl K'}</span>
         </Button>

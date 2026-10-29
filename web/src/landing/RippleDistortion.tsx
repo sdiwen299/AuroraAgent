@@ -33,6 +33,8 @@ export interface RippleDistortionProps {
   trigger?: 'hover' | 'click';
   clickStrength?: number;
   autoplay?: boolean;
+  /** Delay before the first idle ripple. Kept as an explicit alias for callers. */
+  idleDelay?: number;
   autoplayInterval?: number;
   autoplayDelay?: number;
   autoplayStrength?: number;
@@ -228,7 +230,8 @@ export default function RippleDistortion({
   clickStrength = 2,
   autoplay = false,
   autoplayInterval = 4600,
-  autoplayDelay = 2400,
+  autoplayDelay: autoplayDelayProp,
+  idleDelay,
   autoplayStrength = 0.62,
   autoplayFade = 2800,
   quality = 'low',
@@ -238,6 +241,7 @@ export default function RippleDistortion({
   className = '',
   style,
 }: RippleDistortionProps) {
+  const autoplayDelay = idleDelay ?? autoplayDelayProp ?? 2400;
   const mountRef = useRef<HTMLDivElement | null>(null);
   const configRef = useRef({
     brushSize,
@@ -487,9 +491,7 @@ export default function RippleDistortion({
         const centerY = height / 2;
         const power = Math.max(0.1, cfg.autoplayStrength);
         // 三个相互重叠的波源横向铺开，避免只扭曲标题中间一小块。
-        setNewWave(width * 0.18, centerY, power, 1.55);
         setNewWave(width * 0.5, centerY, power, 1.7);
-        setNewWave(width * 0.82, centerY, power, 1.55);
         setAutoVisible(true);
         window.clearTimeout(autoFadeTimer);
         autoFadeTimer = window.setTimeout(
@@ -533,7 +535,7 @@ export default function RippleDistortion({
 
     const onDown = (event: PointerEvent) => {
       const cfg = configRef.current;
-      if (!cfg.enabled || reduceMotion || cfg.trigger === 'hover') return;
+      if (!cfg.enabled || reduceMotion) return;
       const point = localPoint(event.clientX, event.clientY);
       if (!point) return;
       setNewWave(point[0], point[1], Math.max(1, cfg.clickStrength));

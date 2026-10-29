@@ -20,6 +20,8 @@ export async function listQuestions(filter: QuestionFilter = {}): Promise<Questi
       ...(filter.category ? { category: filter.category } : {}),
       ...(filter.difficulty ? { difficulty: filter.difficulty } : {}),
       ...(filter.status ? { status: filter.status } : {}),
+      ...(filter.source_type ? { source_type: filter.source_type } : {}),
+      ...(filter.question_type ? { question_type: filter.question_type } : {}),
     },
   });
   return data ?? [];

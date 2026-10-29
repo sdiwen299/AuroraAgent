@@ -21,6 +21,7 @@ import MomentumChart from './widgets/MomentumChart';
 import UpcomingSchedule from './widgets/UpcomingSchedule';
 import WeeklyMissionPanel, { deriveWeeklySummary } from './widgets/WeeklyMissionPanel';
 import TodayBoardsGallery from './widgets/TodayBoardsGallery';
+import WorkflowJourney from './widgets/WorkflowJourney';
 import styles from './dashboard.module.css';
 import OnboardingChecklist from '@/features/onboarding/OnboardingChecklist';
 import type { OnboardingAction } from '@/features/onboarding/actionRouting';
@@ -215,10 +216,15 @@ export default function DashboardView({
     </div>
   ) : null;
 
+  const workflow = (
+    <WorkflowJourney onNavigate={onNavigate} onOnboardingAction={onOnboardingAction} />
+  );
+
   if (apps.length === 0) {
     return (
       <div className={styles.grid}>
         {onboarding}
+        {workflow}
         <div className={styles.card} style={{ textAlign: 'center', padding: 48 }}>
           <div style={{ color: 'var(--op-ink)', fontSize: 18, fontWeight: 700, marginBottom: 8 }}>
             从第一条投递开始建立求职节奏
@@ -248,6 +254,7 @@ export default function DashboardView({
   return (
     <div className={styles.grid}>
       {onboarding}
+      {workflow}
       <TodayBoardsGallery
         boards={[
           {

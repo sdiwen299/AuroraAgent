@@ -55,7 +55,7 @@ def _remove_recovery_path(path: Path) -> None:
         pass
 
 
-def init_database(db_path: Path) -> SessionFactory:
+def init_database_engine(db_path: Path) -> Engine:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     engine = create_engine(
         f"sqlite:///{db_path}",
@@ -75,6 +75,8 @@ def init_database(db_path: Path) -> SessionFactory:
     mock_interview_migration_needed = _prepare_event_bound_mock_interview_migration(engine)
     _reset_knowledge_legacy_tables(engine, db_path.parent)
     Base.metadata.create_all(engine)
+    _ensure_column(engine, "accounts", "role", "TEXT NOT NULL DEFAULT 'candidate'")
+    _ensure_column(engine, "account_sessions", "role", "TEXT NOT NULL DEFAULT 'candidate'")
     runtime_columns_changed = [
         _ensure_column(engine, "pilot_executions", "protocol", "TEXT NOT NULL DEFAULT 'legacy'"),
         _ensure_column(engine, "pilot_executions", "runtime_epoch", "TEXT"),
@@ -450,7 +452,24 @@ def init_database(db_path: Path) -> SessionFactory:
         "0008_opportunity_fit_reviews",
         "Add immutable opportunity fit reviews",
     )
-    return sessionmaker(bind=engine, expire_on_commit=False)
+    question_type_migrations = [
+        _ensure_column(engine, "questions", "question_type", "TEXT DEFAULT 'subjective'"),
+        _ensure_column(engine, "questions", "options", "TEXT DEFAULT '[]'"),
+        _ensure_column(engine, "questions", "correct_answer", "TEXT DEFAULT ''"),
+        _ensure_column(engine, "questions", "starter_code", "TEXT DEFAULT ''"),
+        _ensure_column(engine, "questions", "language", "TEXT DEFAULT ''"),
+    ]
+    if any(question_type_migrations):
+        _record_migration(
+            engine,
+            "0033_question_types",
+            "Add choice/programming question columns to questions",
+        )
+    return engine
+
+
+def init_database(db_path: Path) -> SessionFactory:
+    return sessionmaker(bind=init_database_engine(db_path), expire_on_commit=False)
 
 
 def _ensure_knowledge_fts(engine) -> None:  # type: ignore[no-untyped-def]

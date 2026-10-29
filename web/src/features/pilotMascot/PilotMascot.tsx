@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type PointerEvent, type RefObject } from 'react';
 import { CloseOutlined, MessageOutlined, MinusOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import Lanyard from '@/components/Lanyard/Lanyard';
+import brandLanyard from '@/components/Lanyard/lanyard-brand.png';
 import {
-  live2dPilotMascotRuntime,
   type PilotMascotActivity,
   type PilotMascotRuntime,
   type PilotMascotRuntimeController,
@@ -51,7 +52,7 @@ interface Props {
 }
 
 const ACTIVITY_COPY: Record<PilotMascotActivity, { label: string; detail: string }> = {
-  idle: { label: '随时待命', detail: '点击 Haru，和 Pilot 聊聊' },
+  idle: { label: '随时待命', detail: '点击 Aurora，和 Pilot 聊聊' },
   thinking: { label: '正在思考', detail: '我正在整理上下文…' },
   preparing_voice: { label: '正在准备离线语音', detail: '模型只会下载到当前浏览器' },
   speaking: { label: '正在朗读', detail: '我在为你读出当前题目' },
@@ -94,7 +95,7 @@ export default function PilotMascot({
   studioEvidenceOpen = true,
   position,
   onPositionChange,
-  runtime = live2dPilotMascotRuntime,
+  runtime,
   triggerRef: externalTriggerRef,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -126,6 +127,7 @@ export default function PilotMascot({
   const placementKey: PilotMascotPlacement = studioPlacement ? 'interview_studio' : 'normal';
 
   useEffect(() => {
+    if (!runtime) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const abortController = new AbortController();
@@ -194,7 +196,7 @@ export default function PilotMascot({
     : placement === 'pilot-page'
       ? '聚焦 Pilot 输入框'
       : panelOpen ? '收起曙光领航员' : '打开曙光领航员';
-  const buttonLabel = loadFailed ? `${actionLabel}（Haru 暂时休息中）` : actionLabel;
+  const buttonLabel = loadFailed ? `${actionLabel}（Aurora 暂时休息中）` : actionLabel;
 
   const frame = compact || panelOpen || placement === 'pilot-page' || (studioPlacement && viewport.height < 740)
     ? MASCOT_FRAME.compact
@@ -341,7 +343,7 @@ export default function PilotMascot({
       data-notification={notification?.status}
       data-animation-level={animationLevel}
       data-interview-studio-companion={studioPlacement ? 'true' : undefined}
-      aria-label="Haru 助手"
+      aria-label="Aurora 助手"
       style={{ width: frameWidth, height: frameHeight, left: `${frameLeft}px`, top: `${frameTop}px`, right: 'auto', bottom: 'auto' }}
     >
       {notification || (!panelOpen && activity !== 'idle') ? (
@@ -376,17 +378,18 @@ export default function PilotMascot({
       >
         <span className={styles.glow} aria-hidden="true" />
         <span className={styles.canvasHost} aria-hidden="true">
-          <canvas ref={canvasRef} className={styles.canvas} />
+          <Lanyard lanyardImage={brandLanyard} />
+          {runtime ? <canvas ref={canvasRef} className={styles.canvas} /> : null}
         </span>
         {loadFailed ? (
           <span className={styles.fallback} role="status" aria-live="polite">
             <MessageOutlined />
-            <span>Haru 暂时休息中</span>
+            <span>Aurora 暂时休息中</span>
           </span>
         ) : null}
         <span className={styles.nameplate} aria-hidden="true">
           <span className={styles.statusDot} />
-          Haru
+          Aurora
         </span>
       </button>
       {menuOpen ? (

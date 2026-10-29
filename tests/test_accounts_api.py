@@ -97,20 +97,69 @@ def test_login_issues_and_logout_revokes_session(tmp_path):
     assert after_logout["account"] is None
 
 
-def test_registration_stays_closed_once_an_account_exists(tmp_path):
+def test_role_is_a_switchable_view_not_an_identity(tmp_path):
     client = _client(tmp_path)
-    token = _register(client).json()["token"]
-
-    closed = _register(client, email="other@example.com")
-    assert closed.status_code == 403
-    assert closed.json()["error_code"] == "registration_closed"
-
-    allowed = client.post(
+    created = client.post(
         "/api/auth/register",
-        headers={"X-AuroraAgent-Token": token},
-        json={"email": "other@example.com", "password": "anothersecret"},
+        json={
+            "email": "recruiter@example.com",
+            "password": "supersecret",
+            "role": "hr",
+        },
     )
-    assert allowed.status_code == 201
+    assert created.status_code == 201
+    assert created.json()["role"] == "hr"
+
+    # 任一账号可用任一视图身份登录，登录不再校验身份匹配。
+    logged_in = client.post(
+        "/api/auth/login",
+        json={"email": "recruiter@example.com", "password": "supersecret", "role": "candidate"},
+    )
+    assert logged_in.status_code == 200
+    token = logged_in.json()["token"]
+    assert logged_in.json()["role"] == "candidate"
+
+    status = client.get(
+        "/api/auth/status?include_role=1", headers={"X-AuroraAgent-Token": token}
+    )
+    assert status.json()["account"]["role"] == "candidate"
+
+    switched = client.post(
+        "/api/auth/role",
+        headers={"X-AuroraAgent-Token": token},
+        json={"role": "hr"},
+    )
+    assert switched.status_code == 200
+    assert switched.json()["role"] == "hr"
+
+    after = client.get(
+        "/api/auth/status?include_role=1", headers={"X-AuroraAgent-Token": token}
+    )
+    assert after.json()["account"]["role"] == "hr"
+
+
+def test_login_rejects_an_unknown_role(tmp_path):
+    client = _client(tmp_path)
+    _register(client)
+
+    response = client.post(
+        "/api/auth/login",
+        json={"email": "zhe@example.com", "password": "supersecret", "role": "admin"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["error_code"] == "role_invalid"
+
+
+def test_registration_is_open_once_an_account_exists(tmp_path):
+    client = _client(tmp_path)
+    _register(client)
+
+    # 开放自助注册：无需现有会话即可再次注册。
+    opened = _register(client, email="other@example.com")
+    assert opened.status_code == 201
+    assert opened.json()["token"]
+    assert load_config(tmp_path).accounts_enabled is True
 
 
 def test_account_secrets_are_never_stored_in_plaintext(tmp_path):
@@ -158,3 +207,88 @@ def test_health_and_status_stay_public_with_accounts_enabled(tmp_path):
 
     assert client.get("/api/health").json() == {"status": "ok"}
     assert client.get("/api/auth/status").status_code == 200
+
+
+def test_accounts_get_isolated_workspaces(tmp_path):
+    client = _client(tmp_path)
+    first = _register(client, email="one@example.com").json()["token"]
+    second = _register(client, email="two@example.com").json()["token"]
+
+    created = client.post(
+        "/api/applications",
+        headers={"X-AuroraAgent-Token": first},
+        json={"company_name": "Acme", "position_name": "Engineer"},
+    )
+    assert created.status_code == 201
+
+    first_list = client.get(
+        "/api/applications", headers={"X-AuroraAgent-Token": first}
+    ).json()
+    second_list = client.get(
+        "/api/applications", headers={"X-AuroraAgent-Token": second}
+    ).json()
+    assert len(first_list) == 1
+    assert second_list == []
+    assert (tmp_path / "users" / "1" / "data.db").exists()
+
+
+def test_first_account_templates_seed_other_workspaces_without_practice_state(tmp_path):
+    client = _client(tmp_path)
+    first = _register(client, email="one@example.com").json()["token"]
+    second = _register(client, email="two@example.com").json()["token"]
+
+    imported = client.post(
+        "/api/questions/import",
+        headers={"X-AuroraAgent-Token": first},
+        json={
+            "questions": [
+                {
+                    "topic": "数据库",
+                    "category": "公开热门题库",
+                    "question": "什么是数据库事务的隔离级别？",
+                    "reference_answer": "用于控制并发事务之间的可见性。",
+                    "tags": ["数据库"],
+                }
+            ]
+        },
+    )
+    assert imported.status_code == 201
+    first_question = imported.json()["questions"][0]
+
+    visible = client.get(
+        "/api/questions",
+        headers={"X-AuroraAgent-Token": second},
+        params={"source_type": "template"},
+    )
+    assert len(visible.json()) == 1
+    second_question = visible.json()[0]
+    assert second_question["question"] == first_question["question"]
+    assert second_question["practice_count"] == 0
+
+    review = client.post(
+        f"/api/questions/{second_question['id']}/reviews",
+        headers={"X-AuroraAgent-Token": second},
+        json={"rating": 3},
+    )
+    assert review.status_code == 201
+    first_state = client.get(
+        f"/api/questions/{first_question['id']}",
+        headers={"X-AuroraAgent-Token": first},
+    ).json()
+    assert first_state["practice_count"] == 0
+
+
+def test_first_account_inherits_existing_local_data(tmp_path):
+    client = _client(tmp_path)
+    created = client.post(
+        "/api/applications",
+        json={"company_name": "Legacy", "position_name": "Developer"},
+    )
+    assert created.status_code == 201
+
+    token = _register(client).json()["token"]
+    apps = client.get(
+        "/api/applications", headers={"X-AuroraAgent-Token": token}
+    ).json()
+    assert len(apps) == 1
+    assert apps[0]["company_name"] == "Legacy"

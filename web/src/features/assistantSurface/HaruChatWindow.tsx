@@ -183,7 +183,7 @@ export default function HaruChatWindow({ returnFocusRef, onExpand, anchorRect }:
       className={styles.window}
       role="dialog"
       aria-modal="false"
-      aria-label="Haru 轻量对话"
+      aria-label="Aurora 轻量对话"
       tabIndex={-1}
       data-expand-direction={windowPosition.direction}
       style={{ left: windowPosition.left, top: windowPosition.top, width: surfaceSize.width }}
@@ -196,7 +196,7 @@ export default function HaruChatWindow({ returnFocusRef, onExpand, anchorRect }:
     >
       <header className={styles.header}>
         <div>
-          <strong>Haru</strong>
+          <strong>Aurora</strong>
           <span
             role="status"
             aria-live="polite"
@@ -220,7 +220,7 @@ export default function HaruChatWindow({ returnFocusRef, onExpand, anchorRect }:
           >
             <ExpandAltOutlined />
           </button>
-          <button type="button" aria-label="关闭 Haru 对话" onClick={close}>
+          <button type="button" aria-label="关闭 Aurora 对话" onClick={close}>
             <CloseOutlined />
           </button>
         </div>
@@ -259,7 +259,7 @@ export default function HaruChatWindow({ returnFocusRef, onExpand, anchorRect }:
       <div className={styles.messages} aria-live="polite" aria-relevant="additions text">
         {controller.turns.length === 0 ? (
           <div className={styles.empty}>
-            <strong>Haru 是 Pilot 的轻量窗口</strong>
+            <strong>欢迎回来，我是你的陪伴Aurora</strong>
             <span>
               简单问题可以在这里完成；需要查看资料、编辑内容或确认操作时，会展开到 Pilot。对话不会丢失。
             </span>
@@ -313,14 +313,14 @@ export default function HaruChatWindow({ returnFocusRef, onExpand, anchorRect }:
       ) : null}
 
       <footer className={styles.composer}>
-        <label htmlFor="haru-composer" className={styles.srOnly}>给 Haru 发消息</label>
+        <label htmlFor="haru-composer" className={styles.srOnly}>给 Aurora 发消息</label>
         <textarea
           id="haru-composer"
           ref={inputRef}
           rows={2}
           value={draft}
           disabled={!controller.hasKey || Boolean(controller.pending) || controller.executionControl.execution?.state === 'running'}
-          placeholder={controller.pending ? '请先在 Pilot 中确认' : '问 Haru…'}
+          placeholder={controller.pending ? '请先在 Pilot 中确认' : '问 Aurora…'}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={onInputKeyDown}
         />

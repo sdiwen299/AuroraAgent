@@ -1,6 +1,8 @@
 /* 落地页：纸感编辑风，与 web/ai_interview_premium_demo.html 同一套视觉语言 */
 
 .page {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   color: var(--op-ink);
   background-color: var(--op-layout-bg);
@@ -12,6 +14,12 @@
   font-family: var(--op-font-serif);
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+.page > nav,
+.page > section {
+  position: relative;
+  z-index: 1;
 }
 
 .scrollProgress {
@@ -37,42 +45,41 @@
 
 .nav {
   width: min(1120px, calc(100% - 48px));
-  margin: 14px auto 0;
-  min-height: 68px;
-  border: 1.5px dashed rgba(14, 8, 3, 0.45);
-  border-radius: 16px;
+  margin: 18px auto 0;
+  min-height: 62px;
+  border: 1px solid color-mix(in srgb, var(--op-primary) 18%, var(--op-border));
+  border-radius: 14px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 24px;
-  padding: 10px 14px 10px 18px;
-  background: color-mix(in srgb, var(--op-layout-bg) 82%, white);
-  box-shadow: 0 10px 24px -20px rgba(14, 8, 3, 0.6);
-  backdrop-filter: blur(12px);
+  gap: 18px;
+  padding: 8px 10px 8px 14px;
+  background: var(--op-surface);
+  box-shadow: 0 8px 20px -18px rgba(14, 8, 3, 0.72), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-family: var(--op-font-sans);
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 800;
   letter-spacing: -0.04em;
   white-space: nowrap;
 }
 
 .brandMark {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border: 1px solid color-mix(in srgb, var(--op-primary) 24%, transparent);
-  border-radius: 12px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
   background: var(--op-accent);
   color: var(--op-primary);
-  font-size: 20px;
-  box-shadow: 3px 3px 0 color-mix(in srgb, var(--op-primary) 18%, transparent);
+  font-size: 18px;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--op-primary) 18%, transparent);
 }
 
 .links {
@@ -80,7 +87,7 @@
   align-items: center;
   justify-content: center;
   justify-self: center;
-  gap: 6px;
+  gap: 2px;
   min-width: 0;
   font-size: 16px;
   font-family: var(--op-font-serif);
@@ -91,9 +98,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  padding: 0 12px;
-  border-radius: 10px;
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 8px;
   color: inherit;
   text-decoration: none;
   transition: background 0.2s var(--op-ease), color 0.2s var(--op-ease), transform 0.2s var(--op-ease);
@@ -127,7 +134,7 @@
 }
 
 .navLinkActive {
-  background: color-mix(in srgb, var(--op-accent) 36%, transparent);
+  background: color-mix(in srgb, var(--op-accent) 28%, transparent);
   color: var(--op-primary-strong);
 }
 
@@ -161,19 +168,19 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   justify-self: end;
 }
 
 .btn {
-  border: 1.5px solid var(--op-ink);
-  border-radius: 12px;
-  min-height: 42px;
-  padding: 10px 18px;
+  border: 1px solid var(--op-ink);
+  border-radius: 10px;
+  min-height: 38px;
+  padding: 8px 15px;
   background: transparent;
   color: var(--op-ink);
   font-family: var(--op-font-serif);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: 0.22s var(--op-ease);

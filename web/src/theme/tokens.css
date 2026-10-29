@@ -331,6 +331,28 @@ body {
   gap: 12px;
 }
 
+.op-auth-role-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.op-auth-role-picker button {
+  min-height: 42px;
+  border: 1px solid var(--op-border);
+  border-radius: 8px;
+  background: var(--op-surface);
+  color: var(--op-ink);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.op-auth-role-picker button.is-active {
+  border-color: var(--op-primary);
+  background: color-mix(in srgb, var(--op-accent) 28%, var(--op-surface));
+  color: var(--op-primary-strong);
+}
+
 .op-auth-form .ant-input,
 .op-auth-form .ant-input-affix-wrapper {
   border-color: var(--op-border-strong);

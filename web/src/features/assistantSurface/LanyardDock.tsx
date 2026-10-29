@@ -13,6 +13,10 @@ interface Props {
   onHide: () => void;
   panelOpen?: boolean;
   notification?: { status: 'success' | 'error'; conversationId: number } | null;
+  zoom?: number;
+  onZoomChange?: (zoom: number) => void;
+  animationLevel?: string;
+  positionResetToken?: number;
 }
 
 /** 挂绳卡片版 AI 助手 dock，替代 Live2D PilotMascot。
@@ -26,7 +30,12 @@ export default function LanyardDock({
   onHide,
   panelOpen = false,
   notification = null,
+  zoom,
+  onZoomChange,
+  animationLevel,
+  positionResetToken,
 }: Props) {
+  void onZoomChange;
   const [confirmOpen, setConfirmOpen] = useState(false);
   const confirmRef = useRef<HTMLDivElement>(null);
   const confirmYesRef = useRef<HTMLButtonElement>(null);
@@ -70,10 +79,15 @@ export default function LanyardDock({
         ref={triggerRef}
         type="button"
         className={styles.trigger}
+        style={{ transform: `scale(${zoom ?? 1})`, transformOrigin: 'left bottom' }}
         onClick={onToggle}
-        aria-label={`AI 助手 · ${panelOpen ? '收起' : '打开'}对话`}
+        aria-label={`Aurora · ${panelOpen ? '收起' : '打开'}对话`}
         aria-expanded={panelOpen}
         aria-controls="haru-chat-window"
+        data-testid="pilot-mascot"
+        data-zoom={zoom}
+        data-animation-level={animationLevel}
+        data-position-reset-token={positionResetToken}
       >
         <span className={styles.card}>
           <Lanyard lanyardImage={brandLanyard} />

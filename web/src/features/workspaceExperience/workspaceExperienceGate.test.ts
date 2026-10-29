@@ -32,16 +32,18 @@ describe('desktop workspace external gate', () => {
     expect(appShell).not.toContain('new EventSource');
   });
 
-  it('keeps four primary tasks, one resource entry, a weak settings entry and compatible view mappings', async () => {
+  it('keeps five primary tasks, one resource entry, a weak settings entry and compatible view mappings', async () => {
     const navigation = await read('../../layout/navigation.ts');
     const sidebar = await read('../../layout/Sidebar.tsx');
     expect(navigation).toContain("{ key: 'today', label: '今日'");
     expect(navigation).toContain("{ key: 'applications', label: '投递'");
+    expect(navigation).toContain("{ key: 'written_test', label: '笔试'");
     expect(navigation).toContain("{ key: 'interview', label: '面试'");
     expect(navigation).toContain("{ key: 'offers', label: 'Offer'");
     expect(navigation).toContain("{ key: 'resources', label: '素材库'");
     expect(navigation).not.toContain("{ key: 'pilot', label:");
-    expect(sidebar).toContain("MODULE_NAV.filter((item) => item.key !== 'settings')");
+    expect(sidebar).toContain('moduleNavForRole(role)');
+    expect(sidebar).toContain("roleNav.filter((item) => item.key !== 'settings')");
     expect(sidebar).toContain('data-navigation-tier="utility"');
     for (const view of ['dashboard', 'reminders', 'board', 'applications-list', 'calendar', 'offers', 'interview', 'questions', 'resumes', 'reviews', 'knowledge', 'pilot', 'settings']) {
       expect(

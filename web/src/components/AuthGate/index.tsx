@@ -3,9 +3,16 @@ import { useQuery } from '@tanstack/react-query';
 import { Alert, Button, Input, Modal, Skeleton } from 'antd';
 import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
 import LandingPage from '@/landing/LandingPage';
-import { authErrorMessage, getAuthStatus, loginAccount, registerAccount } from '@/services/auth';
+import {
+  authErrorMessage,
+  getAuthStatus,
+  loginAccount,
+  registerAccount,
+  switchAccountRole,
+} from '@/services/auth';
 import { setStoredAuthToken } from '@/services/authToken';
-import { defaultAuthMode, shouldPromptForAuth } from './model';
+import { defaultAuthMode, shouldPromptForAuth, type UserRole } from './model';
+import { AuthRoleContext } from './role';
 
 interface Props {
   children: ReactNode;
@@ -23,6 +30,8 @@ export default function AuthGate({ children }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [role, setRole] = useState<UserRole>('candidate');
+  const [activeRole, setActiveRole] = useState<UserRole>('candidate');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const statusQuery = useQuery({
@@ -36,10 +45,24 @@ export default function AuthGate({ children }: Props) {
       return;
     }
     setMode(defaultAuthMode(statusQuery.data));
+    setRole(statusQuery.data.account?.role ?? 'candidate');
+    setActiveRole(statusQuery.data.account?.role ?? 'candidate');
     if (shouldPromptForAuth(statusQuery.data)) {
       setOpen(true);
     }
   }, [statusQuery.data]);
+
+  const switchRole = async (next: UserRole) => {
+    setRole(next);
+    const previous = activeRole;
+    setActiveRole(next);
+    try {
+      await switchAccountRole(next);
+      await statusQuery.refetch();
+    } catch {
+      setActiveRole(previous);
+    }
+  };
 
   if (statusQuery.isLoading) {
     return (
@@ -50,7 +73,11 @@ export default function AuthGate({ children }: Props) {
   }
 
   if (!shouldPromptForAuth(statusQuery.data)) {
-    return children;
+    return (
+      <AuthRoleContext.Provider value={{ role: activeRole, switchRole }}>
+        {children}
+      </AuthRoleContext.Provider>
+    );
   }
 
   const legacyTokenMode = Boolean(statusQuery.data?.auth_enabled && !statusQuery.data?.has_accounts);
@@ -91,8 +118,8 @@ export default function AuthGate({ children }: Props) {
     try {
       const session =
         mode === 'register'
-          ? await registerAccount({ email, password, displayName })
-          : await loginAccount({ email, password });
+          ? await registerAccount({ email, password, displayName, role })
+          : await loginAccount({ email, password, role });
       setStoredAuthToken(session.token);
       await statusQuery.refetch();
     } catch (cause) {
@@ -171,12 +198,24 @@ export default function AuthGate({ children }: Props) {
               </button>
             </div>
             <p className="op-auth-sub">
-              {registering
-                ? '账号仅保存在本机数据目录，用于把工作台锁定到你自己。'
-                : '用注册时填写的邮箱和密码登录，回到你的投递、面试与 Offer。'}
+              {role === 'hr'
+                ? registering
+                  ? 'HR 账号仅保存在本机，用于管理岗位与候选人流水线。'
+                  : '用注册时的邮箱和密码登录，进入招聘工作台。'
+                : registering
+                  ? '账号仅保存在本机数据目录，用于把工作台锁定到你自己。'
+                  : '用注册时填写的邮箱和密码登录，回到你的投递、面试与 Offer。'}
             </p>
             <form className="op-auth-form" onSubmit={submitAccount}>
               {error ? <Alert type="error" showIcon message={error} /> : null}
+              <div className="op-auth-role-picker" role="radiogroup" aria-label="登录身份">
+                <button type="button" role="radio" aria-checked={role === 'candidate'} className={role === 'candidate' ? 'is-active' : ''} onClick={() => setRole('candidate')}>
+                  求职者
+                </button>
+                <button type="button" role="radio" aria-checked={role === 'hr'} className={role === 'hr' ? 'is-active' : ''} onClick={() => setRole('hr')}>
+                  HR 招聘
+                </button>
+              </div>
               {registering ? (
                 <Input
                   value={displayName}
@@ -207,7 +246,7 @@ export default function AuthGate({ children }: Props) {
             </form>
           </>
         )}
-        <div className="op-auth-foot">本地部署 · 数据留在你的环境内</div>
+          <div className="op-auth-foot">本地部署 · 数据留在你的环境内</div>
       </Modal>
     </>
   );

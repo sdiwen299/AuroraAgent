@@ -1,4 +1,207 @@
 .grid { display: flex; flex-direction: column; gap: 14px; }
+
+.workflowSection {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 22px 24px;
+  border: 1px solid var(--op-border);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--op-accent) 16%, transparent) 0 34%, transparent 35%),
+    var(--op-surface);
+  box-shadow: var(--op-shadow-md);
+}
+
+.workflowHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.workflowHeaderText { min-width: 0; }
+
+.workflowEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 11px;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  background: var(--op-accent);
+  color: var(--op-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transform: rotate(-1deg);
+}
+
+.workflowEyebrow::before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  background: var(--op-primary);
+}
+
+.workflowSubtitle {
+  max-width: 620px;
+  margin: 6px 0 0;
+  color: var(--op-muted-strong);
+  font-size: 13px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.workflowHint {
+  flex: 0 0 auto;
+  color: var(--op-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.workflowSteps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workflowStepItem { position: relative; min-width: 0; }
+
+.workflowConnector {
+  position: absolute;
+  top: 34px;
+  left: calc(100% + 2px);
+  width: 10px;
+  border-top: 2px dashed var(--op-border-strong);
+}
+
+.workflowStep {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  height: 100%;
+  min-height: 168px;
+  padding: 16px;
+  border: 1px solid var(--op-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--op-surface) 82%, var(--op-layout-bg));
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s var(--op-ease), background 0.18s var(--op-ease),
+    box-shadow 0.18s var(--op-ease), transform 0.18s var(--op-ease);
+}
+
+.workflowStep:hover,
+.workflowStep:focus-visible {
+  outline: none;
+  border-color: var(--op-action);
+  background: var(--op-surface);
+  box-shadow: var(--op-shadow-lg);
+  transform: translateY(-3px);
+}
+
+.workflowStep:focus-visible {
+  box-shadow: var(--op-focus-ring), var(--op-shadow-lg);
+}
+
+.workflowStepTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.workflowStepIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--op-primary);
+  color: var(--op-on-primary);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.18s var(--op-ease);
+}
+
+.workflowStep:hover .workflowStepIndex,
+.workflowStep:focus-visible .workflowStepIndex {
+  background: var(--op-action);
+}
+
+.workflowStepIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--op-accent) 22%, var(--op-surface));
+  color: var(--op-primary-strong);
+  font-size: 16px;
+}
+
+.workflowStepTitle {
+  color: var(--op-ink);
+  font-size: 15px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.workflowStepDesc {
+  flex: 1 1 auto;
+  color: var(--op-muted-strong);
+  font-size: 12.5px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.workflowStepCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  color: var(--op-action-strong);
+  font-size: 12.5px;
+  font-weight: 750;
+}
+
+.workflowStep:hover .workflowStepCta,
+.workflowStep:focus-visible .workflowStepCta {
+  color: var(--op-action);
+}
+
+@media (max-width: 1100px) {
+  .workflowSteps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .workflowConnector { display: none; }
+}
+
+@media (max-width: 700px) {
+  .workflowSection { padding: 16px 14px 18px; }
+  .workflowHeader { flex-direction: column; align-items: flex-start; }
+  .workflowSteps { grid-template-columns: 1fr; }
+  .workflowStep { min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflowStep,
+  .workflowStepIndex { transition: none; }
+  .workflowStep:hover,
+  .workflowStep:focus-visible { transform: none; }
+}
+
 .todayPrimary {
   padding: 26px;
   border-radius: 16px;

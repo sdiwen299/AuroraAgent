@@ -1,6 +1,7 @@
 export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
 export type QuestionStatus = 'new' | 'practicing' | 'mastered';
-export type QuestionSource = 'ai_knowledge' | 'ai_notes' | 'manual';
+export type QuestionSource = 'ai_knowledge' | 'ai_notes' | 'manual' | 'template';
+export type QuestionType = 'subjective' | 'choice' | 'programming';
 
 export interface Question {
   id: number;
@@ -10,6 +11,15 @@ export interface Question {
   difficulty: QuestionDifficulty;
   question: string;
   reference_answer: string;
+  question_type: QuestionType;
+  /** 单选题选项文本，顺序对应 A/B/C…；其他题型为空数组 */
+  options?: string[];
+  /** 单选题正确答案字母，如 "A" */
+  correct_answer?: string;
+  /** 编程题初始代码 */
+  starter_code?: string;
+  /** 编程题语言，如 python / sql */
+  language?: string;
   tags: string[];
   source_type: QuestionSource;
   status: QuestionStatus;
@@ -25,6 +35,11 @@ export interface QuestionInput {
   difficulty?: QuestionDifficulty;
   question: string;
   reference_answer?: string;
+  question_type?: QuestionType;
+  options?: string[];
+  correct_answer?: string;
+  starter_code?: string;
+  language?: string;
   tags?: string[];
   status?: QuestionStatus;
 }
@@ -34,6 +49,8 @@ export interface QuestionFilter {
   category?: string;
   difficulty?: QuestionDifficulty;
   status?: QuestionStatus;
+  source_type?: QuestionSource;
+  question_type?: QuestionType;
 }
 
 export interface GenerateQuestionsInput {

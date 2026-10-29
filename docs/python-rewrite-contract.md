@@ -195,7 +195,7 @@ by this idempotent Go migrator.
 | `knowledge_documents` | `id`; `title`; `content`; `tags` JSON text default `[]`; `doc_kind`; `status`; `source_type`; `source_name`; `source_refs`; `summary_type`; `generation_meta`; `superseded_by`; `confirmed_at`; timestamps | Single library + tags; old `knowledge_bases` multi-library model is dropped **[KR-deprecated]** |
 | `knowledge_chunks` | `id`; `document_id` FK cascade; `chunk_index`; `content`; `embedding`; `embedding_model`; `created_at` | `idx_knowledge_chunks_document` **[KR-deprecated]** |
 | `knowledge_chunks_fts` | FTS5 virtual table with `chunk_id`, `document_id`, `content` | v0.1 keeps keyword search foundation; embedding fields are present for later hybrid retrieval **[KR-deprecated]** |
-| `questions` | `id`; nullable `application_id`; `topic`; `category`; `difficulty` default `medium`; `question` not null; `reference_answer`; `tags`; `source_type`; `status`; practice fields; `question_hash`; timestamps | `idx_questions_topic`, `idx_questions_status`, `idx_questions_next_review`, `idx_questions_hash`; old `knowledge_base_id` tables are reset |
+| `questions` | `id`; nullable `application_id`; `topic`; `category`; `difficulty` default `medium`; `question` not null; `question_type` default `subjective` (`subjective`/`choice`/`programming`); `options` JSON text default `[]`; `correct_answer`; `starter_code`; `language`; `reference_answer`; `tags`; `source_type`; `status`; practice fields; `question_hash`; timestamps | `idx_questions_topic`, `idx_questions_status`, `idx_questions_next_review`, `idx_questions_hash`; old `knowledge_base_id` tables are reset |
 | `question_reviews` | `id`; `question_id` FK cascade; `rating`; `note`; `created_at` | `idx_question_reviews_question` |
 | `application_material_kits` | `id`; `application_id` not null unique FK cascade; nullable `resume_id`, `jd_analysis_id`; `jd_snapshot`; `status` default `draft`; `content_json`; timestamps | `idx_material_kits_app`, `idx_material_kits_status` |
 | `mock_sessions` | `id`; `conversation_id` FK cascade; nullable app/kb FKs; title/config/progress/status fields; scoring fields; feedback; timestamps | `idx_mock_sessions_conv`, `idx_mock_sessions_status` |
@@ -235,7 +235,7 @@ database/config side effects should remain compatible.
 | `oc offer delete [id]` | id arg | Deletes offer; missing row currently still prints deleted because affected rows are not checked | Phase 5 |
 | `oc offer compare [id1,id2,...]` | comma list arg | Invalid numeric token errors; missing IDs are skipped; all-missing exits success with no-match message | Phase 5 |
 | `oc question generate` | `--source/-s`, `--kb`, `--app/-a`, `--count/-n` | Source `knowledge` requires `--kb`; AI layer clamps count but CLI prints requested count first | Phase 5 **[KR-deprecated]** |
-| `oc question list` | `--status`, `--kb` | Prints questions; status has no CLI enum validation | Phase 5 |
+| `oc question list` | `--status`, `--topic`, `--type` | Prints questions; status has no CLI enum validation; `--type` filters by question type and accepts the same type aliases as the API | Phase 5 |
 
 CLI compatibility details:
 

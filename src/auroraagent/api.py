@@ -23,10 +23,20 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from pypdf import PdfReader
 from sqlalchemy import text
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from auroraagent.ai.agent_contracts import ChatModel, PendingAction
 from auroraagent.accounts import AccountError, AccountRecord, AccountsRepository
+from auroraagent.accounts.workspaces import (
+    RoutingSessionFactory,
+    Workspace,
+    current_workspace,
+    ensure_account_workspace,
+    reset_current_workspace,
+    set_current_workspace,
+    workspace_dir,
+)
 from auroraagent.presentation import AgentActionPresentationBuilder, build_conversation_presentation
 from auroraagent.pilot_timeline import (
     AdmissionConflict, AdmissionGone, AdmissionNotFound, PilotTimelineRepository, TurnAdmission, TimelineResyncRequired,
@@ -230,6 +240,13 @@ from auroraagent.knowledge.worker import (
     KnowledgeWorkerRuntime,
 )
 from auroraagent.repositories.applications import ApplicationCreate, ApplicationsRepository
+from auroraagent.repositories.recruiting import (
+    CandidateApplicationCreate,
+    CandidateCreate,
+    JobPostingCreate,
+    RecruitingError,
+    RecruitingRepository,
+)
 from auroraagent.repositories.agent_runs import (
     AgentRunRepository,
 )
@@ -368,7 +385,12 @@ from auroraagent.repositories.offer_negotiation import (
     OfferNegotiationRepository,
 )
 from auroraagent.repositories.json_contract import canonical_json, sha256_text
-from auroraagent.repositories.questions import QuestionCreate, QuestionsRepository, question_hash
+from auroraagent.repositories.questions import (
+    QuestionCreate,
+    QuestionsRepository,
+    normalize_question_type,
+    question_hash,
+)
 from auroraagent.repositories.resumes import ResumeCreate, ResumeMatchCreate, ResumesRepository
 from auroraagent.repositories.wakeups import WakeupCreate, WakeupsRepository, wakeup_payload
 from auroraagent.resume_structured_import import (
@@ -382,6 +404,9 @@ from auroraagent.schemas import (
     ApplicationOut,
     ApplicationOutcomeOut,
     ApplicationOutcomeSummaryOut,
+    CandidateApplicationOut,
+    CandidateOut,
+    JobPostingOut,
     ApplicationSubmissionSnapshotOut,
     ApplicationEvidenceBundleOut,
     ApplicationEvidenceBundleSummaryOut,
@@ -1251,15 +1276,20 @@ def create_app(
 ) -> FastAPI:
     resolved_data_dir = data_dir or resolve_data_dir()
     resolved_static_dir = static_dir or _find_static_dir()
-    session_factory = session_factory_for_data_dir(resolved_data_dir)
+    root_session_factory = session_factory_for_data_dir(resolved_data_dir)
+    root_engine = root_session_factory.kw.get("bind")
+    if not isinstance(root_engine, Engine):
+        raise RuntimeError("root session factory must be bound to an Engine")
+    session_factory = RoutingSessionFactory(resolved_data_dir, root_engine)
     app_config = load_config(resolved_data_dir)
     applications = ApplicationsRepository(session_factory)
     application_creation = ApplicationCreationService(session_factory)
-    accounts = AccountsRepository(session_factory)
+    accounts = AccountsRepository(root_session_factory)
+    recruiting = RecruitingRepository(session_factory)
     try:
-        ledger_key = load_or_create_ledger_key(resolved_data_dir, session_factory)
+        ledger_key = load_or_create_ledger_key(resolved_data_dir, root_session_factory)
     except BaseException:
-        primary_engine = session_factory.kw.get("bind")
+        primary_engine = root_session_factory.kw.get("bind")
         if primary_engine is not None:
             try:
                 primary_engine.dispose()
@@ -1487,8 +1517,13 @@ def create_app(
         if request.method == "OPTIONS":
             response = Response(status_code=200)
         else:
-            auth_response = _auth_guard_response(request, resolved_data_dir, accounts)
-            response = auth_response if auth_response is not None else await call_next(request)
+            workspace_token = _enter_request_workspace(request, resolved_data_dir, accounts)
+            try:
+                auth_response = _auth_guard_response(request, resolved_data_dir, accounts)
+                response = auth_response if auth_response is not None else await call_next(request)
+            finally:
+                if workspace_token is not None:
+                    reset_current_workspace(workspace_token)
         origin = request.headers.get("origin")
         same_origin = f"{request.url.scheme}://{request.url.netloc}"
         if origin == same_origin:
@@ -1677,6 +1712,7 @@ def create_app(
         attempt_cleanup(turn_control_registry.close)
         attempt_cleanup(lambda: knowledge_runtime.stop(timeout=5))
         attempt_cleanup(context_source_loader.close)
+        attempt_cleanup(session_factory.dispose)
         if journal_engine is not None:
             attempt_cleanup(journal_engine.dispose)
         primary_engine = app.state.db_engine
@@ -2387,52 +2423,71 @@ def create_app(
             and compare_digest(token, cfg.auth_token)
         )
         open_mode = not cfg.auth_enabled and not cfg.accounts_enabled
-        return {
+        payload = {
             "auth_enabled": cfg.auth_enabled,
             "authenticated": open_mode or legacy_authenticated or account is not None,
             "has_accounts": cfg.accounts_enabled,
             "account": _account_summary(account),
         }
+        if request.query_params.get("include_role") == "1" and account is not None:
+            payload["account"] = _account_summary(account, include_role=True)
+        return payload
 
     @app.post("/api/auth/register")
-    def auth_register(
-        request: Request, payload: dict[str, Any] = Body(...)
-    ) -> JSONResponse:
+    def auth_register(payload: dict[str, Any] = Body(...)) -> JSONResponse:
         cfg = load_config(resolved_data_dir)
-        if cfg.accounts_enabled and not _request_is_authenticated(request, cfg, accounts):
-            return error_response(
-                403,
-                "已有账号，请先登录后再添加新账号",
-                code="registration_closed",
-            )
         try:
             account = accounts.register(
                 str(payload.get("email") or ""),
                 str(payload.get("password") or ""),
                 str(payload.get("display_name") or ""),
+                str(payload.get("role") or "candidate"),
             )
         except AccountError as exc:
             return error_response(exc.status_code, exc.message, code=exc.code)
         if not cfg.accounts_enabled:
-            next_config = Config(**cfg.model_dump())
-            next_config.accounts_enabled = True
-            save_config(resolved_data_dir, next_config)
-        token = accounts.create_session(account.id)
+            cfg.accounts_enabled = True
+            save_config(resolved_data_dir, cfg)
+        token = accounts.create_session(account.id, role=account.role)
         return JSONResponse(
-            {"token": token, "account": _account_summary(account)},
+            {"token": token, "account": _account_summary(account), "role": account.role},
             status_code=201,
         )
 
     @app.post("/api/auth/login")
     def auth_login(payload: dict[str, Any] = Body(...)) -> JSONResponse:
-        account = accounts.authenticate(
-            str(payload.get("email") or ""),
-            str(payload.get("password") or ""),
-        )
+        requested_role = str(payload.get("role") or "candidate")
+        try:
+            account = accounts.authenticate(
+                str(payload.get("email") or ""),
+                str(payload.get("password") or ""),
+                requested_role,
+            )
+        except AccountError as exc:
+            return error_response(exc.status_code, exc.message, code=exc.code)
         if account is None:
-            return error_response(401, "邮箱或密码不正确", code="invalid_credentials")
-        token = accounts.create_session(account.id)
-        return JSONResponse({"token": token, "account": _account_summary(account)})
+            return error_response(401, "邮箱或密码错误", code="invalid_credentials")
+        session_role = requested_role.strip().lower()
+        token = accounts.create_session(account.id, role=session_role)
+        return JSONResponse(
+            {"token": token, "account": _account_summary(account), "role": session_role}
+        )
+
+    @app.post("/api/auth/role")
+    def auth_set_role(
+        request: Request, payload: dict[str, Any] = Body(...)
+    ) -> JSONResponse:
+        try:
+            account = accounts.set_session_role(
+                _request_auth_token(request), str(payload.get("role") or "")
+            )
+        except AccountError as exc:
+            return error_response(exc.status_code, exc.message, code=exc.code)
+        if account is None:
+            return error_response(401, "登录已失效，请重新登录", code="unauthenticated")
+        return JSONResponse(
+            {"account": _account_summary(account), "role": account.role}
+        )
 
     @app.post("/api/auth/logout")
     def auth_logout(request: Request) -> JSONResponse:
@@ -2514,6 +2569,186 @@ def create_app(
         return JSONResponse(
             result, status_code=200 if replayed else 201
         )
+
+    @app.get("/api/hr/job-postings")
+    def hr_list_job_postings(request: Request, status: str = "") -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            postings = recruiting.list_job_postings(status)
+        except RecruitingError as exc:
+            return _recruiting_error_response(exc)
+        return [JobPostingOut.model_validate(item).model_dump(mode="json") for item in postings]
+
+    @app.post("/api/hr/job-postings", status_code=201)
+    def hr_create_job_posting(request: Request, payload: dict[str, Any] = Body(...)) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            posting = recruiting.create_job_posting(JobPostingCreate(**payload))
+        except TypeError:
+            return error_response(422, "岗位字段不正确", code="hr_invalid_request")
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        return JSONResponse(JobPostingOut.model_validate(posting).model_dump(mode="json"), status_code=201)
+
+    @app.get("/api/hr/job-postings/{posting_id}")
+    def hr_get_job_posting(request: Request, posting_id: int) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        posting = recruiting.get_job_posting(posting_id)
+        if posting is None:
+            return error_response(404, "岗位不存在", code="hr_job_not_found")
+        return JSONResponse(JobPostingOut.model_validate(posting).model_dump(mode="json"))
+
+    @app.patch("/api/hr/job-postings/{posting_id}")
+    def hr_update_job_posting(
+        request: Request, posting_id: int, payload: dict[str, Any] = Body(...)
+    ) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            posting = recruiting.update_job_posting(posting_id, payload)
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        if posting is None:
+            return error_response(404, "岗位不存在", code="hr_job_not_found")
+        return JSONResponse(JobPostingOut.model_validate(posting).model_dump(mode="json"))
+
+    @app.delete("/api/hr/job-postings/{posting_id}")
+    def hr_delete_job_posting(request: Request, posting_id: int) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        if not recruiting.delete_job_posting(posting_id):
+            return error_response(404, "岗位不存在", code="hr_job_not_found")
+        return JSONResponse({"deleted": True})
+
+    @app.get("/api/hr/candidates")
+    def hr_list_candidates(request: Request) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        return [
+            CandidateOut.model_validate(item).model_dump(mode="json")
+            for item in recruiting.list_candidates()
+        ]
+
+    @app.post("/api/hr/candidates", status_code=201)
+    def hr_create_candidate(request: Request, payload: dict[str, Any] = Body(...)) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            candidate = recruiting.create_candidate(CandidateCreate(**payload))
+        except TypeError:
+            return error_response(422, "候选人字段不正确", code="hr_invalid_request")
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        return JSONResponse(CandidateOut.model_validate(candidate).model_dump(mode="json"), status_code=201)
+
+    @app.get("/api/hr/candidates/{candidate_id}")
+    def hr_get_candidate(request: Request, candidate_id: int) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        candidate = recruiting.get_candidate(candidate_id)
+        if candidate is None:
+            return error_response(404, "候选人不存在", code="hr_candidate_not_found")
+        return JSONResponse(CandidateOut.model_validate(candidate).model_dump(mode="json"))
+
+    @app.patch("/api/hr/candidates/{candidate_id}")
+    def hr_update_candidate(
+        request: Request, candidate_id: int, payload: dict[str, Any] = Body(...)
+    ) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            candidate = recruiting.update_candidate(candidate_id, payload)
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        if candidate is None:
+            return error_response(404, "候选人不存在", code="hr_candidate_not_found")
+        return JSONResponse(CandidateOut.model_validate(candidate).model_dump(mode="json"))
+
+    @app.delete("/api/hr/candidates/{candidate_id}")
+    def hr_delete_candidate(request: Request, candidate_id: int) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        if not recruiting.delete_candidate(candidate_id):
+            return error_response(404, "候选人不存在", code="hr_candidate_not_found")
+        return JSONResponse({"deleted": True})
+
+    @app.get("/api/hr/candidate-applications")
+    def hr_list_candidate_applications(
+        request: Request, job_posting_id: int | None = None, stage: str = ""
+    ) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            items = recruiting.list_candidate_applications(job_posting_id, stage)
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        return [
+            CandidateApplicationOut.model_validate(item).model_dump(mode="json") for item in items
+        ]
+
+    @app.post("/api/hr/candidate-applications", status_code=201)
+    def hr_create_candidate_application(
+        request: Request, payload: dict[str, Any] = Body(...)
+    ) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        parsed = _candidate_application_create(payload)
+        if isinstance(parsed, JSONResponse):
+            return parsed
+        try:
+            application = recruiting.create_candidate_application(parsed)
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        return JSONResponse(
+            CandidateApplicationOut.model_validate(application).model_dump(mode="json"),
+            status_code=201,
+        )
+
+    @app.patch("/api/hr/candidate-applications/{application_id}")
+    def hr_update_candidate_application(
+        request: Request, application_id: int, payload: dict[str, Any] = Body(...)
+    ) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        try:
+            application = recruiting.update_candidate_application(application_id, payload)
+        except (RecruitingError, ValueError) as exc:
+            return _recruiting_error_response(exc) if isinstance(exc, RecruitingError) else error_response(400, str(exc))
+        if application is None:
+            return error_response(404, "投递记录不存在", code="hr_candidate_application_not_found")
+        return JSONResponse(CandidateApplicationOut.model_validate(application).model_dump(mode="json"))
+
+    @app.delete("/api/hr/candidate-applications/{application_id}")
+    def hr_delete_candidate_application(request: Request, application_id: int) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        if not recruiting.delete_candidate_application(application_id):
+            return error_response(404, "投递记录不存在", code="hr_candidate_application_not_found")
+        return JSONResponse({"deleted": True})
+
+    @app.get("/api/hr/pipeline-summary")
+    def hr_pipeline_summary(request: Request) -> Any:
+        guard = _hr_role_guard(request, resolved_data_dir, accounts)
+        if guard is not None:
+            return guard
+        return recruiting.pipeline_summary()
 
     @app.get("/api/applications/{app_id}/job-description")
     def get_current_application_jd(app_id: int) -> JSONResponse:
@@ -4715,13 +4950,20 @@ def create_app(
             return error_response(404, "JD analysis not found")
         return JSONResponse(_jd_analysis_json(analysis))
 
-    @app.get("/api/questions")
+    @app.get("/api/questions", response_model=None)
     def list_questions(
         topic: str = "",
         category: str = "",
         difficulty: str = "",
         status: str = "",
-    ) -> list[dict[str, Any]]:
+        source_type: str = "",
+        question_type: str = "",
+    ) -> list[dict[str, Any]] | JSONResponse:
+        if question_type:
+            normalized_type = normalize_question_type(question_type)
+            if normalized_type is None:
+                return error_response(400, f"不支持的题型：{question_type}")
+            question_type = normalized_type
         return [
             _question_json(question)
             for question in questions.list(
@@ -4729,6 +4971,8 @@ def create_app(
                 category=category,
                 difficulty=difficulty,
                 status=status,
+                source_type=source_type,
+                question_type=question_type,
             )
         ]
 
@@ -4739,6 +4983,31 @@ def create_app(
             return parsed
         question = questions.create(parsed)
         return JSONResponse(_question_json(question), status_code=201)
+
+    @app.post("/api/questions/import", status_code=201)
+    def import_template_questions(payload: dict[str, Any] = Body(...)) -> JSONResponse:
+        raw_items = payload.get("questions")
+        if not isinstance(raw_items, list) or not raw_items:
+            return error_response(400, "questions 必须是非空数组")
+        if len(raw_items) > 1000:
+            return error_response(400, "单次最多导入 1000 道题")
+        parsed_items: list[QuestionCreate] = []
+        for index, item in enumerate(raw_items):
+            if not isinstance(item, dict):
+                return error_response(400, f"第 {index + 1} 道题格式无效")
+            parsed = _question_from_payload(item, source_type="template")
+            if isinstance(parsed, JSONResponse):
+                return error_response(400, f"第 {index + 1} 道题无效")
+            parsed_items.append(parsed)
+        saved, skipped = questions.import_template_questions(parsed_items)
+        return JSONResponse(
+            {
+                "count": len(saved),
+                "skipped": skipped,
+                "questions": [_question_json(question) for question in saved],
+            },
+            status_code=201,
+        )
 
     @app.post("/api/questions/generate", status_code=201)
     def generate_questions(payload: dict[str, Any] = Body(...)) -> JSONResponse:
@@ -4802,7 +5071,21 @@ def create_app(
 
     @app.put("/api/questions/{question_id}")
     def update_question(question_id: int, payload: dict[str, Any] = Body(...)) -> JSONResponse:
-        parsed = _question_from_payload(payload)
+        existing = questions.get(question_id)
+        if existing is None:
+            return error_response(404, "题目不存在")
+        effective = payload
+        if "question_type" not in payload:
+            # 缺少 question_type 视为“不改题型”，保留既有题型块，避免被静默降级为问答题。
+            effective = {
+                **payload,
+                "question_type": existing.question_type,
+                "options": existing.options or [],
+                "correct_answer": existing.correct_answer,
+                "starter_code": existing.starter_code,
+                "language": existing.language,
+            }
+        parsed = _question_from_payload(effective)
         if isinstance(parsed, JSONResponse):
             return parsed
         question = questions.update(question_id, parsed)
@@ -6008,54 +6291,71 @@ def create_app(
 
         assert control.lease is not None
 
+        # The turn executes on a detached runtime worker thread with an empty
+        # contextvars context, so it must carry the request's workspace
+        # explicitly; otherwise persistence falls back to the shared root DB.
+        turn_workspace = current_workspace()
+
         def operation(
             sink: Any,
             invocation_control: Any,
             budget: RuntimeBudget,
         ) -> object:
+            workspace_token = set_current_workspace(turn_workspace)
             try:
-                with invocation_scope(invocation_control), frozen_readiness_scope(readiness_binding):
-                    outcome = bound_runtime.start_turn(
-                        typed_request,
-                        transport=RuntimeTransportContext(mode="sync"),
-                        event_sink=sink,
-                        execution_host=DirectRuntimeExecutionHost(),
-                        invocation_control=invocation_control,
-                        cancel_check=lambda: False,
-                        runtime_budget=budget,
-                    )
-            except RuntimeAgentTimedOut:
-                _runtime_finish_control(control, "result_unknown")
-                raise
-            except RuntimeCancelled:
-                _runtime_finish_control(control, "interrupted")
-                raise
-            except RuntimeTransportAborted:
-                _runtime_finish_control(control, "result_unknown")
-                raise
-            except BaseException:
-                _runtime_finish_control(control, "failed")
-                raise
-            _runtime_finish_control(control, _runtime_state_for_outcome(outcome))
-            return outcome
+                try:
+                    with invocation_scope(invocation_control), frozen_readiness_scope(readiness_binding):
+                        outcome = bound_runtime.start_turn(
+                            typed_request,
+                            transport=RuntimeTransportContext(mode="sync"),
+                            event_sink=sink,
+                            execution_host=DirectRuntimeExecutionHost(),
+                            invocation_control=invocation_control,
+                            cancel_check=lambda: False,
+                            runtime_budget=budget,
+                        )
+                except RuntimeAgentTimedOut:
+                    _runtime_finish_control(control, "result_unknown")
+                    raise
+                except RuntimeCancelled:
+                    _runtime_finish_control(control, "interrupted")
+                    raise
+                except RuntimeTransportAborted:
+                    _runtime_finish_control(control, "result_unknown")
+                    raise
+                except BaseException:
+                    _runtime_finish_control(control, "failed")
+                    raise
+                _runtime_finish_control(control, _runtime_state_for_outcome(outcome))
+                return outcome
+            finally:
+                reset_current_workspace(workspace_token)
 
         title_action: Callable[[], object] | None = None
         title_fallback: Callable[[], object] | None = None
         if typed.conversation_id in (None, 0) and title_model is not None:
             def generate_title() -> None:
-                _generate_conversation_title(
-                    title_model,
-                    chat,
-                    admission.conversation_id,
-                    typed_request.message,
-                    resolved_data_dir,
-                )
+                workspace_token = set_current_workspace(turn_workspace)
+                try:
+                    _generate_conversation_title(
+                        title_model,
+                        chat,
+                        admission.conversation_id,
+                        typed_request.message,
+                        resolved_data_dir,
+                    )
+                finally:
+                    reset_current_workspace(workspace_token)
 
             def fallback_title() -> bool:
-                return chat.apply_generated_title(
-                    admission.conversation_id,
-                    _title_from_message(typed_request.message),
-                )
+                workspace_token = set_current_workspace(turn_workspace)
+                try:
+                    return chat.apply_generated_title(
+                        admission.conversation_id,
+                        _title_from_message(typed_request.message),
+                    )
+                finally:
+                    reset_current_workspace(workspace_token)
 
             title_action = generate_title
             title_fallback = fallback_title
@@ -10292,6 +10592,32 @@ def _request_account(request: Request, accounts: AccountsRepository) -> AccountR
     return accounts.resolve_session(token) if token else None
 
 
+def _enter_request_workspace(
+    request: Request, data_dir: Path, accounts: AccountsRepository
+) -> Any | None:
+    """已登录账号把后续请求路由到自己的独立工作区；未启用账号时保持根工作区。"""
+
+    if not load_config(data_dir).accounts_enabled:
+        return None
+    account = _request_account(request, accounts)
+    if account is None:
+        return None
+    primary_id = accounts.primary_account_id()
+    if primary_id is not None and account.id != primary_id:
+        primary_dir = ensure_account_workspace(data_dir, primary_id, primary=True)
+    else:
+        primary_dir = workspace_dir(data_dir, account.id)
+    target_dir = workspace_dir(data_dir, account.id)
+    ensure_account_workspace(
+        data_dir, account.id, primary=account.id == primary_id
+    )
+    if account.id != primary_id:
+        from auroraagent.accounts.workspaces import seed_public_template_questions
+
+        seed_public_template_questions(primary_dir, target_dir)
+    return set_current_workspace(Workspace(account.id, target_dir))
+
+
 def _request_is_authenticated(
     request: Request, cfg: Config, accounts: AccountsRepository
 ) -> bool:
@@ -10303,10 +10629,13 @@ def _request_is_authenticated(
     return cfg.accounts_enabled and accounts.resolve_session(token) is not None
 
 
-def _account_summary(account: AccountRecord | None) -> dict[str, str] | None:
+def _account_summary(account: AccountRecord | None, *, include_role: bool = False) -> dict[str, str] | None:
     if account is None:
         return None
-    return {"email": account.email, "display_name": account.display_name}
+    summary = {"email": account.email, "display_name": account.display_name}
+    if include_role:
+        summary["role"] = account.role
+    return summary
 
 
 def _auth_guard_response(
@@ -10323,6 +10652,71 @@ def _auth_guard_response(
     if cfg.auth_enabled or cfg.accounts_enabled:
         return error_response(401, "unauthorized")
     return None
+
+
+def _hr_role_guard(
+    request: Request, data_dir: Path, accounts: AccountsRepository
+) -> JSONResponse | None:
+    """招聘端接口仅允许招聘角色账号访问；本地无角色模式放行。"""
+
+    cfg = load_config(data_dir)
+    if not (cfg.auth_enabled or cfg.accounts_enabled):
+        return None
+    account = _request_account(request, accounts)
+    if account is not None and account.role != "hr":
+        return error_response(403, "需要招聘端账号", code="hr_role_required")
+    return None
+
+
+def _recruiting_error_response(exc: RecruitingError) -> JSONResponse:
+    return error_response(exc.status_code, exc.message, code=exc.code or "recruiting_error")
+
+
+def _job_posting_create_from_payload(payload: dict[str, Any]) -> JobPostingCreate:
+    raw_headcount = payload.get("headcount", 1)
+    headcount = headcount if isinstance((headcount := raw_headcount), int) else 1
+    return JobPostingCreate(
+        title=str(payload.get("title") or ""),
+        company_name=_payload_text(payload, "company_name", ""),
+        department=_payload_text(payload, "department", ""),
+        location=_payload_text(payload, "location", ""),
+        employment_type=_payload_text(payload, "employment_type", ""),
+        salary_range=_payload_text(payload, "salary_range", ""),
+        headcount=headcount,
+        description=_payload_text(payload, "description", ""),
+        requirements=_payload_text(payload, "requirements", ""),
+        status=_payload_text(payload, "status", "draft") or "draft",
+        notes=_payload_text(payload, "notes", ""),
+    )
+
+
+def _candidate_create(payload: dict[str, Any]) -> CandidateCreate:
+    raw_resume_id = payload.get("resume_id")
+    return CandidateCreate(
+        name=str(payload.get("name") or ""),
+        email=_payload_text(payload, "email", ""),
+        phone=_payload_text(payload, "phone", ""),
+        source=_payload_text(payload, "source", ""),
+        headline=_payload_text(payload, "headline", ""),
+        resume_id=raw_resume_id if isinstance(raw_resume_id, int) else None,
+        notes=_payload_text(payload, "notes", ""),
+    )
+
+
+def _candidate_application_create(
+    payload: dict[str, Any],
+) -> CandidateApplicationCreate | JSONResponse:
+    raw_posting_id = payload.get("job_posting_id")
+    raw_candidate_id = payload.get("candidate_id")
+    if not isinstance(raw_posting_id, int) or not isinstance(raw_candidate_id, int):
+        return error_response(422, "job_posting_id 与 candidate_id 必须为整数", code="hr_invalid_request")
+    return CandidateApplicationCreate(
+        job_posting_id=raw_posting_id,
+        candidate_id=raw_candidate_id,
+        stage=str(payload.get("stage") or "applied"),
+        rating=payload.get("rating"),
+        stage_note=str(payload.get("stage_note") or ""),
+    )
 
 
 def _parse_application_status(raw: str) -> str | JSONResponse:
@@ -12968,15 +13362,62 @@ def _question_from_payload(
         return error_response(400, "题目内容不能为空")
     tags_value = payload.get("tags") or []
     tags = [str(item) for item in tags_value] if isinstance(tags_value, list) else []
+    question_type = normalize_question_type(str(payload.get("question_type") or ""))
+    if question_type is None:
+        return error_response(400, f"不支持的题型：{payload.get('question_type')}")
+    options: list[str] = []
+    correct_answer = ""
+    starter_code = str(payload.get("starter_code") or "").strip()
+    language = str(payload.get("language") or "").strip()
+    if question_type == "choice":
+        starter_code = ""
+        language = ""
+        raw_options = payload.get("options") or []
+        if not isinstance(raw_options, list):
+            return error_response(400, "选择题的 options 必须是数组")
+        options = [str(item).strip() for item in raw_options if str(item).strip()]
+        if len(options) < 2 or len(options) > 8:
+            return error_response(400, "选择题需要 2-8 个选项")
+        correct_answer = _normalize_correct_answer(str(payload.get("correct_answer") or ""), options)
+        if not correct_answer:
+            return error_response(
+                400, "选择题的 correct_answer 必须对应某个选项（A/B/C… 或选项内容）"
+            )
+    elif question_type == "programming":
+        if not language:
+            language = "python"
+    else:
+        starter_code = ""
+        language = ""
     return QuestionCreate(
+        topic=str(payload.get("topic") or "").strip(),
         category=str(payload.get("category") or "").strip(),
         difficulty=_normalize_difficulty(str(payload.get("difficulty") or "medium")),
         question=text,
         reference_answer=str(payload.get("reference_answer") or "").strip(),
+        question_type=question_type,
+        options=options,
+        correct_answer=correct_answer,
+        starter_code=starter_code,
+        language=language,
         tags=tags,
         source_type=source_type or str(payload.get("source_type") or "manual"),
         status=str(payload.get("status") or "new"),
     )
+
+
+def _normalize_correct_answer(value: str, options: list[str]) -> str:
+    """Return the option letter (A/B/C…) for a submitted answer, or "" if invalid."""
+    raw = value.strip()
+    if not raw:
+        return ""
+    if len(raw) <= 2 and raw.upper() in {chr(ord("A") + index) for index in range(len(options))}:
+        return raw.upper()
+    lowered = raw.casefold()
+    for index, option in enumerate(options):
+        if option.casefold() == lowered:
+            return chr(ord("A") + index)
+    return ""
 
 
 def _question_json(question: Any) -> dict[str, Any]:

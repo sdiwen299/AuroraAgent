@@ -8,7 +8,7 @@ export default function CompactMessageRenderer({ turn }: { turn: UITurn }) {
       className={`${styles.message} ${turn.role === 'user' ? styles.userMessage : styles.assistantMessage}`}
       data-role={turn.role}
     >
-      <span className={styles.messageAuthor}>{turn.role === 'user' ? '你' : 'Haru'}</span>
+      <span className={styles.messageAuthor}>{turn.role === 'user' ? '你' : 'Aurora'}</span>
       <p>{compactMessageText(turn)}</p>
     </article>
   );

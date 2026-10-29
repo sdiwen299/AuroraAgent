@@ -1,7 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useState, type RefObject } from 'react';
 import { Dropdown } from 'antd';
-import { CheckOutlined, EllipsisOutlined, MessageOutlined } from '@ant-design/icons';
-import { live2dPilotMascotRuntime, type PilotMascotActivity, type PilotMascotRuntimeController } from '@/features/pilotMascot/live2dRuntime';
+import { CheckOutlined, EllipsisOutlined } from '@ant-design/icons';
+import Lanyard from '@/components/Lanyard/Lanyard';
+import brandLanyard from '@/components/Lanyard/lanyard-brand.png';
+import type { PilotMascotActivity } from '@/features/pilotMascot/PilotMascot';
 import type { PilotMascotAnimationLevel, PilotMascotRect } from '@/features/pilotMascot/pilotMascotPreference';
 import { effectiveHaruPresentation, readHaruPresentation, writeHaruPresentation, type HaruPresentationMode } from './haruPresentationPreference';
 import styles from './CalendarHaruPresentation.module.css';
@@ -20,24 +22,16 @@ const ACTIVITY_LABELS: Record<PilotMascotActivity, string> = {
   transcribing: '正在转写', reviewing_voice: '等待检查语音', waiting_confirmation: '等待确认',
   success: '处理完成', error: '需要查看',
 };
-export default function CalendarHaruPresentation({ activity, panelOpen, onToggle, triggerRef, onAnchorRectChange, animationLevel = 'minimal' }: Props) {
+export default function CalendarHaruPresentation({ activity, panelOpen, onToggle, triggerRef, onAnchorRectChange, animationLevel: _animationLevel = 'minimal' }: Props) {
   const [mode, setMode] = useState(readHaruPresentation);
   const [viewport, setViewport] = useState(() => ({ width: typeof window === 'undefined' ? 1440 : window.innerWidth, height: typeof window === 'undefined' ? 900 : window.innerHeight }));
   const [menuOwner, setMenuOwner] = useState<'context' | 'more' | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [motionRevision, setMotionRevision] = useState(0);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const controller = useRef<PilotMascotRuntimeController>();
-  const latestActivity = useRef(activity); latestActivity.current = activity;
   const effective = effectiveHaruPresentation(mode, viewport.width, viewport.height);
   const status = ACTIVITY_LABELS[activity];
   useEffect(() => {
     const resize = () => { setViewport({ width: window.innerWidth, height: window.innerHeight }); setMenuOwner(null); };
     window.addEventListener('resize', resize);
-    const motion = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    const changed = () => setMotionRevision((value) => value + 1);
-    motion?.addEventListener('change', changed);
-    return () => { window.removeEventListener('resize', resize); motion?.removeEventListener('change', changed); };
+    return () => window.removeEventListener('resize', resize);
   }, []);
   useEffect(() => {
     if (!menuOwner) return;
@@ -49,16 +43,6 @@ export default function CalendarHaruPresentation({ activity, panelOpen, onToggle
     document.addEventListener('keydown', close, true);
     return () => document.removeEventListener('keydown', close, true);
   }, [menuOwner, triggerRef]);
-  useEffect(() => {
-    if (!canvas.current) return;
-    const abort = new AbortController(); let disposed = false; setFailed(false);
-    void live2dPilotMascotRuntime.mount(canvas.current, abort.signal, animationLevel).then((runtime) => {
-      if (disposed) { runtime.dispose(); return; }
-      controller.current = runtime; runtime.setZoom(1); runtime.setActivity(latestActivity.current);
-    }).catch(() => { if (!disposed) setFailed(true); });
-    return () => { disposed = true; abort.abort(); controller.current?.dispose(); controller.current = undefined; };
-  }, [animationLevel, motionRevision]);
-  useEffect(() => { controller.current?.setActivity(activity); }, [activity]);
   useLayoutEffect(() => {
     const report = () => { const rect = triggerRef.current?.getBoundingClientRect(); if (rect && rect.width > 0) onAnchorRectChange({ left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }); };
     report();
@@ -69,13 +53,13 @@ export default function CalendarHaruPresentation({ activity, panelOpen, onToggle
   const items = (['compact', 'character'] as const).map((value) => ({ key: value, role: 'menuitemradio', 'aria-checked': mode === value, icon: mode === value ? <CheckOutlined /> : <span className={styles.blankCheck} />, label: value === 'compact' ? '小窗展示' : '人物展示', onClick: () => choose(value) }));
   return (
     <div className={styles.presentation} data-haru-mode={effective} data-haru-preference={mode} data-haru-status={activity}>
-      <Dropdown trigger={['contextMenu']} open={menuOwner === 'context'} onOpenChange={(open) => setMenuOwner((owner) => open ? 'context' : owner === 'context' ? null : owner)} autoFocus autoAdjustOverflow menu={{ items, 'aria-label': 'Haru 展示' }}>
-        <button ref={triggerRef} className={styles.launcher} aria-label={`Haru · ${status} · ${panelOpen ? '收起' : '打开'}对话`} aria-expanded={panelOpen} aria-controls="haru-chat-window" onClick={onToggle} onKeyDown={(event) => { if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) { event.preventDefault(); setMenuOwner('context'); } }}>
-          <span className={styles.portrait} aria-hidden="true"><span className={styles.modelFrame}><canvas ref={canvas} /></span>{failed && <span className={styles.fallback}><MessageOutlined /></span>}</span>
-          <span className={styles.caption}><span className={styles.dot} />Haru{status !== '随时待命' && <small>{status}</small>}</span>
+      <Dropdown trigger={['contextMenu']} open={menuOwner === 'context'} onOpenChange={(open) => setMenuOwner((owner) => open ? 'context' : owner === 'context' ? null : owner)} autoFocus autoAdjustOverflow menu={{ items, 'aria-label': 'Aurora 展示' }}>
+        <button ref={triggerRef} className={styles.launcher} aria-label={`Aurora · ${status} · ${panelOpen ? '收起' : '打开'}对话`} aria-expanded={panelOpen} aria-controls="haru-chat-window" onClick={onToggle} onKeyDown={(event) => { if (event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10')) { event.preventDefault(); setMenuOwner('context'); } }}>
+          <span className={styles.portrait} aria-hidden="true"><span className={styles.modelFrame}><Lanyard lanyardImage={brandLanyard} /></span></span>
+          <span className={styles.caption}><span className={styles.dot} />Aurora{status !== '随时待命' && <small>{status}</small>}</span>
         </button>
       </Dropdown>
-      <Dropdown trigger={['click']} open={menuOwner === 'more'} onOpenChange={(open) => setMenuOwner((owner) => open ? 'more' : owner === 'more' ? null : owner)} autoFocus menu={{ items, 'aria-label': 'Haru 展示' }} autoAdjustOverflow><button className={styles.more} aria-label="Haru 展示方式"><EllipsisOutlined /></button></Dropdown>
+      <Dropdown trigger={['click']} open={menuOwner === 'more'} onOpenChange={(open) => setMenuOwner((owner) => open ? 'more' : owner === 'more' ? null : owner)} autoFocus menu={{ items, 'aria-label': 'Aurora 展示' }} autoAdjustOverflow><button className={styles.more} aria-label="Aurora 展示方式"><EllipsisOutlined /></button></Dropdown>
     </div>
   );
 }

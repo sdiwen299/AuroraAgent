@@ -8,6 +8,7 @@ import type { PendingCreation } from '@/services/applicationCreationRecovery';
 import { ONBOARDING_QUERY_KEY } from '@/services/onboarding';
 import { STATUS_LABELS } from '@/types/application';
 import type { Application, ApplicationCreationInput, ApplicationDuplicates, ApplicationStatus } from '@/types/application';
+import { useAuthRole } from '@/components/AuthGate/role';
 
 interface AddApplicationFormProps {
   open: boolean;
@@ -18,6 +19,7 @@ const STATUS_OPTIONS = (Object.entries(STATUS_LABELS) as [ApplicationStatus, str
   ([value, label]) => ({ value, label: value === 'pending' ? '准备投递' : value === 'applied' ? '补录已投递' : label }),
 );
 export default function AddApplicationForm({ open, onClose, onCreated }: AddApplicationFormProps) {
+  const role = useAuthRole();
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
   const [busy, setBusy] = useState(false);
@@ -143,7 +145,7 @@ export default function AddApplicationForm({ open, onClose, onCreated }: AddAppl
     }
   }
   return (
-    <Modal title="添加投递" open={open} width={640} onCancel={close} footer={null}>
+    <Modal title={role === 'hr' ? '发布招聘岗位' : '添加投递'} open={open} width={640} onCancel={close} footer={null}>
       <Space direction="vertical" size="middle" style={{ width: '100%' }}>
         {error && <Alert type="error" showIcon message={error} />}
         {!scope && <Button onClick={() => void initialize()}>重试读取工作区</Button>}

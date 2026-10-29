@@ -27,7 +27,10 @@ interface Props {
 export default function HaruDock({
   visible,
   activity,
+  zoom,
+  positionResetToken,
   animationLevel,
+  onZoomChange,
   onHide,
   onRestore,
   onOpen,
@@ -78,6 +81,10 @@ export default function HaruDock({
         }}
         panelOpen={surface.surface === 'haru_chat'}
         notification={notification}
+        zoom={zoom}
+        onZoomChange={onZoomChange}
+        animationLevel={animationLevel}
+        positionResetToken={positionResetToken}
       />}
       <HaruChatWindow returnFocusRef={triggerRef} onExpand={onExpand} anchorRect={anchorRect} />
     </>

@@ -2,6 +2,7 @@ import {
   AppstoreOutlined,
   DashboardOutlined,
   FileTextOutlined,
+  FormOutlined,
   TrophyOutlined,
   RobotOutlined,
   SettingOutlined,
@@ -12,16 +13,18 @@ import {
 import { Badge } from 'antd';
 import {
   NAVIGATION_GROUPS,
-  MODULE_NAV,
+  moduleNavForRole,
   resolveModuleForView,
   type ModuleKey,
   type ViewMode,
 } from './navigation';
 import styles from './Sidebar.module.css';
+import type { UserRole } from '@/components/AuthGate/model';
 
 const MODULE_ICONS: Record<ModuleKey, React.ReactNode> = {
   today: <DashboardOutlined />,
   applications: <AppstoreOutlined />,
+  written_test: <FormOutlined />,
   interview: <AudioOutlined />,
   offers: <TrophyOutlined />,
   resources: <FileTextOutlined />,
@@ -35,6 +38,7 @@ interface Props {
   reminderCount: number;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  role?: UserRole;
 }
 
 export default function Sidebar({
@@ -43,10 +47,12 @@ export default function Sidebar({
   reminderCount,
   collapsed = false,
   onToggleCollapse,
+  role = 'candidate',
 }: Props) {
   const activeModule = resolveModuleForView(view);
-  const businessNav = MODULE_NAV.filter((item) => item.key !== 'settings');
-  const settingsItem = MODULE_NAV.find((item) => item.key === 'settings');
+  const roleNav = moduleNavForRole(role);
+  const businessNav = role === 'hr' ? roleNav : roleNav.filter((item) => item.key !== 'settings');
+  const settingsItem = roleNav.find((item) => item.key === 'settings');
 
   return (
     <nav
@@ -99,7 +105,7 @@ export default function Sidebar({
         );
       })}
 
-      <section className={styles.utility} aria-labelledby="sidebar-group-utility">
+      {role !== 'hr' ? <section className={styles.utility} aria-labelledby="sidebar-group-utility">
         <h2 id="sidebar-group-utility" className={styles.groupLabel}>辅助</h2>
         <button
           type="button"
@@ -112,7 +118,7 @@ export default function Sidebar({
           <span className={styles.icon} aria-hidden="true"><SettingOutlined /></span>
           <span className={styles.label}>{settingsItem?.label ?? '设置'}</span>
         </button>
-      </section>
+      </section> : null}
     </nav>
   );
 }

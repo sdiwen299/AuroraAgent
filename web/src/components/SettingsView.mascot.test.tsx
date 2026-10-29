@@ -82,15 +82,15 @@ describe('SettingsView Pilot mascot preference', () => {
         />,
       );
     });
-    const toggle = container.querySelector<HTMLElement>('[aria-label="显示 Haru"]');
+    const toggle = container.querySelector<HTMLElement>('[aria-label="显示 Aurora"]');
     expect(toggle).not.toBeNull();
     act(() => toggle!.click());
     expect(onChange).toHaveBeenCalledWith(true, expect.anything());
-    expect(container.querySelector('[aria-label="Haru 角色大小"]')).not.toBeNull();
-    expect(container.querySelector('[aria-label="Haru 动画级别"]')).not.toBeNull();
+    expect(container.querySelector('[aria-label="Aurora 角色大小"]')).not.toBeNull();
+    expect(container.querySelector('[aria-label="Aurora 动画级别"]')).not.toBeNull();
     expect(container.textContent).toContain('简洁');
     expect(container.textContent).toContain('系统已开启减少动态效果');
-    const reset = container.querySelector<HTMLButtonElement>('[aria-label="重置 Haru 位置"]');
+    const reset = container.querySelector<HTMLButtonElement>('[aria-label="重置 Aurora 位置"]');
     act(() => reset?.click());
     expect(onResetPosition).toHaveBeenCalledTimes(1);
   });
