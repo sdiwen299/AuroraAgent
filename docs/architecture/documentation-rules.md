@@ -60,4 +60,3 @@ RULE 用于修复或审查证明有必要持续维护的约束，不记录语言
 
 检查本次修改的链接、事实源一致性、占位内容和 diff；只补与改动相关的文档。验证强度按改动影响范围选择，入口见 [CONTRIBUTING.md](../../CONTRIBUTING.md#quality-gates)。
 
-`.客户端/hooks/pre-commit-doc-check.sh` 已在 `.客户端/settings.json` 注册为 客户端 Code 的 PreToolUse 提醒，输出到 stderr、exit 0。它不阻塞提交，直接 Git CLI 不会执行；其他入口自行完成适用检查。

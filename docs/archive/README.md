@@ -9,7 +9,6 @@
 | 主题 | 历史资料 | 当前参考 |
 |---|---|---|
 | Python 切换 | [切换验收](python-cutover-verification.md)、[架构审查](python-architecture-review-20260706.md) | [兼容契约](../python-rewrite-contract.md)、[发布清单](../p0-release-checklist.md) |
-| Agent 指令整理 | [2026-09-07 审计](agent-instruction-audit.md) | [文档规范](../architecture/documentation-rules.md) |
 | 早期面试版本范围 | [v0.1–v0.3 阶段摘录](early-interview-version-scope.md) | [文档规范](../architecture/documentation-rules.md) 路由的当前 PRD / ADR |
 | README 产品概览 | [2026-08-01 设计](readme/2026-08-01-readme-product-overview-design.md)、[计划](readme/2026-08-01-readme-product-overview.md) | [当前 README](../../README.md) |
 | README 旧截图刷新 | [2026-08-13 设计](readme/2026-08-13-readme-screenshot-refresh-design.md)、[计划](readme/2026-08-13-readme-screenshot-refresh.md)、[验收](readme/2026-08-13-readme-screenshot-refresh-browser-acceptance.md) | [指南与配图维护](../product-manual/维护记录.md) |
