@@ -1,12 +1,12 @@
 # 文档规范
 
-写改 Markdown 时使用本规范。指令优先级与授权边界见 [AGENTS.md](../../AGENTS.md) §0；流程建议不能增加未要求的审批或文档工作。
+写改 Markdown 时使用本规范。流程建议不能增加未要求的审批或文档工作。
 
 ## 1. 按变更选择文档
 
 - 改变架构决策（模块边界、协议、依赖方向、领域契约）时写改 `docs/architecture/decisions/00NN-*.md`；普通措辞修订和实现细节不需要 ADR。
 - Bug 修复在 `docs/BUGS.md` 记录现象、根因、修复、教训；只有可复用约束才登记到 [rules.md](rules.md)。
-- 命令、配置或安装行为变化，更新其实际维护位置；仅涉及公开使用承诺时更新 README，不要求同时在 AGENTS.md 复制。
+- 命令、配置或安装行为变化，更新其实际维护位置；仅涉及公开使用承诺时更新 README，不要求同时在多处复制。
 - 迭代结束后将仍有效的决策归入事实源。spec / plan 可作历史快照，标明状态或被替代关系；归档、删除按明确维护任务执行，不根据日期或版本名自动删文件。
 - 其余情况优先修改现有文档，不为普通实现选择额外生成 ADR、RULE 或报告。
 
@@ -14,7 +14,7 @@
 
 | 文档 | 建议上限 |
 |---|---|
-| 根 AGENTS.md、docs 下普通文档 | 300 行 |
+| docs 下普通文档 | 300 行 |
 | ADR（含备选方案） | 800 行 |
 | RULE 的 Why | 5 行 |
 | BUGS 单条 | 60 行 |
@@ -27,16 +27,14 @@
 
 | 内容 | 维护位置 |
 |---|---|
-| 授权、Git、工作流、领域红线、验收规则 | [AGENTS.md](../../AGENTS.md)（领域红线 §6） |
+| 分支、提交与验证入口 | [CONTRIBUTING.md](../../CONTRIBUTING.md) |
 | Python rewrite 契约 | [python-rewrite-contract.md](../python-rewrite-contract.md) |
 | P0 发布清单 | [p0-release-checklist.md](../p0-release-checklist.md) |
-| 产品 PRD / ADR / Check 表 | AGENTS.md §4 的飞书 wiki |
+| 产品 PRD / ADR / Check 表 | [产品主 wiki](https://ycn8095q3nc7.feishu.cn/wiki/K6BQw1X5Piksm2kDex3cMQMenvf) |
 | Knowledge 架构 | [knowledge-system.md](knowledge-system.md) |
 | 架构决策 | `decisions/00NN-*.md` |
 | 补充工程约束 | [rules.md](rules.md) |
 | 飞书编辑经验 | [lark-document-operations.md](lark-document-operations.md) |
-
-AGENTS.md 保留跨任务约束及路由；工具专用流程放相关参考。客户端.md 和 `.客户端/rules/` 只作入口适配，不重复业务规范。
 
 ## 4. ADR 必需内容
 
@@ -52,7 +50,7 @@ ADR 包含标题与编号、Status / 日期、Decider、依据，以及以下段
 
 ## 5. RULE 的使用
 
-涉及领域事件、对话上下文、版本边界、auth、迁移、Agent runtime、Skill 信任、provider routing 或 HITL 时，读取 [rules.md](rules.md) 中适用条目，并遵守 AGENTS.md §6。
+涉及领域事件、对话上下文、版本边界、auth、迁移、Agent runtime、Skill 信任、provider routing 或 HITL 时，读取 [rules.md](rules.md) 中适用条目。
 
 RULE 用于修复或审查证明有必要持续维护的约束，不记录语言常识或复制 ADR。条目格式与新增条件统一在 rules.md。
 
@@ -60,6 +58,6 @@ RULE 用于修复或审查证明有必要持续维护的约束，不记录语言
 
 ## 6. 提交前检查
 
-检查本次修改的链接、事实源一致性、占位内容和 diff；只补与改动相关的文档。验证强度按 AGENTS.md §7。
+检查本次修改的链接、事实源一致性、占位内容和 diff；只补与改动相关的文档。验证强度按改动影响范围选择，入口见 [CONTRIBUTING.md](../../CONTRIBUTING.md#quality-gates)。
 
-`.客户端/hooks/pre-commit-doc-check.sh` 已在 `.客户端/settings.json` 注册为 客户端 Code 的 PreToolUse 提醒，输出到 stderr、exit 0。它不阻塞提交，也不保证 旧客户端 或直接 Git CLI 会执行；其他入口自行完成适用检查。
+`.客户端/hooks/pre-commit-doc-check.sh` 已在 `.客户端/settings.json` 注册为 客户端 Code 的 PreToolUse 提醒，输出到 stderr、exit 0。它不阻塞提交，直接 Git CLI 不会执行；其他入口自行完成适用检查。

@@ -1,7 +1,8 @@
 # Contributing to AuroraAgent
 
 Thanks for helping improve AuroraAgent. This file is the public contributor
-entry point; detailed agent workflow rules live in [AGENTS.md](AGENTS.md), and
+entry point; documentation conventions live in
+[docs/architecture/documentation-rules.md](docs/architecture/documentation-rules.md), and
 historical design notes live under [docs/](docs/).
 
 ## License
@@ -13,9 +14,8 @@ Before the project broadly accepts external contributions, the maintainers shoul
 ## Development
 
 Use a task-specific branch; an existing clean, dedicated worktree can be reused.
-Use an isolated worktree when user changes or concurrent tasks need protection
-(see [AGENTS.md §2](AGENTS.md#2-开工与工具)). Branch names should follow the
-repository convention:
+Use an isolated worktree when user changes or concurrent tasks need protection.
+Branch names should follow the repository convention:
 
 ```text
 <type>/<yyyymmdd>-<name>
@@ -26,7 +26,7 @@ Keep commits focused and describe the user-facing or developer-facing change.
 
 ## Quality Gates
 
-Choose checks by impact using [AGENTS.md §7](AGENTS.md#7-验证与-code-review).
+Choose checks by impact; pick the commands below that match the files you changed.
 Finishing a task or pushing a branch does not by itself require a full release
 gate. Available check commands, from the repository root (Bash):
 
@@ -68,11 +68,12 @@ must exist, but its existence alone is not proof of freshness. Bash retains the
 optional positional port (`bash scripts/local-smoke.sh 18799 --skip-build`);
 PowerShell uses `-Port 18799 -SkipBuild`.
 
-Add Docker, installation, or real-provider checks only for the relevant scope
-under [AGENTS.md §7](AGENTS.md#7-验证与-code-review). Script commands and optional
-flags are described in the [release checklist](docs/p0-release-checklist.md).
-Reuse verification evidence only under the unchanged-snapshot conditions in §7;
-do not infer full-gate success from targeted tests or a reviewer's assessment.
+Add Docker, installation, or real-provider checks only for the relevant scope.
+Script commands and optional flags are described in the
+[release checklist](docs/p0-release-checklist.md).
+Reuse verification evidence only when the code snapshot, lockfiles,
+configuration, and environment are unchanged; do not infer full-gate success
+from targeted tests or a reviewer's assessment.
 
 If a check cannot run in your environment, include the command, failure reason,
 and residual risk in the pull request or handoff note.

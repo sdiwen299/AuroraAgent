@@ -60,4 +60,3 @@ Provider、确认或撤销请求。产品动作保留自己的 owner draft 和�
 ## Related
 
 - [P1 施工约定](../../superpowers/plans/2026-09-08-harness-p1-presentation.md)
-- [仓库协议](../../../AGENTS.md)

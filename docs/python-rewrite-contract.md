@@ -3,7 +3,7 @@
 # AuroraAgent Python Rewrite Contract
 
 > Status: Python cutover completed; see the [2026-07-06 verification snapshot](archive/python-cutover-verification.md).
-> 本文保留迁移兼容契约与历史 Go 基线，不是当前 API 全量清单，也不是待执行迁移计划。下文的 Current、Phase、测试数量与 Go 路径按其历史基线阅读；后续明确修订以 [AGENTS.md](../AGENTS.md) 的领域红线、相关实施契约和当前代码／测试为准，未被修订的安全约束继续保留。
+> 本文保留迁移兼容契约与历史 Go 基线，不是当前 API 全量清单，也不是待执行迁移计划。下文的 Current、Phase、测试数量与 Go 路径按其历史基线阅读；后续明确修订以 [rules.md](architecture/rules.md)、相关实施契约和当前代码／测试为准，未被修订的安全约束继续保留。
 > Baseline branch: `feature/20260705-python-rewrite`.
 > Source baseline: Go backend at `443c933` from `main`.
 > **[KR] Knowledge 历史基线**：旧 knowledge API / 表 / AI tool / CLI 条目（标记 `[KR-deprecated]`）不得作为长期兼容要求重新引入。当前方向见末尾 [Knowledge System](#knowledge-system) 及其链接的唯一架构事实源。

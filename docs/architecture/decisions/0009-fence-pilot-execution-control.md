@@ -117,4 +117,3 @@ SQLite 锁竞争可能让控制请求等待或失败；失败时客户端保留�
 - [请求与增量时间线](0008-persist-pilot-turns-and-timeline.md)
 - [修改确认确定性回执](0006-edited-confirmation-receipts.md)
 - [P3A 实施与验证](../../superpowers/plans/2026-09-08-harness-p3a-turn-control.md)
-- [仓库施工协议](../../../AGENTS.md)

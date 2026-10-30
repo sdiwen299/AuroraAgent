@@ -3,7 +3,7 @@
 Date: 2026-07-07
 Branch: `旧客户端/feat/project-adjustments-review`
 
-The scope/status, browser walkthrough, and deferred sections below are the historical v0.1 snapshot, not current feature restrictions or a fresh verification report. See [early interview scope](archive/early-interview-version-scope.md) for the former version boundaries. The command reference is maintained for the current `scripts/release-gate.ps1` and `scripts/release-gate.sh`; verification triggers, evidence reuse, and optional-gate scope are owned by [AGENTS.md §7](../AGENTS.md#7-验证与-code-review).
+The scope/status, browser walkthrough, and deferred sections below are the historical v0.1 snapshot, not current feature restrictions or a fresh verification report. See [early interview scope](archive/early-interview-version-scope.md) for the former version boundaries. The command reference is maintained for the current `scripts/release-gate.ps1` and `scripts/release-gate.sh`; verification triggers, evidence reuse, and optional-gate scope are described in [CONTRIBUTING.md](../CONTRIBUTING.md#quality-gates).
 
 ## Scope Status
 

@@ -8,7 +8,7 @@
 
 **Architecture:** This is a documentation-only change. A narrow public README becomes the canonical entry point; a small pytest module verifies its product claims, local startup paths, screenshot references, and image dimensions. Five versioned PNG files are generated from an isolated local deployment using a Chinese synthetic candidate and are referenced by relative Markdown paths.
 
-**Tech Stack:** Markdown, pytest, Pillow, local `uv run oc start`, React production build, 旧客户端 in-app browser.
+**Tech Stack:** Markdown, pytest, Pillow, local `uv run oc start`, React production build, in-app browser.
 
 ---
 
